@@ -24,6 +24,7 @@ npm run start
 ## Back End Stub Prerequisites
 ### Global Environment
 `python3` 3.8.5 (Default in ubuntu I think)
+
 `pip` package manager
 
 ### Necessary Package Setup (Still Wip)
