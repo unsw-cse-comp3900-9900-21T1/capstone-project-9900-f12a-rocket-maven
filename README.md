@@ -1,4 +1,4 @@
-# Rocket Methods
+# Rocket Maven
 
 ## Front End Prerequisites
 
