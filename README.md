@@ -30,7 +30,9 @@ npm run start
 Run commands:
 
 ```
+cd backend-stub
 sudo apt install python3-venv
 pip install flask python-dotenv
+TBC
 ```
 
