@@ -1,1 +1,1 @@
-web: gunicorn backend.RocketMaven.wsgi:app --log-file -
+web: cd /app/backend/ && gunicorn backend.RocketMaven.wsgi:app --log-file -
