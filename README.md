@@ -11,7 +11,7 @@
 ### Development Tools
 
 VSCode
-- ESLint
+- ESLint extension
 
 ### Setup
 
