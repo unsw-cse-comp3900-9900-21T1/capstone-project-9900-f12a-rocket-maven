@@ -28,6 +28,11 @@ const sideBarItems: Array<SideBarItem> = [
     to: urls.loginStub,
     icon: FaHome,
   },
+  {
+    name: 'PortDetails',
+    to: urls.portfolioDetails,
+    icon: FaHome,
+  },
 ]
 
 const SideBar = () => (
