@@ -21,19 +21,3 @@ npm install
 npm run start
 ```
 
-## Back End Stub Prerequisites
-### Global Environment
-`python3` 3.8.5 (Default in ubuntu I think)
-
-`pip` package manager
-
-### Necessary Package Setup (Still Wip)
-Run commands:
-
-```
-cd backend-stub
-sudo apt install python3-venv
-pip install flask python-dotenv
-TBC
-```
-
