@@ -1,0 +1,12 @@
+Week 1
+- Worked with group to outline core functionality of web app in first meeting
+- Drafted a basic user flow diagram for group review
+- researched latest react utilities that I thought may be conducive to our
+assignment
+- Drafted front-end technology section 
+
+Week 2
+- Completed front-end technology section in report (was small compared to rest of the section)
+- Completed the Interface diagrams (story boards) and User Flow diagram board with help from Andy
+- Finalised front end library choices
+- Started getting basic front end dev environment working with some core functionalities
