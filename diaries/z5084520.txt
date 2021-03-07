@@ -22,7 +22,7 @@ The meeting was also to reaffirm that all group members know their role in draft
 - Organised a group meeting to talk about the progress of the report
 - Had another discussion with Jin about the structure that our user stories will follow, and where the Novel Functionalities that I wrote come into play
 - Attempted to create and publish a simple back-end system, but I have been so far unable to set up a development environment on Windows
-- Managed to overcome a major hurdle to get a basic back-end system up and running. Also managed to deploy our system to Heroku
+    - Managed to overcome a major hurdle to get a basic back-end system up and running. Also managed to deploy our system to Heroku
 - Managed the user stories, assigned user stories to the storyboard
 - Wrapped up the team's effort on the project proposal (everyone made a significant contribution to the project proposal), and completed the submission
 
