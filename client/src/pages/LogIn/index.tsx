@@ -1,12 +1,13 @@
-import React from 'react'
+import { useContext } from 'react'
 import Page from '../_Page'
-import { StubWrap } from '../../componentsStyled/Layouts'
 import { Title } from '../../componentsStyled/Typography'
 import { Formik, Field, Form, ErrorMessage } from 'formik'
 import { MyCheckbox, MySelect, MyTextInput } from '../../forms'
+import { storeContext } from '../../data/store'
  import * as Yup from 'yup'
 
 const LogIn = () => {
+  const { dispatch } = useContext(storeContext)
 
   return (
     <Page>
@@ -53,6 +54,9 @@ const LogIn = () => {
           .then(res => res.json())
           .then(data => {
             console.log("************** response is", data)
+            if (data.msg === 'Form submission successfull') {
+              dispatch({type: "LOGIN"})
+            }
           })
           // TODO(Jude): Maybe add error and success snack bars here
         }}

@@ -11,6 +11,7 @@ export const HeaderWrap = styled.header`
 `
 
 export const NavWrap = styled.nav`
+  background-color: #fecc91;
 `
 
 export const BodyWrap = styled.main`

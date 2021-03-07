@@ -3,6 +3,7 @@ import { Error } from '../componentsStyled/Typography'
 
 // Copy and pasted code from official formik tutorials
 // TODO(Jude): Make code more specific for our use case
+// TODO(Jude): Convert to typescript
 
 export const MyTextInput = ({ label, ...props }) => {
   // useField() returns [formik.getFieldProps(), formik.getFieldMeta()]

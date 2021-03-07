@@ -6,6 +6,7 @@ import { StubWrap } from '../../componentsStyled/Layouts'
 import logo from '../../assets/svg/logo.svg'
 
 const HomeStub = () => {
+
   const [time, setTime] = useState();
 
   useEffect(() => {
