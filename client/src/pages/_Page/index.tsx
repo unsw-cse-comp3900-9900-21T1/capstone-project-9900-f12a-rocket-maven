@@ -1,4 +1,5 @@
-import * as React from "react"
+import * as React from 'react'
+import NavBar from '../../components/NavBar'
 import {
   BodyWrap,
   FooterWrap,
@@ -7,21 +8,22 @@ import {
   PageWrap,
 } from "./styled"
 
-type Props = {
-  children: React.ReactNode
-}
-
 // This component is a wrapper for the other pages content.
 // Note only the body will change and all the other sections of the DOM will
 // mainly stay the same.
+// TODO(Jude): Find difference between ReactNode and PropsWithChildren and be consistent
+type Props = {
+  children: React.ReactNode
+}
 const Page = ({children}: Props) => {
+
   return (
     <PageWrap>
       <HeaderWrap>
         New Header Component here
       </HeaderWrap>
       <NavWrap>
-        New Navbar Component here
+        <NavBar/>
       </NavWrap>
       <BodyWrap>
         {children}
