@@ -12,12 +12,12 @@ export const BottomSpace = styled.div`
 
 export const Title = styled.h1`
   margin: 0 0 2rem;
-  font-weight: 300;
+  font-weight: 500;
 `
 
 export const Subtitle = styled.h2`
-  margin: 0 0 3rem;
-  font-size: 2rem;
+  margin: 0 0 1.5rem;
+  font-weight: 300;
 `
 
 export const Text = styled.span`
