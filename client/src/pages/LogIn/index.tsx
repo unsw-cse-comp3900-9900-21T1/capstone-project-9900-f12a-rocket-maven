@@ -6,14 +6,14 @@ import { Formik, Field, Form, ErrorMessage } from 'formik'
 import { MyCheckbox, MySelect, MyTextInput } from '../../forms'
  import * as Yup from 'yup'
 
-// TODO(Jude): convert to typescript
 const LogIn = () => {
 
   return (
     <Page>
       <Title>
-        Login
+        Login Stub
       </Title>
+      {/* TODO(Jude): Refactor and minimise: Seprate schema */}
       <Formik
         initialValues={{
           firstName: '',
@@ -43,10 +43,18 @@ const LogIn = () => {
             .required('Required'),
         })}
         onSubmit={(values, { setSubmitting }) => {
-          setTimeout(() => {
-            alert(JSON.stringify(values, null, 2));
-            setSubmitting(false);
-          }, 400);
+          fetch('/api/v1/login-stub', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(values)
+          })
+          .then(res => res.json())
+          .then(data => {
+            console.log("************** response is", data)
+          })
+          // TODO(Jude): Maybe add error and success snack bars here
         }}
       >
         <Form>
