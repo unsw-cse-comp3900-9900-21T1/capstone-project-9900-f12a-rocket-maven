@@ -7,5 +7,4 @@ export const StubWrap = styled.div`
   font-size: calc(10px + 2vmin);
   align-items: center;
   justify-content: center;
-  color: white;
 `

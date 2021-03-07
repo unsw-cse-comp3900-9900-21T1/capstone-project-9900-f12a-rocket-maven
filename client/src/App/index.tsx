@@ -1,5 +1,5 @@
 import React from 'react'
-import { AppWrap, Content } from './styled'
+import { AppWrap, ContentWrap } from './styled'
 import Routes from './Routes'
 import SideBar from './SideBar'
 
@@ -9,9 +9,9 @@ const App = () => {
   return (
     <AppWrap>
       <SideBar />
-      <Content>
+      <ContentWrap>
         <Routes />
-      </Content>
+      </ContentWrap>
     </AppWrap>
   )
 }

@@ -2,8 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom'
 import App from './App';
-// TODO(Jude): Replace .css file to be consistent with styling library
-import './index.css';
 // import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(

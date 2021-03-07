@@ -11,7 +11,7 @@ const Routes = () => (
     {/* TODO(Jude): Distinguish between logged in and logged out routes */}
     {/* TODO(Jude): Make root path a redirect depending on logged in status*/}
     <Route exact path={urls.root} component={HomeStub} />
-    <Route exact path={urls.loginStub} component={LogIn} />
+    <Route exact path={urls.login} component={LogIn} />
     <Route exact path={urls.portfolioDetails} component={PortDetails}/>
   </Switch>
 )
