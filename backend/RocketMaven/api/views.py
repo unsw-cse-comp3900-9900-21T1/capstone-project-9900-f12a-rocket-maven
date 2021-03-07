@@ -2,7 +2,7 @@ from flask import Blueprint, current_app, jsonify
 from flask_restful import Api
 from marshmallow import ValidationError
 from RocketMaven.extensions import apispec
-from RocketMaven.api.resources import UserResource, UserList, Time, LoginStub
+from RocketMaven.api.resources import UserResource, UserList, Time, LoginStub, PortfolioStub
 from RocketMaven.api.schemas import UserSchema
 
 
@@ -12,6 +12,7 @@ api = Api(blueprint)
 # Stub endpoints for front end testing
 api.add_resource(Time, "/get-time", endpoint="current_time")
 api.add_resource(LoginStub, "/login-stub", endpoint="login_stub")
+api.add_resource(PortfolioStub, "/portfolio-stub", endpoint="portfolio_stub")
 
 
 api.add_resource(UserResource, "/users/<int:user_id>", endpoint="user_by_id")
@@ -24,9 +25,10 @@ def register_views():
     apispec.spec.path(view=UserResource, app=current_app)
     apispec.spec.path(view=UserList, app=current_app)
 
-    # Stub endpoints for pront end testing 
+    # Stub endpoints for front end testing 
     apispec.spec.path(view=Time, app=current_app)
     apispec.spec.path(view=LoginStub, app=current_app)
+    apispec.spec.path(view=PortfolioStub, app=current_app)
 
 
 @blueprint.errorhandler(ValidationError)

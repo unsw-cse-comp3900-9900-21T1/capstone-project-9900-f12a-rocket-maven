@@ -29,7 +29,7 @@ const sideBarItems: Array<SideBarItem> = [
     icon: FaHome,
   },
   {
-    name: 'PortDetails',
+    name: 'Portfolio',
     to: urls.portfolioDetails,
     icon: FaHome,
   },
