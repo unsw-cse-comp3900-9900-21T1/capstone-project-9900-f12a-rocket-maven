@@ -1,5 +1,5 @@
-from RocketMaven.models.user import User
+from RocketMaven.models.investor import Investor
 from RocketMaven.models.blocklist import TokenBlocklist
 
 
-__all__ = ["User", "TokenBlocklist"]
+__all__ = ["Investor", "TokenBlocklist"]

@@ -1,13 +1,14 @@
 from flask import request
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required
-from RocketMaven.api.schemas import UserSchema
-from RocketMaven.models import User
+from RocketMaven.api.schemas import InvestorSchema
+from RocketMaven.services import InvestorService
+from RocketMaven.models import Investor
 from RocketMaven.extensions import db
 from RocketMaven.commons.pagination import paginate
 
 
-class UserResource(Resource):
+class InvestorResource(Resource):
     """Single object resource
 
     ---
@@ -16,7 +17,7 @@ class UserResource(Resource):
         - api
       parameters:
         - in: path
-          name: user_id
+          name: investor_id
           schema:
             type: integer
       responses:
@@ -26,22 +27,22 @@ class UserResource(Resource):
               schema:
                 type: object
                 properties:
-                  user: UserSchema
+                  investor: InvestorSchema
         404:
-          description: user does not exists
+          description: investor does not exists
     put:
       tags:
         - api
       parameters:
         - in: path
-          name: user_id
+          name: investor_id
           schema:
             type: integer
       requestBody:
         content:
           application/json:
             schema:
-              UserSchema
+              InvestorSchema
       responses:
         200:
           content:
@@ -51,16 +52,16 @@ class UserResource(Resource):
                 properties:
                   msg:
                     type: string
-                    example: user updated
-                  user: UserSchema
+                    example: investor updated
+                  investor: InvestorSchema
         404:
-          description: user does not exists
+          description: investor does not exists
     delete:
       tags:
         - api
       parameters:
         - in: path
-          name: user_id
+          name: investor_id
           schema:
             type: integer
       responses:
@@ -72,36 +73,36 @@ class UserResource(Resource):
                 properties:
                   msg:
                     type: string
-                    example: user deleted
+                    example: investor deleted
         404:
-          description: user does not exists
+          description: investor does not exists
     """
 
     method_decorators = [jwt_required()]
 
-    def get(self, user_id):
-        schema = UserSchema()
-        user = User.query.get_or_404(user_id)
-        return {"user": schema.dump(user)}
+    def get(self, investor_id):
+        schema = InvestorSchema()
+        investor = Investor.query.get_or_404(investor_id)
+        return {"investor": schema.dump(investor)}
 
-    def put(self, user_id):
-        schema = UserSchema(partial=True)
-        user = User.query.get_or_404(user_id)
-        user = schema.load(request.json, instance=user)
+    def put(self, investor_id):
+        schema = InvestorSchema(partial=True)
+        investor = Investor.query.get_or_404(investor_id)
+        investor = schema.load(request.json, instance=investor)
 
         db.session.commit()
 
-        return {"msg": "user updated", "user": schema.dump(user)}
+        return {"msg": "investor updated", "investor": schema.dump(investor)}
 
-    def delete(self, user_id):
-        user = User.query.get_or_404(user_id)
-        db.session.delete(user)
+    def delete(self, investor_id):
+        investor = Investor.query.get_or_404(investor_id)
+        db.session.delete(investor)
         db.session.commit()
 
-        return {"msg": "user deleted"}
+        return {"msg": "investor deleted"}
 
 
-class UserList(Resource):
+class InvestorList(Resource):
     """Creation and get_all
 
     ---
@@ -120,7 +121,7 @@ class UserList(Resource):
                       results:
                         type: array
                         items:
-                          $ref: '#/components/schemas/UserSchema'
+                          $ref: '#/components/schemas/InvestorSchema'
     post:
       tags:
         - api
@@ -128,7 +129,7 @@ class UserList(Resource):
         content:
           application/json:
             schema:
-              UserSchema
+              InvestorSchema
       responses:
         201:
           content:
@@ -138,22 +139,22 @@ class UserList(Resource):
                 properties:
                   msg:
                     type: string
-                    example: user created
-                  user: UserSchema
+                    example: investor created
+                  investor: InvestorSchema
     """
 
     method_decorators = [jwt_required()]
 
     def get(self):
-        schema = UserSchema(many=True)
-        query = User.query
+        schema = InvestorSchema(many=True)
+        query = Investor.query
         return paginate(query, schema)
 
     def post(self):
-        schema = UserSchema()
-        user = schema.load(request.json)
+        schema = InvestorSchema()
+        investor = schema.load(request.json)
 
-        db.session.add(user)
+        db.session.add(investor)
         db.session.commit()
 
-        return {"msg": "user created", "user": schema.dump(user)}, 201
+        return {"msg": "investor created", "investor": schema.dump(investor)}, 201
