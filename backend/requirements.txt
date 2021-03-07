@@ -12,4 +12,4 @@ apispec[yaml]
 apispec-webframeworks
 tox
 gunicorn
-waitress
+colorama

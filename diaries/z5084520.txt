@@ -1,0 +1,29 @@
+# Week 1
+
+- Formed the Rocket Maven team with a pretty good bunch of people, and project topic was decided
+    - All group members appear to have a preference for the Stock Portfolio, given the broad interest for investment in general the past few years
+- Helped set up the group's Jira
+- Helped set up bots for the group's Slack
+- Performed administrative tasks for the group's Slack
+- Decided on the technical details of the project with Jude
+- Coordinated the tooling that the team will use
+
+# Week 2
+
+- Helped convene the first formal group meeting to discuss topics such as getting to know each other, the user stories, the project's novelty(-ies), and the technology stack used
+The meeting was also to reaffirm that all group members know their role in drafting the project proposal, and what the expectations of the project proposal would be
+- Held a meeting with Jude to discuss the interaction between React and Flask, and he helped clear a lot of the confusion, particularly in the specifics of how routing would work
+- Kept the group informed on Slack about my own input and ideas as to what the system would involve for both the project proposal, and for the development of the system
+- Helped Jude by providing feedback and helping tweak the Storyboard, and structured a process to import diagrams to our project proposal
+
+# Week 3
+
+- Finished the diagram and writing about the technical details of the project, and finally harmonized the role that MVC will play in our tiered software architecture
+- Organised a group meeting to talk about the progress of the report
+- Had another discussion with Jin about the structure that our user stories will follow, and where the Novel Functionalities that I wrote come into play
+- Attempted to create and publish a simple back-end system, but I have been so far unable to set up a development environment on Windows
+    - Managed to overcome a major hurdle to get a basic back-end system up and running. Also managed to deploy our system to Heroku
+- Managed the user stories, assigned user stories to the storyboard
+- Wrapped up the team's effort on the project proposal (everyone made a significant contribution to the project proposal), and completed the submission
+
+

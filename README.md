@@ -1,4 +1,5 @@
 # Rocket Maven
+🚀🚀🚀 Investment Portfolio Management 🚀🚀🚀
 
 ## Front End Prerequisites
 
@@ -20,4 +21,20 @@ cd client
 npm install
 npm run start
 ```
+
+## Back End Prerequisites
+
+### Global Environment
+
+`Python 3.6+`
+
+Globally tox install (tox and its dependencies are the only global python packages required for the Rocket Maven system): `pip3 install tox`
+
+### Setup
+
+Run `tox -e dev` within the backend folder: this sets up a Tox python development environment at backend/.tox/ (which is isolated from your main Python installation) and launches the server.
+
+Visit: [http://127.0.0.1:5100/swagger-ui](http://127.0.0.1:5100/swagger-ui)
+
+
 
