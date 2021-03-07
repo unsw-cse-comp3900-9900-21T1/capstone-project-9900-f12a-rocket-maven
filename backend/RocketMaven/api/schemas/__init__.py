@@ -1,4 +1,4 @@
-from RocketMaven.api.schemas.user import UserSchema
+from RocketMaven.api.schemas.investor import InvestorSchema
 
 
-__all__ = ["UserSchema"]
+__all__ = ["InvestorSchema"]

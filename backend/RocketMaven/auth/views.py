@@ -7,7 +7,7 @@ from flask_jwt_extended import (
     get_jwt,
 )
 
-from RocketMaven.models import User
+from RocketMaven.models import Investor
 from RocketMaven.extensions import pwd_context, jwt, apispec
 from RocketMaven.auth.helpers import revoke_token, is_token_revoked, add_token_to_database
 
@@ -17,7 +17,7 @@ blueprint = Blueprint("auth", __name__, url_prefix="/auth")
 
 @blueprint.route("/login", methods=["POST"])
 def login():
-    """Authenticate user and return tokens
+    """Authenticate investor and return tokens
 
     ---
     post:
@@ -29,9 +29,9 @@ def login():
             schema:
               type: object
               properties:
-                username:
+                investorname:
                   type: string
-                  example: myuser
+                  example: myinvestor
                   required: true
                 password:
                   type: string
@@ -57,17 +57,17 @@ def login():
     if not request.is_json:
         return jsonify({"msg": "Missing JSON in request"}), 400
 
-    username = request.json.get("username", None)
+    investorname = request.json.get("investorname", None)
     password = request.json.get("password", None)
-    if not username or not password:
-        return jsonify({"msg": "Missing username or password"}), 400
+    if not investorname or not password:
+        return jsonify({"msg": "Missing investorname or password"}), 400
 
-    user = User.query.filter_by(username=username).first()
-    if user is None or not pwd_context.verify(password, user.password):
+    investor = Investor.query.filter_by(investorname=investorname).first()
+    if investor is None or not pwd_context.verify(password, investor.password):
         return jsonify({"msg": "Bad credentials"}), 400
 
-    access_token = create_access_token(identity=user.id)
-    refresh_token = create_refresh_token(identity=user.id)
+    access_token = create_access_token(identity=investor.id)
+    refresh_token = create_refresh_token(identity=investor.id)
     add_token_to_database(access_token, app.config["JWT_IDENTITY_CLAIM"])
     add_token_to_database(refresh_token, app.config["JWT_IDENTITY_CLAIM"])
 
@@ -104,8 +104,8 @@ def refresh():
         401:
           description: unauthorized
     """
-    current_user = get_jwt_identity()
-    access_token = create_access_token(identity=current_user)
+    current_investor = get_jwt_identity()
+    access_token = create_access_token(identity=current_investor)
     ret = {"access_token": access_token}
     add_token_to_database(access_token, app.config["JWT_IDENTITY_CLAIM"])
     return jsonify(ret), 200
@@ -136,8 +136,8 @@ def revoke_access_token():
           description: unauthorized
     """
     jti = get_jwt()["jti"]
-    user_identity = get_jwt_identity()
-    revoke_token(jti, user_identity)
+    investor_identity = get_jwt_identity()
+    revoke_token(jti, investor_identity)
     return jsonify({"message": "token revoked"}), 200
 
 
@@ -166,15 +166,15 @@ def revoke_refresh_token():
           description: unauthorized
     """
     jti = get_jwt()["jti"]
-    user_identity = get_jwt_identity()
-    revoke_token(jti, user_identity)
+    investor_identity = get_jwt_identity()
+    revoke_token(jti, investor_identity)
     return jsonify({"message": "token revoked"}), 200
 
 
 @jwt.user_lookup_loader
-def user_loader_callback(jwt_headers, jwt_payload):
+def investor_loader_callback(jwt_headers, jwt_payload):
     identity = jwt_payload["sub"]
-    return User.query.get(identity)
+    return Investor.query.get(identity)
 
 
 @jwt.token_in_blocklist_loader
