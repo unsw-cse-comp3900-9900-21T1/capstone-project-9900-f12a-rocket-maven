@@ -1,18 +1,21 @@
 import { useState, useEffect } from 'react'
 import {  ReactLogoImg,  } from './styled'
 import Page from '../_Page'
-import { Title, Text, Link, StyledLink } from '../../componentsStyled/Typography'
+import { Title, Text, Code, Link, StyledLink } from '../../componentsStyled/Typography'
 import { StubWrap } from '../../componentsStyled/Layouts'
 import logo from '../../assets/svg/logo.svg'
 
 const HomeStub = () => {
-  const [currentTime, setCurrentTime] = useState(0);
+  const [time, setTime] = useState();
 
-  // Example of how front end communicates with backend. Should note that we are currently using
-  // a proxy and when we move our webapp to production, things have to be configured differently
   useEffect(() => {
-    fetch('/time').then(res => res.json()).then(data => {
-      setCurrentTime(data.time);
+    fetch('/api/v1/get-time')
+    .then(res => res.json())
+    .then(data => {
+      setTime(data.currentTime)
+    })
+    .catch(error =>{
+      throw error
     })
   }, [])
 
@@ -30,7 +33,7 @@ const HomeStub = () => {
           Testing Conditional styling
         </Text>
         <Text>
-          Edit src code and save to reload.
+          Edit src <Code>code</Code> and save to reload.
         </Text>
         <Link
           className="App-link"
@@ -48,7 +51,9 @@ const HomeStub = () => {
         >
           Testing Link Styling - Learn React
         </StyledLink>
-        <Text> Testing API call to backend stub - The current time is {currentTime}. </Text>
+        <Text> 
+          Testing API call to backend - The last time this fetch was called was at {time}.
+         </Text>
       </StubWrap>
     </Page>
   )
