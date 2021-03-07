@@ -2,13 +2,15 @@ import styled from "styled-components"
 
 export const AppWrap = styled.div`
   display: flex;
+
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 `
-export const Content = styled.div`
+export const ContentWrap = styled.div`
   flex-grow: 1;
   height: 100vh;
   overflow: hidden;
-
-  // Temp colour
-  background-color: #282c34;
-  color: white;
 `

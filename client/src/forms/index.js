@@ -1,4 +1,5 @@
 import { useField } from 'formik'
+import { Error } from '../componentsStyled/Typography'
 
 // Copy and pasted code from official formik tutorials
 // TODO(Jude): Make code more specific for our use case
@@ -9,13 +10,15 @@ export const MyTextInput = ({ label, ...props }) => {
   // message if the field is invalid and it has been touched (i.e. visited)
   const [field, meta] = useField(props)
   return (
-    <>
+    <div>
       <label htmlFor={props.id || props.name}>{label}</label>
       <input className="text-input" {...field} {...props} />
-      {meta.touched && meta.error ? (
-        <div className="error">{meta.error}</div>
-      ) : null}
-    </>
+      <Error>
+        {meta.touched && meta.error ? (
+          <div className="error">{meta.error}</div>
+        ) : null}
+      </Error>
+    </div>
   )
 }
 
@@ -31,9 +34,11 @@ export const MyCheckbox = ({ children, ...props }) => {
         <input type="checkbox" {...field} {...props} />
         {children}
       </label>
-      {meta.touched && meta.error ? (
-        <div className="error">{meta.error}</div>
-      ) : null}
+      <Error>
+        {meta.touched && meta.error ? (
+          <div className="error">{meta.error}</div>
+        ) : null}
+      </Error>
     </div>
   )
 }
@@ -44,9 +49,11 @@ export const MySelect = ({ label, ...props }) => {
     <div>
       <label htmlFor={props.id || props.name}>{label}</label>
       <select {...field} {...props} />
-      {meta.touched && meta.error ? (
-        <div className="error">{meta.error}</div>
-      ) : null}
+      <Error>
+        {meta.touched && meta.error ? (
+          <div className="error">{meta.error}</div>
+        ) : null}
+      </Error>
     </div>
   )
 }
