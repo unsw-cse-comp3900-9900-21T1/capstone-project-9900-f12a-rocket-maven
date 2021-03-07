@@ -4,5 +4,6 @@
 export const urls = {
   /** Root URL which would then redirect to the appropriate page */
   root: "/",
-  loginStub: '/login-stub'
+  login: '/login',
+  portfolioDetails: '/portfolio-details'
 }

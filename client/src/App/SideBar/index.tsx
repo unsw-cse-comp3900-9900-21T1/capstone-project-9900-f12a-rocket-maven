@@ -24,8 +24,13 @@ const sideBarItems: Array<SideBarItem> = [
     icon: FaHome,
   },
   {
-    name: 'LoginStub',
-    to: urls.loginStub,
+    name: 'Login',
+    to: urls.login,
+    icon: FaHome,
+  },
+  {
+    name: 'Portfolio',
+    to: urls.portfolioDetails,
     icon: FaHome,
   },
 ]
