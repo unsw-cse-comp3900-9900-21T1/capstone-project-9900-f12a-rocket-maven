@@ -1,3 +1,3 @@
-from RocketMaven.auth import views
+from RocketMaven.auth import controllers
 
-__all__ = ["views"]
+__all__ = ["controllers"]

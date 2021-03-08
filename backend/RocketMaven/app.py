@@ -58,5 +58,5 @@ def configure_apispec(app):
 
 def register_blueprints(app):
     """register all blueprints for application"""
-    app.register_blueprint(auth.views.blueprint)
-    app.register_blueprint(api.views.blueprint)
+    app.register_blueprint(auth.controllers.blueprint)
+    app.register_blueprint(api.controllers.blueprint)

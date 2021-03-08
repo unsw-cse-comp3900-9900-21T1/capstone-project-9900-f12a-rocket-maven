@@ -28,7 +28,7 @@ api.add_resource(InvestorList, "/investors", endpoint="investors")
 
 
 @blueprint.before_app_first_request
-def register_views():
+def register_controllers():
     apispec.spec.components.schema("InvestorSchema", schema=InvestorSchema)
     apispec.spec.path(view=InvestorResource, app=current_app, api=api)
     apispec.spec.path(view=InvestorList, app=current_app, api=api)
