@@ -32,7 +32,11 @@ Global tox install (tox and its dependencies are the only global python packages
 
 ### Setup
 
-Run `tox -e dev` within the backend folder: this sets up a Tox python development environment at backend/.tox/ (which is isolated from your main Python installation) and launches the server.
+`cd backend`
+
+`rm -r .tox` - clean up: removes tox from the backend folder if present
+
+`tox -e dev` - sets up a Tox python development environment at ../.tox/ (an out-of-tree .tox folder at the same level of this repo's folder, isolated from your main Python installation) and launches the server
 
 Visit: [http://127.0.0.1:5100/swagger-ui](http://127.0.0.1:5100/swagger-ui)
 

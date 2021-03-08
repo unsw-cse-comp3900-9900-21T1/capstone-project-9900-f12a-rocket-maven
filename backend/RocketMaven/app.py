@@ -6,6 +6,14 @@ from RocketMaven.extensions import db
 from RocketMaven.extensions import jwt
 from RocketMaven.extensions import migrate
 
+import sys
+
+# https://github.com/pallets/werkzeug/issues/1832
+if sys.platform.lower() == "win32":
+    import os
+
+    os.system("color")
+
 
 def create_app(testing=False):
     """Application factory, used to create application"""

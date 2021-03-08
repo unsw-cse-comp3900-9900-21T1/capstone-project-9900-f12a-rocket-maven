@@ -13,3 +13,4 @@ apispec-webframeworks
 tox
 gunicorn
 colorama
+apispec_flask_restful

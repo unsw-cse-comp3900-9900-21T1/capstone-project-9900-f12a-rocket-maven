@@ -9,7 +9,11 @@ from flask_jwt_extended import (
 
 from RocketMaven.models import Investor
 from RocketMaven.extensions import pwd_context, jwt, apispec
-from RocketMaven.auth.helpers import revoke_token, is_token_revoked, add_token_to_database
+from RocketMaven.auth.helpers import (
+    revoke_token,
+    is_token_revoked,
+    add_token_to_database,
+)
 
 
 blueprint = Blueprint("auth", __name__, url_prefix="/auth")
@@ -184,7 +188,10 @@ def check_if_token_revoked(jwt_headers, jwt_payload):
 
 @blueprint.before_app_first_request
 def register_views():
-    apispec.spec.path(view=login, app=app)
-    apispec.spec.path(view=refresh, app=app)
-    apispec.spec.path(view=revoke_access_token, app=app)
-    apispec.spec.path(view=revoke_refresh_token, app=app)
+    pass
+
+
+#     apispec.spec.path(resource=login, app=app)
+#     apispec.spec.path(resource=refresh, app=app)
+#     apispec.spec.path(resource=revoke_access_token, app=app)
+#     apispec.spec.path(resource=revoke_refresh_token, app=app)
