@@ -31,8 +31,8 @@ class InvestorResource(Resource):
                   properties:
                     investor: InvestorSchema
           404:
-            description: investor does not exists
-          """
+            description: investor does not exist
+        """
         return InvestorService.get_all_investors(investor_id)
 
     def put(self, investor_id):
@@ -95,7 +95,7 @@ class InvestorList(Resource):
         return paginate(query, schema)
 
     def post(self):
-        """ Create investor:
+        """Create investor:
         ---
         tags:
           - api

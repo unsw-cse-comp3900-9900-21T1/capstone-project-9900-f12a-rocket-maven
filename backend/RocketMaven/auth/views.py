@@ -1,4 +1,5 @@
 from flask import request, jsonify, Blueprint, current_app as app
+from flask_restful import Api
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
@@ -188,10 +189,7 @@ def check_if_token_revoked(jwt_headers, jwt_payload):
 
 @blueprint.before_app_first_request
 def register_views():
-    pass
-
-
-#     apispec.spec.path(resource=login, app=app)
-#     apispec.spec.path(resource=refresh, app=app)
-#     apispec.spec.path(resource=revoke_access_token, app=app)
-#     apispec.spec.path(resource=revoke_refresh_token, app=app)
+    apispec.spec.path(view=login, app=app)
+    apispec.spec.path(view=refresh, app=app)
+    apispec.spec.path(view=revoke_access_token, app=app)
+    apispec.spec.path(view=revoke_refresh_token, app=app)

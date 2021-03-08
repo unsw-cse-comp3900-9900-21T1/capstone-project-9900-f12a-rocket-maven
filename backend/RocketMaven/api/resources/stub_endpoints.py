@@ -13,7 +13,7 @@ class Time(Resource):
     def get(self):
         """STUB: Get time
         ---
-        
+
         """
         print('Passed through the "current-time" endpoint!', file=sys.stderr)
         now = datetime.now()
@@ -25,7 +25,7 @@ class LoginStub(Resource):
     def get(self):
         """STUB: Login get
         ---
-        
+
         """
         print('Passed through the "login" endpoint!', file=sys.stderr)
         return
@@ -33,7 +33,7 @@ class LoginStub(Resource):
     def post(self):
         """STUB: Login post
         ---
-        
+
         """
         print("Inside the login stub", file=sys.stderr)
         print(f"Values received are {request.json}", file=sys.stderr)
@@ -45,7 +45,7 @@ class PortfolioStub(Resource):
     def get(self):
         """STUB: Get portfolio
         ---
-        
+
         """
         print("Inside the portfolio get", file=sys.stderr)
         portfolio = (
@@ -76,7 +76,7 @@ class AssetStub(Resource):
     def get(self):
         """STUB: Get asset
         ---
-        
+
         """
         print("Inside the asset get", file=sys.stderr)
         asset = (

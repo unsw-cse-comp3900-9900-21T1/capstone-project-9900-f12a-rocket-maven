@@ -30,12 +30,12 @@ api.add_resource(InvestorList, "/investors", endpoint="investors")
 @blueprint.before_app_first_request
 def register_views():
     apispec.spec.components.schema("InvestorSchema", schema=InvestorSchema)
-    apispec.spec.path(resource=InvestorResource, app=current_app, api=api)
-    apispec.spec.path(resource=InvestorList, app=current_app, api=api)
+    apispec.spec.path(view=InvestorResource, app=current_app, api=api)
+    apispec.spec.path(view=InvestorList, app=current_app, api=api)
 
-    apispec.spec.path(resource=Time, app=current_app, api=api)
-    apispec.spec.path(resource=LoginStub, app=current_app, api=api)
-    apispec.spec.path(resource=PortfolioStub, app=current_app, api=api)
+    apispec.spec.path(view=Time, app=current_app, api=api)
+    apispec.spec.path(view=LoginStub, app=current_app, api=api)
+    apispec.spec.path(view=PortfolioStub, app=current_app, api=api)
 
 
 @blueprint.errorhandler(ValidationError)
