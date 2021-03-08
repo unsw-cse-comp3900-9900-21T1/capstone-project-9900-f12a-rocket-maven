@@ -11,6 +11,10 @@ from datetime import datetime
 
 class Time(Resource):
     def get(self):
+        """STUB: Get time
+        ---
+        
+        """
         print('Passed through the "current-time" endpoint!', file=sys.stderr)
         now = datetime.now()
         current_time = now.strftime("%H:%M:%S")
@@ -19,10 +23,18 @@ class Time(Resource):
 
 class LoginStub(Resource):
     def get(self):
+        """STUB: Login get
+        ---
+        
+        """
         print('Passed through the "login" endpoint!', file=sys.stderr)
         return
 
     def post(self):
+        """STUB: Login post
+        ---
+        
+        """
         print("Inside the login stub", file=sys.stderr)
         print(f"Values received are {request.json}", file=sys.stderr)
         # TODO(Jude): try creating and passing throgh the authentication tokens
@@ -31,6 +43,10 @@ class LoginStub(Resource):
 
 class PortfolioStub(Resource):
     def get(self):
+        """STUB: Get portfolio
+        ---
+        
+        """
         print("Inside the portfolio get", file=sys.stderr)
         portfolio = (
             {
@@ -58,6 +74,10 @@ class PortfolioStub(Resource):
 
 class AssetStub(Resource):
     def get(self):
+        """STUB: Get asset
+        ---
+        
+        """
         print("Inside the asset get", file=sys.stderr)
         asset = (
             {

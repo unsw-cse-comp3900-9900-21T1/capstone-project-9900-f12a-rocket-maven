@@ -3,6 +3,7 @@ from apispec import APISpec
 from apispec.exceptions import APISpecError
 from apispec.ext.marshmallow import MarshmallowPlugin
 from apispec_webframeworks.flask import FlaskPlugin
+from apispec_flask_restful import RestfulPlugin
 
 
 class FlaskRestfulPlugin(FlaskPlugin):
@@ -11,9 +12,11 @@ class FlaskRestfulPlugin(FlaskPlugin):
     @staticmethod
     def _rule_for_view(view, app=None):
         view_funcs = app.view_functions
+
         endpoint = None
 
         for ept, view_func in view_funcs.items():
+
             if hasattr(view_func, "view_class"):
                 view_func = view_func.view_class
 
@@ -49,7 +52,8 @@ class APISpecExt:
             title=app.config["APISPEC_TITLE"],
             version=app.config["APISPEC_VERSION"],
             openapi_version=app.config["OPENAPI_VERSION"],
-            plugins=[MarshmallowPlugin(), FlaskRestfulPlugin()],
+            plugins=[RestfulPlugin()],
+            # FlaskRestfulPlugin()
             **kwargs
         )
 
