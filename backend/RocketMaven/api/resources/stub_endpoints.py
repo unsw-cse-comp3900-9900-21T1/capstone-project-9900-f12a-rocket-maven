@@ -13,7 +13,18 @@ class Time(Resource):
     def get(self):
         """STUB: Get time
         ---
-
+        tags:
+          - stub
+        responses:
+          200:
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    currentTime:
+                      type: string
+                      example: "23:04:08"
         """
         print('Passed through the "current-time" endpoint!', file=sys.stderr)
         now = datetime.now()
@@ -25,7 +36,18 @@ class LoginStub(Resource):
     def get(self):
         """STUB: Login get
         ---
-
+        tags:
+          - stub
+        responses:
+          200:
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    msg:
+                      type: string
+                      example: "Form submission successful"
         """
         print('Passed through the "login" endpoint!', file=sys.stderr)
         return
@@ -33,19 +55,41 @@ class LoginStub(Resource):
     def post(self):
         """STUB: Login post
         ---
-
+        tags:
+          - stub
+        responses:
+          200:
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    msg:
+                      type: string
+                      example: "Form submission successful"
         """
         print("Inside the login stub", file=sys.stderr)
         print(f"Values received are {request.json}", file=sys.stderr)
         # TODO(Jude): try creating and passing throgh the authentication tokens
-        return {"msg": "Form submission successfull"}
+        return {"msg": "Form submission successful"}
 
 
 class PortfolioStub(Resource):
     def get(self):
         """STUB: Get portfolio
         ---
-
+        tags:
+          - stub
+        responses:
+          200:
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    msg:
+                      type: string
+                      example: "Form submission successful"
         """
         print("Inside the portfolio get", file=sys.stderr)
         portfolio = (
@@ -76,7 +120,18 @@ class AssetStub(Resource):
     def get(self):
         """STUB: Get asset
         ---
-
+        tags:
+          - stub
+        responses:
+          200:
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    msg:
+                      type: string
+                      example: "Form submission successful"
         """
         print("Inside the asset get", file=sys.stderr)
         asset = (
