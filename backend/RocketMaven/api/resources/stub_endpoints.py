@@ -1,4 +1,5 @@
 import sys
+import os
 from flask import request
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required
@@ -27,6 +28,7 @@ class Time(Resource):
                       example: "23:04:08"
         """
         print('Passed through the "current-time" endpoint!', file=sys.stderr)
+        print(os.environ["DATABASE_URI"])
         now = datetime.now()
         current_time = now.strftime("%H:%M:%S")
         return {"currentTime": current_time}

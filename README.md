@@ -26,7 +26,7 @@ npm run start
 
 ### Global Environment
 
-`Python 3.6+`
+`Python 3.7`
 
 Global tox install (tox and its dependencies are the only global python packages required for the Rocket Maven system): `pip3 install tox`
 
