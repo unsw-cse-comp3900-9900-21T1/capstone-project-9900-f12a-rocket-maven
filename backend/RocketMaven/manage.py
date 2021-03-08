@@ -14,11 +14,12 @@ def init():
     from RocketMaven.extensions import db
     from RocketMaven.models import Investor
 
-    import os
-    print(os.environ["DATABASE_URI"])
+    db.create_all()
 
     click.echo("create user")
-    user = Investor(username="admin", email="admin@mail.com", password="admin", active=True)
+    user = Investor(
+        username="admin", email="admin@mail.com", password="admin", active=True
+    )
     db.session.add(user)
     db.session.commit()
     click.echo("created user admin")
