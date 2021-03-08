@@ -3,7 +3,36 @@ from apispec import APISpec
 from apispec.exceptions import APISpecError
 from apispec.ext.marshmallow import MarshmallowPlugin
 from apispec_webframeworks.flask import FlaskPlugin
-from apispec_flask_restful import RestfulPlugin
+import logging
+import yaml
+import apispec
+from apispec import yaml_utils
+from apispec.exceptions import APISpecError
+
+
+# Taken from: apispec_flask_restful
+def parse_method(method, resource, operations):
+    docstring = getattr(resource, method.lower()).__doc__
+    if docstring:
+        try:
+            operation = yaml_utils.load_yaml_from_docstring(docstring)
+        except yaml.YAMLError:
+            operation = None
+        if not operation:
+            logging.getLogger(__name__).warning(
+                "Cannot load docstring for {}/{}".format(resource, method)
+            )
+        operations[method.lower()] = operation or dict()
+
+
+# Taken from: apispec_flask_restful
+def parse_operations(resource, operations):
+    """Parse operations for each method in a flask-restful resource"""
+
+    if hasattr(resource, "methods"):
+
+        for method in resource.methods:
+            parse_method(method, resource, operations)
 
 
 class FlaskRestfulPlugin(FlaskPlugin):
@@ -11,6 +40,7 @@ class FlaskRestfulPlugin(FlaskPlugin):
 
     @staticmethod
     def _rule_for_view(view, app=None):
+
         view_funcs = app.view_functions
 
         endpoint = None
@@ -28,7 +58,17 @@ class FlaskRestfulPlugin(FlaskPlugin):
 
         # WARNING: Assume 1 rule per view function for now
         rule = app.url_map._rules_by_endpoint[endpoint][0]
+
         return rule
+
+    def operation_helper(self, path=None, operations=None, **kwargs):
+        if operations is None:
+            return
+        try:
+            resource = kwargs.pop("view")
+            parse_operations(resource, operations)
+        except Exception as exc:
+            raise
 
 
 class APISpecExt:
@@ -52,8 +92,9 @@ class APISpecExt:
             title=app.config["APISPEC_TITLE"],
             version=app.config["APISPEC_VERSION"],
             openapi_version=app.config["OPENAPI_VERSION"],
-            plugins=[RestfulPlugin()],
-            # FlaskRestfulPlugin()
+            # Order is important, as MarshmallowPlugin converts the schema to a json object
+            plugins=[FlaskRestfulPlugin(), MarshmallowPlugin(),],
+            # RestfulPlugin()
             **kwargs
         )
 
