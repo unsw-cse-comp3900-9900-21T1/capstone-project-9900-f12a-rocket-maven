@@ -12,10 +12,13 @@ def cli():
 def init():
     """Create a new admin user"""
     from RocketMaven.extensions import db
-    from RocketMaven.models import User
+    from RocketMaven.models import Investor
+
+    import os
+    print(os.environ["DATABASE_URI"])
 
     click.echo("create user")
-    user = User(username="admin", email="admin@mail.com", password="admin", active=True)
+    user = Investor(username="admin", email="admin@mail.com", password="admin", active=True)
     db.session.add(user)
     db.session.commit()
     click.echo("created user admin")

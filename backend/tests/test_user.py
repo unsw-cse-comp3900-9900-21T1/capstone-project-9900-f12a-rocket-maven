@@ -1,101 +1,101 @@
 from flask import url_for
 
 from RocketMaven.extensions import pwd_context
-from RocketMaven.models import User
+from RocketMaven.models import Investor
 
 
-def test_get_user(client, db, user, admin_headers):
+def test_get_investor(client, db, investor, admin_headers):
     # test 404
-    user_url = url_for("api.user_by_id", user_id="100000")
-    rep = client.get(user_url, headers=admin_headers)
+    investor_url = url_for("api.investor_by_id", investor_id="100000")
+    rep = client.get(investor_url, headers=admin_headers)
     assert rep.status_code == 404
 
-    db.session.add(user)
+    db.session.add(investor)
     db.session.commit()
 
-    # test get_user
-    user_url = url_for("api.user_by_id", user_id=user.id)
-    rep = client.get(user_url, headers=admin_headers)
+    # test get_investor
+    investor_url = url_for("api.investor_by_id", investor_id=investor.id)
+    rep = client.get(investor_url, headers=admin_headers)
     assert rep.status_code == 200
 
-    data = rep.get_json()["user"]
-    assert data["username"] == user.username
-    assert data["email"] == user.email
-    assert data["active"] == user.active
+    data = rep.get_json()["investor"]
+    assert data["username"] == investor.username
+    assert data["email"] == investor.email
+    assert data["active"] == investor.active
 
 
-def test_put_user(client, db, user, admin_headers):
+def test_put_investor(client, db, investor, admin_headers):
     # test 404
-    user_url = url_for("api.user_by_id", user_id="100000")
-    rep = client.put(user_url, headers=admin_headers)
+    investor_url = url_for("api.investor_by_id", investor_id="100000")
+    rep = client.put(investor_url, headers=admin_headers)
     assert rep.status_code == 404
 
-    db.session.add(user)
+    db.session.add(investor)
     db.session.commit()
 
     data = {"username": "updated", "password": "new_password"}
 
-    user_url = url_for("api.user_by_id", user_id=user.id)
-    # test update user
-    rep = client.put(user_url, json=data, headers=admin_headers)
+    investor_url = url_for("api.investor_by_id", investor_id=investor.id)
+    # test update investor
+    rep = client.put(investor_url, json=data, headers=admin_headers)
     assert rep.status_code == 200
 
-    data = rep.get_json()["user"]
+    data = rep.get_json()["investor"]
     assert data["username"] == "updated"
-    assert data["email"] == user.email
-    assert data["active"] == user.active
+    assert data["email"] == investor.email
+    assert data["active"] == investor.active
 
-    db.session.refresh(user)
-    assert pwd_context.verify("new_password", user.password)
-
-
-def test_delete_user(client, db, user, admin_headers):
-    # test 404
-    user_url = url_for("api.user_by_id", user_id="100000")
-    rep = client.delete(user_url, headers=admin_headers)
-    assert rep.status_code == 404
-
-    db.session.add(user)
-    db.session.commit()
-
-    # test get_user
-
-    user_url = url_for("api.user_by_id", user_id=user.id)
-    rep = client.delete(user_url, headers=admin_headers)
-    assert rep.status_code == 200
-    assert db.session.query(User).filter_by(id=user.id).first() is None
+    db.session.refresh(investor)
+    assert pwd_context.verify("new_password", investor.password)
 
 
-def test_create_user(client, db, admin_headers):
+# def test_delete_investor(client, db, investor, admin_headers):
+#     # test 404
+#     investor_url = url_for("api.investor_by_id", investor_id="100000")
+#     rep = client.delete(investor_url, headers=admin_headers)
+#     assert rep.status_code == 404
+
+#     db.session.add(investor)
+#     db.session.commit()
+
+#     # test get_investor
+
+#     investor_url = url_for("api.investor_by_id", investor_id=investor.id)
+#     rep = client.delete(investor_url, headers=admin_headers)
+#     assert rep.status_code == 200
+#     assert db.session.query(Investor).filter_by(id=investor.id).first() is None
+
+
+def test_create_investor(client, db, admin_headers):
     # test bad data
-    users_url = url_for("api.users")
+    investors_url = url_for("api.investors")
     data = {"username": "created"}
-    rep = client.post(users_url, json=data, headers=admin_headers)
+    rep = client.post(investors_url, json=data, headers=admin_headers)
     assert rep.status_code == 400
 
     data["password"] = "admin"
     data["email"] = "create@mail.com"
 
-    rep = client.post(users_url, json=data, headers=admin_headers)
+    rep = client.post(investors_url, json=data, headers=admin_headers)
     assert rep.status_code == 201
 
     data = rep.get_json()
-    user = db.session.query(User).filter_by(id=data["user"]["id"]).first()
+    investor = db.session.query(Investor).filter_by(id=data["investor"]["id"]).first()
 
-    assert user.username == "created"
-    assert user.email == "create@mail.com"
+    assert investor.username == "created"
+    assert investor.email == "create@mail.com"
 
 
-def test_get_all_user(client, db, user_factory, admin_headers):
-    users_url = url_for("api.users")
-    users = user_factory.create_batch(30)
+def test_get_all_investor(client, db, investor_factory, admin_headers):
+    investors_url = url_for("api.investors")
+    investors = investor_factory.create_batch(30)
 
-    db.session.add_all(users)
+    db.session.add_all(investors)
     db.session.commit()
 
-    rep = client.get(users_url, headers=admin_headers)
+    rep = client.get(investors_url, headers=admin_headers)
     assert rep.status_code == 200
 
     results = rep.get_json()
-    for user in users:
-        assert any(u["id"] == user.id for u in results["results"])
+    for investor in investors:
+        assert any(u["id"] == investor.id for u in results["results"])

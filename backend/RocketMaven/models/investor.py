@@ -7,7 +7,7 @@ class Investor(db.Model):
     """Basic investor model"""
 
     id = db.Column(db.Integer, primary_key=True)
-    investorname = db.Column(db.String(80), unique=True, nullable=False)
+    username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(80), unique=True, nullable=False)
     _password = db.Column("password", db.String(255), nullable=False)
     active = db.Column(db.Boolean, default=True)
@@ -21,4 +21,4 @@ class Investor(db.Model):
         self._password = pwd_context.hash(value)
 
     def __repr__(self):
-        return "<Investor %s>" % self.investorname
+        return "<Investor %s>" % self.username

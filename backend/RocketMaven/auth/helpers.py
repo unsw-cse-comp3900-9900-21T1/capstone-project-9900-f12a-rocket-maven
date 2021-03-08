@@ -21,14 +21,14 @@ def add_token_to_database(encoded_token, identity_claim):
     decoded_token = decode_token(encoded_token)
     jti = decoded_token["jti"]
     token_type = decoded_token["type"]
-    user_identity = decoded_token[identity_claim]
+    investor_identity = decoded_token[identity_claim]
     expires = datetime.fromtimestamp(decoded_token["exp"])
     revoked = False
 
     db_token = TokenBlocklist(
         jti=jti,
         token_type=token_type,
-        user_id=user_identity,
+        investor_id=investor_identity,
         expires=expires,
         revoked=revoked,
     )
@@ -58,7 +58,7 @@ def revoke_token(token_jti, user):
     if token is not found we raise an exception
     """
     try:
-        token = TokenBlocklist.query.filter_by(jti=token_jti, user_id=user).one()
+        token = TokenBlocklist.query.filter_by(jti=token_jti, investor_id=user).one()
         token.revoked = True
         db.session.commit()
     except NoResultFound:

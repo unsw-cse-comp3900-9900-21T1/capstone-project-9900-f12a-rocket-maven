@@ -2,14 +2,14 @@ import json
 import pytest
 from dotenv import load_dotenv
 
-from RocketMaven.models import User
+from RocketMaven.models import Investor
 from RocketMaven.app import create_app
 from RocketMaven.extensions import db as _db
 from pytest_factoryboy import register
-from tests.factories import UserFactory
+from tests.factories import InvestorFactory
 
 
-register(UserFactory)
+register(InvestorFactory)
 
 
 @pytest.fixture(scope="session")
@@ -34,7 +34,7 @@ def db(app):
 
 @pytest.fixture
 def admin_user(db):
-    user = User(username="admin", email="admin@admin.com", password="admin")
+    user = Investor(username="admin", email="admin@admin.com", password="admin")
 
     db.session.add(user)
     db.session.commit()

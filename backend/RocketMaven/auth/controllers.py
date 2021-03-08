@@ -34,7 +34,7 @@ def login():
             schema:
               type: object
               properties:
-                investorname:
+                username:
                   type: string
                   example: myinvestor
                   required: true
@@ -62,12 +62,12 @@ def login():
     if not request.is_json:
         return jsonify({"msg": "Missing JSON in request"}), 400
 
-    investorname = request.json.get("investorname", None)
+    username = request.json.get("username", None)
     password = request.json.get("password", None)
-    if not investorname or not password:
-        return jsonify({"msg": "Missing investorname or password"}), 400
+    if not username or not password:
+        return jsonify({"msg": "Missing username or password"}), 400
 
-    investor = Investor.query.filter_by(investorname=investorname).first()
+    investor = Investor.query.filter_by(username=username).first()
     if investor is None or not pwd_context.verify(password, investor.password):
         return jsonify({"msg": "Bad credentials"}), 400
 
