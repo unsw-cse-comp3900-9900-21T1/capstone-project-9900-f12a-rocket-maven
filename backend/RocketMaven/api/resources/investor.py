@@ -69,8 +69,9 @@ class InvestorResource(Resource):
 
 class InvestorList(Resource):
 
-    method_decorators = [jwt_required()]
+    # method_decorators = [jwt_required()]
 
+    @jwt_required()
     def get(self):
         """List investors
         ---

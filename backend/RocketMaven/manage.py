@@ -18,7 +18,11 @@ def init():
 
     click.echo("create user")
     user = Investor(
-        username="temp_admin", email="admin@mail.com", password="WjjTeWGdylJkH2Pq", active=True
+        username="temp_admin",
+        email="admin@mail.com",
+        password="WjjTeWGdylJkH2Pq",
+        email_verified=True,
+        country_of_residency="AU",
     )
     db.session.add(user)
     db.session.commit()
