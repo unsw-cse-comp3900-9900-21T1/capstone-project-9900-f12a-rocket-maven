@@ -22,7 +22,7 @@ def test_create_user_and_portfolio(client, db, investor_factory):
         description="Growth stocks in a sell-off?",
         competition_portfolio=False,
         buying_power=None,
-        investor_id=63456345,  # user.id,
+        investor_id=user.id,
     )
     db.session.add(portfolio)
     db.session.commit()
@@ -49,7 +49,7 @@ def test_create_user_and_portfolio(client, db, investor_factory):
         final_price=2015,
         note="Hi!",
         asset_id="VIRT:A",
-        portfolio_id=5,
+        portfolio_id=portfolio.id,
     )
 
     db.session.add(portfolio_event)
