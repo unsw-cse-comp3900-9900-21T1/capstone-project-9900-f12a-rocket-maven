@@ -42,7 +42,7 @@ def test_create_user_and_portfolio(client, db, investor_factory):
 
     portfolio_event = PortfolioEvent(
         units=20,
-        buy_action=True,
+        add_action=True,
         fees=15,
         price_before_fees=2000,
         final_units=20,

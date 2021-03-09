@@ -10,8 +10,8 @@ class PortfolioEvent(db.Model):
 
     units = db.Column(db.Float(), unique=False, nullable=False)
 
-    # Buy = True, Sell = False
-    buy_action = db.Column(db.Boolean, default=False)
+    # Add (competition: buy) = True, Remove (competition: sell) = False
+    add_action = db.Column(db.Boolean, default=False)
 
     fees = db.Column(db.Float(), unique=False, nullable=False)
     price_before_fees = db.Column(db.Float(), unique=False, nullable=False)
