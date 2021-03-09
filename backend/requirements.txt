@@ -13,3 +13,5 @@ apispec-webframeworks
 tox
 gunicorn
 colorama
+sqlalchemy_utils
+Babel

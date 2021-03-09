@@ -36,9 +36,14 @@ Global tox install (tox and its dependencies are the only global python packages
 
 `rm -r .tox` - clean up: removes tox from the backend folder if present
 
-`tox -e dev` - sets up a Tox python development environment at ../.tox/ (an out-of-tree .tox folder at the same level of this repo's folder, isolated from your main Python installation) and launches the server
+`tox -e dev -r` - sets up a Tox python development environment at ../.tox/ (an out-of-tree .tox folder at the same level of this repo's folder, isolated from your main Python installation)
+
+### Development
+
+`tox -e dev` - uses the Tox python development environment to launch the server
 
 Visit: [http://127.0.0.1:5100/swagger-ui](http://127.0.0.1:5100/swagger-ui)
 
+### Testing
 
-
+`tox -e test`
