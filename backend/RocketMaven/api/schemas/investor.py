@@ -11,4 +11,4 @@ class InvestorSchema(ma.SQLAlchemyAutoSchema):
         model = Investor
         sqla_session = db.session
         load_instance = True
-        exclude = ("_password", "email_verified", "join_date")
+        exclude = ("_password", "join_date")

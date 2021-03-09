@@ -21,7 +21,7 @@ def test_get_investor(client, db, investor, admin_headers):
     data = rep.get_json()["investor"]
     assert data["username"] == investor.username
     assert data["email"] == investor.email
-    assert data["active"] == investor.active
+    assert data["email_verified"] == investor.email_verified
 
 
 def test_put_investor(client, db, investor, admin_headers):
@@ -33,7 +33,11 @@ def test_put_investor(client, db, investor, admin_headers):
     db.session.add(investor)
     db.session.commit()
 
-    data = {"username": "updated", "password": "new_password"}
+    data = {
+        "username": "updated",
+        "password": "new_password",
+        "country_of_residency": "AU",
+    }
 
     investor_url = url_for("api.investor_by_id", investor_id=investor.id)
     # test update investor
@@ -43,7 +47,7 @@ def test_put_investor(client, db, investor, admin_headers):
     data = rep.get_json()["investor"]
     assert data["username"] == "updated"
     assert data["email"] == investor.email
-    assert data["active"] == investor.active
+    assert data["email_verified"] == investor.email_verified
 
     db.session.refresh(investor)
     assert pwd_context.verify("new_password", investor.password)
@@ -75,6 +79,7 @@ def test_create_investor(client, db, admin_headers):
 
     data["password"] = "admin"
     data["email"] = "create@mail.com"
+    data["country_of_residency"] = "AU"
 
     rep = client.post(investors_url, json=data, headers=admin_headers)
     assert rep.status_code == 201

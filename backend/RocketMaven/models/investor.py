@@ -4,6 +4,31 @@ from sqlalchemy_utils import CountryType, EmailType
 from RocketMaven.extensions import db, pwd_context
 
 
+# https://flask-sqlalchemy.palletsprojects.com/en/2.x/models/
+# investor_holds = db.Table(
+#     "investor_holds",
+#     db.Column(
+#         "portfolio_id", db.Integer, db.ForeignKey("portfolio.id"), primary_key=True
+#     ),
+#     db.Column(
+#         "investor_id", db.Integer, db.ForeignKey("investor.id"), primary_key=True
+#     ),
+# )
+
+investor_watches = db.Table(
+    "investor_watches",
+    db.Column(
+        "asset_id",
+        db.String(80),
+        db.ForeignKey("asset.ticker_symbol"),
+        primary_key=True,
+    ),
+    db.Column(
+        "investor_id", db.Integer, db.ForeignKey("investor.id"), primary_key=True
+    ),
+)
+
+
 class Investor(db.Model):
     """Basic investor model"""
 
@@ -24,6 +49,20 @@ class Investor(db.Model):
     last_name = db.Column(db.String(80), unique=False, nullable=True)
     date_of_birth = db.Column(db.Date, unique=False, nullable=True)
     gender = db.Column(db.String(80), unique=False, nullable=True)
+
+    # Portfolios owned, 1 to many (many side)
+    # portfolios = db.relationship(
+    #     "Portfolio", backref="investor", lazy=True, uselist=True
+    # )
+    portfolios = db.relationship("Portfolio", lazy="dynamic", back_populates="investor")
+
+    # Assets watched, many to many
+    watchlist_items = db.relationship(
+        "Asset",
+        secondary=investor_watches,
+        lazy="subquery",
+        backref=db.backref("investors", lazy=True),
+    )
 
     @hybrid_property
     def password(self):

@@ -1,6 +1,7 @@
 import json
 import pytest
-from dotenv import load_dotenv
+
+# from dotenv import load_dotenv
 
 from RocketMaven.models import Investor
 from RocketMaven.app import create_app
@@ -14,13 +15,14 @@ register(InvestorFactory)
 
 @pytest.fixture(scope="session")
 def app():
-    load_dotenv(".testenv")
+    # load_dotenv(".testenv")
     app = create_app(testing=True)
     return app
 
 
 @pytest.fixture
 def db(app):
+    _db.drop_all()
     _db.app = app
 
     with app.app_context():
@@ -29,12 +31,16 @@ def db(app):
     yield _db
 
     _db.session.close()
-    _db.drop_all()
 
 
 @pytest.fixture
 def admin_user(db):
-    user = Investor(username="admin", email="admin@admin.com", password="admin")
+    user = Investor(
+        username="admin",
+        email="admin@admin.com",
+        password="admin",
+        country_of_residency="AU",
+    )
 
     db.session.add(user)
     db.session.commit()
