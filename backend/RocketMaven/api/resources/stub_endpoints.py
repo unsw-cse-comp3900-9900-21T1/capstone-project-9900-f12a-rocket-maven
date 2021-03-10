@@ -15,7 +15,7 @@ class Time(Resource):
         """STUB: Get time
         ---
         tags:
-          - stub
+          - Stub
         responses:
           200:
             content:
@@ -39,7 +39,7 @@ class LoginStub(Resource):
         """STUB: Login get
         ---
         tags:
-          - stub
+          - Stub
         responses:
           200:
             content:
@@ -58,7 +58,7 @@ class LoginStub(Resource):
         """STUB: Login post
         ---
         tags:
-          - stub
+          - Stub
         responses:
           200:
             content:
@@ -81,7 +81,7 @@ class PortfolioStub(Resource):
         """STUB: Get portfolio
         ---
         tags:
-          - stub
+          - Stub
         responses:
           200:
             content:
@@ -123,7 +123,7 @@ class AssetStub(Resource):
         """STUB: Get asset
         ---
         tags:
-          - stub
+          - Stub
         responses:
           200:
             content:

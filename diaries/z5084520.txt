@@ -26,4 +26,10 @@ The meeting was also to reaffirm that all group members know their role in draft
 - Managed the user stories, assigned user stories to the storyboard
 - Wrapped up the team's effort on the project proposal (everyone made a significant contribution to the project proposal), and completed the submission
 
+# Week 4
+
+- Organised a stand-up and took responsibility of the back-end code due to needing to make it fit our project proposal
+- Got started on adapting the basic back-end system for our project
+    - Refactored code in-line with our system architecture
+    - Modelled the database in-line with our er diagram
 

@@ -39,6 +39,8 @@ class Investor(db.Model):
     _password = db.Column("password", db.String(255), nullable=False)
     email_verified = db.Column(db.Boolean, default=False)
 
+    admin_account = db.Column(db.Boolean, default=False)
+
     visibility = db.Column(db.Boolean, default=False)
 
     country_of_residency = db.Column(CountryType, unique=False, nullable=False)

@@ -16,7 +16,6 @@ from RocketMaven.auth.helpers import (
     add_token_to_database,
 )
 
-
 blueprint = Blueprint("auth", __name__, url_prefix="/auth")
 
 
@@ -27,7 +26,7 @@ def login():
     ---
     post:
       tags:
-        - auth
+        - Auth
       requestBody:
         content:
           application/json:
@@ -36,11 +35,11 @@ def login():
               properties:
                 username:
                   type: string
-                  example: myinvestor
+                  example: admin_portfolio
                   required: true
                 password:
                   type: string
-                  example: P4$$w0rd!
+                  example: admin_P4$$w0rd!
                   required: true
       responses:
         200:
@@ -88,7 +87,7 @@ def refresh():
     ---
     post:
       tags:
-        - auth
+        - Auth
       parameters:
         - in: header
           name: Authorization
@@ -124,7 +123,7 @@ def revoke_access_token():
     ---
     delete:
       tags:
-        - auth
+        - Auth
       responses:
         200:
           content:
@@ -154,7 +153,7 @@ def revoke_refresh_token():
     ---
     delete:
       tags:
-        - auth
+        - Auth
       responses:
         200:
           content:

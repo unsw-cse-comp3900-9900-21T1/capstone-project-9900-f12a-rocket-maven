@@ -1,6 +1,10 @@
 # Rocket Maven
 🚀🚀🚀 Investment Portfolio Management 🚀🚀🚀
 
+## Getting Started
+
+Read [ARCHITECTURE.md](ARCHITECTURE.md) and [CONTRIBUTING.md](CONTRIBUTING.md)
+
 ## Front End Prerequisites
 
 ### Global Environment
