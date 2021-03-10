@@ -1,6 +1,6 @@
 # Architecture
 
-## Bird's Eye View
+## Diagram
 
 ![](documents/architecture.svg?raw=true)
 
@@ -35,3 +35,7 @@ Calls to external APIs are meant to be implemented in their respective service d
 ### Database Models
 
 Located in the `backend/RocketMaven/models/` folder
+
+### Back-end Tests
+
+Located in `backend/tests`

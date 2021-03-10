@@ -27,6 +27,10 @@ def create_app(testing=False):
     configure_apispec(app)
     register_blueprints(app)
 
+    @app.route("/", methods=["GET"])
+    def custom_index():
+        return "<a href='swagger-ui'>Swagger UI</a>", 200
+
     return app
 
 

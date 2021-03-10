@@ -13,22 +13,14 @@ def init():
     """Create a new admin user"""
     from RocketMaven.extensions import db
     from RocketMaven.models import Investor
+    from RocketMaven.models import Portfolio
+    from RocketMaven.services import ExampleFullSystemService
 
+    db.drop_all()
     db.create_all()
 
     click.echo("create user")
-    test_user = db.session.query(Investor).filter_by(username="temp_admin").first()
-
-    if not test_user:
-        user = Investor(
-            username="temp_admin",
-            email="admin@mail.com",
-            password="WjjTeWGdylJkH2Pq",
-            email_verified=True,
-            country_of_residency="AU",
-        )
-        db.session.add(user)
-        db.session.commit()
+    ExampleFullSystemService.populate_full_system(db)
     click.echo("created user admin")
 
 

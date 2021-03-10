@@ -5,11 +5,13 @@ from RocketMaven.extensions import apispec
 from RocketMaven.api.resources import (
     InvestorResource,
     InvestorList,
+    PortfolioResource,
+    PortfolioList,
     Time,
     LoginStub,
     PortfolioStub,
 )
-from RocketMaven.api.schemas import InvestorSchema
+from RocketMaven.api.schemas import InvestorSchema, PortfolioSchema
 
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
@@ -27,11 +29,25 @@ api.add_resource(
 api.add_resource(InvestorList, "/investors", endpoint="investors")
 
 
+api.add_resource(
+    PortfolioResource,
+    "/investors/<int:investor_id>/portfolios/<int:portfolio_id>",
+    endpoint="portfolio_by_id",
+)
+api.add_resource(
+    PortfolioList, "/investors/<int:investor_id>/portfolios", endpoint="portfolios"
+)
+
+
 @blueprint.before_app_first_request
 def register_controllers():
     apispec.spec.components.schema("InvestorSchema", schema=InvestorSchema)
     apispec.spec.path(view=InvestorResource, app=current_app, api=api)
     apispec.spec.path(view=InvestorList, app=current_app, api=api)
+
+    apispec.spec.components.schema("PortfolioSchema", schema=PortfolioSchema)
+    apispec.spec.path(view=PortfolioResource, app=current_app, api=api)
+    apispec.spec.path(view=PortfolioList, app=current_app, api=api)
 
     apispec.spec.path(view=Time, app=current_app, api=api)
     apispec.spec.path(view=LoginStub, app=current_app, api=api)

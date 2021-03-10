@@ -8,7 +8,7 @@ As this is a simple capstone project, team members should feel free to send in p
 
 2. Ensure that changes are made to a local branch that is as up-to-date to the main branch as possible (use `git rebase main` when the local branch is checked out). The branch name should follow the structure of: `{team member name}/{change summary}`
 
-3. No commits/pull requests title structure is enforced, but it's recommended to follow the verb (present tense) + description format. e.g. "Add feature to front end". Back-end/Front-end should simply be called "back end"/"front end".
+3. No commits/pull requests title structure is enforced, but it's recommended to follow the verb (imperative, present tense) + description format. e.g. "Add feature to front end". Back-end/Front-end should simply be called "back end"/"front end".
 
 4. Push your branch to the remote Github repo
 
