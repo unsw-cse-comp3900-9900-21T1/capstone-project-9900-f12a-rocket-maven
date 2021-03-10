@@ -2,7 +2,7 @@
 
 ## Bird's Eye View
 
-![](../../main/documents/architecture.svg?raw=true)
+![](documents/architecture.svg?raw=true)
 
 ## Code Map
 
