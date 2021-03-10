@@ -2,7 +2,7 @@
 
 ## Bird's Eye View
 
-![](https://raw.github.com/unsw-cse-comp3900-9900-21T1/capstone-project-9900-f12a-rocket-maven/main/documents/contarchitecture.svg?sanitize=true)
+![](../../main/documents/architecture.svg?raw=true)
 
 ## Code Map
 
