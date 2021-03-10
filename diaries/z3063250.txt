@@ -1,0 +1,14 @@
+Wk 1
+
+Unable to form group in Wed 6pm
+
+Wk 2
+
+Joined Rocket Maven on WebCMS/Slack and attended virtual team meeting/lab
+Explored stock sites and got advice from Tyson 
+
+Wk 3
+
+Worked on user stories in report, proof reading of other sections of report, read up on react-js, repo familiarisation, set up development environment and verified backend/frontend worked in Ubuntu environment
+
+
