@@ -1,6 +1,7 @@
 from flask import Blueprint, current_app, jsonify
 from flask_restful import Api
 from marshmallow import ValidationError
+
 from RocketMaven.extensions import apispec
 from RocketMaven.api.resources import (
     InvestorResource,
@@ -10,8 +11,13 @@ from RocketMaven.api.resources import (
     Time,
     LoginStub,
     PortfolioStub,
+    PortfolioEventList,
 )
-from RocketMaven.api.schemas import InvestorSchema, PortfolioSchema
+from RocketMaven.api.schemas import (
+    InvestorSchema,
+    PortfolioSchema,
+    PortfolioEventSchema
+)
 
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
@@ -23,11 +29,14 @@ api.add_resource(LoginStub, "/login-stub", endpoint="login_stub")
 api.add_resource(PortfolioStub, "/portfolio-stub", endpoint="portfolio_stub")
 
 
-api.add_resource(
-    InvestorResource, "/investors/<int:investor_id>", endpoint="investor_by_id"
-)
+api.add_resource(InvestorResource, "/investors/<int:investor_id>", endpoint="investor_by_id")
 api.add_resource(InvestorList, "/investors", endpoint="investors")
 
+api.add_resource(
+    PortfolioEventList, 
+    "/investors/<int:investor_id>/portfolios/<int:portfolio_id>/asset",
+    endpoint="asset_by_id",
+)
 
 api.add_resource(
     PortfolioResource,
@@ -48,6 +57,9 @@ def register_controllers():
     apispec.spec.components.schema("PortfolioSchema", schema=PortfolioSchema)
     apispec.spec.path(view=PortfolioResource, app=current_app, api=api)
     apispec.spec.path(view=PortfolioList, app=current_app, api=api)
+    
+    apispec.spec.components.schema("PortfolioEventSchema", schema=PortfolioEventSchema)
+    apispec.spec.path(view=PortfolioEventList, app=current_app, api=api)
 
     apispec.spec.path(view=Time, app=current_app, api=api)
     apispec.spec.path(view=LoginStub, app=current_app, api=api)

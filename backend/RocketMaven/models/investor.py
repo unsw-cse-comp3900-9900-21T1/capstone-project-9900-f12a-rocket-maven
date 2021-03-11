@@ -24,6 +24,14 @@ investor_watches = db.Table(
         primary_key=True,
     ),
     db.Column(
+        "PriceHigh",
+        db.Float() # ? or float
+    ),
+    db.Column(
+        "PriceLow",
+        db.Float() # ? or float
+    ),
+    db.Column(
         "investor_id", db.Integer, db.ForeignKey("investor.id"), primary_key=True
     ),
 )
@@ -42,6 +50,8 @@ class Investor(db.Model):
     admin_account = db.Column(db.Boolean, default=False)
 
     visibility = db.Column(db.Boolean, default=False)
+
+    # TODO: validate the Country Type and return a 401? error
 
     country_of_residency = db.Column(CountryType, unique=False, nullable=False)
 
