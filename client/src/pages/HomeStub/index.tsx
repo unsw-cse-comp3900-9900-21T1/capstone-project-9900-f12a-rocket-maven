@@ -4,7 +4,7 @@ import Page from '../_Page'
 import { Title, Text, Code, Link, StyledLink } from '../../componentsStyled/Typography'
 import { StubWrap } from '../../componentsStyled/Layouts'
 import logo from '../../assets/svg/logo.svg'
-import { useTokens } from '../../hooks'
+import { useStore } from '../../hooks/store'
 
 const HomeStub = () => {
 
@@ -22,7 +22,7 @@ const HomeStub = () => {
   }, [])
 
 
-  const { accessToken } = useTokens()
+  const { accessToken } = useStore()
   // Testing api call with authentication
   // TODO(Jude): Separate fetch requests and create refresh token handling
   useEffect(() => {
@@ -33,7 +33,10 @@ const HomeStub = () => {
         Authorization: `Bearer ${accessToken}`
       }
     })
-    .then(res => res.json())
+    .then(response  => {
+      console.log("Response status is ", response.status)
+      return response.json()
+    })
     .then(data => {
       console.log("************8 data is ", data)
     })

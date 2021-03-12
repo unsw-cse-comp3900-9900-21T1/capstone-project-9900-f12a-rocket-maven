@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { storeContext } from '../../data/store'
+import { storeContext } from '../../data/app/store'
 import { Text, Subtitle } from '../../componentsStyled/Typography'
 
 const NavBar = () => {

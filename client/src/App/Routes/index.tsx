@@ -4,6 +4,7 @@ import LogIn from "../../pages/LogIn"
 import LogIn2 from "../../pages/LogIn2" // Tyson's LogIn page
 import SignUp from "../../pages/SignUp"
 import PortfolioDetail from "../../pages/PortfolioDetail"
+import Account from '../../pages/Account'
 import { urls } from '../../pages/urls'
 
 const Routes = () => (
@@ -15,6 +16,7 @@ const Routes = () => (
     <Route exact path={urls.login2} component={LogIn2} />
     <Route exact path={urls.signup} component={SignUp} />
     <Route exact path={urls.portfolioDetails} component={PortfolioDetail}/>
+    <Route path={urls.account} component={Account}/>
   </Switch>
 )
 

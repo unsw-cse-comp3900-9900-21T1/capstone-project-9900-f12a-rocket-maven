@@ -1,32 +1,29 @@
 import Page from '../_Page'
 import { Title } from '../../componentsStyled/Typography'
-import { useState, useEffect } from 'react'
-import { DummyPortfolioCard } from '../../components/DummyPortfolioCard'
+import { useState } from 'react'
+import { DummyPortfolioCard } from './DummyPortfolioCard'
+import PortfolioList from '../../components/PortfolioList'
+import { useFetchGetWithUserId } from '../../hooks/http'
+import { Portfolio, PortfolioPagination } from './types'
+
 
 const PortfolioDetail = () => {
+  // FIX(Jude)
+  const [portfolio, setPortfolio] = useState<Portfolio[]>();
+  const portfolioData: PortfolioPagination = useFetchGetWithUserId('/portfolios')
 
-  const [portfolio, setPortfolio] = useState();
+  // Issue - portfolio being set with empty array creates infinite refresh
+  if (portfolioData && portfolioData.results && portfolioData.results.length > 0) {
+    setPortfolio(portfolioData.results)
+  }
 
-  // Note(Jude): Not sure if I'm using useEffect properly, should I be passing portfolio as an argument in the callback?
-  useEffect(() => {
-    fetch('/api/v1/portfolio-stub')
-    .then(res => res.json())
-    .then(data => {
-      // Don't know why portfolio is coming back as an array
-      setPortfolio(data.portfolio[0])
-      console.log("*********************** portfolio is ", portfolio)
-    })
-    .catch(error =>{
-      throw error
-    })
-  
-  }, [])
   return (
     <Page>
       <Title>
         Portfolio
       </Title>
       <DummyPortfolioCard portfolio={portfolio} />
+      <PortfolioList />
     </Page>
   )
 }

@@ -4,7 +4,11 @@ export const stringRequired = Yup.string()
   .max(20, 'Must be 20 Characters or less')
   .required('Required')
 
-export const emailRequired = stringRequired.email(
+export const stringRequiredLong = Yup.string()
+  .max(50, 'Must be 50 Characters or less')
+  .required('Required')
+
+export const emailRequired = stringRequiredLong.email(
   'Must be a valid email address'
 ) 
 
@@ -13,7 +17,7 @@ export const minLengthRequired = (length: number) =>
 
 export const countryRequired = Yup.string()
   .oneOf(
-    ['AU', 'US', 'GB', 'XX'],
+    ['AU', 'US', 'GB'],
     'Invalid Country'
   )
   .required('Required')

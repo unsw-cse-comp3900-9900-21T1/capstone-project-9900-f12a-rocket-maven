@@ -43,6 +43,11 @@ const sideBarItems: Array<SideBarItem> = [
     to: urls.portfolioDetails,
     icon: FaHome,
   },
+  {
+    name: 'Account',
+    to: urls.account,
+    icon: FaHome,
+  },
 ]
 
 const SideBar = () => (

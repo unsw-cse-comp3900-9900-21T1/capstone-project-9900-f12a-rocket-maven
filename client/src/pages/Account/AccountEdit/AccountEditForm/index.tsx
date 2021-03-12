@@ -1,9 +1,12 @@
  import * as Yup from 'yup'
-import { useContext, Fragment } from 'react'
-import { Subtitle } from '../../componentsStyled/Typography'
+import { useEffect, Fragment, useState } from 'react'
+import { Subtitle } from '../../../../componentsStyled/Typography'
 import { Formik, Field, Form, ErrorMessage } from 'formik'
-import { MyCheckbox, MySelect, MyTextInput } from '../../forms'
-import { stringRequired, emailRequired, countryRequired, acceptedRequired, genderRequired} from '../../forms/validators'
+import { MyCheckbox, MySelect, MyTextInput } from '../../../../forms'
+import { storeContext } from '../../../../data/app/store'
+import { stringRequired, emailRequired, countryRequired, genderRequired} from '../../../../forms/validators'
+import { useFetchGetWithUserId, useFetchMutationWithUserId } from '../../../../hooks/http'
+import { Investor } from '../../types'
 
 const schema = Yup.object({
   username: stringRequired,
@@ -12,39 +15,42 @@ const schema = Yup.object({
   firstName: stringRequired,
   lastName: stringRequired,
   countryOfResidency: countryRequired,
-  acceptedTerms: acceptedRequired,
   dateOfBirth: stringRequired,
   email: emailRequired,
   // TODO(Jude): Add categories; male, female other
   gender: genderRequired,
 })
 
-const RegisterForm = () => {
+type Props = {
+  investorData: Investor
+}
 
-  // const { dispatch } = useContext(storeContext)
+const AccountEditForm = ({investorData}: Props) => {
+
+  
+  // Double API call, maybe fix
+  const setValuesAndFetch: Function = useFetchMutationWithUserId('', 'PUT')
 
   return (
     <Fragment>
       <Subtitle>
-        Register
+        Account Edit
       </Subtitle>
       {/* TODO(Jude): Refactor and minimise: Seprate schema */}
       <Formik
         initialValues={{
-          username: '',
+          username: investorData.investor.username,
           password: '',
           //TODO(Jude): properly define password validation
-          firstName: '',
-          lastName: '',
-          countryOfResidency: '',
-          acceptedTerms: false,
-          dateOfBirth: '',
-          email: '',
-          gender: '',
+          firstName: investorData.investor.first_name,
+          lastName: investorData.investor.last_name,
+          countryOfResidency: investorData.investor.country_of_residency,
+          dateOfBirth: investorData.investor.date_of_birth,
+          email: investorData.investor.email,
+          gender: investorData.investor.gender,
         }}
         validationSchema={schema}
         onSubmit={(values, { setSubmitting }) => {
-          // TODO(Jude): replace with a hooks fetch implementation
           const submissionValues = {
              "country_of_residency": values.countryOfResidency,
              "date_of_birth": values.dateOfBirth,
@@ -57,31 +63,7 @@ const RegisterForm = () => {
              "username": values.username,
              "visibility": true
           }
-
-          fetch('/api/v1/investors', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(submissionValues)
-          })
-          .then(response => {
-            // TODO(Jude): USE constants for status codeos
-            if (response.status === 201) {
-              return response.json()
-            }
-            // TODO(Jude) Error Snackbar
-            return Promise.reject("Registration problem ")
-          })
-          .then(data => {
-            // TODO(Jude) Success Snackbar
-              // dispatch({type: "LOGIN", payload: {
-              //   accessToken: data.access_token,
-              //   refreshToken: data.refresh_token,
-              //   userId: 0,
-              // }})
-            
-          })
+          setValuesAndFetch(submissionValues)
         }}
       >
         <Form>
@@ -116,6 +98,7 @@ const RegisterForm = () => {
             <option value="AU">Australia</option>
             <option value="US">United States</option>
             <option value="GB">England</option>
+            <option value="XX">Antarctica</option>
           </MySelect>
           <MySelect label="Gender" name="gender">
             <option value="">Select One</option>
@@ -128,9 +111,6 @@ const RegisterForm = () => {
             name="dateOfBirth"
             type="text"
           />
-          <MyCheckbox name="acceptedTerms">
-            I accept the terms and conditions
-          </MyCheckbox>
           <button type="submit">Submit</button>
         </Form>
       </Formik>
@@ -138,4 +118,4 @@ const RegisterForm = () => {
   )
 }
 
-export default RegisterForm
+export default AccountEditForm

@@ -1,5 +1,5 @@
-import { Subtitle, Text } from '../../componentsStyled/Typography'
-import DummyAssetCard from '../DummyAssetCard'
+import { Subtitle, Text } from '../../../componentsStyled/Typography'
+// import DummyAssetCard from '../DummyAssetCard'
 
 type Props = {
   // Note(Jude): Should not be leaving as any, just aiming to get some CRUD routing pattern implemented
@@ -16,7 +16,7 @@ export const DummyPortfolioCard = ({portfolio}: Props) => {
       <Subtitle>
         {portfolio.name}
       </Subtitle>
-      {portfolio.assets.map((asset: any) => <DummyAssetCard asset={asset}/>)}
+      {/* {portfolio.assets.map((asset: any) => <DummyAssetCard asset={asset}/>)} */}
     </div>
   )
 }
