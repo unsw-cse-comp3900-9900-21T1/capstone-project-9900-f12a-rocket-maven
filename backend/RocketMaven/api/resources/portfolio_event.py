@@ -13,7 +13,7 @@ class PortfolioEventList(Resource):
     # method_decorators = [jwt_required()]
 
     @jwt_required()
-    def get(self, investor_id, portfolio_id):
+    def get(self, portfolio_id):
         """
         ---
         summary: Assets in a Portfolio
@@ -21,10 +21,6 @@ class PortfolioEventList(Resource):
         tags:
           - Assets
         parameters:
-          - in: path
-            name: investor_id
-            schema:
-              type: integer
           - in: path
             name: portfolio_id
             schema:
@@ -43,10 +39,10 @@ class PortfolioEventList(Resource):
                           items:
                             $ref: '#/components/schemas/PortfolioEventSchema'
         """
-        return PortfolioEventService.get_events(investor_id, portfolio_id)
+        return PortfolioEventService.get_events(portfolio_id)
 
     @jwt_required(optional=True)
-    def post(self, investor_id, portfolio_id):
+    def post(self, portfolio_id):
         """
         ---
         summary: Asset Create
@@ -59,10 +55,6 @@ class PortfolioEventList(Resource):
               schema:
                 PortfolioEventSchema
         parameters:
-          - in: path
-            name: investor_id
-            schema:
-              type: integer
           - in: path
             name: portfolio_id
             schema:
@@ -79,4 +71,4 @@ class PortfolioEventList(Resource):
                       example: asset created
                     portfolio_event: PortfolioEventSchema
         """
-        return PortfolioEventService.create_event(investor_id, portfolio_id)
+        return PortfolioEventService.create_event(portfolio_id)

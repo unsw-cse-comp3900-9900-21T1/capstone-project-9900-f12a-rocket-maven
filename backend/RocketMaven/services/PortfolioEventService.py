@@ -4,13 +4,13 @@ from RocketMaven.models import PortfolioEvent
 from RocketMaven.extensions import db
 from RocketMaven.commons.pagination import paginate
 
-def get_events(investor_id, portfolio_id):
+def get_events(portfolio_id):
     schema = PortfolioEventSchema(many=True)
     query = PortfolioEvent.query.filter_by(portfolio_id=portfolio_id)
     return paginate(query, schema)
 
 
-def create_event(investor_id, portfolio_id):
+def create_event(portfolio_id):
 
     schema = PortfolioEventSchema()
     print(request.json)
