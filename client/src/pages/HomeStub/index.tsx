@@ -4,6 +4,7 @@ import Page from '../_Page'
 import { Title, Text, Code, Link, StyledLink } from '../../componentsStyled/Typography'
 import { StubWrap } from '../../componentsStyled/Layouts'
 import logo from '../../assets/svg/logo.svg'
+import { useTokens } from '../../hooks'
 
 const HomeStub = () => {
 
@@ -14,6 +15,27 @@ const HomeStub = () => {
     .then(res => res.json())
     .then(data => {
       setTime(data.currentTime)
+    })
+    .catch(error =>{
+      throw error
+    })
+  }, [])
+
+
+  const { accessToken } = useTokens()
+  // Testing api call with authentication
+  // TODO(Jude): Separate fetch requests and create refresh token handling
+  useEffect(() => {
+    fetch('/api/v1/investors', {
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`
+      }
+    })
+    .then(res => res.json())
+    .then(data => {
+      console.log("************8 data is ", data)
     })
     .catch(error =>{
       throw error
