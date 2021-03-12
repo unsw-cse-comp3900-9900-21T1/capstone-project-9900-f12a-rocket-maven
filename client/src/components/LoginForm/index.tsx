@@ -4,7 +4,7 @@ import jwt_decode from "jwt-decode";
 import { Formik, Field, Form, ErrorMessage } from 'formik'
 import { stringRequired } from '../../forms/validators'
 import { MyCheckbox, MySelect, MyTextInput } from '../../forms'
-import { storeContext } from '../../data/store'
+import { storeContext } from '../../data/app/store'
 
 // TODO(Jude): Maybe move somewhere better
 interface AuthToken {
