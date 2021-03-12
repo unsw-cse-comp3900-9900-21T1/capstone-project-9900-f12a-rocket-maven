@@ -14,10 +14,15 @@ type Context = { state: AppState; dispatch: Dispatch<Action> }
 
 interface LoginAction {
   type: 'LOGIN'
+  payload: {
+    accessToken: string,
+    refreshToken: string,
+    userId: number,
+  }
 }
 
 interface LogoutAction {
-  type: 'LOGIN'
+  type: 'LOGOUT'
 }
 
 type Action =
@@ -26,11 +31,17 @@ type Action =
 
 interface AppState {
   isLoggedIn: boolean,
+  accessToken: string,
+  refreshToken: string,
+  userId?: number,
 }
 
 const initialStoreContext: Context = {
   state: {
     isLoggedIn: false,
+    accessToken: '',
+    refreshToken: '',
+    userId: undefined,
   },
   dispatch: (_a: any) => {},
 }

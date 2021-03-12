@@ -8,3 +8,6 @@ export const StubWrap = styled.div`
   align-items: center;
   justify-content: center;
 `
+export const Space = styled.div`
+  margin-bottom: 2.5rem;
+`
