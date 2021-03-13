@@ -3,6 +3,7 @@ from RocketMaven.api.schemas import InvestorSchema
 from RocketMaven.models import Investor
 from RocketMaven.extensions import db
 from RocketMaven.commons.pagination import paginate
+from RocketMaven.auth import controllers as auth_controllers
 from flask_jwt_extended import get_jwt_identity
 
 
@@ -61,3 +62,18 @@ def create_investor():
     except Exception as e:
         print(e)
         return {"msg": "Operation failed!"}
+
+
+def automatically_login_user_after_creation(response_data):
+    try:
+        add_to_response_data = auth_controllers.login()
+        add_to_response_data_2 = {"msg_extended": "Able to automatically login user"}
+        add_to_response_data = dict(
+            response_data[0], **add_to_response_data[0].get_json()
+        )
+        add_to_response_data.update(add_to_response_data_2)
+        return add_to_response_data, 201
+    except Exception as e:
+        print(e)
+        add_to_response_data = {"msg_extended": "Cannot automatically login user"}
+        return dict(response_data[0], **add_to_response_data), 201
