@@ -122,6 +122,16 @@ class InvestorList(Resource):
                       type: string
                       example: investor created
                     investor: InvestorSchema
+          422:
+            # Unprocessable Entity, request is valid, but not accepted by the DB.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    msg:
+                      type: string
+                      example: Operation failed!
         """
         investor_creation = InvestorService.create_investor()
         return InvestorService.automatically_login_user_after_creation(

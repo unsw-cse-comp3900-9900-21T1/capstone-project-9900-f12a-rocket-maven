@@ -57,23 +57,26 @@ def create_investor():
 
             return {"msg": "investor created", "investor": schema.dump(investor)}, 201
         else:
-            return {"msg": "investor not created, please log out first"}, 201
+            return {"msg": "investor not created, please log out first"}, 422
 
     except Exception as e:
         print(e)
-        return {"msg": "Operation failed!"}
+        return {"msg": "Operation failed!"}, 422
 
 
 def automatically_login_user_after_creation(response_data):
     try:
-        add_to_response_data = auth_controllers.login()
-        add_to_response_data_2 = {"msg_extended": "Able to automatically login user"}
-        add_to_response_data = dict(
-            response_data[0], **add_to_response_data[0].get_json()
-        )
-        add_to_response_data.update(add_to_response_data_2)
-        return add_to_response_data, 201
+        if response_data[1] == 201:
+            add_to_response_data = auth_controllers.login()
+            add_to_response_data_2 = {
+                "msg_extended": "Able to automatically login user"
+            }
+            add_to_response_data = dict(
+                response_data[0], **add_to_response_data[0].get_json()
+            )
+            add_to_response_data.update(add_to_response_data_2)
+            return add_to_response_data, 201
+        raise Exception("account not successfully created")
     except Exception as e:
-        print(e)
         add_to_response_data = {"msg_extended": "Cannot automatically login user"}
         return dict(response_data[0], **add_to_response_data), 201
