@@ -1,11 +1,45 @@
 from flask import request
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required
-from RocketMaven.api.schemas import PortfolioEventSchema
+from RocketMaven.api.schemas import PortfolioEventSchema, PortfolioAssetHoldingSchema
 from RocketMaven.services import PortfolioEventService
 from RocketMaven.models import PortfolioEvent
 from RocketMaven.extensions import db
 from RocketMaven.commons.pagination import paginate
+
+
+class PortfolioAssetHoldingList(Resource):
+
+    # method_decorators = [jwt_required()]
+
+    @jwt_required()
+    def get(self, portfolio_id):
+        """
+        ---
+        summary: Holdings in a Portfolio
+        description: List the holdings in a portfolio
+        tags:
+          - Assets
+        parameters:
+          - in: path
+            name: portfolio_id
+            schema:
+              type: integer
+        responses:
+          200:
+            content:
+              application/json:
+                schema:
+                  allOf:
+                    - $ref: '#/components/schemas/PaginatedResult'
+                    - type: object
+                      properties:
+                        results:
+                          type: array
+                          items:
+                            $ref: '#/components/schemas/PortfolioAssetHoldingSchema'
+        """
+        return PortfolioEventService.get_holdings(portfolio_id)
 
 
 class PortfolioEventList(Resource):
