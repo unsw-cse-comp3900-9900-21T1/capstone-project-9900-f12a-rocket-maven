@@ -12,6 +12,7 @@ from RocketMaven.api.resources import (
     LoginStub,
     PortfolioStub,
     PortfolioEventList,
+    Pw_resetting,
 )
 from RocketMaven.api.schemas import (
     InvestorSchema,
@@ -45,6 +46,11 @@ api.add_resource(
 )
 api.add_resource(
     PortfolioList, "/investors/<int:investor_id>/portfolios", endpoint="portfolios"
+)
+
+#TODO
+api.add_resource(
+	Pw_resetting, "/pw_reset/", endpoint="pw_reset"
 )
 
 
