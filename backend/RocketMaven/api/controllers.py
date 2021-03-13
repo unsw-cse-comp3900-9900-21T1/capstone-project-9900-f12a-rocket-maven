@@ -58,7 +58,7 @@ api.add_resource(
 
 #TODO
 api.add_resource(
-	Pw_resetting, "/pw_reset/", endpoint="pw_reset"
+	Pw_resetting, "/pw_reset", endpoint="pw_reset"
 )
 
 
@@ -81,6 +81,8 @@ def register_controllers():
     apispec.spec.path(view=Time, app=current_app, api=api)
     apispec.spec.path(view=LoginStub, app=current_app, api=api)
     apispec.spec.path(view=PortfolioStub, app=current_app, api=api)
+
+    apispec.spec.path(view=Pw_resetting, app=current_app, api=api)
 
 
 @blueprint.errorhandler(ValidationError)

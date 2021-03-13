@@ -2,11 +2,14 @@ import smtplib, ssl
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from RocketMaven.models import Investor
+from flask import request
 
-def try_reset(emailTo):
-    user = Investor.query.filter_by(email = emailTo).first()
+def try_reset():
+    email = request.json.get("email", None)
+    print(email)
+    user = Investor.query.filter_by(email = email).first()
     if user:
-        send()
+        send(email)
         return {"msg":"password reset email has been sent"}, 200
     else:
         return {"msg":"no such email in records"}, 400 #400 for temp
