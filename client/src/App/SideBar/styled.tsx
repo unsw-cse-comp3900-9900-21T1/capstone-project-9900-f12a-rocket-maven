@@ -9,7 +9,7 @@ export const SidebarWrap = styled.div`
   align-items: center;
   flex-direction: column;
   flex-shrink: 0;
-  background-color: #6495ED;
+  background-color: gray;
   height: 100vh;
   width: 15rem;
 `
