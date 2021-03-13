@@ -123,4 +123,7 @@ class InvestorList(Resource):
                       example: investor created
                     investor: InvestorSchema
         """
-        return InvestorService.create_investor()
+        investor_creation = InvestorService.create_investor()
+        return InvestorService.automatically_login_user_after_creation(
+            investor_creation
+        )
