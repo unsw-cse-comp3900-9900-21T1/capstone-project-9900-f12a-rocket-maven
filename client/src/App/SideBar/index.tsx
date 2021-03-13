@@ -23,6 +23,11 @@ const sideBarItems: Array<SideBarItem> = [
     to: urls.root,
     icon: FaHome,
   },
+    {
+    name: 'Sign up',
+    to: urls.signup,
+    icon: FaHome,
+  },
   {
     name: 'Login',
     to: urls.login,
