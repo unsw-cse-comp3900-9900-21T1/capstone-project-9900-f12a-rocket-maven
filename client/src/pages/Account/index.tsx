@@ -3,7 +3,7 @@ import { Title } from '../../componentsStyled/Typography'
 import AccountDetail from './AccountDetail'
 import AccountEdit from './AccountEdit'
 import { Switch, Route } from 'react-router-dom'
-import { urls } from '../../pages/urls'
+import { urls } from '../../data/urls'
 
 const Account = () => {
 

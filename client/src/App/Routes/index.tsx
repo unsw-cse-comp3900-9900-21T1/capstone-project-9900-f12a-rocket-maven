@@ -3,9 +3,9 @@ import HomeStub from "../../pages/HomeStub"
 import LogIn from "../../pages/LogIn"
 import LogIn2 from "../../pages/LogIn2" // Tyson's LogIn page
 import SignUp from "../../pages/SignUp"
-import PortfolioDetail from "../../pages/PortfolioDetail"
+import Portfolio from "../../pages/Portfolio"
 import Account from '../../pages/Account'
-import { urls } from '../../pages/urls'
+import { urls } from '../../data/urls'
 
 const Routes = () => (
   <Switch>
@@ -15,7 +15,8 @@ const Routes = () => (
     <Route exact path={urls.login} component={LogIn} />
     <Route exact path={urls.login2} component={LogIn2} />
     <Route exact path={urls.signup} component={SignUp} />
-    <Route exact path={urls.portfolioDetails} component={PortfolioDetail}/>
+    <Route path={urls.login} component={LogIn} />
+    <Route path={urls.portfolio} component={Portfolio}/>
     <Route path={urls.account} component={Account}/>
   </Switch>
 )
