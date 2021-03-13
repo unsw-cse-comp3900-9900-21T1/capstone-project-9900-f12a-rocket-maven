@@ -1,4 +1,4 @@
-import { Subtitle, Text } from '../../../componentsStyled/Typography'
+import { Subtitle, Text } from '../../../../../componentsStyled/Typography'
 // import DummyAssetCard from '../DummyAssetCard'
 
 type Props = {

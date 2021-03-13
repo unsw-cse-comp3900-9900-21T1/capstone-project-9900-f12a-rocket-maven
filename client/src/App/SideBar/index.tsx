@@ -2,7 +2,7 @@ import React from "react"
 import { Link } from 'react-router-dom';
 import { FaHome } from 'react-icons/fa'
 import { SidebarWrap } from "./styled"
-import { urls } from '../../pages/urls'
+import { urls } from '../../data/urls'
 import { Subtitle } from '../../componentsStyled/Typography'
 
 const size = {
@@ -40,7 +40,7 @@ const sideBarItems: Array<SideBarItem> = [
   },
   {
     name: 'Portfolio',
-    to: urls.portfolioDetails,
+    to: urls.portfolio,
     icon: FaHome,
   },
   {

@@ -1,5 +1,5 @@
 
-export type Portfolio = {
+export type PortfolioInfo = {
   buying_power: number,
   competition_portfolio: string,
   // Double check if this is the right type
@@ -16,5 +16,5 @@ export type PortfolioPagination = {
   pages: number,
   prev: string,
   total: number,
-  results: [Portfolio]
+  results: [PortfolioInfo]
 }

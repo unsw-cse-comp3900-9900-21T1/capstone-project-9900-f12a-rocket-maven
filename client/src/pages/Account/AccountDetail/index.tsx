@@ -5,7 +5,7 @@ import DataVerticalDisplay from '../../../components/DataVerticalDisplay'
 import { Col } from '../../../componentsStyled/Grid'
 import { Flex } from '../../../componentsStyled/Flex'
 import { Link } from 'react-router-dom';
-import { urls } from '../../urls'
+import { urls } from '../../../data/urls'
 
 const AccountDetail = () => {
   

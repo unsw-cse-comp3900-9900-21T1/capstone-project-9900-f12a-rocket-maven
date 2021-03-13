@@ -41,7 +41,6 @@ export const useFetchMutationWithUserId = (urlEnd:string, methodInput: HttpMutat
 
   const { accessToken, refreshToken, userId } = useStore()
   const [ values, setValues ] = useState()
-
   useEffect(() => {
     if (!values) {
       return

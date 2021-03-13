@@ -4,13 +4,20 @@ export const stringRequired = Yup.string()
   .max(20, 'Must be 20 Characters or less')
   .required('Required')
 
-export const stringRequiredLong = Yup.string()
+export const stringLongRequired = Yup.string()
   .max(50, 'Must be 50 Characters or less')
   .required('Required')
+  
+export const descriptionTextRequired = Yup.string()
+  .max(500, 'Must be 500 Characters or less')
+  .required('Required')
 
-export const emailRequired = stringRequiredLong.email(
+export const emailRequired = stringLongRequired.email(
   'Must be a valid email address'
 ) 
+
+// TODO(Jude): Regex expression for birthday and appropriate warning
+// export const birthDayRequired
 
 export const minLengthRequired = (length: number) =>
   stringRequired.min(length, `Must be at least ${length} characters long`)
@@ -22,10 +29,11 @@ export const countryRequired = Yup.string()
   )
   .required('Required')
 
-export const acceptedRequired = Yup.boolean()
+export const booleanRequired = Yup.boolean()
   .required('Required')
-  .oneOf([true], 'You must accept the terms and conditions.')
 
+export const acceptedRequired = booleanRequired
+  .oneOf([true], 'You must accept the terms and conditions.')
 
 export const genderRequired = Yup.string()
   .oneOf(
@@ -33,6 +41,10 @@ export const genderRequired = Yup.string()
     'Please select one'
   )
   .required('Required')
+
+export const numberRequired = Yup.number()
+  .required('Required')
+  .positive()
 
 // TODO(Jude): Issue with typing of test functions - fix!!
 // export const password = minLengthRequired(8)

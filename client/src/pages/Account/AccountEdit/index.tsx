@@ -1,5 +1,5 @@
 import { isEmpty } from 'ramda'
-import { useFetchGetWithUserId, useFetchMutationWithUserId } from '../../../hooks/http'
+import { useFetchGetWithUserId } from '../../../hooks/http'
 import { Investor } from '../types'
 import AccountEditForm from './AccountEditForm'
 
