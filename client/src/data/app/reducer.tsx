@@ -1,5 +1,6 @@
 // May be better to create more specialised reducers
 // May need to create an isLoggingOut action
+// TODO(Jude): Typing
 const Reducer = (state: any, action: any) => {
   switch (action.type) {
       case 'LOGIN':
