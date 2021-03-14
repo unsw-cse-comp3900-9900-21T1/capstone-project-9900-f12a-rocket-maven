@@ -1,10 +1,37 @@
 from flask import request
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required
-from RocketMaven.api.schemas import PortfolioSchema
-from RocketMaven.services import PortfolioService
+from RocketMaven.api.schemas import LeaderboardSchema, PortfolioSchema
+from RocketMaven.services import CompetitionService, PortfolioService
 from RocketMaven.models import Portfolio
 from RocketMaven.extensions import db
+
+
+
+class LeaderboardList(Resource):
+
+    def get(self):
+        """Leaderboard
+        ---
+        summary: Leaderboard List
+        description: List portfolios in the competition!
+        tags:
+          - Portfolios
+        responses:
+          200:
+            content:
+              application/json:
+                schema:
+                  allOf:
+                    - $ref: '#/components/schemas/PaginatedResult'
+                    - type: object
+                      properties:
+                        results:
+                          type: array
+                          items:
+                            $ref: '#/components/schemas/LeaderboardSchema'
+        """
+        return CompetitionService.get_leaderboard()
 
 
 class PortfolioResource(Resource):

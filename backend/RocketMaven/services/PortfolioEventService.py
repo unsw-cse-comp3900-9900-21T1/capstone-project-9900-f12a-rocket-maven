@@ -75,9 +75,31 @@ def create_event(portfolio_id):
 
     portfolio_event = schema.load(request.json)
     portfolio_event.portfolio_id = portfolio_id
+    query = Portfolio.query.filter_by(portfolio_id=portfolio_id).first()
+    
+    # Competition portfolio ignores any user-set price. So the user should be able to refresh the real-time price that the system provides to make an informed competition entry.
+    if query.competition_portfolio == True:
+        asset = Asset.query.filter_by(ticker_symbol=portfolio_event.asset_id).first()
+        update_asset(asset)
+        portfolio_event.price_per_share = asset.current_price
+        
+        if portfolio_event.add_action == True and portfolio_event.price_per_share * portfolio_event.units > query.buying_power:
+            return (
+                {
+                    "msg": "competition portfolio event failed, insufficient buying power",
+                },
+                400,
+            )
+
+    
+
     db.session.add(portfolio_event)
+    buying_power_diff = portfolio_event.update_portfolio_asset_holding()
+    
+    if query.competition_portfolio == True:
+        query.buying_power += buying_power_diff
+
     db.session.commit()
-    portfolio_event.update_portfolio_asset_holding()
 
     return (
         {

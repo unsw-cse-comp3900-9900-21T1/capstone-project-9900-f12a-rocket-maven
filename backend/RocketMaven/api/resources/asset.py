@@ -9,7 +9,6 @@ from RocketMaven.commons.pagination import paginate
 
 
 class AssetResource(Resource):
-
     def get(self, ticker_symbol):
         """
         ---
@@ -37,7 +36,6 @@ class AssetResource(Resource):
 
 
 class AssetSearchResource(Resource):
-
     def get(self):
         """
         ---
