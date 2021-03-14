@@ -1,8 +1,0 @@
-Week 4
-Sunday
-- more study/fiddling with back-end with regards to forms; Stub end-points for front-end testing and to improve my understanding of back end
-- global css styling fixes (very quick)
-- implemented global store in react using react hooks and react context; currently only hooked up for login state
-- some jwt study
-- portfolio detail stub implementation - implemented to establish/suggest some client design patterns so I don't block, as well make some progress into CRUD react routing
-  - didn't get up to the edit-routing portion of asset-detail as I hoped I would in the beginning of the day
