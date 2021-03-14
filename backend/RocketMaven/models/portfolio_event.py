@@ -48,7 +48,11 @@ class PortfolioEvent(db.Model):
     def dynamic_after_FIFO_value(self):
         return self.dynamic_after_FIFO_units * self.price_per_share
 
-    def update_portfolio_asset_holding(self):
+    def update_portfolio_asset_holding(self) -> float:
+        """ Calculates the FIFO portfolio holding properties when an event occurs,
+            returns the buying power change that the event caused.
+        
+        """
 
         portfolio_event = self
 
@@ -102,6 +106,7 @@ class PortfolioEvent(db.Model):
                         break
 
                 asset_holding.realised_total += realised_running_local_sum
+                print(asset_holding.realised_total, realised_running_local_sum)
                 db.session.commit()
 
             available_units = (
@@ -141,10 +146,16 @@ class PortfolioEvent(db.Model):
                 new_average_price = (previous_update + new_update) / available_units
                 asset_holding.average_price = new_average_price
 
+                realised_running_local_sum = -new_update
+
             asset_holding.available_units = available_units
             asset_holding.latest_note = portfolio_event.note
 
             db.session.commit()
 
+            return realised_running_local_sum
+
         else:
             raise Exception("Asset does not exist!")
+
+        return 0
