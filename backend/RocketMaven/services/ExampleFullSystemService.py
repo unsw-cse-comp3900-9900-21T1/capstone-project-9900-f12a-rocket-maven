@@ -96,6 +96,63 @@ def populate_full_system(db):
 
     if not test_portfolio_event:
 
+        # AMP
+        asset_amp = Asset(
+            ticker_symbol="ASX:AMP",
+            name="AMP Limited",
+            industry="Finance",
+            current_price=100,
+            data_source="Yahoo",
+            country="AU",
+            currency="AUD",
+        )
+        db.session.add(asset_amp)
+        db.session.commit()
+
+        # AAPL
+        asset_aapl = Asset(
+            ticker_symbol="NASDAQ:AAPL",
+            name="Apple Inc.",
+            industry="Technology",
+            current_price=121,
+            data_source="Yahoo",
+            country="US",
+            currency="USD",
+        )
+        db.session.add(asset_aapl)
+        db.session.commit()
+
+        portfolio_event = PortfolioEvent(
+            units=10,
+            add_action=True,
+            fees=15,
+            price_per_share=143,
+            note="",
+            asset_id="NASDAQ:AAPL",
+            portfolio_id=portfolio.id,
+            event_date=datetime.date(2021, 1, 26),
+        )
+
+        db.session.add(portfolio_event)
+        db.session.commit()
+        portfolio_event.update_portfolio_asset_holding()
+
+        portfolio_event = PortfolioEvent(
+            units=5,
+            add_action=True,
+            fees=15,
+            price_per_share=116,
+            note="",
+            asset_id="NASDAQ:AAPL",
+            portfolio_id=portfolio.id,
+            event_date=datetime.date(2021, 3, 8),
+        )
+
+        db.session.add(portfolio_event)
+        db.session.commit()
+        portfolio_event.update_portfolio_asset_holding()
+
+        # Test case from Tyson's spreadsheet
         asset_cba = Asset(
             ticker_symbol="VIRT:CBA",
             name="Virtual Holding CBA",
@@ -115,9 +172,24 @@ def populate_full_system(db):
                 fees=15,
                 price_per_share=80,
                 note="I think this stock has growth potential",
-                asset_id="ASX:CBA",
+                asset_id="VIRT:CBA",
                 portfolio_id=portfolio.id,
-                event_date=datetime.date(2020, 1, 1),
+                event_date=datetime.date(2021, 1, 1),
+            ),
+            asset_cba,
+            db,
+        )
+
+        create_asset_event_with_current_price(
+            dict(
+                units=100,
+                add_action=True,
+                fees=15,
+                price_per_share=80,
+                note="I think this stock has growth potential",
+                asset_id="VIRT:CBA",
+                portfolio_id=portfolio.id,
+                event_date=datetime.date(2021, 1, 1),
             ),
             asset_cba,
             db,
@@ -132,7 +204,7 @@ def populate_full_system(db):
                 note="Good stock",
                 asset_id="VIRT:CBA",
                 portfolio_id=portfolio.id,
-                event_date=datetime.date(2020, 1, 3),
+                event_date=datetime.date(2021, 1, 3),
             ),
             asset_cba,
             db,
@@ -147,7 +219,7 @@ def populate_full_system(db):
                 note="Good stock",
                 asset_id="VIRT:CBA",
                 portfolio_id=portfolio.id,
-                event_date=datetime.date(2020, 1, 5),
+                event_date=datetime.date(2021, 1, 5),
             ),
             asset_cba,
             db,
@@ -162,7 +234,7 @@ def populate_full_system(db):
                 note="Taking profits, I think I should sell more later",
                 asset_id="VIRT:CBA",
                 portfolio_id=portfolio.id,
-                event_date=datetime.date(2020, 1, 7),
+                event_date=datetime.date(2021, 1, 7),
             ),
             asset_cba,
             db,
@@ -177,7 +249,7 @@ def populate_full_system(db):
                 note="Taking more profits",
                 asset_id="VIRT:CBA",
                 portfolio_id=portfolio.id,
-                event_date=datetime.date(2020, 1, 9),
+                event_date=datetime.date(2021, 1, 9),
             ),
             asset_cba,
             db,
@@ -192,7 +264,7 @@ def populate_full_system(db):
                 note="FOMO buy-in, I should not have sold",
                 asset_id="VIRT:CBA",
                 portfolio_id=portfolio.id,
-                event_date=datetime.date(2020, 1, 11),
+                event_date=datetime.date(2021, 1, 11),
             ),
             asset_cba,
             db,
@@ -207,7 +279,7 @@ def populate_full_system(db):
                 note="Just got to cut losses, why would there be a sell-off in a bank stock anyways?",
                 asset_id="VIRT:CBA",
                 portfolio_id=portfolio.id,
-                event_date=datetime.date(2020, 1, 13),
+                event_date=datetime.date(2021, 1, 13),
             ),
             asset_cba,
             db,
