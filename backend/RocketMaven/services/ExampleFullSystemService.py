@@ -75,6 +75,17 @@ def populate_full_system(db):
         )
 
         db.session.add(asset)
+
+        asset = Asset(
+            ticker_symbol="CBA:AX",
+            name="Commonwealth Bank of Australia",
+            industry="Actual",
+            current_price=86.49,
+            data_source="Yahoo Finance",
+            country="AU",
+            currency="AUD",
+        )
+        db.session.add(asset)
         db.session.commit()
 
     test_portfolio_event = (
