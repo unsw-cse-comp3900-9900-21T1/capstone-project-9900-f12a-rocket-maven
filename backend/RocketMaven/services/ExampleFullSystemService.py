@@ -77,9 +77,9 @@ def populate_full_system(db):
         db.session.add(asset)
 
         asset = Asset(
-            ticker_symbol="CBA:AX",
+            ticker_symbol="ASX:CBA",
             name="Commonwealth Bank of Australia",
-            industry="Actual",
+            industry="Banking",
             current_price=86.49,
             data_source="Yahoo Finance",
             country="AU",
@@ -115,7 +115,7 @@ def populate_full_system(db):
                 fees=15,
                 price_per_share=80,
                 note="I think this stock has growth potential",
-                asset_id="VIRT:CBA",
+                asset_id="ASX:CBA",
                 portfolio_id=portfolio.id,
                 event_date=datetime.date(2020, 1, 1),
             ),
