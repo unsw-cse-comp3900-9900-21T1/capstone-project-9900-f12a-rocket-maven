@@ -17,7 +17,7 @@ class Portfolio(db.Model):
     description = db.Column(db.String(80), unique=False, nullable=True)
 
     # Competition portfolio = True, Regular portfolio = False
-    competition_portfolio = db.Column(db.String(80), default=False)
+    competition_portfolio = db.Column(db.Boolean, default=False)
 
     buying_power = db.Column(db.Float(), unique=False, nullable=True)
 
