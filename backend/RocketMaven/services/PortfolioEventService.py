@@ -22,5 +22,6 @@ def create_event(portfolio_id):
     portfolio_event = schema.load(request.json)
     db.session.add(portfolio_event)
     db.session.commit()
+    portfolio_event.update_portfolio_asset_holding()
 
     return {"msg": "portfolio event created", "portfolio event": schema.dump(portfolio_event)}, 201
