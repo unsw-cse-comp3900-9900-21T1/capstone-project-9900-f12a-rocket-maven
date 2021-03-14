@@ -1,4 +1,5 @@
 from RocketMaven.models import Asset, Investor, Portfolio, PortfolioEvent
+import datetime
 
 
 def create_asset_event_with_current_price(port_data, asset_cba, db):
@@ -105,6 +106,7 @@ def populate_full_system(db):
                 note="I think this stock has growth potential",
                 asset_id="VIRT:CBA",
                 portfolio_id=portfolio.id,
+                event_date=datetime.date(2020, 1, 1),
             ),
             asset_cba,
             db,
@@ -119,6 +121,7 @@ def populate_full_system(db):
                 note="Good stock",
                 asset_id="VIRT:CBA",
                 portfolio_id=portfolio.id,
+                event_date=datetime.date(2020, 1, 3),
             ),
             asset_cba,
             db,
@@ -133,6 +136,7 @@ def populate_full_system(db):
                 note="Good stock",
                 asset_id="VIRT:CBA",
                 portfolio_id=portfolio.id,
+                event_date=datetime.date(2020, 1, 5),
             ),
             asset_cba,
             db,
@@ -147,6 +151,7 @@ def populate_full_system(db):
                 note="Taking profits, I think I should sell more later",
                 asset_id="VIRT:CBA",
                 portfolio_id=portfolio.id,
+                event_date=datetime.date(2020, 1, 7),
             ),
             asset_cba,
             db,
@@ -161,6 +166,7 @@ def populate_full_system(db):
                 note="Taking more profits",
                 asset_id="VIRT:CBA",
                 portfolio_id=portfolio.id,
+                event_date=datetime.date(2020, 1, 9),
             ),
             asset_cba,
             db,
@@ -175,6 +181,7 @@ def populate_full_system(db):
                 note="FOMO buy-in, I should not have sold",
                 asset_id="VIRT:CBA",
                 portfolio_id=portfolio.id,
+                event_date=datetime.date(2020, 1, 11),
             ),
             asset_cba,
             db,
@@ -189,6 +196,7 @@ def populate_full_system(db):
                 note="Just got to cut losses, why would there be a sell-off in a bank stock anyways?",
                 asset_id="VIRT:CBA",
                 portfolio_id=portfolio.id,
+                event_date=datetime.date(2020, 1, 13),
             ),
             asset_cba,
             db,

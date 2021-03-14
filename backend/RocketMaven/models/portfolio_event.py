@@ -23,9 +23,6 @@ class PortfolioEvent(db.Model):
     fees = db.Column(db.Float(), unique=False, nullable=False)
     price_per_share = db.Column(db.Float(), unique=False, nullable=False)
 
-    at_the_time_history_units = db.Column(db.Float(), unique=False, nullable=True)
-    at_the_time_history_price = db.Column(db.Float(), unique=False, nullable=True)
-
     dynamic_after_FIFO_units = db.Column(
         db.Float(), unique=False, nullable=False, default=default_FIFO_units
     )
