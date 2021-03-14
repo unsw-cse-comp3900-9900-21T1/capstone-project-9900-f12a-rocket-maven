@@ -59,9 +59,13 @@ class PortfolioEvent(db.Model):
             ticker_symbol=portfolio_event.asset_id
         ).first()
 
-        asset_holding = PortfolioAssetHolding.query.filter_by(
-            portfolio_id=portfolio_event.portfolio_id
-        ).filter_by(asset_id=portfolio_event.asset_id)
+        asset_holding = (
+            PortfolioAssetHolding.query.filter_by(
+                portfolio_id=portfolio_event.portfolio_id
+            )
+            .filter_by(asset_id=portfolio_event.asset_id)
+            .first()
+        )
 
         if asset_price:
             asset_price = asset_price.current_price
@@ -82,22 +86,26 @@ class PortfolioEvent(db.Model):
                 remove_total = portfolio_event.units
 
                 # Loop through all asset events in order of creation (from earliest to latest)
+
+                realised_running_local_sum = 0
+
                 for m in asset_events:
 
                     # Start subtracting remove_total from FIFO values
                     cached_FIFO = m.dynamic_after_FIFO_units
                     m.dynamic_after_FIFO_units = max(cached_FIFO - remove_total, 0)
+                    removed_difference = cached_FIFO - m.dynamic_after_FIFO_units
 
-                    remove_total -= cached_FIFO - m.dynamic_after_FIFO_units
+                    remove_total -= removed_difference
+                    realised_running_local_sum += removed_difference * (
+                        asset_price - m.price_per_share
+                    )
 
                     if remove_total <= 0:
                         break
-                db.session.commit()
 
-                for m in PortfolioEvent.query.all():
-                    print(m.dynamic_after_FIFO_value)
-                print()
-                print()
+                asset_holding.realised_total += realised_running_local_sum
+                db.session.commit()
 
             available_units = (
                 db.session.query(
@@ -111,43 +119,35 @@ class PortfolioEvent(db.Model):
                 .value
             )
 
-            print("Available units: ", available_units, portfolio_event.note)
-
             if portfolio_event.add_action == True:
                 # Buy
+                # Update the average price only on buy
+
                 if not asset_holding:
                     asset_holding = PortfolioAssetHolding(
                         asset_id=portfolio_event.asset_id,
                         portfolio_id=portfolio_event.portfolio_id,
-                        market_price=0,
                         last_updated=db.func.current_timestamp(),
                         available_units=0,
                         average_price=0,
                         realised_total=0,
-                        note="",
+                        latest_note="",
                     )
-                print("\t", asset_price)
+                    db.session.add(asset_holding)
+                    db.session.commit()
 
-                # Update the average price only on buy
-                total_aggregations = (
-                    db.session.query(
-                        PortfolioEvent,
-                        func.sum(PortfolioEvent.dynamic_after_FIFO_value).label(
-                            "purchase_cost"
-                        ),
-                    )
-                    .filter_by(portfolio_id=portfolio_event.portfolio_id)
-                    .filter_by(asset_id=portfolio_event.asset_id)
-                    .filter_by(add_action=True)
-                    .first()
+                previous_update = (
+                    asset_holding.available_units * asset_holding.average_price
                 )
+                new_update = portfolio_event.units * portfolio_event.price_per_share
 
-                db.session.commit()
+                new_average_price = (previous_update + new_update) / available_units
+                asset_holding.average_price = new_average_price
 
-                print(
-                    "Average price: ",
-                    total_aggregations.purchase_cost / available_units,
-                )
+            asset_holding.available_units = available_units
+            asset_holding.latest_note = portfolio_event.note
+
+            db.session.commit()
 
         else:
             raise Exception("Asset does not exist!")
