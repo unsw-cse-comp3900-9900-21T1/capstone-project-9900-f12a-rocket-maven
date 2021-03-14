@@ -37,8 +37,8 @@ api.add_resource(InvestorList, "/investors", endpoint="investors")
 
 api.add_resource(
     PortfolioEventList, 
-    "/portfolios/<int:portfolio_id>/asset",
-    endpoint="asset_by_id",
+    "/portfolios/<int:portfolio_id>/history",
+    endpoint="portfolio_event_by_id",
 )
 
 api.add_resource(

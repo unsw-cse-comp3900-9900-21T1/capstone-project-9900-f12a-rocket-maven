@@ -15,3 +15,4 @@ gunicorn
 colorama
 sqlalchemy_utils
 Babel
+requests

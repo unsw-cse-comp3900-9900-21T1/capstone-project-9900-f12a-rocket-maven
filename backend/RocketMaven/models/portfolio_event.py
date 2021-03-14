@@ -42,7 +42,7 @@ class PortfolioEvent(db.Model):
     )
 
     def __repr__(self):
-        return "<PortfolioTracks %s>" % self.id
+        return "<PortfolioEvent %s>" % self.id
 
     @hybrid_property
     def dynamic_after_FIFO_value(self):
