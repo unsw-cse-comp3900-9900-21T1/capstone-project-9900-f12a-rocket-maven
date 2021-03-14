@@ -63,6 +63,16 @@ def get_events(portfolio_id):
 
 def get_holdings(portfolio_id):
     schema = PortfolioAssetHoldingSchema(many=True)
+
+    # Get the assets that are part of this portfolio
+    assets = db.session().query(Asset).join(PortfolioEvent).filter_by(portfolio_id=portfolio_id).distinct(PortfolioEvent.asset_id).all()
+    for asset in assets:
+        ok, msg = update_asset(asset)
+        if not ok:
+            return {
+                "msg": "Unable to update asset {} - {}".format(asset.ticker_symbol, msg)
+            }, 500
+
     query = PortfolioAssetHolding.query.filter_by(portfolio_id=portfolio_id)
     return paginate(query, schema)
 

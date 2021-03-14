@@ -13,3 +13,4 @@ class PortfolioAssetHoldingSchema(ma.SQLAlchemyAutoSchema):
     )
     asset_id = ma.auto_field()
     portfolio_id = ma.auto_field()
+    market_price = ma.auto_field()
