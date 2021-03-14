@@ -4,24 +4,24 @@ import { Subtitle } from '../../componentsStyled/Typography'
 import { Formik, Field, Form, ErrorMessage } from 'formik'
 import { MyCheckbox, MySelect, MyTextInput } from '../../forms'
 import { stringRequired, emailRequired, countryRequired, acceptedRequired, genderRequired} from '../../forms/validators'
+import { useAuth } from '../../hooks/http'
 
 const schema = Yup.object({
   username: stringRequired,
   //TODO(Jude): properly create password validation; double input to check
   password: stringRequired,
-  firstName: stringRequired,
-  lastName: stringRequired,
-  countryOfResidency: countryRequired,
-  acceptedTerms: acceptedRequired,
-  dateOfBirth: stringRequired,
+  first_name: stringRequired,
+  last_name: stringRequired,
+  country_of_residency: countryRequired,
+  accepted_terms: acceptedRequired,
+  date_of_birth: stringRequired,
   email: emailRequired,
-  // TODO(Jude): Add categories; male, female other
   gender: genderRequired,
 })
 
 const RegisterForm = () => {
 
-  // const { dispatch } = useContext(storeContext)
+  const setValuesAndPost = useAuth('REGISTER')
 
   return (
     <Fragment>
@@ -34,54 +34,25 @@ const RegisterForm = () => {
           username: '',
           password: '',
           //TODO(Jude): properly define password validation
-          firstName: '',
-          lastName: '',
-          countryOfResidency: '',
-          acceptedTerms: false,
-          dateOfBirth: '',
+          first_name: '',
+          last_name: '',
+          country_of_residency: '',
+          accepted_terms: false,
+          date_of_birth: '',
           email: '',
           gender: '',
         }}
         validationSchema={schema}
         onSubmit={(values, { setSubmitting }) => {
-          // TODO(Jude): replace with a hooks fetch implementation
-          const submissionValues = {
-             "country_of_residency": values.countryOfResidency,
-             "date_of_birth": values.dateOfBirth,
-             "email": values.email,
-             "email_verified": true,
-             "first_name": values.firstName,
-             "gender": values.gender,
-             "last_name": values.lastName,
-             "password": values.password,
-             "username": values.username,
-             "visibility": true
+          // TODO(Jude): Success and failure snackbar. I think formik has it's own onError functionality we can use
+          try {
+            setValuesAndPost({
+              ...values,
+              accepted_terms: undefined,
+            })
+          } catch(error) {
+            console.log("****************  error is ", error)
           }
-
-          fetch('/api/v1/investors', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(submissionValues)
-          })
-          .then(response => {
-            // TODO(Jude): USE constants for status codeos
-            if (response.status === 201) {
-              return response.json()
-            }
-            // TODO(Jude) Error Snackbar
-            return Promise.reject("Registration problem ")
-          })
-          .then(data => {
-            // TODO(Jude) Success Snackbar
-              // dispatch({type: "LOGIN", payload: {
-              //   accessToken: data.access_token,
-              //   refreshToken: data.refresh_token,
-              //   userId: 0,
-              // }})
-            
-          })
         }}
       >
         <Form>
@@ -103,15 +74,15 @@ const RegisterForm = () => {
           />
           <MyTextInput
             label="First Name"
-            name="firstName"
+            name="first_name"
             type="text"
           />
           <MyTextInput
             label="Last Name"
-            name="lastName"
+            name="last_name"
             type="text"
           />
-          <MySelect label="Country of Residency" name="countryOfResidency">
+          <MySelect label="Country of Residency" name="country_of_residency">
             <option value="">Select Country</option>
             <option value="AU">Australia</option>
             <option value="US">United States</option>
@@ -125,10 +96,10 @@ const RegisterForm = () => {
           </MySelect>
           <MyTextInput
             label="Date of Birth"
-            name="dateOfBirth"
+            name="date_of_birth"
             type="text"
           />
-          <MyCheckbox name="acceptedTerms">
+          <MyCheckbox name="accepted_terms">
             I accept the terms and conditions
           </MyCheckbox>
           <button type="submit">Submit</button>
