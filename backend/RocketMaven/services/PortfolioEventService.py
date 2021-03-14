@@ -4,10 +4,12 @@ from RocketMaven.models import PortfolioEvent, PortfolioAssetHolding
 from RocketMaven.extensions import db
 from RocketMaven.commons.pagination import paginate
 
+
 def get_events(portfolio_id):
     schema = PortfolioEventSchema(many=True)
     query = PortfolioEvent.query.filter_by(portfolio_id=portfolio_id)
     return paginate(query, schema)
+
 
 def get_holdings(portfolio_id):
     schema = PortfolioAssetHoldingSchema(many=True)
@@ -20,8 +22,15 @@ def create_event(portfolio_id):
     schema = PortfolioEventSchema()
 
     portfolio_event = schema.load(request.json)
+    portfolio_event.portfolio_id = portfolio_id
     db.session.add(portfolio_event)
     db.session.commit()
     portfolio_event.update_portfolio_asset_holding()
 
-    return {"msg": "portfolio event created", "portfolio event": schema.dump(portfolio_event)}, 201
+    return (
+        {
+            "msg": "portfolio event created",
+            "portfolio event": schema.dump(portfolio_event),
+        },
+        201,
+    )
