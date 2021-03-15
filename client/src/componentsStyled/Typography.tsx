@@ -29,6 +29,11 @@ export const Text = styled.span`
     css`
       color: ${props.color}
     `};
+  ${(props: TextProps) =>
+    props.bold &&
+    css`
+      font-weight: 700;
+    `};
 `
 
 export const Error = styled(Text)`

@@ -62,6 +62,7 @@ def change_password():
     password = request.form["password"]
     confirmation = request.form["confirmation"]
 
+
     print("password:", password)
     print("evc:", evc)
 
