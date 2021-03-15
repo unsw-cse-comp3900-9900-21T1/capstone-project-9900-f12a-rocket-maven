@@ -1,14 +1,49 @@
 import jwt_decode from "jwt-decode";
 import { useState, useEffect } from 'react'
 import { useHistory } from "react-router";
-import { useStore } from './store'
+import { useStore, useUserId } from './store'
+import { isExpired } from 'react-jwt'
+import { urls}  from  '../data/urls'
 
-// Type data where this function is being called
-// Maybe add a generic if possible?
+// Rushed implementation of authToken refresh
+const useAccessToken = () => {
+  const { accessToken, refreshToken, dispatch } = useStore()
+  const routerObject = useHistory()
+  
+  const revalidateAccessToken = async () => {
+    try {
+      const response = await fetch('/auth​/refresh', {
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${refreshToken}`,
+        }
+
+      })
+      if (!response.ok) {
+        // TODO(Jude): Put proper error message here
+        throw Error("Put proper message here")
+      }
+      const data: {access_token: string} = await response.json()
+      
+      dispatch({type: 'REFRESH_TOKEN', payload:{accessToken: data.access_token}})
+      
+    } catch(error) {
+      // Refresh token expired
+      dispatch({type: 'LOGOUT'})
+      routerObject.push(urls.root)
+      throw Error(error)
+    }
+  }
+
+  return {accessToken, revalidateAccessToken}
+}
+
 export const useFetchGetWithUserId = (urlEnd:string): any => {
 
-  const { accessToken, refreshToken, userId } = useStore()
   const [ data, setData ] = useState({})
+  const { accessToken, revalidateAccessToken } = useAccessToken()
+  const userId = useUserId()
 
   useEffect(() => {
     fetch(`/api/v1/investors/${userId}${urlEnd}`, {
@@ -43,41 +78,43 @@ export const useFetchGetWithUserId = (urlEnd:string): any => {
 type HttpMutation = 'POST' | 'PUT'
 export const useFetchMutationWithUserId = (urlEnd:string, methodInput: HttpMutation, redirectPath?: string): Function => {
 
-  const { accessToken, refreshToken, userId } = useStore()
-  const [ values, setValues ] = useState()
+  const { accessToken, revalidateAccessToken } = useAccessToken()
+  const userId = useUserId()
   const routerObject = useHistory()
+  const [ values, setValues ] = useState()
 
-  useEffect(() => {
+  useEffect( () => {
     if (!values) {
       return
     }
-    fetch(`/api/v1/investors/${userId}${urlEnd}`, {
-      method: methodInput,
-      headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify(values)
-    })
-    .then(res => {
-      console.log("*********************** status is", res.status)
-      if (!res.ok) {
-        // TODO(Jude): Better error handling
-        throw Error(`Mutation failed - ${res.statusText}`)
+    const myFetch = async () => {
+      try {
+        if (isExpired(accessToken)) {
+          await revalidateAccessToken()
+        }
+        const response = await fetch(`/api/v1/investors/${userId}${urlEnd}`, {
+          method: methodInput,
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify(values)
+        })
+        console.log("*********************** status is", response.status)
+        if (!response.ok) {
+            throw Error(`Mutation failed - ${response.statusText}`)
+        }
+        const data = await response.json()
+        console.log("********************* data is ", data)
+        if (redirectPath) {
+          routerObject.push(redirectPath)
+        }
+      } catch(error) {
+        alert(error)
       }
-      return res.json()
-    })
-    .then(data => {
-      console.log("********************* data is ", data)
-      // When this section is reac
-      if (redirectPath) {
-        routerObject.push(redirectPath)
-      }
-    })
-    .catch(error =>{
-      alert(error)
-    })
+    }
+    myFetch()
   }, [values])
 
   return setValues

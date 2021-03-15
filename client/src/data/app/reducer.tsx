@@ -19,6 +19,11 @@ const Reducer = (state: any, action: any) => {
               refreshToken: '',
               userId: undefined,
           };
+      case 'REFRESH_TOKEN':
+          return {
+              ...state,
+              accessToken: action.payload.accessToken,
+          };
       default:
           return state;
   }
