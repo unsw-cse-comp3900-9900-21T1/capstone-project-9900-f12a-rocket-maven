@@ -1,4 +1,4 @@
-import React, {Dispatch, createContext, useReducer, PropsWithChildren} from "react";
+import React, { Dispatch, createContext, useReducer, useEffect } from "react";
 import Reducer from './reducer'
 
 // https://dev.to/bigaru/creating-persistent-synchronized-global-store-using-react-hooks-in-typescript-209a
@@ -54,9 +54,16 @@ type Props = {
   children: React.ReactNode
 }
 
+const STORAGE_KEY = 'ROCKET_MAVEN_REACT_STORE'
+
 // What is the difference between PropsWithChildren and React.ReactNode?
 const Store = ({children}: Props) => {
-  const [state, dispatch] = useReducer(Reducer, initialStoreContext.state);
+  const storedStore = localStorage.getItem(STORAGE_KEY)
+  const savedValues = storedStore ? JSON.parse(storedStore) : null
+  const [state, dispatch] = useReducer(Reducer, savedValues || initialStoreContext.state);
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }, [state]);
   return (
     <Provider value={{state, dispatch}}>
       {children}
