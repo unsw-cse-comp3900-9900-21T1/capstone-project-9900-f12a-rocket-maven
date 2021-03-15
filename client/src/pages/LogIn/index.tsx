@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Link } from 'react-router-dom';
 import 'antd/dist/antd.css';
-import { Form, Input, Button, Checkbox, Card} from 'antd';
+import { Form, Input, Button,  Card} from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { urls } from '../../data/urls'
 import { useAuth } from '../../hooks/http'
@@ -58,10 +59,12 @@ const LogIn = () => {
         </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit" className="login-form-button">
+          <Button type="primary" htmlType="submit" style={{
+   marginRight: "10px"
+    }}>
             Log in
           </Button>
-          Or <a href={urls.signup}>register now!</a>
+          Or <Link to={urls.signup}>register now!</Link>
         </Form.Item>
       </Form>
     </Card>        
