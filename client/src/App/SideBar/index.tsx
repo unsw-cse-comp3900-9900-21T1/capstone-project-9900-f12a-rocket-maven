@@ -4,6 +4,7 @@ import { FaHome } from 'react-icons/fa'
 import { SidebarWrap } from "./styled"
 import { urls } from '../../data/urls'
 import { Subtitle } from '../../componentsStyled/Typography'
+import { useStore } from "../../hooks/store";
 
 const size = {
   width: 30,
@@ -40,25 +41,35 @@ const sideBarItems: Array<SideBarItem> = [
   },
 ]
 
-const SideBar = () => (
-  <SidebarWrap>
-    <Subtitle>
-      Website logo maybe here
-    </Subtitle>
-    {sideBarItems
-      .map(item => {
-        return (
-          // TODO(Jude): Space and style appropriately here
-          // TODO(Jude): Find out why icon isn't rendering
-          <React.Fragment>
-            {item.icon}
-            <Link to={item.to}>
-              {item.name}
-            </Link>
-          </React.Fragment>
-        )
-      })}
-  </SidebarWrap>
-)
+const SideBar = () => {
+  const sideBar = sideBarItems.map(item => ( 
+    // TODO(Jude): Space and style appropriately here
+    // TODO(Jude): Find out why icon isn't rendering
+    <React.Fragment>
+      {item.icon}
+      <Link to={item.to}>
+        {item.name}
+      </Link>
+    </React.Fragment>
+  ))
+
+  // Basic logout functionality - get rid of when we have a proper logout button
+  const { dispatch } = useStore()
+  sideBar.push(
+    <React.Fragment>
+      <Link onClick={()=>{dispatch({type:'LOGOUT'})}} to={urls.root}>
+        Logout
+      </Link>
+    </React.Fragment>
+  )
+  return (
+    <SidebarWrap>
+      <Subtitle>
+        Website logo maybe here
+      </Subtitle>
+      {sideBar}
+    </SidebarWrap>
+  )
+}
 
 export default SideBar
