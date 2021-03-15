@@ -9,8 +9,8 @@ class Pw_resetting(Resource):
 	def post(self):
 		"""
         ---
-        summary: Investor Get
-        description: Get an investor
+        summary: password reset
+        description: password reset page
         tags:
           - Investors
         requestBody:
