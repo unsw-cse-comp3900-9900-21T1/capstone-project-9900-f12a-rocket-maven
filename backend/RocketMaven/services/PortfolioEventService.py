@@ -38,6 +38,7 @@ def update_asset(asset) -> (bool, str):
                     if err is not None:
                         return False, "Error with API response {}".format(err)
                     asset.current_price = data["quoteResponse"]["result"][0]["regularMarketPrice"]["raw"]
+                    db.session.commit()
                 except IndexError:
                     return False, "Malformed API response"
         except Exception as err:
