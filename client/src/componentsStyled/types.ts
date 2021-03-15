@@ -1,6 +1,7 @@
 
 export type TextProps = {
   color?: string
+  bold?: boolean
 }
 
 export type LinkProps = {
