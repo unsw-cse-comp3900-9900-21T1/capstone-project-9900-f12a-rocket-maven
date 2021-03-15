@@ -80,3 +80,7 @@ def change_password():
         return "<h1>password change unsuccessfully page 333 </h1>", 400
 
 
+def update_password():
+	pass
+
+
