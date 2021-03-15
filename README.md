@@ -34,6 +34,8 @@ npm run start
 
 Global tox install (tox and its dependencies are the only global python packages required for the Rocket Maven system): `pip3 install tox`
 
+Alternative command: `python -m pip install tox` (for Python installed from the Windows store)
+
 ### Setup
 
 `cd backend`
@@ -45,6 +47,12 @@ Global tox install (tox and its dependencies are the only global python packages
 ### Development
 
 `tox -e dev` - uses the Tox python development environment to launch the server
+
+Alternative commands:
+
+- `python -m tox -e dev`
+
+- `start cmd /k tox -e dev` (get around control+c not working on Windows)
 
 Visit: [http://127.0.0.1:5100/swagger-ui](http://127.0.0.1:5100/swagger-ui)
 

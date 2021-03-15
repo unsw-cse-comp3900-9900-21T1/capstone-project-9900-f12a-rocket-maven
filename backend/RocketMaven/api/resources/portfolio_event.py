@@ -1,11 +1,45 @@
 from flask import request
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required
-from RocketMaven.api.schemas import PortfolioEventSchema
+from RocketMaven.api.schemas import PortfolioEventSchema, PortfolioAssetHoldingSchema
 from RocketMaven.services import PortfolioEventService
 from RocketMaven.models import PortfolioEvent
 from RocketMaven.extensions import db
 from RocketMaven.commons.pagination import paginate
+
+
+class PortfolioAssetHoldingList(Resource):
+
+    # method_decorators = [jwt_required()]
+
+    @jwt_required()
+    def get(self, portfolio_id):
+        """
+        ---
+        summary: Holdings in a Portfolio
+        description: List the holdings in a portfolio
+        tags:
+          - Assets
+        parameters:
+          - in: path
+            name: portfolio_id
+            schema:
+              type: integer
+        responses:
+          200:
+            content:
+              application/json:
+                schema:
+                  allOf:
+                    - $ref: '#/components/schemas/PaginatedResult'
+                    - type: object
+                      properties:
+                        results:
+                          type: array
+                          items:
+                            $ref: '#/components/schemas/PortfolioAssetHoldingSchema'
+        """
+        return PortfolioEventService.get_holdings(portfolio_id)
 
 
 class PortfolioEventList(Resource):
@@ -13,7 +47,7 @@ class PortfolioEventList(Resource):
     # method_decorators = [jwt_required()]
 
     @jwt_required()
-    def get(self, investor_id, portfolio_id):
+    def get(self, portfolio_id):
         """
         ---
         summary: Assets in a Portfolio
@@ -21,10 +55,6 @@ class PortfolioEventList(Resource):
         tags:
           - Assets
         parameters:
-          - in: path
-            name: investor_id
-            schema:
-              type: integer
           - in: path
             name: portfolio_id
             schema:
@@ -43,10 +73,10 @@ class PortfolioEventList(Resource):
                           items:
                             $ref: '#/components/schemas/PortfolioEventSchema'
         """
-        return PortfolioEventService.get_events(investor_id, portfolio_id)
+        return PortfolioEventService.get_events(portfolio_id)
 
     @jwt_required(optional=True)
-    def post(self, investor_id, portfolio_id):
+    def post(self, portfolio_id):
         """
         ---
         summary: Asset Create
@@ -59,10 +89,6 @@ class PortfolioEventList(Resource):
               schema:
                 PortfolioEventSchema
         parameters:
-          - in: path
-            name: investor_id
-            schema:
-              type: integer
           - in: path
             name: portfolio_id
             schema:
@@ -79,4 +105,4 @@ class PortfolioEventList(Resource):
                       example: asset created
                     portfolio_event: PortfolioEventSchema
         """
-        return PortfolioEventService.create_event(investor_id, portfolio_id)
+        return PortfolioEventService.create_event(portfolio_id)

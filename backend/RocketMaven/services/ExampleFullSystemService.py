@@ -1,4 +1,17 @@
 from RocketMaven.models import Asset, Investor, Portfolio, PortfolioEvent
+import datetime
+
+
+def create_asset_event_with_current_price(port_data, asset_cba, db):
+    portfolio_event = PortfolioEvent(**port_data)
+
+    db.session.add(portfolio_event)
+    db.session.commit()
+
+    asset_cba.current_price = port_data["price_per_share"]
+    db.session.commit()
+
+    portfolio_event.update_portfolio_asset_holding()
 
 
 def populate_full_system(db):
@@ -62,6 +75,17 @@ def populate_full_system(db):
         )
 
         db.session.add(asset)
+
+        asset = Asset(
+            ticker_symbol="ASX:CBA",
+            name="Commonwealth Bank of Australia",
+            industry="Banking",
+            current_price=86.49,
+            data_source="Yahoo Finance",
+            country="AU",
+            currency="AUD",
+        )
+        db.session.add(asset)
         db.session.commit()
 
     test_portfolio_event = (
@@ -72,17 +96,191 @@ def populate_full_system(db):
 
     if not test_portfolio_event:
 
+        # AMP
+        asset_amp = Asset(
+            ticker_symbol="ASX:AMP",
+            name="AMP Limited",
+            industry="Finance",
+            current_price=100,
+            data_source="Yahoo",
+            country="AU",
+            currency="AUD",
+        )
+        db.session.add(asset_amp)
+        db.session.commit()
+
+        # AAPL
+        asset_aapl = Asset(
+            ticker_symbol="NASDAQ:AAPL",
+            name="Apple Inc.",
+            industry="Technology",
+            current_price=121,
+            data_source="Yahoo",
+            country="US",
+            currency="USD",
+        )
+        db.session.add(asset_aapl)
+        db.session.commit()
+
         portfolio_event = PortfolioEvent(
-            units=20,
+            units=10,
             add_action=True,
             fees=15,
-            price_before_fees=2000,
-            final_units=20,
-            final_price=2015,
-            note="Hi!",
-            asset_id="VIRT:A",
+            price_per_share=143,
+            note="",
+            asset_id="NASDAQ:AAPL",
             portfolio_id=portfolio.id,
+            event_date=datetime.date(2021, 1, 26),
         )
 
         db.session.add(portfolio_event)
         db.session.commit()
+        portfolio_event.update_portfolio_asset_holding()
+
+        portfolio_event = PortfolioEvent(
+            units=5,
+            add_action=True,
+            fees=15,
+            price_per_share=116,
+            note="",
+            asset_id="NASDAQ:AAPL",
+            portfolio_id=portfolio.id,
+            event_date=datetime.date(2021, 3, 8),
+        )
+
+        db.session.add(portfolio_event)
+        db.session.commit()
+        portfolio_event.update_portfolio_asset_holding()
+
+        # Test case from Tyson's spreadsheet
+        asset_cba = Asset(
+            ticker_symbol="VIRT:CBA",
+            name="Virtual Holding CBA",
+            industry="Virtual",
+            current_price=100,
+            data_source="VIRTUAL",
+            country="AU",
+            currency="AUD",
+        )
+        db.session.add(asset_cba)
+        db.session.commit()
+
+        create_asset_event_with_current_price(
+            dict(
+                units=100,
+                add_action=True,
+                fees=15,
+                price_per_share=80,
+                note="I think this stock has growth potential",
+                asset_id="VIRT:CBA",
+                portfolio_id=portfolio.id,
+                event_date=datetime.date(2021, 1, 1),
+            ),
+            asset_cba,
+            db,
+        )
+
+        create_asset_event_with_current_price(
+            dict(
+                units=100,
+                add_action=True,
+                fees=15,
+                price_per_share=80,
+                note="I think this stock has growth potential",
+                asset_id="VIRT:CBA",
+                portfolio_id=portfolio.id,
+                event_date=datetime.date(2021, 1, 1),
+            ),
+            asset_cba,
+            db,
+        )
+
+        create_asset_event_with_current_price(
+            dict(
+                units=100,
+                add_action=True,
+                fees=15,
+                price_per_share=90,
+                note="Good stock",
+                asset_id="VIRT:CBA",
+                portfolio_id=portfolio.id,
+                event_date=datetime.date(2021, 1, 3),
+            ),
+            asset_cba,
+            db,
+        )
+
+        create_asset_event_with_current_price(
+            dict(
+                units=150,
+                add_action=True,
+                fees=15,
+                price_per_share=100,
+                note="Good stock",
+                asset_id="VIRT:CBA",
+                portfolio_id=portfolio.id,
+                event_date=datetime.date(2021, 1, 5),
+            ),
+            asset_cba,
+            db,
+        )
+
+        create_asset_event_with_current_price(
+            dict(
+                units=100,
+                add_action=False,
+                fees=15,
+                price_per_share=105,
+                note="Taking profits, I think I should sell more later",
+                asset_id="VIRT:CBA",
+                portfolio_id=portfolio.id,
+                event_date=datetime.date(2021, 1, 7),
+            ),
+            asset_cba,
+            db,
+        )
+
+        create_asset_event_with_current_price(
+            dict(
+                units=130,
+                add_action=False,
+                fees=15,
+                price_per_share=110,
+                note="Taking more profits",
+                asset_id="VIRT:CBA",
+                portfolio_id=portfolio.id,
+                event_date=datetime.date(2021, 1, 9),
+            ),
+            asset_cba,
+            db,
+        )
+
+        create_asset_event_with_current_price(
+            dict(
+                units=200,
+                add_action=True,
+                fees=15,
+                price_per_share=120,
+                note="FOMO buy-in, I should not have sold",
+                asset_id="VIRT:CBA",
+                portfolio_id=portfolio.id,
+                event_date=datetime.date(2021, 1, 11),
+            ),
+            asset_cba,
+            db,
+        )
+
+        create_asset_event_with_current_price(
+            dict(
+                units=200,
+                add_action=False,
+                fees=15,
+                price_per_share=70,
+                note="Just got to cut losses, why would there be a sell-off in a bank stock anyways?",
+                asset_id="VIRT:CBA",
+                portfolio_id=portfolio.id,
+                event_date=datetime.date(2021, 1, 13),
+            ),
+            asset_cba,
+            db,
+        )
