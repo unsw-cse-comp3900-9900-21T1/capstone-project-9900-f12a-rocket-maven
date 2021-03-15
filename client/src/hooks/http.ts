@@ -1,5 +1,6 @@
 import jwt_decode from "jwt-decode";
 import { useState, useEffect } from 'react'
+import { useHistory } from "react-router";
 import { useStore } from './store'
 
 // Type data where this function is being called
@@ -18,6 +19,11 @@ export const useFetchGetWithUserId = (urlEnd:string): any => {
     }})
     .then(res => {
       console.log("*********************** status is")
+      if (!res.ok) {
+        // TODO(Jude) add response message like underneath. Not doing it until we do page hiding
+        // to avoid unneccessary calls
+
+      }
       return res.json()
     })
     .then(data => {
@@ -35,11 +41,12 @@ export const useFetchGetWithUserId = (urlEnd:string): any => {
 }
 
 type HttpMutation = 'POST' | 'PUT'
-// Might be a bit forced in using hooks
-export const useFetchMutationWithUserId = (urlEnd:string, methodInput: HttpMutation): Function => {
+export const useFetchMutationWithUserId = (urlEnd:string, methodInput: HttpMutation, redirectPath?: string): Function => {
 
   const { accessToken, refreshToken, userId } = useStore()
   const [ values, setValues ] = useState()
+  const routerObject = useHistory()
+
   useEffect(() => {
     if (!values) {
       return
@@ -55,16 +62,21 @@ export const useFetchMutationWithUserId = (urlEnd:string, methodInput: HttpMutat
     })
     .then(res => {
       console.log("*********************** status is", res.status)
+      if (!res.ok) {
+        // TODO(Jude): Better error handling
+        throw Error(`Mutation failed - ${res.statusText}`)
+      }
       return res.json()
     })
     .then(data => {
       console.log("********************* data is ", data)
+      // When this section is reac
+      if (redirectPath) {
+        routerObject.push(redirectPath)
+      }
     })
     .catch(error =>{
-      console.log("*********************** error is ", error)
-      // set logout and redirect to main page
-      // Or something to do with the refresh token first
-      throw error
+      alert(error)
     })
   }, [values])
 
@@ -91,6 +103,7 @@ export const useAuth = (authType: AuthType): Function => {
 
   const { dispatch } = useStore()
   const [ values, setValues ] = useState()
+  const routerObject = useHistory()
 
   useEffect(() => {
     if (!values) {
@@ -106,27 +119,24 @@ export const useAuth = (authType: AuthType): Function => {
     })
     .then(res => {
       console.log("*********************** status is", res.status)
+      if (!res.ok) {
+        // TODO(Jude): Better error handling
+        throw Error(`${authType === 'REGISTER' ? 'Failed to Sign up' : 'Failed to Log in'} - ${res.statusText}`)
+      }
       return res.json()
     })
     .then(data => {
       console.log("********************* data is ", data)
-      // TODO(Jude): Handle failures more neatly, ask if they can return an error install of an error message
-      // or do I just have to look at the res.status? Former seems preferable, because that would be the point having .catch
-      // in the fetch chain
-      if (data.msg === 'Operation failed!') {
-        throw Error(data.msg)
-      }
       dispatch({type: "LOGIN", payload: {
         accessToken: data.access_token,
         refreshToken: data.refresh_token,
         userId: jwt_decode<AuthToken>(data.access_token).sub
       }})
+      routerObject.push('/')
     })
     .catch(error =>{
-      console.log("*********************** error is ", error)
-      // set logout and redirect to main page
-      // Or something to do with the refresh token first
-      throw error
+      // TEMP
+      alert(error)
     })
   }, [values])
 

@@ -3,11 +3,14 @@ import ReactDOM from 'react-dom';
 import 'antd/dist/antd.css';
 import { Form, Input, Button, Checkbox, Card} from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { urls } from '../../pages/urls'
+import { urls } from '../../data/urls'
+import { useAuth } from '../../hooks/http'
 
 const LogIn2 = () => {
+
+  const setValuesAndFetch = useAuth('LOGIN')
   const onFinish = (values: any) => {
-    console.log('Received values of form: ', values);
+    setValuesAndFetch(values)
   };
 
   return (

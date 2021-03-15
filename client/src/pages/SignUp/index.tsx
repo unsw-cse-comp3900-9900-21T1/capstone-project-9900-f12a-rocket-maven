@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import 'antd/dist/antd.css';
 import { Form, Input, Button, Checkbox, Card } from 'antd';
-import Axios from "axios";
+import { useAuth } from '../../hooks/http'
 
 const layout = {
   labelCol: {
@@ -20,14 +20,14 @@ const tailLayout = {
 };
 
 const SignUp =  () => {
-  const onFinish = async (values: any) => {
-    console.log('Success:', values);
 
+  const setValuesAndFetch = useAuth('REGISTER')
+  
+  const onFinish = async (values: any) => {
     const requestBody =   {
     "country_of_residency": "AU",
     "date_of_birth": "2021-03-13",
     "email": values.email,
-    "email_verified": true,
     "first_name": values.firstName,
     "gender": "string",
     "last_name": values.lastName,
@@ -35,19 +35,7 @@ const SignUp =  () => {
     "username": values.username,
     "visibility": true
     };
-
-    try {
-      const response = await fetch('/api/v1/investors', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(requestBody)
-      })
-      console.log(response);
-    } catch (error) {
-      console.log(error);
-    }
+    setValuesAndFetch(requestBody)
   };
 
   return (
