@@ -53,9 +53,14 @@ def change_password():
     # password = request.json.get("password")
     # confirmation = request.json.get("confirmation")
     # eva = request.json.get("challenge_code")
+
+    evc = request.form["evc"]
+    if evc == None:
+    	return "<h1>password change unsuccessfully page (no verification code) </h1>"
+
+
     password = request.form["password"]
     confirmation = request.form["confirmation"]
-    evc = request.form["evc"]
 
     print("password:", password)
     print("evc:", evc)
