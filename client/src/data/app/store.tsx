@@ -25,9 +25,17 @@ interface LogoutAction {
   type: 'LOGOUT'
 }
 
+interface RefreshTokenAction {
+  type: 'REFRESH_TOKEN'
+  payload: {
+    accessToken: string,
+  }
+}
+
 type Action =
   | LoginAction
   | LogoutAction
+  | RefreshTokenAction
 
 interface AppState {
   isLoggedIn: boolean,

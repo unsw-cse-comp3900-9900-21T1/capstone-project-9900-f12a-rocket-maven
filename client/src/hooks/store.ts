@@ -7,3 +7,8 @@ export const useStore = () => {
   const { isLoggedIn, accessToken, refreshToken, userId } = state
   return { isLoggedIn, accessToken, refreshToken, userId, dispatch }
 }
+
+export const useUserId = () => {
+  const { state } = useContext(storeContext)
+  return state.userId
+}
