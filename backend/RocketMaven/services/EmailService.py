@@ -107,3 +107,7 @@ def update_password():
 	pass
 
 
+def update_password():
+	pass
+
+
