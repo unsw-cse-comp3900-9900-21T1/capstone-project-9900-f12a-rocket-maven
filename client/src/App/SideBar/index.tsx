@@ -19,11 +19,6 @@ type SideBarItem = {
 
 const sideBarItems: Array<SideBarItem> = [
   {
-    name: 'HomeStub',
-    to: urls.root,
-    icon: FaHome,
-  },
-    {
     name: 'Sign up',
     to: urls.signup,
     icon: FaHome,
@@ -31,11 +26,6 @@ const sideBarItems: Array<SideBarItem> = [
   {
     name: 'Login',
     to: urls.login,
-    icon: FaHome,
-  },
-  {
-    name: 'Login2',
-    to: urls.login2,
     icon: FaHome,
   },
   {
