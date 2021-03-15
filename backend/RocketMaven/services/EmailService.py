@@ -16,13 +16,13 @@ def try_reset():
 
 
 
-def send(emailTo="jfxh@dfg6.kozow.com"):
+def send(email_to="jfxh@dfg6.kozow.com"):
     sender_login = "rocket_maven@yahoo.com"
     sender_email = sender_login
 
     password = "hnbcwpaijwpxhgct"
 
-    receiver_email = emailTo
+    receiver_email = email_to
 
     message = MIMEMultipart("alternative")
     message["Subject"] = "Test Email"
