@@ -13,7 +13,8 @@ from RocketMaven.api.resources import (
     PortfolioStub,
     PortfolioEventList,
     PortfolioAssetHoldingList,
-    Pw_resetting,
+    Iforgot,
+    Pw_reset,
 )
 from RocketMaven.api.schemas import (
     InvestorSchema,
@@ -56,9 +57,12 @@ api.add_resource(
     PortfolioList, "/investors/<int:investor_id>/portfolios", endpoint="portfolios"
 )
 
-#TODO
 api.add_resource(
-	Pw_resetting, "/pw_reset", endpoint="pw_reset"
+	Iforgot, "/iforgot", endpoint="iforgot"
+)
+
+api.add_resource(
+    Pw_reset, "/pw_reset", endpoint="pw_reset"
 )
 
 
@@ -82,7 +86,10 @@ def register_controllers():
     apispec.spec.path(view=LoginStub, app=current_app, api=api)
     apispec.spec.path(view=PortfolioStub, app=current_app, api=api)
 
-    apispec.spec.path(view=Pw_resetting, app=current_app, api=api)
+    apispec.spec.path(view=Iforgot, app=current_app, api=api)
+    
+    apispec.spec.path(view=Pw_reset, app=current_app, api=api)
+
 
 
 @blueprint.errorhandler(ValidationError)

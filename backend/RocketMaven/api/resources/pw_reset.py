@@ -1,11 +1,10 @@
 from flask import request
 from flask_restful import Resource
 from RocketMaven.services import EmailService
-from RocketMaven.models import Investor###
 from RocketMaven.extensions import db
 
 
-class Pw_resetting(Resource):
+class Pw_reset(Resource):
 	def post(self):
 		"""
         ---
@@ -35,4 +34,4 @@ class Pw_resetting(Resource):
           404:
             description: investor does not exist
         """
-		return EmailService.try_reset()
+		return EmailService.change_password()
