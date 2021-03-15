@@ -9,47 +9,38 @@ import { useStore } from "../../hooks/store";
 const size = {
   width: 30,
   height: 30,
-}
+};
 
 type SideBarItem = {
-  name: string,
-  to: string,
-  icon: any,
-  notification?: any,
+  name: string;
+  to: string;
+  icon: any;
+  notification?: any;
+};
+
+function sideBarItems(isLoggedIn: boolean) {
+  const itemsWhenNotLoggedIn: Array<SideBarItem> = [
+    { name: "HomeStub", to: urls.root, icon: FaHome },
+    { name: "Sign up", to: urls.signup, icon: FaHome },
+    { name: "Login", to: urls.login, icon: FaHome },
+    { name: "Login2", to: urls.login2, icon: FaHome },
+  ];
+  const itemsWhenLoggedIn: Array<SideBarItem> = [
+    { name: "HomeStub", to: urls.root, icon: FaHome },
+    { name: "Portfolio", to: urls.portfolio, icon: FaHome },
+    { name: "Account", to: urls.account, icon: FaHome },
+  ];
+  return isLoggedIn ? itemsWhenLoggedIn : itemsWhenNotLoggedIn;
 }
 
-const sideBarItems: Array<SideBarItem> = [
-  {
-    name: 'Sign up',
-    to: urls.signup,
-    icon: FaHome,
-  },
-  {
-    name: 'Login',
-    to: urls.login,
-    icon: FaHome,
-  },
-  {
-    name: 'Portfolio',
-    to: urls.portfolio,
-    icon: FaHome,
-  },
-  {
-    name: 'Account',
-    to: urls.account,
-    icon: FaHome,
-  },
-]
 
 const SideBar = () => {
-  const sideBar = sideBarItems.map(item => ( 
+  const { isLoggedIn } = useStore();
+  const sideBar = sideBarItems(isLoggedIn).map(item => ( 
     // TODO(Jude): Space and style appropriately here
-    // TODO(Jude): Find out why icon isn't rendering
     <React.Fragment>
-      {item.icon}
-      <Link to={item.to}>
-        {item.name}
-      </Link>
+      <item.icon />
+      <Link to={item.to}>{item.name} </Link>
     </React.Fragment>
   ))
 
@@ -72,4 +63,4 @@ const SideBar = () => {
   )
 }
 
-export default SideBar
+export default SideBar;
