@@ -7,4 +7,5 @@ export const urls = {
   // TODO(Jude): Crudify routes 
   account: '/account',
   portfolio: '/portfolio',
+  homeStub: '/home-stub',
 }

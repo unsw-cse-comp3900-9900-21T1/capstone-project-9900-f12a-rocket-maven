@@ -3,14 +3,13 @@ import { isEmpty } from  'ramda'
 import { Subtitle } from '../../../componentsStyled/Typography'
 import { useParams } from 'react-router-dom'
 import { useFetchGetWithUserId } from '../../../hooks/http'
-import PortfolioEditForm from '../PortfolioEditForm'
 import { PortfolioInfo } from '../types'
 
 type Params = {
   id?: string
 }
 
-const PortfolioEdit = () => {
+const PortfolioHoldings = () => {
   const { id } = useParams<Params>()
 
   // Avoid call when isCreate is true
@@ -21,13 +20,12 @@ const PortfolioEdit = () => {
     !isEmpty(portfolioInfo) ?
     <Fragment>
       <Subtitle>
-        Portfolio Edit
+        Portfolio Holdings
       </Subtitle>
-      <PortfolioEditForm  portfolioInfo={portfolioInfo} portfolioId={id}/>
     </Fragment>
     :
       null
   )
 }
 
-export default PortfolioEdit
+export default PortfolioHoldings

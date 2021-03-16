@@ -1,7 +1,8 @@
 import styled from "styled-components"
 
 export const PageWrap = styled.div`
-  min-height: 100vh;
+  overflow: scroll;
+  height: 100vh;
   display: flex;
   flex-direction: column;
 `

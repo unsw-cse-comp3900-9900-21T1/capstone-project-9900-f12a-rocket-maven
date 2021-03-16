@@ -5,6 +5,7 @@ import Portfolio from "../../pages/Portfolio"
 import Account from '../../pages/Account'
 import { urls } from '../../data/urls'
 import { useStore } from '../../hooks/store'
+import HomeStub from '../../pages/HomeStub'
 
 const Routes = () => {
   const { isLoggedIn } = useStore()
@@ -18,6 +19,7 @@ const Routes = () => {
         : <Redirect to={urls.login} />
       )}>
       </Route>
+      <Route exact path={urls.homeStub} component={HomeStub} />
       <Route exact path={urls.login} component={LogIn} />
       <Route exact path={urls.signup} component={SignUp} />
       <Route path={urls.login} component={LogIn} />

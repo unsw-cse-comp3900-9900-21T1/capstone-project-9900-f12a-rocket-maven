@@ -1,15 +1,14 @@
  import * as Yup from 'yup'
 import { Fragment } from 'react'
 import { Formik, Field, Form, ErrorMessage } from 'formik'
-import { MySelect, MyTextInput } from '../../../../forms'
-import { numberRequired, stringRequired, booleanRequired} from '../../../../forms/validators'
-import { useFetchMutationWithUserId } from '../../../../hooks/http'
-import { PortfolioInfo } from '../../types'
+import { MySelect, MyTextInput } from '../../../forms'
+import { numberRequired, stringRequired, booleanRequired} from '../../../forms/validators'
+import { useFetchMutationWithUserId } from '../../../hooks/http'
+import { PortfolioInfo } from '../types'
 
 const schema = Yup.object({
   buying_power: numberRequired,
   competition_portfolio: stringRequired,
-  // TODO(Jude): if this one has a particular format
   description: stringRequired,
   name: stringRequired,
   tax_residency: stringRequired,
@@ -42,6 +41,8 @@ const PortfolioEditForm = ({portfolioInfo, portfolioId}: Props) => {
     urlEnd = urlEnd + `/${portfolioId}`
   }
   console.log("**************** initial values are", initialValues)
+  // Will add redirect after we get some seed data. Right now it's useful to be able to populate
+  // values quickly
   const setValuesAndFetch: Function = useFetchMutationWithUserId(urlEnd, portfolioInfo ? 'PUT' : 'POST')
 
   return (
