@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+#
+# A script for obtaining latest stock prices from the Yahoo Finance API
+#
 
 import sys
 import json
