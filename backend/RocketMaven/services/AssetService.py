@@ -1,13 +1,16 @@
-from RocketMaven.models import Asset
+import json
 from csv import DictReader
 
+from RocketMaven.models import Asset
+
+
+def get_asset(ticker_symbol): 
+    return {"msg": "Not implemented"}, 501
 
 def load_asset_data(db):
 
     # Load CSV data
-    from csv import DictReader
-    import json
-
+    
     print("Adding ASX")
     # Load ASX tickers from ASX.csv which is an enriched version ASX_Listed_Companies_13-03-2021_07-59-39_AEDT.csv
     # The format of this file is CSV with columns:
@@ -51,7 +54,12 @@ def load_asset_data(db):
 
 
     print("Adding NASDAQ")
-    # Load NASDAQ tickers from NASDAQ.csv which is an enriched version 
+    # Load NASDAQ tickers from NASDAQ.csv which is an enriched version of nasdaq_screener_1615582712192-NASDAQ.csv
+    # The format of the columns are:
+    # * Symbol
+    # * Name
+    # * ...
+    # * Industry
     with open("./data/NASDAQ.csv") as fd:
         
         for row in DictReader(fd):
@@ -86,7 +94,12 @@ def load_asset_data(db):
                 print("Unable to add {} - {}".format(code, err))
 
     print("Adding NYSE")
-    # Load NASDAQ tickers from NASDAQ.csv which is an enriched version 
+    # Load NASDAQ tickers from NASDAQ.csv which is an enriched version of nasdaq_screener_1615582729240-NYSE.csv
+    # The format of the columns are:
+    # * Symbol
+    # * Name
+    # * ...
+    # * Industry
     with open("./data/NYSE.csv") as fd:
         
         for row in DictReader(fd):

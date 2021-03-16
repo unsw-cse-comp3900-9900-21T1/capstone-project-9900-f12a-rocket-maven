@@ -13,6 +13,7 @@ class Asset(db.Model):
 
     # If an asset has no price: null it.
     current_price = db.Column(db.Float(), unique=False, nullable=False)
+    price_last_updated = db.Column(db.DateTime, default=db.func.current_timestamp())
 
     data_source = db.Column(db.String(1024), unique=False, nullable=False)
 
