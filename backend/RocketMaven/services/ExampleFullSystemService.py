@@ -1,4 +1,5 @@
 from RocketMaven.models import Asset, Investor, Portfolio, PortfolioEvent
+from RocketMaven.services import AssetService
 import datetime
 
 
@@ -88,6 +89,7 @@ def populate_full_system(db):
         db.session.add(asset)
         db.session.commit()
 
+    
     test_portfolio_event = (
         db.session.query(PortfolioEvent)
         .filter_by(asset_id="VIRT:A", portfolio_id=portfolio.id)
@@ -284,3 +286,6 @@ def populate_full_system(db):
             asset_cba,
             db,
         )
+
+    AssetService.load_asset_data(db)
+    
