@@ -75,9 +75,21 @@ const PaginatedPortfolioDisplay = ({portfolioPagination}: Props) => {
                 {portfolio.visibility ? 'Public' : 'Private'}
               </Col>
             </Row>
-            <Link to={urls.portfolio + `/edit/${portfolio.id}`}>
-              edit
-            </Link>
+            <Row>
+              <Link to={urls.portfolio + `/${portfolio.id}/edit`}>
+                Edit Portfolio
+              </Link>
+            </Row>
+            <Row>
+              <Link to={urls.portfolio + `/${portfolio.id}/history`}>
+                Portfolio History
+              </Link>
+            </Row>
+            <Row>
+              <Link to={urls.portfolio + `/${portfolio.id}/holdings`}>
+                Holdings
+              </Link>
+            </Row>
           </PortfolioWrap>
         )
       }

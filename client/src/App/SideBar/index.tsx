@@ -20,13 +20,11 @@ type SideBarItem = {
 
 function sideBarItems(isLoggedIn: boolean) {
   const itemsWhenNotLoggedIn: Array<SideBarItem> = [
-    { name: "HomeStub", to: urls.root, icon: FaHome },
     { name: "Sign up", to: urls.signup, icon: FaHome },
     { name: "Login", to: urls.login, icon: FaHome },
-    { name: "Login2", to: urls.login2, icon: FaHome },
   ];
   const itemsWhenLoggedIn: Array<SideBarItem> = [
-    { name: "HomeStub", to: urls.root, icon: FaHome },
+    { name: "HomeStub", to: urls.homeStub, icon: FaHome },
     { name: "Portfolio", to: urls.portfolio, icon: FaHome },
     { name: "Account", to: urls.account, icon: FaHome },
   ];
@@ -46,13 +44,15 @@ const SideBar = () => {
 
   // Basic logout functionality - get rid of when we have a proper logout button
   const { dispatch } = useStore()
-  sideBar.push(
-    <React.Fragment>
-      <Link onClick={()=>{dispatch({type:'LOGOUT'})}} to={urls.root}>
-        Logout
-      </Link>
-    </React.Fragment>
-  )
+  if (isLoggedIn) {
+    sideBar.push(
+      <React.Fragment>
+        <Link onClick={()=>{dispatch({type:'LOGOUT'})}} to={urls.root}>
+          Logout
+        </Link>
+      </React.Fragment>
+    )
+  }
   return (
     <SidebarWrap>
       <Subtitle>

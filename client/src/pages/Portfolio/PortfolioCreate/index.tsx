@@ -1,6 +1,6 @@
 import { Fragment } from 'react'
 import { Subtitle } from '../../../componentsStyled/Typography'
-import PortfolioEditForm from '../PortfolioEdit/PortfolioEditForm'
+import PortfolioEditForm from '../PortfolioEditForm'
 
 const PortfolioCreate = () => {
 
