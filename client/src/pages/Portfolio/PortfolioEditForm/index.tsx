@@ -1,11 +1,13 @@
  import * as Yup from 'yup'
 import { Fragment } from 'react'
 import { Formik, Field, ErrorMessage } from 'formik'
-import { Form, Input, Button,  Card} from 'antd';
+import { Form, Input, Button,  Card, Switch, Select } from 'antd';
 // import { MySelect, MyTextInput } from '../../../forms'
 import { numberRequired, stringRequired, booleanRequired} from '../../../forms/validators'
 import { useFetchMutationWithUserId } from '../../../hooks/http'
 import { PortfolioInfo } from '../types'
+import { useHistory } from "react-router";
+const { Option } = Select;
 
 const schema = Yup.object({
   competition_portfolio: booleanRequired,
@@ -45,6 +47,7 @@ const PortfolioEditForm = ({portfolioInfo, portfolioId, action}: Props) => {
   // values quickly
   const setValuesAndFetch: Function = useFetchMutationWithUserId(urlEnd, portfolioInfo ? 'PUT' : 'POST')
 
+  const routerObject = useHistory()
 
   const onFinish = (values: any) => {
     setValuesAndFetch({
@@ -52,12 +55,15 @@ const PortfolioEditForm = ({portfolioInfo, portfolioId, action}: Props) => {
             id: undefined,
             creation_date: undefined,
     })
+    routerObject.push('/portfolio')
   };
 
   return (
     <Card  style={{
       width:"600px"
     }}>  
+
+    
       <Form
         name="portfolio_edit"
         className="portfolio-edit-form"
@@ -66,18 +72,24 @@ const PortfolioEditForm = ({portfolioInfo, portfolioId, action}: Props) => {
         }}
         onFinish={onFinish}
       >
+      
+    
         <Form.Item
           name="name"
+          initialValue={initialValues.name}
+          label="Portfolio Name"
           rules={[
             {
               required: true,
             },
           ]}
         >
-          <Input placeholder="Portfolio Name" />
+          <Input placeholder="Name" />
         </Form.Item>
         <Form.Item
           name="description"
+          initialValue={initialValues.description}
+          label="Description"
           rules={[
             {
               required: false,
@@ -87,6 +99,21 @@ const PortfolioEditForm = ({portfolioInfo, portfolioId, action}: Props) => {
           <Input placeholder="Description" />
         </Form.Item>
         
+      
+      <Form.Item name="tax_residency" label="Tax Residency" initialValue={(initialValues.tax_residency.length > 0)?initialValues.tax_residency:"AU"} rules={[{ required: true }]}>
+        <Select >
+            <Option value="AU">Australia</Option>
+            <Option value="US">United States</Option>
+            <Option value="GB">England</Option>
+            <Option value="XX">Antarctica</Option>
+        </Select>
+      </Form.Item>
+    
+    
+        <Form.Item label="Public" name="visibility">
+          <Switch 
+          defaultChecked={initialValues.visibility?true:false} />
+        </Form.Item>
 
         <Form.Item>
           <Button type="primary" htmlType="submit" style={{

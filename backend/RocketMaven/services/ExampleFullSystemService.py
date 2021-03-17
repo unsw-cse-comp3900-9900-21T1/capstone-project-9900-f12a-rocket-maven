@@ -167,20 +167,6 @@ def populate_full_system(db):
         db.session.add(asset_cba)
         db.session.commit()
 
-        create_asset_event_with_current_price(
-            dict(
-                units=100,
-                add_action=True,
-                fees=15,
-                price_per_share=80,
-                note="I think this stock has growth potential",
-                asset_id="VIRT:CBA",
-                portfolio_id=portfolio.id,
-                event_date=datetime.date(2021, 1, 1),
-            ),
-            asset_cba,
-            db,
-        )
 
         create_asset_event_with_current_price(
             dict(

@@ -20,7 +20,7 @@ const PortfolioAssetCreate = () => {
     !isEmpty(portfolioHistory) ?
     <Fragment>
       <Subtitle>
-        Create Asset
+        Event Create
       </Subtitle>
       <PortfolioAssetEditForm />
     </Fragment>
