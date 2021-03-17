@@ -26,7 +26,7 @@ const Portfolio = () => {
         <Route path={urls.portfolio + '/create'} component={PortfolioCreate} />
         <Route path={urls.portfolio + '/:id/edit'} component={PortfolioEdit} />
         <Route exact path={urls.portfolio + '/:id/history'} component={PortfolioHistory} />
-        <Route path={urls.portfolio + '/:id/history/asset-create'} component={PortfolioAssetCreate} />
+        <Route path={urls.portfolio + '/:id/addremove'} component={PortfolioAssetCreate} />
         <Route path={urls.portfolio + '/:id/holdings'} component={PortfolioHoldings} />
       </Switch>
     </Page>

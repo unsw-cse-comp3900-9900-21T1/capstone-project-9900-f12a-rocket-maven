@@ -1,5 +1,6 @@
 import { Switch, Route, Redirect } from 'react-router-dom'
 import LogIn from "../../pages/LogIn"
+import Forgot from "../../pages/Forgot"
 import SignUp from "../../pages/SignUp"
 import Portfolio from "../../pages/Portfolio"
 import Account from '../../pages/Account'
@@ -21,6 +22,7 @@ const Routes = () => {
       </Route>
       <Route exact path={urls.homeStub} component={HomeStub} />
       <Route exact path={urls.login} component={LogIn} />
+      <Route exact path={urls.forgot} component={Forgot} />
       <Route exact path={urls.signup} component={SignUp} />
       <Route path={urls.login} component={LogIn} />
       <Route path={urls.portfolio} component={Portfolio}/>

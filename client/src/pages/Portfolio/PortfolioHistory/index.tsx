@@ -25,8 +25,11 @@ const PortfolioHistory = () => {
 
     const columns = [
       {
-        title: "Add?",
-        dataIndex: "add_action"
+        title: "Type",
+        dataIndex: "add_action",
+        render:  (value: string) => (
+            value?"Add":"Remove"
+        ),
       },
       {
         title: "Event ID",
