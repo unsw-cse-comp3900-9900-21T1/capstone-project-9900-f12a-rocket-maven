@@ -34,7 +34,7 @@ def load_asset_data(db):
             if asset:
                 print("{} already exists, updating price".format(asx_code))
                 asset.current_price = data["quoteResponse"]["result"][0]["regularMarketPrice"]["raw"]
-                db.session.commit()
+
                 continue
             try:
                 asset = Asset(
@@ -47,11 +47,10 @@ def load_asset_data(db):
                     currency="AUD", 
                 )
                 db.session.add(asset)
-                db.session.commit()
                 #print("Added {}".format(asx_code))
             except Exception as err:
                 print("Unable to add {} - {}".format(asx_code, err))
-
+        db.session.commit()
 
     print("Adding NASDAQ")
     # Load NASDAQ tickers from NASDAQ.csv which is an enriched version of nasdaq_screener_1615582712192-NASDAQ.csv
@@ -75,7 +74,6 @@ def load_asset_data(db):
             if asset:
                 print("{} already exists, updating price".format(code))
                 asset.current_price = data["quoteResponse"]["result"][0]["regularMarketPrice"]["raw"]
-                db.session.commit()
                 continue
             try:
                 asset = Asset(
@@ -88,10 +86,10 @@ def load_asset_data(db):
                     currency="AUD", 
                 )
                 db.session.add(asset)
-                db.session.commit()
                 #print("Added {}".format(asx_code))
             except Exception as err:
-                print("Unable to add {} - {}".format(code, err))
+                print("Unable to add {} - {}".format(code, err)) 
+        db.session.commit()
 
     print("Adding NYSE")
     # Load NASDAQ tickers from NASDAQ.csv which is an enriched version of nasdaq_screener_1615582729240-NYSE.csv
@@ -115,7 +113,7 @@ def load_asset_data(db):
             if asset:
                 print("{} already exists, updating price".format(code))
                 asset.current_price = data["quoteResponse"]["result"][0]["regularMarketPrice"]["raw"]
-                db.session.commit()
+
                 continue
             try:
                 asset = Asset(
@@ -128,7 +126,8 @@ def load_asset_data(db):
                     currency="AUD", 
                 )
                 db.session.add(asset)
-                db.session.commit()
                 #print("Added {}".format(asx_code))
             except Exception as err:
                 print("Unable to add {} - {}".format(code, err))
+
+        db.session.commit()
