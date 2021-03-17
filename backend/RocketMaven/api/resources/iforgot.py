@@ -12,7 +12,7 @@ class Iforgot(Resource):
         summary: password forgot
         description: password reset page
         tags:
-          - Investors
+          - Public
         requestBody:
 	        content:
 	          application/json:
