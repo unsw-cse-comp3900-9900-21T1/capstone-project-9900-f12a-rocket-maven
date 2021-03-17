@@ -1,3 +1,5 @@
+import Page from '../_Page'
+import { Fragment  } from 'react'
 import React from 'react';
 import ReactDOM from 'react-dom';
 import 'antd/dist/antd.css';
@@ -39,8 +41,9 @@ const SignUp =  () => {
   };
 
   return (
+    <Page>
     <Card  style={{
-      margin:"60px"
+      width:"600px",
     }}>
 
       <Form
@@ -151,6 +154,7 @@ const SignUp =  () => {
         </Form.Item>
       </Form>
     </Card>
+    </Page>
   );
 };
 

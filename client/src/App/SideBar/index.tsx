@@ -25,6 +25,7 @@ type SideBarItem = {
 function sideBarItems(isLoggedIn: boolean) {
   const itemsWhenNotLoggedIn: Array<SideBarItem> = [
     { name: "Sign Up", to: urls.signup, icon: FaUserPlus },
+    { name: "Sign In", to: urls.login, icon: FaUserPlus },
   ];
   const itemsWhenLoggedIn: Array<SideBarItem> = [
     { name: "Test", to: urls.homeStub, icon: FaHome },
