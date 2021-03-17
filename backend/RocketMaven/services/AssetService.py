@@ -33,7 +33,9 @@ def load_asset_data(db):
             asset = db.session.query(Asset).filter_by(ticker_symbol=ticker_symbol).first()
             if asset:
                 print("{} already exists, updating price".format(asx_code))
-                asset.current_price = data["quoteResponse"]["result"][0]["regularMarketPrice"]["raw"]
+                asset.current_price = data["regularMarketPrice"]["raw"]
+                asset.market_cap = data["marketCap"]["raw"]
+                asset.asset_additional = row["Yahoo"]
 
                 continue
             try:
@@ -41,15 +43,18 @@ def load_asset_data(db):
                     ticker_symbol=ticker_symbol,
                     name=company_name,
                     industry=industry,
-                    current_price=data["quoteResponse"]["result"][0]["regularMarketPrice"]["raw"],
+                    current_price=data["regularMarketPrice"]["raw"],
+                    market_cap=data["marketCap"]["raw"],
+                    asset_additional=row["Yahoo"],
                     data_source="Yahoo",
-                    country=data["quoteResponse"]["result"][0]["region"],
+                    country=data["region"],
                     currency="AUD", 
                 )
                 db.session.add(asset)
                 #print("Added {}".format(asx_code))
             except Exception as err:
-                print("Unable to add {} - {}".format(asx_code, err))
+                if not "marketCap" in str(err):
+                    print("Unable to add {} - {}".format(asx_code, err))
         db.session.commit()
 
     print("Adding NASDAQ")
@@ -73,22 +78,27 @@ def load_asset_data(db):
             asset = db.session.query(Asset).filter_by(ticker_symbol=ticker_symbol).first()
             if asset:
                 print("{} already exists, updating price".format(code))
-                asset.current_price = data["quoteResponse"]["result"][0]["regularMarketPrice"]["raw"]
+                asset.current_price = data["regularMarketPrice"]["raw"]
+                asset.market_cap = data["marketCap"]["raw"]
+                asset.asset_additional = row["Yahoo"]
                 continue
             try:
                 asset = Asset(
                     ticker_symbol=ticker_symbol,
                     name=company_name,
                     industry=industry,
-                    current_price=data["quoteResponse"]["result"][0]["regularMarketPrice"]["raw"],
+                    current_price=data["regularMarketPrice"]["raw"],
+                    market_cap=data["marketCap"]["raw"],
+                    asset_additional=row["Yahoo"],
                     data_source="Yahoo",
-                    country=data["quoteResponse"]["result"][0]["region"],
+                    country=data["region"],
                     currency="AUD", 
                 )
                 db.session.add(asset)
                 #print("Added {}".format(asx_code))
             except Exception as err:
-                print("Unable to add {} - {}".format(code, err)) 
+                if not "marketCap" in str(err):
+                    print("Unable to add {} - {}".format(code, err)) 
         db.session.commit()
 
     print("Adding NYSE")
@@ -112,7 +122,9 @@ def load_asset_data(db):
             asset = db.session.query(Asset).filter_by(ticker_symbol=ticker_symbol).first()
             if asset:
                 print("{} already exists, updating price".format(code))
-                asset.current_price = data["quoteResponse"]["result"][0]["regularMarketPrice"]["raw"]
+                asset.current_price = data["regularMarketPrice"]["raw"]
+                asset.market_cap = data["marketCap"]["raw"]
+                asset.asset_additional = row["Yahoo"]
 
                 continue
             try:
@@ -120,14 +132,17 @@ def load_asset_data(db):
                     ticker_symbol=ticker_symbol,
                     name=company_name,
                     industry=industry,
-                    current_price=data["quoteResponse"]["result"][0]["regularMarketPrice"]["raw"],
+                    current_price=data["regularMarketPrice"]["raw"],
+                    market_cap=data["marketCap"]["raw"],
+                    asset_additional=row["Yahoo"],
                     data_source="Yahoo",
-                    country=data["quoteResponse"]["result"][0]["region"],
+                    country=data["region"],
                     currency="AUD", 
                 )
                 db.session.add(asset)
                 #print("Added {}".format(asx_code))
             except Exception as err:
-                print("Unable to add {} - {}".format(code, err))
+                if not "marketCap" in str(err):
+                    print("Unable to add {} - {}".format(code, err))
 
         db.session.commit()

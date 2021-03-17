@@ -11,6 +11,8 @@ class Asset(db.Model):
     name = db.Column(db.String(80), unique=False, nullable=False)
     industry = db.Column(db.String(80), unique=False, nullable=True)
 
+    market_cap = db.Column(db.Float(), unique=False, nullable=True)
+
     # If an asset has no price: null it.
     current_price = db.Column(db.Float(), unique=False, nullable=False)
     price_last_updated = db.Column(db.DateTime, default=db.func.current_timestamp())
@@ -19,6 +21,8 @@ class Asset(db.Model):
 
     country = db.Column(CountryType, unique=False, nullable=True)
     currency = db.Column(db.String(80), unique=False, nullable=True)
+    
+    asset_additional = db.Column(db.Text, unique=False, nullable=True)
 
     def __repr__(self):
         return "<Asset %s>" % self.ticker_symbol
