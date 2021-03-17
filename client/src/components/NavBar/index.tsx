@@ -21,7 +21,7 @@ const NavBar = () => {
   if (isLoggedIn) {
   logoutButton =  <Menu.Item icon={FaSignOutAlt}>
           <Link onClick={()=>{dispatch({type:'LOGOUT'})}} to={urls.root}>
-            Logout
+            Sign Out
           </Link>
         </Menu.Item>;
   }
@@ -35,6 +35,7 @@ const NavBar = () => {
         {/*<Menu.Item key="1">nav 1</Menu.Item>
         <Menu.Item key="2">nav 2</Menu.Item>
         */}
+        <Menu.Item key="1"></Menu.Item>
         {logoutButton}
       </Menu>
     </div>

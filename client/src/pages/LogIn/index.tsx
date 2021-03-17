@@ -1,3 +1,5 @@
+import Page from '../_Page'
+import { Fragment  } from 'react'
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Link } from 'react-router-dom';
@@ -15,8 +17,8 @@ const LogIn = () => {
   };
 
   return (
+    <Page>
     <Card  style={{
-      margin:"60px",
       width:"600px", 
     }}>  
       <Form
@@ -68,7 +70,8 @@ const LogIn = () => {
           Or <Link to={urls.signup}>register now!</Link>
         </Form.Item>
       </Form>
-    </Card>        
+    </Card>   
+    </Page>     
   );
 };
 

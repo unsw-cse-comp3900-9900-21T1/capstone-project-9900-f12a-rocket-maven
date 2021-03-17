@@ -17,50 +17,48 @@ const PortfolioHistory = () => {
 
   // Avoid call when isCreate is true
   // Might have to just make a PortfolioCreate component 
-  const portfolioHistory: { portfolio: PortfolioEventPagination } = useGetPortfolioHistory(id);
+  const portfolioHistory: PortfolioEventPagination = useGetPortfolioHistory(id);
   var historyTable = null;
   if (!portfolioHistory || isEmpty(portfolioHistory)) {
-  
   } else {
-        const histories:[PortfolioEvent] = {...portfolioHistory.portfolio}.results;
-  
-  const columns = [
-    {
-      name: "Add?",
-      dataIndex: "add_action"
-    },
-    {
-      name: "Event ID",
-      dataIndex: "id"
-    },
-    {
-      name: "Ticker",
-      dataIndex: "asset_id"
-    },
-    {
-      name: "Date",
-      dataIndex: "event_date"
-    },
-    {
-      name: "Fees",
-      dataIndex: "fees"
-    },
-    {
-      name: "Units",
-      dataIndex: "units"
-    },
-    {
-      name: "Price Per Share",
-      dataIndex: "price_per_share"
-    },
-    {
-      name: "Note",
-      dataIndex: "note"
-    }
-  ];
-  console.log(histories);
-      historyTable = <Table columns={columns} dataSource={histories} rowKey="id"  />;
+        const histories:[PortfolioEvent] = portfolioHistory.results;
 
+    const columns = [
+      {
+        name: "Add?",
+        dataIndex: "add_action"
+      },
+      {
+        name: "Event ID",
+        dataIndex: "id"
+      },
+      {
+        name: "Ticker",
+        dataIndex: "asset_id"
+      },
+      {
+        name: "Date",
+        dataIndex: "event_date"
+      },
+      {
+        name: "Fees",
+        dataIndex: "fees"
+      },
+      {
+        name: "Units",
+        dataIndex: "units"
+      },
+      {
+        name: "Price Per Share",
+        dataIndex: "price_per_share"
+      },
+      {
+        name: "Note",
+        dataIndex: "note"
+      }
+    ];
+      historyTable = <Table columns={columns} dataSource={histories} rowKey="id"  />;
+      
   
   }
 
