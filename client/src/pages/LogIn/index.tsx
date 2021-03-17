@@ -16,7 +16,8 @@ const LogIn = () => {
 
   return (
     <Card  style={{
-      margin:"60px"
+      margin:"60px",
+      width:"600px", 
     }}>  
       <Form
         name="normal_login"
