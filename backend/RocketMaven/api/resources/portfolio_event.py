@@ -79,8 +79,8 @@ class PortfolioEventList(Resource):
     def post(self, portfolio_id):
         """
         ---
-        summary: Asset Create
-        description: Creates a new asset for a portfolio
+        summary: Event Create
+        description: Add new asset event to portfolio
         tags:
           - Assets
         requestBody:
