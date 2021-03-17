@@ -25,35 +25,35 @@ const PortfolioHistory = () => {
 
     const columns = [
       {
-        name: "Add?",
+        title: "Add?",
         dataIndex: "add_action"
       },
       {
-        name: "Event ID",
+        title: "Event ID",
         dataIndex: "id"
       },
       {
-        name: "Ticker",
+        title: "Ticker",
         dataIndex: "asset_id"
       },
       {
-        name: "Date",
+        title: "Date",
         dataIndex: "event_date"
       },
       {
-        name: "Fees",
+        title: "Fees",
         dataIndex: "fees"
       },
       {
-        name: "Units",
+        title: "Units",
         dataIndex: "units"
       },
       {
-        name: "Price Per Share",
+        title: "Price Per Share",
         dataIndex: "price_per_share"
       },
       {
-        name: "Note",
+        title: "Note",
         dataIndex: "note"
       }
     ];
@@ -69,9 +69,6 @@ const PortfolioHistory = () => {
       <Subtitle>
         Portfolio History
       </Subtitle>
-      <Link to={urls.portfolio + `/${id}/history/asset-create`}>
-        Add Asset
-      </Link>
       {historyTable}
     </Fragment>
     :
