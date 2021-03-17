@@ -6,7 +6,7 @@ import { Row, Col } from '../../../../componentsStyled/Grid'
 import { PortfolioInfo, PortfolioPagination } from '../../types'
 // import { PortfolioWrap } from './styled'
 import { urls } from '../../../../data/urls'
-import { Card } from 'antd';
+import { Tooltip, Button, Card } from 'antd';
 import { EditOutlined, EllipsisOutlined, SettingOutlined, EyeOutlined } from '@ant-design/icons';
 
 
@@ -31,24 +31,37 @@ const PaginatedPortfolioDisplay = ({portfolioPagination}: Props) => {
       width: 600
     }}
     actions={[
-      <SettingOutlined key="setting" />,
-      <EditOutlined key="edit" />,
-      <EyeOutlined key="ellipsis" />,
+    
+    
+      <Tooltip placement="topLeft" title="Add New Event" arrowPointAtCenter>
+      <Link to={urls.portfolio + `/${portfolio.id}/addremove`}>
+      <EditOutlined key="edit" />
+      </Link>
+      </Tooltip>
+      
+      ,
+      
+      
+      <Tooltip placement="topLeft" title="Edit Portfolio Settings" arrowPointAtCenter>
+      <Link to={urls.portfolio + `/${portfolio.id}/edit`}>
+      <SettingOutlined key="setting" />
+      </Link>
+      </Tooltip>
+      
+      ,
+      <Tooltip placement="topLeft" title="Portfolio Event History" arrowPointAtCenter>
+      <Link to={urls.portfolio + `/${portfolio.id}/history`}>
+      <EyeOutlined key="ellipsis" />
+      </Link>
+      </Tooltip>
+      ,
     ]}>
             <Row>
               <Col>
-                Buying Power
+                Type:
               </Col>
               <Col>
-                {portfolio.buying_power}
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                Competition Portfolio
-              </Col>
-              <Col>
-                {portfolio.competition_portfolio}
+                {portfolio.competition_portfolio? "Competition Portfolio":"Regular Portfolio"}
               </Col>
             </Row>
             <Row>
@@ -83,21 +96,7 @@ const PaginatedPortfolioDisplay = ({portfolioPagination}: Props) => {
                 {portfolio.visibility ? 'Public' : 'Private'}
               </Col>
             </Row>
-            <Row>
-              <Link to={urls.portfolio + `/${portfolio.id}/edit`}>
-                Edit Portfolio
-              </Link>
-            </Row>
-            <Row>
-              <Link to={urls.portfolio + `/${portfolio.id}/history`}>
-                Portfolio History
-              </Link>
-            </Row>
-            <Row>
-              <Link to={urls.portfolio + `/${portfolio.id}/holdings`}>
-                Holdings
-              </Link>
-            </Row>
+            
           </Card>
         )
       }

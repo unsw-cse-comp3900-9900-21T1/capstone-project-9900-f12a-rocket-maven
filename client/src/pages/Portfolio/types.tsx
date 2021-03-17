@@ -1,7 +1,6 @@
 
 export type PortfolioInfo = {
-  buying_power: number,
-  competition_portfolio: string,
+  competition_portfolio: boolean,
   // Double check if this is the right type
   creation_date: string,
   description: string,

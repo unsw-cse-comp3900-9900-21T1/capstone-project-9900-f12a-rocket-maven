@@ -19,9 +19,10 @@ type Props = {
     portfolio: PortfolioInfo
   }
   portfolioId?: string
+  action?: string
 }
 
-const PortfolioEditForm = ({portfolioInfo, portfolioId}: Props) => {
+const PortfolioEditForm = ({portfolioInfo, portfolioId, action}: Props) => {
   let initialValues: PortfolioInfo = {
     competition_portfolio: false,
     description: '',
@@ -52,11 +53,10 @@ const PortfolioEditForm = ({portfolioInfo, portfolioId}: Props) => {
             creation_date: undefined,
     })
   };
-  
 
   return (
     <Card  style={{
-      margin:"60px"
+      width:"600px"
     }}>  
       <Form
         name="portfolio_edit"
@@ -92,7 +92,7 @@ const PortfolioEditForm = ({portfolioInfo, portfolioId}: Props) => {
           <Button type="primary" htmlType="submit" style={{
    marginRight: "10px"
     }}>
-            Edit
+            {action? action: "Edit"}
           </Button>
         </Form.Item>
       </Form>

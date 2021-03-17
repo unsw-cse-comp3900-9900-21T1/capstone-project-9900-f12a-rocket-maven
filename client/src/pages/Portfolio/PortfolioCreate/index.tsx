@@ -9,7 +9,7 @@ const PortfolioCreate = () => {
       <Subtitle>
         Portfolio Creation
       </Subtitle>
-      <PortfolioEditForm />
+      <PortfolioEditForm action="Create" />
     </Fragment>
   )
 }
