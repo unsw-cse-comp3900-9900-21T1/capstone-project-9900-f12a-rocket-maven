@@ -1,11 +1,34 @@
 import json
 from csv import DictReader
-
+from flask import request
+from RocketMaven.api.schemas import AssetSchema
 from RocketMaven.models import Asset
+from RocketMaven.commons.pagination import paginate
+from sqlalchemy import or_
 
 
-def get_asset(ticker_symbol): 
-    return {"msg": "Not implemented"}, 501
+def get_asset(ticker_symbol):
+    try:
+        schema = AssetSchema()
+        data = Asset.query.get_or_404(ticker_symbol)
+        return {"asset": schema.dump(data)}
+    except:
+        return {"msg": "Operation failed!"}
+    
+def search_asset():
+    q = request.args.get("q", None)
+    
+    if q:
+        # https://stackoverflow.com/questions/3325467/sqlalchemy-equivalent-to-sql-like-statement
+        search = "%{}%".format(q)
+        schema = AssetSchema(many=True)
+        query = Asset.query.filter(or_(Asset.ticker_symbol.like(search), Asset.name.like(search))).order_by(Asset.market_cap.desc())
+        return paginate(query, schema)
+
+    else:
+        return {"msg": "Operation failed!"}
+
+
 
 def load_asset_data(db):
 

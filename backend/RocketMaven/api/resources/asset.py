@@ -10,8 +10,6 @@ from RocketMaven.commons.pagination import paginate
 
 class AssetResource(Resource):
 
-    #method_decorators = [jwt_required()]
-
     def get(self, ticker_symbol):
         """
         ---
@@ -36,3 +34,36 @@ class AssetResource(Resource):
             description: asset does not exist
         """
         return AssetService.get_asset(ticker_symbol)
+
+
+class AssetSearchResource(Resource):
+
+    def get(self):
+        """
+        ---
+        summary: Search assets
+        description: Search assets
+        tags:
+          - Asset
+        parameters:
+          - in: query
+            name: q
+            schema:
+              type: string
+          - in: query
+            name: per_page
+            schema:
+              type: string
+            default: 10
+        responses:
+          200:
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    asset: AssetSchema
+          404:
+            description: no assets found
+        """
+        return AssetService.search_asset()
