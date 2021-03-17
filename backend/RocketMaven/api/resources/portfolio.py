@@ -111,6 +111,7 @@ class PortfolioList(Resource):
         """
         return PortfolioService.get_portfolios(investor_id)
 
+    @jwt_required()
     def post(self, investor_id):
         """
         ---

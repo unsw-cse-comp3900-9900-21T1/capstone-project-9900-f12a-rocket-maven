@@ -4,8 +4,11 @@ import { isEmpty } from 'ramda'
 import { Text } from '../../../../componentsStyled/Typography'
 import { Row, Col } from '../../../../componentsStyled/Grid'
 import { PortfolioInfo, PortfolioPagination } from '../../types'
-import { PortfolioWrap } from './styled'
+// import { PortfolioWrap } from './styled'
 import { urls } from '../../../../data/urls'
+import { Card } from 'antd';
+import { EditOutlined, EllipsisOutlined, SettingOutlined, EyeOutlined } from '@ant-design/icons';
+
 
 type Props = {
   portfolioPagination: PortfolioPagination
@@ -23,10 +26,15 @@ const PaginatedPortfolioDisplay = ({portfolioPagination}: Props) => {
     <Fragment>
       {
         portfolios.map((portfolio, index) => 
-          <PortfolioWrap>
-            <Text bold>
-              {portfolio.name}
-            </Text>
+          <Card title={portfolio.name}  style={{
+      marginTop:"20px",
+      width: 600
+    }}
+    actions={[
+      <SettingOutlined key="setting" />,
+      <EditOutlined key="edit" />,
+      <EyeOutlined key="ellipsis" />,
+    ]}>
             <Row>
               <Col>
                 Buying Power
@@ -90,7 +98,7 @@ const PaginatedPortfolioDisplay = ({portfolioPagination}: Props) => {
                 Holdings
               </Link>
             </Row>
-          </PortfolioWrap>
+          </Card>
         )
       }
     </Fragment>

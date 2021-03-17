@@ -69,7 +69,7 @@ const SignUp =  () => {
           name="firstName"
           rules={[
             {
-              required: true,
+              required: false,
               message: 'Please input your first name!',
             },
           ]}
@@ -82,7 +82,7 @@ const SignUp =  () => {
           name="lastName"
           rules={[
             {
-              required: true,
+              required: false,
               message: 'Please input your last name!',
             },
           ]}

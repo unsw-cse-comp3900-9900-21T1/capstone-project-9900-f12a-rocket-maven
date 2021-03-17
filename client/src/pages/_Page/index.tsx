@@ -7,6 +7,9 @@ import {
   NavWrap,
   PageWrap,
 } from "./styled"
+import { Layout, Menu, Breadcrumb } from 'antd';
+
+const { Header, Content, Footer } = Layout;
 
 // This component is a wrapper for the other pages content.
 // Note only the body will change and all the other sections of the DOM will
@@ -18,20 +21,15 @@ type Props = {
 const Page = ({children}: Props) => {
 
   return (
-    <PageWrap>
-      <HeaderWrap>
-        New Header Component here
-      </HeaderWrap>
+  <Layout className="layout" style={{height: "100vh"}}>
       <NavWrap>
         <NavBar/>
       </NavWrap>
-      <BodyWrap>
+      <Content style={{margin:"20px"}}>
         {children}
-      </BodyWrap>
-      <FooterWrap>
-        New Footer Component here
-      </FooterWrap>
-    </PageWrap>
+      </Content>
+      <Footer style={{ textAlign: 'center' }}>Rocket Maven ©2021</Footer>
+    </Layout>
   )
 }
 

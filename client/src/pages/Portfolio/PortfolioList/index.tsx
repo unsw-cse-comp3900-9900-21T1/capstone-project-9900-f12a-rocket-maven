@@ -5,7 +5,7 @@ import {  PortfolioPagination } from '../types'
 import PaginatedPortfolioDisplay from './PaginatedPortfolioDisplay'
 import { Link } from 'react-router-dom';
 import { urls } from '../../../data/urls'
-
+import { Button } from 'antd';
 
 const PortfolioList = () => {
   // FIX(Jude)
@@ -21,9 +21,12 @@ const PortfolioList = () => {
           Portfolio List
         </Subtitle>
         {/* TODO(Jude): Crudify routes */}
-        <Link to={urls.portfolio + '/create'}>
-          Add Portfolio
-        </Link>
+        <Button type="primary">
+          <Link to={urls.portfolio + '/create'}>
+          New Portfolio
+          </Link>
+        </Button>
+
         <PaginatedPortfolioDisplay portfolioPagination={portfolioData} />
       </Fragment>
       : null

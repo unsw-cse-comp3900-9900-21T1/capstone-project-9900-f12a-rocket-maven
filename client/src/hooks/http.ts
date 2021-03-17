@@ -19,7 +19,7 @@ export const useAccessToken = () => {
       if (isExpired(refreshToken)) {
         throw Error("Refresh token expired")
       }
-      const response = await fetch('/auth​/refresh', {
+      const response = await fetch('/auth/refresh', {
         method: 'POST',
         headers: {
           "Accept": "application/json",
