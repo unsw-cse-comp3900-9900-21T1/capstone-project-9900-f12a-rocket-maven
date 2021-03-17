@@ -5,6 +5,7 @@ from marshmallow import ValidationError
 from RocketMaven.extensions import apispec
 from RocketMaven.api.resources import (
     AssetResource,
+    AssetSearchResource,
     InvestorResource,
     InvestorList,
     PortfolioResource,
@@ -37,6 +38,12 @@ api.add_resource(PortfolioStub, "/portfolio-stub", endpoint="portfolio_stub")
 
 api.add_resource(InvestorResource, "/investors/<int:investor_id>", endpoint="investor_by_id")
 api.add_resource(InvestorList, "/investors", endpoint="investors")
+
+api.add_resource(
+    AssetSearchResource,
+    "/assets/search",
+    endpoint="assert_search"
+)
 
 api.add_resource(
     AssetResource,
@@ -78,6 +85,7 @@ api.add_resource(
 def register_controllers():
     apispec.spec.components.schema('AssetSchema', schema=AssetSchema)
     apispec.spec.path(view=AssetResource, app=current_app, api=api)
+    apispec.spec.path(view=AssetSearchResource, app=current_app, api=api)
     
     apispec.spec.components.schema("InvestorSchema", schema=InvestorSchema)
     apispec.spec.path(view=InvestorResource, app=current_app, api=api)
