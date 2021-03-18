@@ -29,8 +29,10 @@ class AssetResource(Resource):
                   type: object
                   properties:
                     asset: AssetSchema
+          400:
+            description: Missing ticker symbol
           404:
-            description: asset does not exist
+            description: Asset does not exist
         """
         return AssetService.get_asset(ticker_symbol)
 
@@ -40,16 +42,18 @@ class AssetSearchResource(Resource):
         """
         ---
         summary: Search assets
-        description: Search assets
+        description: Search assets based on ticker or company name
         tags:
           - Asset
         parameters:
           - in: query
             name: q
+            description: Parameter to search ticker/company name on
             schema:
               type: string
           - in: query
             name: per_page
+            description: Number of results to return per page
             schema:
               type: string
             default: 10
@@ -61,7 +65,9 @@ class AssetSearchResource(Resource):
                   type: object
                   properties:
                     asset: AssetSchema
+          400:
+            description: Missing search query
           404:
-            description: no assets found
+            description: No assets found
         """
         return AssetService.search_asset()

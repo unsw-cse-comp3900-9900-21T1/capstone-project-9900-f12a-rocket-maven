@@ -7,32 +7,48 @@ from RocketMaven.commons.pagination import paginate
 from sqlalchemy import or_
 
 
-def get_asset(ticker_symbol):
+def get_asset(ticker_symbol: str):
+    """ Returns 
+            200 - the associated Asset for the given ticker symbol
+            400 - ticker symbol is None
+            404 - if the ticker symbol doesn't exist
+            500 - if an unexpected exception is raised
+    """
+    if ticker_symbol is None:
+        return { "msg": "Missing ticker symbol" }, 400
     try:
         schema = AssetSchema()
         data = Asset.query.get_or_404(ticker_symbol)
-        return {"asset": schema.dump(data)}
+        return { "asset": schema.dump(data) }, 200
     except:
-        return {"msg": "Operation failed!"}
+        return { "msg": "Operation failed!" }, 500
     
 def search_asset():
+    """ Returns
+            200 - a paginated list of Assets that match the given user query in the request
+            400 - missing search query
+            500 - if an unexpected exception is raised
+    """
     q = request.args.get("q", None)
     
     if q:
-        # https://stackoverflow.com/questions/3325467/sqlalchemy-equivalent-to-sql-like-statement
-        search = "%{}%".format(q)
-        schema = AssetSchema(many=True)
-        query = Asset.query.filter(or_(Asset.ticker_symbol.like(search), Asset.name.like(search))).order_by(Asset.market_cap.desc())
-        return paginate(query, schema)
-
+        try:
+            # https://stackoverflow.com/questions/3325467/sqlalchemy-equivalent-to-sql-like-statement
+            search = "%{}%".format(q)
+            schema = AssetSchema(many=True)
+            query = Asset.query.filter(or_(Asset.ticker_symbol.like(search), Asset.name.like(search))).order_by(Asset.market_cap.desc())
+            return paginate(query, schema)
+        except:
+            return { "msg": "Asset search failed" }, 500
     else:
-        return {"msg": "Operation failed!"}
+        { "msg": "Missing search query" }, 400
 
 
 
 def load_asset_data(db):
-
-    # Load CSV data
+    """ Bootstrap process to load pre-cached stock values (from Yahoo Finance responses) 
+        into the system database
+    """ 
     
     print("Adding ASX")
     # Load ASX tickers from ASX.csv which is an enriched version ASX_Listed_Companies_13-03-2021_07-59-39_AEDT.csv
@@ -49,7 +65,6 @@ def load_asset_data(db):
             asx_code = row["ASX code"]
             company_name = row["Company name"]
             industry = row["GICs industry group"]
-            #print(row["Yahoo"])
             data = json.loads(row["Yahoo"])
             ticker_symbol = "ASX:{}".format(asx_code)
             
@@ -125,7 +140,7 @@ def load_asset_data(db):
         db.session.commit()
 
     print("Adding NYSE")
-    # Load NASDAQ tickers from NASDAQ.csv which is an enriched version of nasdaq_screener_1615582729240-NYSE.csv
+    # Load NYSE tickers from NYSE.csv which is an enriched version of nasdaq_screener_1615582729240-NYSE.csv
     # The format of the columns are:
     # * Symbol
     # * Name
