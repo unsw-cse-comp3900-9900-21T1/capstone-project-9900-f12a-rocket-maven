@@ -144,12 +144,7 @@ const PortfolioAssetEditForm = ({portfolioId}: Props) => {
   }
   let urlEnd = `../../../portfolios/${portfolioId}/history`
 
-  console.log("**************** initial values are", initialValues)
-  // Will add redirect after we get some seed data. Right now it's useful to be able to populate
-  // values quickly
-  const setValuesAndFetch: Function = useFetchMutationWithUserId(urlEnd, 'POST')
-
-  const routerObject = useHistory()
+  const setValuesAndFetch: Function = useFetchMutationWithUserId(urlEnd, 'POST', urls.portfolio)
 
   const onFinish = (values: any) => {
     values.asset_id = values.asset_id.value
@@ -158,7 +153,6 @@ const PortfolioAssetEditForm = ({portfolioId}: Props) => {
     setValuesAndFetch({
             ...values
     })
-    routerObject.push(urls.portfolio)
   }
 
 
