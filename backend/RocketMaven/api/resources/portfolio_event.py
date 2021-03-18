@@ -104,5 +104,7 @@ class PortfolioEventList(Resource):
                       type: string
                       example: asset created
                     portfolio_event: PortfolioEventSchema
+          400:
+            description: Unknown values in request
         """
         return PortfolioEventService.create_event(portfolio_id)

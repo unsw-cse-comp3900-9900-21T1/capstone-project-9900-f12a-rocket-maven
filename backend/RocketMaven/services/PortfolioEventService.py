@@ -3,6 +3,7 @@ from RocketMaven.api.schemas import PortfolioEventSchema, PortfolioAssetHoldingS
 from RocketMaven.models import PortfolioEvent, PortfolioAssetHolding, Portfolio, Asset
 from RocketMaven.extensions import db
 from RocketMaven.commons.pagination import paginate
+import sqlalchemy.exc
 
 import requests
 
@@ -49,6 +50,11 @@ def update_asset(asset) -> (bool, str):
 
 
 def get_events(portfolio_id):
+    """ Get the list of (asset) events in a portfolio 
+        Returns
+            200 - a paginated list of Portfolio events
+            500 - if an unexpected exception occurs
+    """
     schema = PortfolioEventSchema(many=True)
 
     # Get the assets that are part of this portfolio
@@ -78,6 +84,11 @@ def get_events(portfolio_id):
 
 
 def get_holdings(portfolio_id):
+    """ Get the list of asset holdings in a portfolio
+        Returns
+            200 - a paginated list of asset holdings
+            500 - if an unexpected exception occurs
+    """
     schema = PortfolioAssetHoldingSchema(many=True)
 
     # Get the assets that are part of this portfolio
@@ -106,6 +117,12 @@ def get_holdings(portfolio_id):
 
 
 def create_event(portfolio_id):
+    """ Create a new asset for the given portfolio in the database
+        Returns
+            201 - on successful asset creation
+            400 - Foreign key error (unknown portfolio or asset id)
+            500 - unexpected error
+    """
 
     schema = PortfolioEventSchema()
 
@@ -149,10 +166,11 @@ def create_event(portfolio_id):
 
     db.session.commit()
 
+
     return (
         {
             "msg": "portfolio event created",
             "portfolio event": schema.dump(portfolio_event),
         },
         201,
-    )
+    }
