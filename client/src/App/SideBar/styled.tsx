@@ -10,7 +10,8 @@ export const SidebarWrap = styled.div`
   flex-direction: column;
   flex-shrink: 0;
   background-color: gray;
-  height: 100vh;
+  min-height: 100vh;
+  overflow: auto;
   width: 15rem;
 `
 
