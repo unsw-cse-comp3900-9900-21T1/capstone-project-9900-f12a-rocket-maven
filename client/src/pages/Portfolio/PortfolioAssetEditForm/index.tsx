@@ -160,6 +160,7 @@ const PortfolioAssetEditForm = ({portfolioId}: Props) => {
     setValuesAndFetch({
             ...values
     })
+    routerObject.push(urls.portfolio)
   }
 
 
