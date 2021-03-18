@@ -1,18 +1,45 @@
 import Page from '../_Page'
-import { Fragment  } from 'react'
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { Link } from 'react-router-dom';
-import 'antd/dist/antd.css';
+import { useState } from 'react'
+import { useHistory, Redirect } from 'react-router-dom'
 import { Form, Input, Button,  Card} from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { urls } from '../../data/urls'
-import { useAuth } from '../../hooks/http'
+import 'antd/dist/antd.css';
+import { Investor } from '../Account/types';
 
 const Forgot = () => {
 
-  const onFinish = (values: any) => {
-    // setValuesAndFetch(values)
+  const [isLoading, setIsLoading] = useState(false)
+  const routerObject = useHistory()
+
+  const onFinish = async (values: any) => {
+    // TODO(Jude): Create hook and replace useState functio
+    try {
+      setIsLoading(true)
+      const response = await fetch( '/api/v1/iforgot',{
+        method: "POST",
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values)
+      })
+      if (response.ok) {
+        alert("Password reset sent to email")
+      } else {
+        throw (response)
+      }
+
+      const data: Investor = await response.json()
+      setIsLoading(false)
+      // TODO(Jude) pass userID to tolink
+      // TODO(Jude) make secure
+      // TODO(Jude) Bring up why the schema is incorrect
+      console.log("*****************8 data is ", data)
+    } catch (error) {
+      alert(`Something went wrong: ${error.status} ${error.statusText}`)
+      setIsLoading(false)
+    }
   };
 
   return (
@@ -41,9 +68,13 @@ const Forgot = () => {
         </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit" style={{
-   marginRight: "10px"
-    }}>
+          <Button 
+            type="primary"
+            htmlType="submit"
+            style={{ marginRight: "10px" }}
+            disabled={isLoading}
+            loading={isLoading}
+          >
             Reset Password
           </Button>
         </Form.Item>
