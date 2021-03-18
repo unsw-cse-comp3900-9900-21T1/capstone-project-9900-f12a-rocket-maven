@@ -46,6 +46,11 @@ def update_asset(asset) -> (bool, str):
     return True, ""
 
 def get_events(portfolio_id):
+    """ Get the list of (asset) events in a portfolio 
+        Returns
+            200 - a paginated list of Portfolio events
+            500 - if an unexpected exception occurs
+    """
     schema = PortfolioEventSchema(many=True)
     
     # Get the assets that are part of this portfolio
@@ -63,6 +68,11 @@ def get_events(portfolio_id):
 
 
 def get_holdings(portfolio_id):
+    """ Get the list of asset holdings in a portfolio
+        Returns
+            200 - a paginated list of asset holdings
+            500 - if an unexpected exception occurs
+    """
     schema = PortfolioAssetHoldingSchema(many=True)
 
     # Get the assets that are part of this portfolio
@@ -78,19 +88,30 @@ def get_holdings(portfolio_id):
     return paginate(query, schema)
 
 def create_event(portfolio_id):
+    """ Create a new asset for the given portfolio in the database
+        Returns
+            201 - on successful asset creation
+            400 - Foreign key error (unknown portfolio or asset id)
+            500 - unexpected error
+    """
 
     schema = PortfolioEventSchema()
 
-    portfolio_event = schema.load(request.json)
-    portfolio_event.portfolio_id = portfolio_id
-    db.session.add(portfolio_event)
-    db.session.commit()
-    portfolio_event.update_portfolio_asset_holding()
+    try:
+        portfolio_event = schema.load(request.json)
+        portfolio_event.portfolio_id = portfolio_id
+        db.session.add(portfolio_event)
+        db.session.commit()
+        portfolio_event.update_portfolio_asset_holding()
 
-    return (
-        {
-            "msg": "portfolio event created",
-            "portfolio event": schema.dump(portfolio_event),
-        },
-        201,
-    )
+        return (
+            {
+                "msg": "portfolio event created",
+                "portfolio event": schema.dump(portfolio_event),
+            },
+            201,
+        )
+    except sqlalchemy.exc.IntegrityError as err:
+        return { "msg": "Unknown values in request" }, 400
+    except:
+        return { "msg": "Error creating portfolio event" }, 500

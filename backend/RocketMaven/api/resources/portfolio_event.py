@@ -28,7 +28,7 @@ class PortfolioAssetHoldingList(Resource):
         responses:
           200:
             content:
-              application/json:
+              application/json:Return
                 schema:
                   allOf:
                     - $ref: '#/components/schemas/PaginatedResult'
@@ -104,5 +104,7 @@ class PortfolioEventList(Resource):
                       type: string
                       example: asset created
                     portfolio_event: PortfolioEventSchema
+          400:
+            description: Unknown values in request
         """
         return PortfolioEventService.create_event(portfolio_id)
