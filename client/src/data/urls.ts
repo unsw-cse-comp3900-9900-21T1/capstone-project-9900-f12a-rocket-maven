@@ -3,6 +3,7 @@ export const urls = {
   root: '/',
   login: '/login',
   forgot: '/forgot',
+  passwordReset: '/reset',
   signup: '/signup',
   portfolioDetails: '/portfolio-details',
   // TODO(Jude): Crudify routes 

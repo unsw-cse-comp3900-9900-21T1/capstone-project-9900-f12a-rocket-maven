@@ -94,13 +94,13 @@ def change_password():
                 user.password = password
                 user.email_verified_code = None
                 db.session.commit()
-                return "<h1>password changed successfully</h1>", 200
+                return {"msg": "Password change successfull" }, 200
             else:
-                return "<h1>Email does not exist</h1>", 404
+                return {"msg": "Password change unsuccessfull"}, 404
         except:
-            return "<h1>Unexpected error</h1>", 500
+            return {"msg": "Unexpected error"}, 500
     else:
-        return "<h1>Passwords do not match</h1>", 400
+        return {"msg": "Passwords do not match"}, 400
 
 
 def update_password():
