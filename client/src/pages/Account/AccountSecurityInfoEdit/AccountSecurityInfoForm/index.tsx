@@ -2,7 +2,8 @@ import { Fragment, useState } from 'react'
 import { Subtitle } from '../../../../componentsStyled/Typography'
 import { useFetchMutationWithUserId } from '../../../../hooks/http'
 import { useHistory } from "react-router";
-import { Form, Input, Button, Card, Switch } from 'antd';
+import { Card } from '../../../../componentsStyled/Card'
+import { Form, Input, Button, Switch } from 'antd';
 import { Investor } from '../../types'
 import { urls } from '../../../../data/urls'
 
@@ -26,9 +27,7 @@ const AccountSecurityInfoForm = ({investorData}: Props) => {
       <Subtitle>
         Security Edit
       </Subtitle>
-    <Card  style={{
-      width:"600px"
-    }}>  
+    <Card>  
       <Form
         name="account_security_info"
         className="account-security-info"

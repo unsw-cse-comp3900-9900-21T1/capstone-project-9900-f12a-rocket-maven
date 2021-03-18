@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import 'antd/dist/antd.css';
-import { Form, Input, Button, Card } from 'antd';
+import { Form, Input, Button } from 'antd';
+import { Card } from '../../../componentsStyled/Card'
 import { urls } from '../../../data/urls'
 import { useState, useRef, useMemo } from 'react'
 import { useHistory } from "react-router";
@@ -98,8 +99,7 @@ async function fetchUserList(query: string): Promise<DebounceValue[]> {
   return fetch(`/api/v1/assets/search?q=${query}&per_page=10`)
     .then(response => response.json())
     .then(data => {
-        console.log(data.next);
-        if (!data || isEmpty(data) || !data.next) {
+        if (!data || isEmpty(data) || !data.hasOwnProperty("next")) {
         } else {
         const histories:[AssetSearch] = (data as AssetSearchPagination).results;
         
@@ -159,9 +159,7 @@ const PortfolioAssetEditForm = ({portfolioId}: Props) => {
 
 
   return (
-    <Card  style={{
-      width:"600px"
-    }}>  
+    <Card>  
       <Form
         name="normal_login"
         className="login-form"

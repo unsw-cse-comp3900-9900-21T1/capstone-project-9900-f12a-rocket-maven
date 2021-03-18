@@ -1,8 +1,9 @@
 import styled from 'styled-components'
-import { Card } from 'antd';
+import { Card as AntCard } from 'antd';
 
-export const MyCard = styled(Card)`
-  width:600px;
-  margin-top:30px;
-  margin-bottom:30px;
+export const Card = styled(AntCard)`
+  width:800px;
+  margin:20px;
+  float:left;
+  box-shadow: 0 0 20px rgb(0 0 0 / 5%);
 `

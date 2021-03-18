@@ -53,7 +53,7 @@ def populate_full_system(db):
         portfolio = Portfolio(
             tax_residency="AU",
             name="My First Portfolio!",
-            description="Growth stocks in a sell-off?",
+            description="Seeing if I should investor or not",
             competition_portfolio=False,
             buying_power=None,
             investor_id=user.id,

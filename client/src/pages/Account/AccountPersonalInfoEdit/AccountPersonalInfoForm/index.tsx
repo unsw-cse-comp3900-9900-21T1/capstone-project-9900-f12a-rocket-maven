@@ -1,7 +1,8 @@
 import { Fragment, useState } from 'react'
 import { Subtitle } from '../../../../componentsStyled/Typography'
 import { useFetchMutationWithUserId } from '../../../../hooks/http'
-import { Form, Input, Button, Card, Select } from 'antd';
+import { Card } from '../../../../componentsStyled/Card'
+import { Form, Input, Button, Select } from 'antd';
 import { Investor } from '../../types'
 import { useSortedCountryList } from '../../../../hooks/store'
 import { urls } from '../../../../data/urls'
@@ -20,16 +21,14 @@ const AccountPersonalInfoForm = ({investorData}: Props) => {
   }
 
   // Get the country code of the name returned
-  const countryElement = countryList.find( element => investorData.investor.country_of_residency === element[1]) 
+  const countryElement = countryList.find( element => investorData.investor.country_of_residency === element[1])
 
   return (
     <Fragment>
       <Subtitle>
         Account Edit
       </Subtitle>
-    <Card  style={{
-      width:"600px"
-    }}>  
+    <Card>
       <Form
         name="account_personal_info"
         className="account-personal-info"
@@ -50,7 +49,7 @@ const AccountPersonalInfoForm = ({investorData}: Props) => {
         >
           <Input  />
         </Form.Item>
-        
+
         <Form.Item
           name="first_name"
           label="First Name"
@@ -104,7 +103,7 @@ const AccountPersonalInfoForm = ({investorData}: Props) => {
           <Input  />
         </Form.Item>
         <Form.Item style={{textAlign: "center"}} >
-          <Button 
+          <Button
             type="primary"
             htmlType="submit"
             style={{ marginRight: "8px", marginBottom: "12px"}}
@@ -113,7 +112,7 @@ const AccountPersonalInfoForm = ({investorData}: Props) => {
           </Button>
         </Form.Item>
       </Form>
-    </Card>        
+    </Card>
     </Fragment>
   )
 }
