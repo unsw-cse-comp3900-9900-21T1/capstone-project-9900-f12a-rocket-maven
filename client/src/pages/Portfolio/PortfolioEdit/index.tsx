@@ -10,20 +10,27 @@ type Params = {
   id?: string
 }
 
+type PortfolioFetchInfo  = {
+  data: {
+    portfolio: PortfolioInfo
+  }
+  isLoading: boolean,
+}
+
 const PortfolioEdit = () => {
   const { id } = useParams<Params>()
 
   // Avoid call when isCreate is true
   // Might have to just make a PortfolioCreate component 
-  const portfolioInfo: { portfolio: PortfolioInfoEdit } = useFetchGetWithUserId(`/portfolios/${id}`)
+  const { data, isLoading }: PortfolioFetchInfo = useFetchGetWithUserId(`/portfolios/${id}`)
 
   return (
-    !isEmpty(portfolioInfo) ?
+    !isEmpty(data) ?
     <Fragment>
       <Subtitle>
         Portfolio Edit
       </Subtitle>
-      <PortfolioEditForm  portfolioInfo={portfolioInfo} portfolioId={id}/>
+      <PortfolioEditForm  portfolioInfo={data} portfolioId={id}/>
     </Fragment>
     :
       null

@@ -66,8 +66,6 @@ const PortfolioEditForm = ({portfolioInfo, portfolioId, action}: Props) => {
         }}
         onFinish={onFinish}
       >
-      
-    
         <Form.Item
           name="name"
           initialValue={initialValues.name}
@@ -109,7 +107,6 @@ const PortfolioEditForm = ({portfolioInfo, portfolioId, action}: Props) => {
           <Input placeholder="Description" />
         </Form.Item>
         
-      
       <Form.Item name="tax_residency" label="Tax Residency" initialValue={(initialValues.tax_residency.length > 0)?initialValues.tax_residency:"AU"} rules={[{ required: true }]}>
         <Select >
             <Option value="AU">Australia</Option>
@@ -118,7 +115,6 @@ const PortfolioEditForm = ({portfolioInfo, portfolioId, action}: Props) => {
             <Option value="XX">Antarctica</Option>
         </Select>
       </Form.Item>
-    
     
         <Form.Item label="Public" name="visibility">
           <Switch 

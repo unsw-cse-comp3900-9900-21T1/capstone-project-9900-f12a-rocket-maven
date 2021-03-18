@@ -50,6 +50,7 @@ export const useAccessToken = () => {
 export const useFetchGetWithUserId = (urlEnd:string): any => {
 
   const [ data, setData ] = useState({})
+  const [ isLoading, setIsLoading ] = useState(true)
   const { accessToken, revalidateAccessToken } = useAccessToken()
   const userId = useUserId()
 
@@ -72,14 +73,17 @@ export const useFetchGetWithUserId = (urlEnd:string): any => {
         }
         const data = await response.json()
         setData(data)
+        setIsLoading(false)
       } catch(error) {
         alert(error)
+        setData({})
+        setIsLoading(false)
       }
     }
     myFetch()
   }, [])
 
-  return data
+  return { data, isLoading }
 }
 
 type HttpMutation = 'POST' | 'PUT'
