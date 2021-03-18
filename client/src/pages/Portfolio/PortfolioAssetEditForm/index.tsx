@@ -97,8 +97,6 @@ interface DebounceValue {
 
 async function fetchUserList(query: string): Promise<DebounceValue[]> {
 
-        
-        
   return fetch(`/api/v1/assets/search?q=${query}&per_page=10`)
     .then(response => response.json())
     .then(data => {
@@ -134,8 +132,12 @@ const formItemLayout = {
 
 
 const PortfolioAssetEditForm = ({portfolioId}: Props) => {
+
+  const [ addActionValue, setAddActionValue ] = useState(true);
+  const [ valued, setValued ] = useState();
+
   let initialValues: PortfolioEventCreate = {
-    add_action: true,
+    add_action: addActionValue,
     asset_id: "",
     fees: 0,
     note: "",
@@ -144,22 +146,23 @@ const PortfolioAssetEditForm = ({portfolioId}: Props) => {
   }
   let urlEnd = `../../../portfolios/${portfolioId}/history`
 
-console.log("**************** initial values are", initialValues)
-// Will add redirect after we get some seed data. Right now it's useful to be able to populate
-// values quickly
-const setValuesAndFetch: Function = useFetchMutationWithUserId(urlEnd, 'POST')
+  console.log("**************** initial values are", initialValues)
+  // Will add redirect after we get some seed data. Right now it's useful to be able to populate
+  // values quickly
+  const setValuesAndFetch: Function = useFetchMutationWithUserId(urlEnd, 'POST')
 
-const routerObject = useHistory()
+  const routerObject = useHistory()
 
-const onFinish = (values: any) => {
-values.asset_id = values.asset_id.value
-setValuesAndFetch({
-        ...values
-})
-}
+  const onFinish = (values: any) => {
+    values.asset_id = values.asset_id.value
+    values.add_action = addActionValue
+    console.log("************** values are ", values)
+    setValuesAndFetch({
+            ...values
+    })
+  }
 
 
-  const [ valued, setValued ] = useState();
 
 
   return (
@@ -255,14 +258,15 @@ setValuesAndFetch({
         
         
 
-        <Form.Item style={{textAlign: "center"}}  name="add_action" initialValue="1">
-          <Button type="primary" htmlType="submit" value="1" style={{
+          {/* <Button type="primary" onClick={() => setAddActionValue(true)} htmlType="submit" value={addActionValue} style={{ */}
+        <Form.Item style={{textAlign: "center"}} >
+          <Button type="primary" onClick={()=>setAddActionValue(true)} htmlType="submit" style={{
    marginRight: "8px",
    marginBottom: "12px",
     }}>
           Add
           </Button>
-          <Button type="primary" htmlType="submit" value="0" danger style={{
+          <Button type="primary" onClick={()=>setAddActionValue(false)} htmlType="submit" danger style={{
    marginRight: "8px",
    marginBottom: "12px",
     }}>
