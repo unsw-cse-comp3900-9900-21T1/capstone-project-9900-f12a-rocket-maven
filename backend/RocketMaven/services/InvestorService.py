@@ -19,6 +19,9 @@ def get_investor(investor_id):
 def update_investor(investor_id):
     try:
         schema = InvestorSchema(partial=True)
+        
+        if "date_of_birth" in request.json:
+            request.json["date_of_birth"] = request.json["date_of_birth"].split("T",1)[0]
 
         investor = Investor.query.get_or_404(investor_id)
         data = schema.load(request.json, instance=investor)

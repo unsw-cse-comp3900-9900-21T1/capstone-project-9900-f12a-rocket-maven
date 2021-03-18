@@ -2,7 +2,7 @@ import { Fragment, useState } from 'react'
 import { Subtitle } from '../../../../componentsStyled/Typography'
 import { useFetchMutationWithUserId } from '../../../../hooks/http'
 import { Card } from '../../../../componentsStyled/Card'
-import { Form, Input, Button, Select } from 'antd';
+import { Form, Input, Button, Select, DatePicker } from 'antd';
 import { Investor } from '../../types'
 import { useSortedCountryList } from '../../../../hooks/store'
 import { urls } from '../../../../data/urls'
@@ -72,7 +72,8 @@ const AccountPersonalInfoForm = ({investorData}: Props) => {
             },
           ]}
         >
-          <Select>
+          <Select
+            showSearch>
             {
               countryList.map(([code, name], value) => {
                 return(
@@ -91,16 +92,19 @@ const AccountPersonalInfoForm = ({investorData}: Props) => {
             },
             () => ({
               validator(_, value) {
-                if (/^\d{4}-([0]\d|1[0-2])-([0-2]\d|3[01])$/.test(value)) {
+                if (value.length == 0 || /^\d{4}-([0]\d|1[0-2])-([0-2]\d|3[01])$/.test(value)) {
                   return Promise.resolve();
                 }
                 // Maybe add better date processing?
-                return Promise.reject(new Error('Please make sure the date is of the format XXXX-XX-XX'));
+                return Promise.reject(new Error('Please make sure the date is of the format YYYY-MM-DD'));
               },
             }),
           ]}
         >
-          <Input  />
+          <Input />
+          {/*<DatePicker
+            format="YYYY-MM-DD"
+            />*/}
         </Form.Item>
         <Form.Item style={{textAlign: "center"}} >
           <Button

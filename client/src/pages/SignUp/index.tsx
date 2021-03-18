@@ -118,7 +118,8 @@ const SignUp =  () => {
             },
           ]}
         >
-          <Select>
+          <Select
+            showSearch>
             {
               countryList.map(([code, name], value) => {
                 return(
@@ -133,8 +134,8 @@ const SignUp =  () => {
           name="gender"
           rules={[
             {
-              required: true,
-              message: 'Please select a country',
+              required: false,
+              message: 'Please select a gender',
             },
           ]}
         >
@@ -147,13 +148,14 @@ const SignUp =  () => {
         <Form.Item
           label="Date of Birth"
           name="date_of_birth"
+          initialValue=""
           rules={[
             {
               required: false,
             },
             () => ({
               validator(_, value) {
-                if (/^\d{4}-([0]\d|1[0-2])-([0-2]\d|3[01])$/.test(value)) {
+                if (value.length == 0 || /^\d{4}-([0]\d|1[0-2])-([0-2]\d|3[01])$/.test(value)) {
                   return Promise.resolve();
                 }
                 // Maybe add better date processing?
