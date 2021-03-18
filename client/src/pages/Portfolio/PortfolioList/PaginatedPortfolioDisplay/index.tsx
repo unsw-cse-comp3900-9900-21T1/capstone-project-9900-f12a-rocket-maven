@@ -21,17 +21,17 @@ const PaginatedPortfolioDisplay = ({portfolioPagination}: Props) => {
   
     
     const columns = [
-{ title: "Available Units", dataIndex: "available_units"},
+{ title: "Ticker Symbol", dataIndex: "asset_id"},
+{ title: "Available Units", dataIndex: "available_units", render:  (value: number) => (value.toFixed(2)),},
 /* { title: "Portfolio Id", dataIndex: "portfolio_id"}, */
-{ title: "Purchase Value", dataIndex: "purchase_value"},
-{ title: "Current Value", dataIndex: "current_value"},
+{ title: "Purchase Value", dataIndex: "purchase_value", render:  (value: number) => (value.toFixed(2)),},
+{ title: "Current Value", dataIndex: "current_value", render:  (value: number) => (value.toFixed(2)),},
+/* { title: "Last Updated", dataIndex: "last_updated"}, */
+{ title: "Average Price", dataIndex: "average_price", render:  (value: number) => (value.toFixed(2)),},
+{ title: "Market Price", dataIndex: "market_price", render:  (value: number) => (value.toFixed(2)),},
+{ title: "Realised Total", dataIndex: "realised_total", render:  (value: number) => (value.toFixed(2)),},
+{ title: "Unrealised Units", dataIndex: "unrealised_units", render:  (value: number) => (value.toFixed(2)),},
 { title: "Latest Note", dataIndex: "latest_note"},
-{ title: "Last Updated", dataIndex: "last_updated"},
-{ title: "Average Price", dataIndex: "average_price"},
-{ title: "Asset Id", dataIndex: "asset_id"},
-{ title: "Market Price", dataIndex: "market_price"},
-{ title: "Realised Total", dataIndex: "realised_total"},
-{ title: "Unrealised Units", dataIndex: "unrealised_units"}
     ];
       
   // FIX(Jude): portolio becomes undefined and errors out
@@ -137,7 +137,7 @@ const PaginatedPortfolioDisplay = ({portfolioPagination}: Props) => {
                 Current Value
               </Col>
               <Col>
-                {portfolio.current_value_sum}
+                {portfolio.current_value_sum.toFixed(2)}
               </Col>
             </Row>
             <Row>
@@ -145,7 +145,7 @@ const PaginatedPortfolioDisplay = ({portfolioPagination}: Props) => {
                 Purchase Value
               </Col>
               <Col>
-                {portfolio.purchase_value_sum}
+                {portfolio.purchase_value_sum.toFixed(2)}
               </Col>
             </Row>
             
@@ -154,7 +154,7 @@ const PaginatedPortfolioDisplay = ({portfolioPagination}: Props) => {
                 Unrealised Value
               </Col>
               <Col>
-                {portfolio.purchase_value_sum - portfolio.current_value_sum}
+                {(portfolio.purchase_value_sum - portfolio.current_value_sum).toFixed(2)}
               </Col>
             </Row>
 
@@ -163,7 +163,7 @@ const PaginatedPortfolioDisplay = ({portfolioPagination}: Props) => {
                 Realised Value
               </Col>
               <Col>
-                {portfolio.realised_sum}
+                {portfolio.realised_sum.toFixed(2)}
               </Col>
             </Row>
             
