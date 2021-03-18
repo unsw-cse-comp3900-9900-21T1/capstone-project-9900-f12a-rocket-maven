@@ -11,6 +11,6 @@ export const AppWrap = styled.div`
 `
 export const ContentWrap = styled.div`
   flex-grow: 1;
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
+  overflow: auto;
 `

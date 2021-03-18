@@ -25,7 +25,7 @@ const Page = ({children}: Props) => {
       <NavWrap>
         <NavBar/>
       </NavWrap>
-      <Content style={{margin:"20px"}}>
+      <Content style={{margin:"20px", overflow: "scroll"}}>
         {children}
       </Content>
       <Footer style={{ textAlign: 'center' }}>Rocket Maven ©2021</Footer>

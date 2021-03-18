@@ -35,7 +35,7 @@ def send(email_to, email_verified_code):
     message["From"] = sender_email
     message["To"] = receiver_email
 
-    text ='<a href="http://127.0.0.1:5100/pw_reset?key=' + email_verified_code + '">click here to reset your password</a>'
+    text ='<a href="http://127.0.0.1:3000/reset?key=' + email_verified_code + '">click here to reset your password</a>'
 
     part1 = MIMEText(text, "html")
     message.attach(part1)
@@ -54,13 +54,13 @@ def change_password():
     # confirmation = request.json.get("confirmation")
     # eva = request.json.get("challenge_code")
 
-    evc = request.form["evc"]
+    evc = request.json()["evc"]
     if evc == None:
     	return "<h1>password change unsuccessfully page (no verification code) </h1>", 400
 
 
-    password = request.form["password"]
-    confirmation = request.form["confirmation"]
+    password = request.json()["password"]
+    confirmation = request.json()["confirmation"]
 
 
     print("password:", password)

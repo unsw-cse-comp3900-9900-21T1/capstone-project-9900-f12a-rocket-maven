@@ -6,7 +6,8 @@ import { Col } from '../../../componentsStyled/Grid'
 import { Flex } from '../../../componentsStyled/Flex'
 import { Link } from 'react-router-dom';
 import { urls } from '../../../data/urls'
-import { Card, Button } from 'antd';
+import { Button } from 'antd';
+import { MyCard } from '../../../componentsStyled/Card';
 
 const AccountDetail = () => {
   
@@ -18,7 +19,7 @@ const AccountDetail = () => {
   const tempData = accountDataList && Object.entries(accountDataList)
   return (
     <Fragment>
-      <Card style={{width:"600px", marginTop: "30px",  marginBottom: "30px"}}>
+      <MyCard>
       { tempData &&
         tempData.map(([key, value]:any, index:any) => 
           <Flex>
@@ -31,7 +32,7 @@ const AccountDetail = () => {
           </Flex>
         )
       }
-      </Card>
+      </MyCard>
       <Button type="primary" style={{marginRight: "8px",  marginBottom: "12px"}}>
       <Link to={urls.account + '/personal'}>
         Edit Personal Details 

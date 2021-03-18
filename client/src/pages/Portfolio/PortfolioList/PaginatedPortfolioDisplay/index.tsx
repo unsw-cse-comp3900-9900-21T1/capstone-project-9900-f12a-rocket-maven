@@ -28,7 +28,10 @@ const PaginatedPortfolioDisplay = ({portfolioPagination}: Props) => {
         portfolios.map((portfolio, index) => 
           <Card title={portfolio.name}  style={{
       marginTop:"20px",
-      width: 600
+      width: 600,
+    float: "left",
+    /* display: "inline-block", */  
+    margin: "20px",
     }}
     actions={[
     
