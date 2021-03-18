@@ -1,4 +1,5 @@
 from RocketMaven.models import Portfolio
+from RocketMaven.api.schemas.portfolio_asset_holding import PortfolioAssetHoldingSchema
 from RocketMaven.extensions import ma, db
 
 
@@ -8,6 +9,7 @@ class PortfolioSchema(ma.SQLAlchemyAutoSchema):
     buying_power = ma.Float(dump_only=True)
     competition_portfolio = ma.Bool()
     # password = ma.String(load_only=True, required=True)
+    portfolio_asset_holding = ma.Nested(PortfolioAssetHoldingSchema, many=True)
 
     class Meta:
         model = Portfolio
