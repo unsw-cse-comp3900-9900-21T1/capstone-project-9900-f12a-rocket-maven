@@ -22,7 +22,7 @@ const PortfolioAssetCreate = () => {
       <Subtitle>
         Event Create
       </Subtitle>
-      <PortfolioAssetEditForm />
+      <PortfolioAssetEditForm portfolioId={id} />
     </Fragment>
     :
       null
