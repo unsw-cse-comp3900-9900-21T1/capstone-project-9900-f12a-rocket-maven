@@ -5,7 +5,7 @@ import { Form, Input, Button,  Card, Switch, Select } from 'antd';
 import { numberRequired, stringRequired, booleanRequired} from '../../../forms/validators'
 import { useFetchMutationWithUserId } from '../../../hooks/http'
 import { PortfolioInfoEdit } from '../types'
-import { useHistory } from "react-router";
+import { urls } from '../../../data/urls'
 const { Option } = Select;
 
 
@@ -38,9 +38,7 @@ const PortfolioEditForm = ({portfolioInfo, portfolioId, action}: Props) => {
   console.log("**************** initial values are", initialValues)
   // Will add redirect after we get some seed data. Right now it's useful to be able to populate
   // values quickly
-  const setValuesAndFetch: Function = useFetchMutationWithUserId(urlEnd, portfolioInfo ? 'PUT' : 'POST')
-
-  const routerObject = useHistory()
+  const setValuesAndFetch: Function = useFetchMutationWithUserId(urlEnd, portfolioInfo ? 'PUT' : 'POST', urls.portfolio)
 
   const onFinish = (values: any) => {
     setValuesAndFetch({
@@ -48,7 +46,6 @@ const PortfolioEditForm = ({portfolioInfo, portfolioId, action}: Props) => {
             id: undefined,
             creation_date: undefined,
     })
-    routerObject.push('/portfolio')
   };
 
 
