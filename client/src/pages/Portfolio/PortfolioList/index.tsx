@@ -25,13 +25,14 @@ const PortfolioList = () => {
       <Fragment>
         <Subtitle>
           Portfolio List
+          <Button type="primary" style={{marginLeft: "20px"}}>
+            <Link to={urls.portfolio + '/create'}>
+            New Portfolio
+            </Link>
+          </Button>
         </Subtitle>
         {/* TODO(Jude): Crudify routes */}
-        <Button type="primary">
-          <Link to={urls.portfolio + '/create'}>
-          New Portfolio
-          </Link>
-        </Button>
+
         <Divider>Portfolios</Divider>
   
 
