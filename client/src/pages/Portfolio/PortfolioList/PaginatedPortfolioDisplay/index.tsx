@@ -47,7 +47,15 @@ const PaginatedPortfolioDisplay = ({ portfolioPagination }: Props) => {
     */
   }
 
-
+  const numberChangeRenderer = (testVal: string, record: any) => {
+    const text = parseFloat(testVal).toFixed(2)
+    return {
+      props: {
+        style: { color: (parseFloat(testVal) < 0) ? "red" : "green" }
+      },
+      children: <span>{text}</span>
+    };
+  }
 
 
   // FIX(Jude): portolio becomes undefined and errors out
@@ -73,7 +81,7 @@ const PaginatedPortfolioDisplay = ({ portfolioPagination }: Props) => {
             /* { title: "Last Updated", dataIndex: "last_updated"}, */
             /* Single portfolio view? */
             /* { title: "Realised Total", dataIndex: "realised_total", render:  (value: number) => (value.toFixed(2)),}, */
-            { title: "Unrealised Profit/Loss", dataIndex: "unrealised_units", render: (value: number) => (value.toFixed(2)), },
+            { title: "Unrealised Profit/Loss", dataIndex: "unrealised_units", render: numberChangeRenderer, },
             { title: "Latest Note", dataIndex: "latest_note" },/* https://ant.design/components/table/ */
             {
               title: 'Action',
@@ -85,8 +93,8 @@ const PaginatedPortfolioDisplay = ({ portfolioPagination }: Props) => {
           const valueColumns = [
             { title: "Current Market", dataIndex: "Current Market" },
             { title: "Purchase", dataIndex: "Purchase" },
-            { title: "Unrealised (Purchase - Market)", dataIndex: "Unrealised" },
-            { title: "Realised (Sold Value)", dataIndex: "Realised (Sold Value)" },
+            { title: "Unrealised (Purchase - Market)", dataIndex: "Unrealised", render: numberChangeRenderer, },
+            { title: "Realised (Sold Value)", dataIndex: "Realised (Sold Value)", render: numberChangeRenderer, },
           ]
 
           const value = [{
