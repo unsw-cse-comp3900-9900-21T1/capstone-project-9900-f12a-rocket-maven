@@ -63,7 +63,7 @@ const AccountPersonalInfoForm = ({investorData}: Props) => {
           <Input  />
         </Form.Item>
         <Form.Item
-          label="Country of residency"
+          label="Country of Residency"
           name="country_of_residency"
           rules={[
             {

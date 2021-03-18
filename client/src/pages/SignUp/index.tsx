@@ -28,7 +28,7 @@ const SignUp =  () => {
   const onFinish = async (values: any) => {
     const requestBody =   {
     "country_of_residency": values.countryOfResidency,
-    "date_of_birth": "2021-03-13",
+    "date_of_birth": values.date_of_birth,
     "email": values.email,
     "first_name": values.firstName,
     "gender": values.gender,
@@ -93,15 +93,15 @@ const SignUp =  () => {
 
         <Form.Item
           name="email"
-          label="E-mail"
+          label="Email"
           rules={[
             {
               type: 'email',
-              message: 'The input is not valid E-mail!',
+              message: 'The input is not valid email!',
             },
             {
               required: true,
-              message: 'Please input your E-mail!',
+              message: 'Please input your email!',
             },
           ]}
         >
@@ -109,7 +109,7 @@ const SignUp =  () => {
         </Form.Item>
 
         <Form.Item
-          label="Country of residency"
+          label="Country of Residency"
           name="countryOfResidency"
           rules={[
             {
