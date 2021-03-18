@@ -88,7 +88,7 @@ function DebounceSelect<
 
 // Usage of DebounceSelect
 interface DebounceValue {
-  label: string;
+  label: React.ReactNode;
   value: string;
   key: string;
 }
@@ -104,7 +104,8 @@ async function fetchUserList(query: string): Promise<DebounceValue[]> {
         const histories:[AssetSearch] = (data as AssetSearchPagination).results;
         
         const search_simple = histories.map(item => {
-          return {"key": item.ticker_symbol, "value": item.ticker_symbol, "label": item.ticker_symbol + " | " + item.name}
+          return {"key": item.ticker_symbol, "value": item.ticker_symbol, "label": <span title={item.current_price.toString()}>{item.ticker_symbol + " | " + item.name}</span>}
+              
         })
         
         return search_simple;
@@ -133,6 +134,8 @@ const PortfolioAssetEditForm = ({portfolioId}: Props) => {
 
   const [ addActionValue, setAddActionValue ] = useState(true);
   const [ valued, setValued ] = useState();
+  const [ price, setPrice ] = useState();
+  const [form] = Form.useForm();
 
   let initialValues: PortfolioEventCreate = {
     add_action: addActionValue,
@@ -163,6 +166,7 @@ const PortfolioAssetEditForm = ({portfolioId}: Props) => {
       <Form
         name="normal_login"
         className="login-form"
+        form={form}
         initialValues={{
           remember: true,
         }}
@@ -188,6 +192,9 @@ const PortfolioAssetEditForm = ({portfolioId}: Props) => {
             fetchOptions={fetchUserList}
             onChange={newValue => {
               setValued(newValue.key);
+              form.setFieldsValue({
+                price_per_share: newValue.label.props.title
+              });
             }}
             style={{ width: '100%' }}
           />
