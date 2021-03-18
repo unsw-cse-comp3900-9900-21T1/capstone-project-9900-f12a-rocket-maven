@@ -3,10 +3,10 @@ import { Link } from 'react-router-dom';
 import { isEmpty } from 'ramda'
 import { Text } from '../../../../componentsStyled/Typography'
 import { Row, Col } from '../../../../componentsStyled/Grid'
-import { PortfolioInfo, PortfolioPagination } from '../../types'
+import { PortfolioInfo, PortfolioPagination, PortfolioHolding } from '../../types'
 // import { PortfolioWrap } from './styled'
 import { urls } from '../../../../data/urls'
-import { Tooltip, Button, Card, Divider } from 'antd';
+import { Tooltip, Button, Card, Divider, Table } from 'antd';
 import { EditOutlined, EllipsisOutlined, SettingOutlined, EyeOutlined } from '@ant-design/icons';
 
 
@@ -18,6 +18,22 @@ const PaginatedPortfolioDisplay = ({portfolioPagination}: Props) => {
   if (!portfolioPagination || isEmpty(portfolioPagination)) {
     return null
   }
+  
+    
+    const columns = [
+{ title: "Available Units", dataIndex: "available_units"},
+/* { title: "Portfolio Id", dataIndex: "portfolio_id"}, */
+{ title: "Purchase Value", dataIndex: "purchase_value"},
+{ title: "Current Value", dataIndex: "current_value"},
+{ title: "Latest Note", dataIndex: "latest_note"},
+{ title: "Last Updated", dataIndex: "last_updated"},
+{ title: "Average Price", dataIndex: "average_price"},
+{ title: "Asset Id", dataIndex: "asset_id"},
+{ title: "Market Price", dataIndex: "market_price"},
+{ title: "Realised Total", dataIndex: "realised_total"},
+{ title: "Unrealised Units", dataIndex: "unrealised_units"}
+    ];
+      
   // FIX(Jude): portolio becomes undefined and errors out
   // looks like the trigger is the token expiring
   // I would've thought the above if statement would've taken care of it
@@ -152,7 +168,10 @@ const PaginatedPortfolioDisplay = ({portfolioPagination}: Props) => {
             </Row>
             
              <Divider>Holdings</Divider>
-            
+        
+            <Table columns={columns} dataSource={portfolio.portfolio_asset_holding} rowKey="id"  />
+      
+      
           </Card>
         )
       }

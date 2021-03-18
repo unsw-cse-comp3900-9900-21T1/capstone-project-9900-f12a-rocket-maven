@@ -96,9 +96,10 @@ def register_controllers():
     apispec.spec.components.schema("PortfolioEventSchema", schema=PortfolioEventSchema)
     apispec.spec.path(view=PortfolioEventList, app=current_app, api=api)
 
-    apispec.spec.components.schema(
-        "PortfolioAssetHoldingSchema", schema=PortfolioAssetHoldingSchema
-    )
+    # apispec.spec.components.schema(
+    #     "PortfolioAssetHoldingSchema", schema=PortfolioAssetHoldingSchema
+    # )
+
     apispec.spec.path(view=PortfolioAssetHoldingList, app=current_app, api=api)
 
     apispec.spec.components.schema("LeaderboardSchema", schema=LeaderboardSchema)

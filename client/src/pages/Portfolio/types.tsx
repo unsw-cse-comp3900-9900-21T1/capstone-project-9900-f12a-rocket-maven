@@ -37,6 +37,20 @@ export type PortfolioInfoEdit = {
   id:                    number;
 }
 
+export type PortfolioHolding = {
+    available_units:  number;
+    portfolio_id:     number;
+    purchase_value:   number;
+    current_value:    number;
+    latest_note:      string;
+    last_updated:     string;
+    average_price:    number;
+    asset_id:         string;
+    market_price:     number;
+    realised_total:   number;
+    unrealised_units: number;
+}
+    
 export type PortfolioInfo = {
   visibility:            boolean;
   buying_power:          number;
@@ -49,6 +63,8 @@ export type PortfolioInfo = {
   current_value_sum:     number;
   name:                  string;
   tax_residency:         string;
+  portfolio_asset_holding: [PortfolioHolding];
+  
 }
 
 export type PortfolioPagination = {
