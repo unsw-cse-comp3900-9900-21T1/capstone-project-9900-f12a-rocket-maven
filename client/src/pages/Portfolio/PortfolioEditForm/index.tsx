@@ -2,6 +2,7 @@
 import { Fragment } from 'react'
 import { Card } from '../../../componentsStyled/Card'
 import { Form, Input, Button, Switch, Select } from 'antd';
+import { useSortedCountryList } from '../../../hooks/store'
 // import { MySelect, MyTextInput } from '../../../forms'
 import { numberRequired, stringRequired, booleanRequired} from '../../../forms/validators'
 import { useFetchMutationWithUserId } from '../../../hooks/http'
@@ -19,6 +20,7 @@ type Props = {
 }
 
 const PortfolioEditForm = ({portfolioInfo, portfolioId, action}: Props) => {
+  const countryList = useSortedCountryList()
   let initialValues: PortfolioInfoEdit = {
     competition_portfolio: false,
     description: '',
@@ -32,9 +34,13 @@ const PortfolioEditForm = ({portfolioInfo, portfolioId, action}: Props) => {
     id: 0,
   }
   let urlEnd = '/portfolios'
+  let countryElement: [string, string] = ["AU", "Australia"];
   if (portfolioInfo) {
     initialValues = {...portfolioInfo.portfolio}
     urlEnd = urlEnd + `/${portfolioId}`
+    // Get the country code of the name returned
+    countryElement = (countryList.find( element => portfolioInfo.portfolio.tax_residency === element[1])) as [string, string]
+
   }
   console.log("**************** initial values are", initialValues)
   // Will add redirect after we get some seed data. Right now it's useful to be able to populate
@@ -103,14 +109,29 @@ const PortfolioEditForm = ({portfolioInfo, portfolioId, action}: Props) => {
           <Input placeholder="Description" />
         </Form.Item>
         
-      <Form.Item name="tax_residency" label="Tax Residency" initialValue={(initialValues.tax_residency.length > 0)?initialValues.tax_residency:"AU"} rules={[{ required: true }]}>
-        <Select >
-            <Option value="AU">Australia</Option>
-            <Option value="US">United States</Option>
-            <Option value="GB">England</Option>
-            <Option value="XX">Antarctica</Option>
-        </Select>
-      </Form.Item>
+        
+        <Form.Item
+          label="Tax Residency"
+          name="tax_residency"
+          initialValue={countryElement[0]}
+          rules={[
+            {
+              required: true,
+              message: 'Please select a country',
+            },
+          ]}
+        >
+          <Select 
+            showSearch>
+            {
+              countryList.map(([code, name], value) => {
+                return(
+                  <Select.Option value={code}>{name}</Select.Option>
+                )
+              })
+            }
+          </Select>
+        </Form.Item>
     
         <Form.Item label="Public" name="visibility">
           <Switch 
