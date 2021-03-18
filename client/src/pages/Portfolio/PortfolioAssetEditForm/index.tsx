@@ -1,10 +1,8 @@
 import { Link } from 'react-router-dom';
 import 'antd/dist/antd.css';
-import { Form, Input, Button,  Card, AutoComplete } from 'antd';
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { Form, Input, Button, Card } from 'antd';
 import { urls } from '../../../data/urls'
-import { useAuth } from '../../../hooks/http'
-import { useState, useEffect, useRef, useMemo } from 'react'
+import { useState, useRef, useMemo } from 'react'
 import { useHistory } from "react-router";
 import { SelectProps } from "antd/es/select";
 import { isEmpty } from  'ramda'

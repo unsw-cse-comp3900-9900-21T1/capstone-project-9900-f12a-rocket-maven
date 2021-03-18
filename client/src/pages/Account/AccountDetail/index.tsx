@@ -10,17 +10,8 @@ type AccountFetch = {
 const AccountDetail = () => {
   
   const { data, isLoading }: AccountFetch = useFetchGetWithUserId('')
-  const accountDataList = data && data.investor
-  console.log("****************** account data list is", accountDataList)
 
-  if (isLoading) {
-    return null
-  } else {
-    return (
-      <AccountDetailCard investor={data.investor} />
-    )
-  }
-
+  return (isLoading ? null : <AccountDetailCard investor={data.investor} />)
 }
 
 export default AccountDetail

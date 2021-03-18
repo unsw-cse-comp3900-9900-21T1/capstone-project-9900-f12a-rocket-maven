@@ -4,7 +4,7 @@ import { Subtitle } from '../../../componentsStyled/Typography'
 import { useParams } from 'react-router-dom'
 import { useFetchGetWithUserId } from '../../../hooks/http'
 import PortfolioEditForm from '../PortfolioEditForm'
-import { PortfolioInfoEdit } from '../types'
+import { PortfolioInfo } from '../types'
 
 type Params = {
   id?: string

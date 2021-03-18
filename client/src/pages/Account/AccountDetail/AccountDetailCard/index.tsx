@@ -2,10 +2,11 @@ import { Fragment  } from 'react'
 import { Row, Col } from '../../../../componentsStyled/Grid'
 import { Link } from 'react-router-dom';
 import { urls } from '../../../../data/urls'
+import { Investor } from '../../types'
 import { Card, Button } from 'antd';
 
-const AccountDetailCard = ({investor}: any) => {
-  
+
+const AccountDetailCard = ({investor}: Investor) => {
   return (
     <Fragment>
       <Card style={{width:"600px", marginTop: "30px",  marginBottom: "30px"}}>
@@ -39,6 +40,38 @@ const AccountDetailCard = ({investor}: any) => {
           </Col>
           <Col>
             {investor.last_name ? investor.last_name : ''}
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            Gender
+          </Col>
+          <Col>
+            {investor.gender ? investor.gender: ''}
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            Date of Birth
+          </Col>
+          <Col>
+            {investor.date_of_birth ? investor.date_of_birth: ''}
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            Join Date
+          </Col>
+          <Col>
+            {investor.join_date ? investor.join_date: ''}
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            Profile Visibility
+          </Col>
+          <Col>
+            {investor.visibility ? 'Public' : 'Private'}
           </Col>
         </Row>
       </Card>
