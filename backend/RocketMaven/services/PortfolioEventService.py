@@ -3,6 +3,7 @@ from RocketMaven.api.schemas import PortfolioEventSchema, PortfolioAssetHoldingS
 from RocketMaven.models import PortfolioEvent, PortfolioAssetHolding, Asset
 from RocketMaven.extensions import db
 from RocketMaven.commons.pagination import paginate
+import sqlalchemy.exc
 
 import requests
 

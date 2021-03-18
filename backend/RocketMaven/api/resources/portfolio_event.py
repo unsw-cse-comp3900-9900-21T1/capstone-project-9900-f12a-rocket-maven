@@ -28,7 +28,7 @@ class PortfolioAssetHoldingList(Resource):
         responses:
           200:
             content:
-              application/json:Return
+              application/json:
                 schema:
                   allOf:
                     - $ref: '#/components/schemas/PaginatedResult'
