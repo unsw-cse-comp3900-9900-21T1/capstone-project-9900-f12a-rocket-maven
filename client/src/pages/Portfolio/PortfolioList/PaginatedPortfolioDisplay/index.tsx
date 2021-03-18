@@ -118,10 +118,36 @@ const PaginatedPortfolioDisplay = ({portfolioPagination}: Props) => {
             
             <Row>
               <Col>
-                Visibility:
+                Current Value
               </Col>
               <Col>
-                {portfolio.visibility ? 'Public' : 'Private'}
+                {portfolio.current_value_sum}
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                Purchase Value
+              </Col>
+              <Col>
+                {portfolio.purchase_value_sum}
+              </Col>
+            </Row>
+            
+            <Row>
+              <Col>
+                Unrealised Value
+              </Col>
+              <Col>
+                {portfolio.purchase_value_sum - portfolio.current_value_sum}
+              </Col>
+            </Row>
+
+            <Row>
+              <Col>
+                Realised Value
+              </Col>
+              <Col>
+                {portfolio.realised_sum}
               </Col>
             </Row>
             
