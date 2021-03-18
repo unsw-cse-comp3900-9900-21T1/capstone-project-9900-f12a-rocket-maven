@@ -42,39 +42,29 @@ const PaginatedPortfolioDisplay = ({portfolioPagination}: Props) => {
     <Fragment>
       {
         portfolios.map((portfolio, index) => 
-          <Card title={portfolio.name}  style={{
-      marginTop:"20px",
-      width: 600,
-    float: "left",
-    /* display: "inline-block", */  
-    margin: "20px",
-    }}
-    actions={[
-    
-    
-      <Tooltip placement="topLeft" title="Add New Event" arrowPointAtCenter>
-      <Link to={urls.portfolio + `/${portfolio.id}/addremove`}>
-      <EditOutlined key="edit" />
-      </Link>
-      </Tooltip>
+          <Card 
+            title={portfolio.name}
+             style={{ marginTop:"20px", width: 600 }}
+            actions={[
+              <Tooltip placement="topLeft" title="Add New Event" arrowPointAtCenter>
+              <Link to={urls.portfolio + `/${portfolio.id}/addremove`}>
+              <EditOutlined key="edit" />
+              </Link>
+              </Tooltip>,
       
-      ,
-      
-      
-      <Tooltip placement="topLeft" title="Edit Portfolio Settings" arrowPointAtCenter>
-      <Link to={urls.portfolio + `/${portfolio.id}/edit`}>
-      <SettingOutlined key="setting" />
-      </Link>
-      </Tooltip>
-      
-      ,
-      <Tooltip placement="topLeft" title="Portfolio Event History" arrowPointAtCenter>
-      <Link to={urls.portfolio + `/${portfolio.id}/history`}>
-      <EyeOutlined key="ellipsis" />
-      </Link>
-      </Tooltip>
-      ,
-    ]}>
+              <Tooltip placement="topLeft" title="Edit Portfolio Settings" arrowPointAtCenter>
+              <Link to={urls.portfolio + `/${portfolio.id}/edit`}>
+              <SettingOutlined key="setting" />
+              </Link>
+              </Tooltip>,
+
+              <Tooltip placement="topLeft" title="Portfolio Event History" arrowPointAtCenter>
+              <Link to={urls.portfolio + `/${portfolio.id}/history`}>
+              <EyeOutlined key="ellipsis" />
+              </Link>
+              </Tooltip>,
+            ]}
+          >
             <Row>
               <Col>
                 Type:

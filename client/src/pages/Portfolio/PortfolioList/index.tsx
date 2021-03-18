@@ -7,14 +7,20 @@ import { Link } from 'react-router-dom';
 import { urls } from '../../../data/urls'
 import { Button, Divider } from 'antd';
 
+type PortfolioListFetchResults = {
+  data: PortfolioPagination,
+  isLoading: boolean,
+
+}
+
 const PortfolioList = () => {
   // FIX(Jude)
   // const [portfolio, setPortfolio] = useState<PortfolioPagination>()
-  const portfolioData: PortfolioPagination = useFetchGetWithUserId('/portfolios')
-  console.log("********************** portfoliodata is ", portfolioData)
+  const { data, isLoading }: PortfolioListFetchResults = useFetchGetWithUserId('/portfolios')
+  console.log("********************** portfoliodata is ", data)
 
   return (
-    portfolioData
+    data
       ?
       <Fragment>
         <Subtitle>
@@ -29,7 +35,7 @@ const PortfolioList = () => {
         <Divider>Portfolios</Divider>
   
 
-        <PaginatedPortfolioDisplay portfolioPagination={portfolioData} />
+        <PaginatedPortfolioDisplay portfolioPagination={data} />
       </Fragment>
       : null
   )
