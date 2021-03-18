@@ -1,9 +1,10 @@
 import { Fragment  } from 'react'
 import { Row, Col } from '../../../../componentsStyled/Grid'
+import { Card } from '../../../../componentsStyled/Card'
 import { Link } from 'react-router-dom';
 import { urls } from '../../../../data/urls'
 import { Investor } from '../../types'
-import { Card, Button } from 'antd';
+import { Button, Divider } from 'antd';
 
 
 const AccountDetailCard = ({investor}: Investor) => {
@@ -20,7 +21,7 @@ const AccountDetailCard = ({investor}: Investor) => {
         </Row>
         <Row>
           <Col>
-            email
+            Email
           </Col>
           <Col>
             {investor.email}
@@ -82,17 +83,18 @@ const AccountDetailCard = ({investor}: Investor) => {
             {investor.visibility ? 'Public' : 'Private'}
           </Col>
         </Row>
+        <Divider>Edit</Divider>
+        <Button type="primary" style={{marginRight: "8px",  marginBottom: "12px"}}>
+        <Link to={urls.account + '/personal'}>
+          Edit Personal Details 
+        </Link>
+        </Button>
+        <Button type="primary" style={{marginRight: "8px",  marginBottom: "12px"}}>
+        <Link to={urls.account + '/security'}>
+          Edit Security 
+        </Link>
+        </Button>
       </Card>
-      <Button type="primary" style={{marginRight: "8px",  marginBottom: "12px"}}>
-      <Link to={urls.account + '/personal'}>
-        Edit Personal Details 
-      </Link>
-      </Button>
-      <Button type="primary" style={{marginRight: "8px",  marginBottom: "12px"}}>
-      <Link to={urls.account + '/security'}>
-        Edit Security 
-      </Link>
-      </Button>
     </Fragment>
   )
 }

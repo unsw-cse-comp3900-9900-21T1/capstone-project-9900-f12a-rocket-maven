@@ -1,6 +1,7 @@
 import Page from '../_Page'
 import { useHistory, Redirect } from 'react-router-dom'
-import { Form, Input, Button,  Card} from 'antd';
+import { Card } from '../../componentsStyled/Card'
+import { Form, Input, Button} from 'antd';
 import { Title } from '../../componentsStyled/Typography'
 import 'antd/dist/antd.css';
 
@@ -52,9 +53,7 @@ const PasswordReset = () => {
     <Title>
       Enter New Password
     </Title>
-    <Card  style={{
-      width:"600px", 
-    }}>  
+    <Card>  
       <Form
         {...layout}
         name="basic"

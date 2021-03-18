@@ -1,6 +1,7 @@
 
 import { Fragment } from 'react'
-import { Form, Input, Button,  Card, Switch, Select } from 'antd';
+import { Card } from '../../../componentsStyled/Card'
+import { Form, Input, Button, Switch, Select } from 'antd';
 // import { MySelect, MyTextInput } from '../../../forms'
 import { numberRequired, stringRequired, booleanRequired} from '../../../forms/validators'
 import { useFetchMutationWithUserId } from '../../../hooks/http'
@@ -50,9 +51,7 @@ const PortfolioEditForm = ({portfolioInfo, portfolioId, action}: Props) => {
 
 
   return (
-    <Card  style={{
-      width:"600px"
-    }}>  
+    <Card>  
 
     
       <Form

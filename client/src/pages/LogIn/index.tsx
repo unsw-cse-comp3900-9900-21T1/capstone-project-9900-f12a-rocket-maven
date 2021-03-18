@@ -4,7 +4,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Link } from 'react-router-dom';
 import 'antd/dist/antd.css';
-import { Form, Input, Button,  Card} from 'antd';
+
+import { Card } from '../../componentsStyled/Card'
+import { Form, Input, Button} from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { urls } from '../../data/urls'
 import { useAuth } from '../../hooks/http'
@@ -18,9 +20,7 @@ const LogIn = () => {
 
   return (
     <Page>
-    <Card  style={{
-      width:"600px", 
-    }}>  
+    <Card>  
       <Form
         name="normal_login"
         className="login-form"

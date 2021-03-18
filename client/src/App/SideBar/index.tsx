@@ -28,7 +28,7 @@ function sideBarItems(isLoggedIn: boolean) {
     { name: "Sign In", to: urls.login, icon: FaUserPlus },
   ];
   const itemsWhenLoggedIn: Array<SideBarItem> = [
-    { name: "Test", to: urls.homeStub, icon: FaHome },
+    /* { name: "Test", to: urls.homeStub, icon: FaHome }, */
     { name: "Portfolio", to: urls.portfolio, icon: FaHome },
     { name: "Account", to: urls.account, icon: FaHome },
   ];

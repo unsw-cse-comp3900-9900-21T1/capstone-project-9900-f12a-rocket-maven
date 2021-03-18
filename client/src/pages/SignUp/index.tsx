@@ -1,4 +1,5 @@
-import { Form, Input, Button, Select, Card } from 'antd';
+import { Form, Input, Button, Select } from 'antd';
+import { Card } from '../../componentsStyled/Card';
 import Page from '../_Page'
 import 'antd/dist/antd.css';
 import { useAuth } from '../../hooks/http'
@@ -23,7 +24,7 @@ const SignUp =  () => {
 
   const setValuesAndFetch = useAuth('REGISTER')
   const countryList = useSortedCountryList()
-  
+
   const onFinish = async (values: any) => {
     const requestBody =   {
     "country_of_residency": values.countryOfResidency,
@@ -41,9 +42,7 @@ const SignUp =  () => {
 
   return (
     <Page>
-    <Card  style={{
-      width:"600px",
-    }}>
+    <Card>
 
       <Form
         {...layout}

@@ -1,7 +1,8 @@
 import Page from '../_Page'
 import { useState } from 'react'
 import { useHistory, Redirect } from 'react-router-dom'
-import { Form, Input, Button,  Card} from 'antd';
+import { Card } from '../../componentsStyled/Card'
+import { Form, Input, Button} from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { urls } from '../../data/urls'
 import 'antd/dist/antd.css';
@@ -44,9 +45,7 @@ const Forgot = () => {
 
   return (
     <Page>
-    <Card  style={{
-      width:"600px", 
-    }}>  
+    <Card>  
       <Form
         name="normal_login"
         className="forgot-form"
