@@ -48,6 +48,24 @@ def update_asset(asset) -> (bool, str):
             return False, "Error updating current price - {}".format(err)
     return True, ""
 
+def delete_holding(portfolio_id):
+    """ Deletes an asset from a portfolio 
+        Returns
+            200 - a asset is deleted successfully
+            500 - if an unexpected exception occurs
+    """
+    asset_id = request.json.get("asset_id")
+    print(asset_id)
+    query = PortfolioEvent.query.filter_by(portfolio_id=portfolio_id, asset_id=asset_id).all()
+    for m in query:
+        m.dynamic_after_FIFO_units = 0
+        
+    query = PortfolioAssetHolding.query.filter_by(portfolio_id=portfolio_id, asset_id=asset_id).first()
+    query.available_units = 0
+
+    db.session.commit()
+    
+    return {"msg": "success"}, 200
 
 def get_events(portfolio_id):
     """ Get the list of (asset) events in a portfolio 

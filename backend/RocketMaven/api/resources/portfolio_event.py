@@ -41,6 +41,42 @@ class PortfolioAssetHoldingList(Resource):
         """
         return PortfolioEventService.get_holdings(portfolio_id)
 
+    @jwt_required()
+    def delete(self, portfolio_id):
+        """
+        ---
+        summary: Delete Portfolio Asset
+        description: Removes an asset from a portfolio's current holdings
+        tags:
+          - Assets
+        parameters:
+          - in: path
+            name: portfolio_id
+            schema:
+              type: integer
+        requestBody:
+          content:
+            application/json:
+	            schema:
+	              type: object
+	              properties:
+	                asset_id:
+	                  type: string
+	                  example: VIRT:CBA
+	                  required: true
+        responses:
+          200:
+            content:
+              application/json:
+	            schema:
+	              type: object
+	              properties:
+	                msg:
+	                  type: string
+	                  example: success
+        """
+        return PortfolioEventService.delete_holding(portfolio_id)
+
 
 class PortfolioEventList(Resource):
 
