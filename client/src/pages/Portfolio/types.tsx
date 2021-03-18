@@ -27,15 +27,28 @@ export type PortfolioEventPagination = {
   results: [PortfolioEvent]
 }
 
+export type PortfolioInfoEdit = {
+  visibility:            boolean;
+  description:           string;
+  creation_date:         string;
+  name:                  string;
+  tax_residency:         string;
+  competition_portfolio: boolean;
+  id:                    number;
+}
+
 export type PortfolioInfo = {
-  competition_portfolio: boolean,
-  // Double check if this is the right type
-  creation_date: string,
-  description: string,
-  id: number,
-  name: string,
-  tax_residency: string,
-  visibility: boolean
+  visibility:            boolean;
+  buying_power:          number;
+  realised_sum:          number;
+  description:           string;
+  creation_date:         string;
+  id:                    number;
+  purchase_value_sum:    number;
+  competition_portfolio: boolean;
+  current_value_sum:     number;
+  name:                  string;
+  tax_residency:         string;
 }
 
 export type PortfolioPagination = {

@@ -6,7 +6,7 @@ import { Row, Col } from '../../../../componentsStyled/Grid'
 import { PortfolioInfo, PortfolioPagination } from '../../types'
 // import { PortfolioWrap } from './styled'
 import { urls } from '../../../../data/urls'
-import { Tooltip, Button, Card } from 'antd';
+import { Tooltip, Button, Card, Divider } from 'antd';
 import { EditOutlined, EllipsisOutlined, SettingOutlined, EyeOutlined } from '@ant-design/icons';
 
 
@@ -67,6 +67,19 @@ const PaginatedPortfolioDisplay = ({portfolioPagination}: Props) => {
                 {portfolio.competition_portfolio? "Competition Portfolio":"Regular Portfolio"}
               </Col>
             </Row>
+            {portfolio.competition_portfolio?
+            
+            <Row>
+              <Col>
+                Buying Power:
+              </Col>
+              <Col>
+                {portfolio.buying_power}
+              </Col>
+            </Row>
+            : null
+            
+            }
             <Row>
               <Col>
                 Description:
@@ -99,6 +112,20 @@ const PaginatedPortfolioDisplay = ({portfolioPagination}: Props) => {
                 {portfolio.visibility ? 'Public' : 'Private'}
               </Col>
             </Row>
+            
+            
+             <Divider>Aggregation</Divider>
+            
+            <Row>
+              <Col>
+                Visibility:
+              </Col>
+              <Col>
+                {portfolio.visibility ? 'Public' : 'Private'}
+              </Col>
+            </Row>
+            
+             <Divider>Holdings</Divider>
             
           </Card>
         )

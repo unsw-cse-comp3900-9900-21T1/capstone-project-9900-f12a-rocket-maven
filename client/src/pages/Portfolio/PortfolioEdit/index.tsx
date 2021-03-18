@@ -4,7 +4,7 @@ import { Subtitle } from '../../../componentsStyled/Typography'
 import { useParams } from 'react-router-dom'
 import { useFetchGetWithUserId } from '../../../hooks/http'
 import PortfolioEditForm from '../PortfolioEditForm'
-import { PortfolioInfo } from '../types'
+import { PortfolioInfoEdit } from '../types'
 
 type Params = {
   id?: string
@@ -15,7 +15,7 @@ const PortfolioEdit = () => {
 
   // Avoid call when isCreate is true
   // Might have to just make a PortfolioCreate component 
-  const portfolioInfo: { portfolio: PortfolioInfo } = useFetchGetWithUserId(`/portfolios/${id}`)
+  const portfolioInfo: { portfolio: PortfolioInfoEdit } = useFetchGetWithUserId(`/portfolios/${id}`)
 
   return (
     !isEmpty(portfolioInfo) ?

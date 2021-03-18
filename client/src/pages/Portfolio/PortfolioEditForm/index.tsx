@@ -4,21 +4,21 @@ import { Form, Input, Button,  Card, Switch, Select } from 'antd';
 // import { MySelect, MyTextInput } from '../../../forms'
 import { numberRequired, stringRequired, booleanRequired} from '../../../forms/validators'
 import { useFetchMutationWithUserId } from '../../../hooks/http'
-import { PortfolioInfo } from '../types'
+import { PortfolioInfoEdit } from '../types'
 import { useHistory } from "react-router";
 const { Option } = Select;
 
 
 type Props = {
   portfolioInfo?: {
-    portfolio: PortfolioInfo
+    portfolio: PortfolioInfoEdit
   }
   portfolioId?: string
   action?: string
 }
 
 const PortfolioEditForm = ({portfolioInfo, portfolioId, action}: Props) => {
-  let initialValues: PortfolioInfo = {
+  let initialValues: PortfolioInfoEdit = {
     competition_portfolio: false,
     description: '',
     name: '',
@@ -80,6 +80,22 @@ const PortfolioEditForm = ({portfolioInfo, portfolioId, action}: Props) => {
         >
           <Input placeholder="Name" />
         </Form.Item>
+        
+            {action == "Create"?
+      <Form.Item name="competition_portfolio" label="Portfolio Type" rules={[{ required: true }]}>
+        <Select >
+            <Option value="0">Regular Portfolio</Option>
+            <Option value="1">Competition Portfolio</Option>
+        </Select>
+      </Form.Item>
+            
+            :
+            
+            null}
+            
+            
+            
+            
         <Form.Item
           name="description"
           initialValue={initialValues.description}

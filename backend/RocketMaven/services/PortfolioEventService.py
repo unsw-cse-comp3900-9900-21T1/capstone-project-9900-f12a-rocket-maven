@@ -1,6 +1,6 @@
 from flask import request
 from RocketMaven.api.schemas import PortfolioEventSchema, PortfolioAssetHoldingSchema
-from RocketMaven.models import PortfolioEvent, PortfolioAssetHolding, Asset
+from RocketMaven.models import PortfolioEvent, PortfolioAssetHolding, Portfolio, Asset
 from RocketMaven.extensions import db
 from RocketMaven.commons.pagination import paginate
 
@@ -75,7 +75,7 @@ def create_event(portfolio_id):
 
     portfolio_event = schema.load(request.json)
     portfolio_event.portfolio_id = portfolio_id
-    query = Portfolio.query.filter_by(portfolio_id=portfolio_id).first()
+    query = Portfolio.query.filter_by(id=portfolio_id).first()
     
     # Competition portfolio ignores any user-set price. So the user should be able to refresh the real-time price that the system provides to make an informed competition entry.
     if query.competition_portfolio == True:
