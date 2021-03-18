@@ -53,7 +53,8 @@ const PortfolioHistory = () => {
       },
       {
         title: "Price Per Unit",
-        dataIndex: "price_per_share"
+        dataIndex: "price_per_share",
+        render:  (value: number) => (value.toFixed(2)),
       },
       {
         title: "Note",

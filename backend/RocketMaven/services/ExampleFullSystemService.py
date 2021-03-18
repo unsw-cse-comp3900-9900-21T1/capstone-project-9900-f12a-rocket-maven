@@ -249,10 +249,25 @@ def populate_full_system(db):
                 add_action=False,
                 fees=15,
                 price_per_share=70,
-                note="Just got to cut losses, why would there be a sell-off in a bank stock anyways?",
+                note="Just got to cut losses, but it's a bank stock",
                 asset_id="VIRT:CBA",
                 portfolio_id=portfolio.id,
                 event_date=datetime.date(2021, 1, 13),
+            ),
+            asset_cba,
+            db,
+        )
+
+        create_asset_event_with_current_price(
+            dict(
+                units=200,
+                add_action=True,
+                fees=15,
+                price_per_share=100,
+                note="I like the bank",
+                asset_id="VIRT:CBA",
+                portfolio_id=portfolio.id,
+                event_date=datetime.date(2021, 1, 15),
             ),
             asset_cba,
             db,
