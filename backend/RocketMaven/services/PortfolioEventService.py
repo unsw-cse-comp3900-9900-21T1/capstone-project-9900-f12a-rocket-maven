@@ -173,4 +173,4 @@ def create_event(portfolio_id):
             "portfolio event": schema.dump(portfolio_event),
         },
         201,
-    }
+    )
