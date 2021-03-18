@@ -180,7 +180,7 @@ const PaginatedPortfolioDisplay = ({ portfolioPagination }: Props) => {
 
             <Divider>Holdings</Divider>
 
-            <Table columns={columns} dataSource={portfolio.portfolio_asset_holding} rowKey="id" />
+            <Table columns={columns} dataSource={portfolio.portfolio_asset_holding.filter(portfolio_asset_holding => portfolio_asset_holding.available_units > 0)} rowKey="id" />
 
 
           </Card>
