@@ -19,15 +19,15 @@ type Props = {
 
 
 
-  
 
-const PaginatedPortfolioDisplay = ({portfolioPagination}: Props) => {
 
-  
+const PaginatedPortfolioDisplay = ({ portfolioPagination }: Props) => {
+
+
   if (!portfolioPagination || isEmpty(portfolioPagination)) {
     return null
   }
-  
+
   const useDeleteAssetPortfolioHolding = (portfolio_id: any) => (e: any) => {
     let urlEnd = `../../../portfolios/${portfolio_id}/history`
     /*
@@ -46,14 +46,14 @@ const PaginatedPortfolioDisplay = ({portfolioPagination}: Props) => {
     }
     */
   }
-  
-  
-  
-  
+
+
+
+
   // FIX(Jude): portolio becomes undefined and errors out
   // looks like the trigger is the token expiring
   // I would've thought the above if statement would've taken care of it
-  const portfolios:[PortfolioInfo] = portfolioPagination.results
+  const portfolios: [PortfolioInfo] = portfolioPagination.results
   return (
     <Fragment>
       {
@@ -61,61 +61,61 @@ const PaginatedPortfolioDisplay = ({portfolioPagination}: Props) => {
 
 
 
-        const columns = [
-      { title: "Ticker Symbol", dataIndex: "asset_id"},
-      { title: "Available Units", dataIndex: "available_units", render:  (value: number) => (value.toFixed(2)),},
-      { title: "Avg. Purchase Price", dataIndex: "average_price", render:  (value: number) => (value.toFixed(2)),},
-      { title: "Current Market Price", dataIndex: "market_price", render:  (value: number) => (value.toFixed(2)),},
-      /* { title: "Portfolio Id", dataIndex: "portfolio_id"}, */
-      { title: "Current Value", dataIndex: "current_value", render:  (value: number) => (value.toFixed(2)),},
-      /* Single portfolio view? */
-      /* { title: "Purchase Value", dataIndex: "purchase_value", render:  (value: number) => (value.toFixed(2)),}, */
-      /* { title: "Last Updated", dataIndex: "last_updated"}, */
-      /* Single portfolio view? */
-      /* { title: "Realised Total", dataIndex: "realised_total", render:  (value: number) => (value.toFixed(2)),}, */
-      { title: "Unrealised Profit/Loss", dataIndex: "unrealised_units", render:  (value: number) => (value.toFixed(2)),},
-      { title: "Latest Note", dataIndex: "latest_note"},/* https://ant.design/components/table/ */
-      {
-        title: 'Action',
-        dataIndex: 'asset_id',
-        key: 'x',
-        render: (value: string) => <a onClick={() => alert(portfolio.id)}>Delete</a>,
-      }]
+          const columns = [
+            { title: "Ticker Symbol", dataIndex: "asset_id" },
+            { title: "Available Units", dataIndex: "available_units", render: (value: number) => (value.toFixed(2)), },
+            { title: "Avg. Purchase Price", dataIndex: "average_price", render: (value: number) => (value.toFixed(2)), },
+            { title: "Current Market Price", dataIndex: "market_price", render: (value: number) => (value.toFixed(2)), },
+            /* { title: "Portfolio Id", dataIndex: "portfolio_id"}, */
+            { title: "Current Value", dataIndex: "current_value", render: (value: number) => (value.toFixed(2)), },
+            /* Single portfolio view? */
+            /* { title: "Purchase Value", dataIndex: "purchase_value", render:  (value: number) => (value.toFixed(2)),}, */
+            /* { title: "Last Updated", dataIndex: "last_updated"}, */
+            /* Single portfolio view? */
+            /* { title: "Realised Total", dataIndex: "realised_total", render:  (value: number) => (value.toFixed(2)),}, */
+            { title: "Unrealised Profit/Loss", dataIndex: "unrealised_units", render: (value: number) => (value.toFixed(2)), },
+            { title: "Latest Note", dataIndex: "latest_note" },/* https://ant.design/components/table/ */
+            {
+              title: 'Action',
+              dataIndex: 'asset_id',
+              key: 'x',
+              render: (value: string) => <a onClick={() => alert(portfolio.id)}>Delete</a>,
+            }]
 
           const valueColumns = [
-      { title: "Current Market", dataIndex: "Current Market"},
-      { title: "Purchase", dataIndex: "Purchase"},
-      { title: "Unrealised (Purchase - Market)", dataIndex: "Unrealised"},
-      { title: "Realised (Sold Value)", dataIndex: "Realised (Sold Value)"},
-      ]
-      
-      const value = [{
-          "Current Market": portfolio.current_value_sum.toFixed(2),
-          "Purchase": portfolio.purchase_value_sum.toFixed(2),
-          "Unrealised": (portfolio.purchase_value_sum - portfolio.current_value_sum).toFixed(2),
-          "Realised (Sold Value)": portfolio.realised_sum.toFixed(2),          
-      }]
+            { title: "Current Market", dataIndex: "Current Market" },
+            { title: "Purchase", dataIndex: "Purchase" },
+            { title: "Unrealised (Purchase - Market)", dataIndex: "Unrealised" },
+            { title: "Realised (Sold Value)", dataIndex: "Realised (Sold Value)" },
+          ]
+
+          const value = [{
+            "Current Market": portfolio.current_value_sum.toFixed(2),
+            "Purchase": portfolio.purchase_value_sum.toFixed(2),
+            "Unrealised": (portfolio.purchase_value_sum - portfolio.current_value_sum).toFixed(2),
+            "Realised (Sold Value)": portfolio.realised_sum.toFixed(2),
+          }]
 
 
-         return <Card 
+          return <Card
             title={portfolio.name}
             actions={[
               <Tooltip placement="topLeft" title="Add New Event" arrowPointAtCenter>
-              <Link to={urls.portfolio + `/${portfolio.id}/addremove`}>
-              <EditOutlined key="edit" />
-              </Link>
+                <Link to={urls.portfolio + `/${portfolio.id}/addremove`}>
+                  <EditOutlined key="edit" />
+                </Link>
               </Tooltip>,
-      
+
               <Tooltip placement="topLeft" title="Edit Portfolio Settings" arrowPointAtCenter>
-              <Link to={urls.portfolio + `/${portfolio.id}/edit`}>
-              <SettingOutlined key="setting" />
-              </Link>
+                <Link to={urls.portfolio + `/${portfolio.id}/edit`}>
+                  <SettingOutlined key="setting" />
+                </Link>
               </Tooltip>,
 
               <Tooltip placement="topLeft" title="Portfolio Event History" arrowPointAtCenter>
-              <Link to={urls.portfolio + `/${portfolio.id}/history`}>
-              <EyeOutlined key="ellipsis" />
-              </Link>
+                <Link to={urls.portfolio + `/${portfolio.id}/history`}>
+                  <EyeOutlined key="ellipsis" />
+                </Link>
               </Tooltip>,
             ]}
           >
@@ -124,21 +124,21 @@ const PaginatedPortfolioDisplay = ({portfolioPagination}: Props) => {
                 Type:
               </Col>
               <Col>
-                {portfolio.competition_portfolio? "Competition Portfolio":"Regular Portfolio"}
+                {portfolio.competition_portfolio ? "Competition Portfolio" : "Regular Portfolio"}
               </Col>
             </Row>
-            {portfolio.competition_portfolio?
-            
-            <Row>
-              <Col>
-                Buying Power:
+            {portfolio.competition_portfolio ?
+
+              <Row>
+                <Col>
+                  Buying Power:
               </Col>
-              <Col>
-                {portfolio.buying_power}
-              </Col>
-            </Row>
-            : null
-            
+                <Col>
+                  {portfolio.buying_power}
+                </Col>
+              </Row>
+              : null
+
             }
             <Row>
               <Col>
@@ -161,7 +161,7 @@ const PaginatedPortfolioDisplay = ({portfolioPagination}: Props) => {
                 Tax Residency:
               </Col>
               <Col>
-               {portfolio.tax_residency}
+                {portfolio.tax_residency}
               </Col>
             </Row>
             <Row>
@@ -172,19 +172,19 @@ const PaginatedPortfolioDisplay = ({portfolioPagination}: Props) => {
                 {portfolio.visibility ? 'Public' : 'Private'}
               </Col>
             </Row>
-            
-            
-             <Divider>Value Summary</Divider>
-            
-             <Table columns={valueColumns} dataSource={value} pagination={false} rowKey="id"  />
 
-             <Divider>Holdings</Divider>
-        
-             <Table columns={columns} dataSource={portfolio.portfolio_asset_holding} rowKey="id"  />
-      
-      
+
+            <Divider>Value Summary</Divider>
+
+            <Table columns={valueColumns} dataSource={value} pagination={false} rowKey="id" />
+
+            <Divider>Holdings</Divider>
+
+            <Table columns={columns} dataSource={portfolio.portfolio_asset_holding} rowKey="id" />
+
+
           </Card>
-          }
+        }
         )
       }
     </Fragment>
