@@ -1,8 +1,9 @@
 import { Fragment, useState } from 'react'
 import { Subtitle } from '../../../../componentsStyled/Typography'
 import { useFetchMutationWithUserId } from '../../../../hooks/http'
-import { Form, Input, Button, Card } from 'antd';
+import { Form, Input, Button, Card, Select } from 'antd';
 import { Investor } from '../../types'
+import { useSortedCountryList } from '../../../../hooks/store'
 import { urls } from '../../../../data/urls'
 
 type Props = {
@@ -10,12 +11,16 @@ type Props = {
 }
 
 const AccountPersonalInfoForm = ({investorData}: Props) => {
-  const setValuesAndFetch: Function = useFetchMutationWithUserId('', 'PUT')
+  const countryList = useSortedCountryList()
+  const setValuesAndFetch: Function = useFetchMutationWithUserId('', 'PUT', urls.account)
   const onFinish = (values: any) => {
     setValuesAndFetch({
       ...values,
     })
   }
+
+  // Get the country code of the name returned
+  const countryElement = countryList.find( element => investorData.investor.country_of_residency === element[1]) 
 
   return (
     <Fragment>
@@ -28,7 +33,10 @@ const AccountPersonalInfoForm = ({investorData}: Props) => {
       <Form
         name="account_personal_info"
         className="account-personal-info"
-        initialValues={{...investorData.investor}}
+        initialValues={{
+          ...investorData.investor,
+          country_of_residency: countryElement ? countryElement[0] : ''
+        }}
         onFinish={onFinish}
       >
         <Form.Item
@@ -55,16 +63,43 @@ const AccountPersonalInfoForm = ({investorData}: Props) => {
         >
           <Input  />
         </Form.Item>
-        {/* TODO(Jude): Country dropdown and country code mapping */}
         <Form.Item
+          label="Country of residency"
           name="country_of_residency"
-          label="Country of Residency"
+          rules={[
+            {
+              required: true,
+              message: 'Please select a country',
+            },
+          ]}
         >
-          <Input  />
+          <Select>
+            {
+              countryList.map(([code, name], value) => {
+                return(
+                  <Select.Option value={code}>{name}</Select.Option>
+                )
+              })
+            }
+          </Select>
         </Form.Item>
         <Form.Item
           name="date_of_birth"
           label="Date of Birth"
+          rules={[
+            {
+              required: false,
+            },
+            () => ({
+              validator(_, value) {
+                if (/^\d{4}-([0]\d|1[0-2])-([0-2]\d|3[01])$/.test(value)) {
+                  return Promise.resolve();
+                }
+                // Maybe add better date processing?
+                return Promise.reject(new Error('Please make sure the date is of the format XXXX-XX-XX'));
+              },
+            }),
+          ]}
         >
           <Input  />
         </Form.Item>
