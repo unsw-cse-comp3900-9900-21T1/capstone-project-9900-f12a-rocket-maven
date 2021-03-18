@@ -5,14 +5,22 @@ import { useStore, useUserId } from './store'
 import { isExpired } from 'react-jwt'
 import { urls}  from  '../data/urls'
 
+//TODO(Jude): Can probably extract and generalise fetchFunctions and reuse in each hook
+
 // Rushed implementation of authToken refresh
-const useAccessToken = () => {
+// Getting a 404 error with the fetch request
+export const useAccessToken = () => {
   const { accessToken, refreshToken, dispatch } = useStore()
   const routerObject = useHistory()
   
   const revalidateAccessToken = async () => {
     try {
-      const response = await fetch('/auth​/refresh', {
+      console.log("************************token refresh in progress")
+      if (isExpired(refreshToken)) {
+        throw Error("Refresh token expired")
+      }
+      const response = await fetch('/auth/refresh', {
+        method: 'POST',
         headers: {
           "Accept": "application/json",
           "Content-Type": "application/json",
@@ -25,7 +33,7 @@ const useAccessToken = () => {
         throw Error("Put proper message here")
       }
       const data: {access_token: string} = await response.json()
-      
+      console.log("************************token refresh successfull")
       dispatch({type: 'REFRESH_TOKEN', payload:{accessToken: data.access_token}})
       
     } catch(error) {
@@ -42,37 +50,42 @@ const useAccessToken = () => {
 export const useFetchGetWithUserId = (urlEnd:string): any => {
 
   const [ data, setData ] = useState({})
+  const [ isLoading, setIsLoading ] = useState(true)
   const { accessToken, revalidateAccessToken } = useAccessToken()
   const userId = useUserId()
 
   useEffect(() => {
-    fetch(`/api/v1/investors/${userId}${urlEnd}`, {
-      headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-    }})
-    .then(res => {
-      console.log("*********************** status is")
-      if (!res.ok) {
-        // TODO(Jude) add response message like underneath. Not doing it until we do page hiding
-        // to avoid unneccessary calls
-
+    const myFetch = async () => {
+      try {
+        setIsLoading(true)
+        if (isExpired(accessToken)) {
+          await revalidateAccessToken()
+        }
+        const response = await fetch(`/api/v1/investors/${userId}${urlEnd}`, {
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        })
+        console.log("*********************** status is", response.status)
+        if (!response.ok) {
+            throw Error(`Get failed - ${response.statusText}`)
+        }
+        const data = await response.json()
+        setData(data)
+        setIsLoading(false)
+      } catch(error) {
+        alert(error)
+        setData({})
+        setIsLoading(false)
       }
-      return res.json()
-    })
-    .then(data => {
-      console.log("********************* data is ", data)
-      setData(data)
-    })
-    .catch(error =>{
-      // set logout and redirect to main page
-      // Or something to do with the refresh token first
-      throw error
-    })
+    }
+    myFetch()
+    return
   }, [])
 
-  return data
+  return { data, isLoading }
 }
 
 type HttpMutation = 'POST' | 'PUT'
@@ -83,6 +96,7 @@ export const useFetchMutationWithUserId = (urlEnd:string, methodInput: HttpMutat
   const routerObject = useHistory()
   const [ values, setValues ] = useState()
 
+  // TODO(Jude): Get rid of useEffect and just use return an async fetch that takes in values to submit
   useEffect( () => {
     if (!values) {
       return
@@ -142,6 +156,7 @@ export const useAuth = (authType: AuthType): Function => {
   const [ values, setValues ] = useState()
   const routerObject = useHistory()
 
+  // TODO(Jude): Get rid of useEffect and just use return an async fetch that takes in values to submit
   useEffect(() => {
     if (!values) {
       return
@@ -178,4 +193,109 @@ export const useAuth = (authType: AuthType): Function => {
   }, [values])
 
   return setValues
+}
+
+export const useGetPortfolioHistory = (portfolioId: string): any => {
+
+  const [ data, setData ] = useState({})
+  const { accessToken, revalidateAccessToken } = useAccessToken()
+
+  useEffect(() => {
+    const myFetch = async () => {
+      try {
+        if (isExpired(accessToken)) {
+          await revalidateAccessToken()
+        }
+        const response = await fetch(`/api/v1/portfolios/${portfolioId}/history`, {
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        })
+        console.log("*********************** status is", response.status)
+        if (!response.ok) {
+            throw Error(`Get failed - ${response.statusText}`)
+        }
+        const data = await response.json()
+        console.log("********************* data is ", data)
+        setData(data)
+      } catch(error) {
+        alert(error)
+      }
+    }
+    myFetch()
+  }, [])
+
+  return data
+}
+
+export const useCreatePortfolioHistory = (portfolioId: string): any => {
+
+  const [ data, setData ] = useState({})
+  const { accessToken, revalidateAccessToken } = useAccessToken()
+
+  useEffect(() => {
+    const myFetch = async () => {
+      try {
+        if (isExpired(accessToken)) {
+          await revalidateAccessToken()
+        }
+        const response = await fetch(`/api/v1/portfolios/${portfolioId}/history`, {
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        })
+        console.log("*********************** status is", response.status)
+        if (!response.ok) {
+            throw Error(`Get failed - ${response.statusText}`)
+        }
+        const data = await response.json()
+        console.log("********************* data is ", data)
+        setData(data)
+      } catch(error) {
+        alert(error)
+      }
+    }
+    myFetch()
+  }, [])
+
+  return data
+}
+
+export const useGetPortfolioHoldings = (portfolioId: string): any => {
+
+  const [ data, setData ] = useState({})
+  const { accessToken, revalidateAccessToken } = useAccessToken()
+
+  useEffect(() => {
+    const myFetch = async () => {
+      try {
+        if (isExpired(accessToken)) {
+          await revalidateAccessToken()
+        }
+        const response = await fetch(`/api/v1/portfolios/${portfolioId}/history`, {
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        })
+        console.log("*********************** status is", response.status)
+        if (!response.ok) {
+            throw Error(`Get failed - ${response.statusText}`)
+        }
+        const data = await response.json()
+        console.log("********************* data is ", data)
+        setData(data)
+      } catch(error) {
+        alert(error)
+      }
+    }
+    myFetch()
+  }, [])
+
+  return data
 }

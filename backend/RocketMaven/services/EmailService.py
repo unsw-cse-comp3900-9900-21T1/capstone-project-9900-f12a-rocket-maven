@@ -50,7 +50,7 @@ def send(email_to: str, email_verified_code: str):
     message["From"] = sender_email
     message["To"] = receiver_email
 
-    text ='<a href="http://127.0.0.1:5100/pw_reset?key=' + email_verified_code + '">click here to reset your password</a>'
+    text ='<a href="http://127.0.0.1:3000/reset?key=' + email_verified_code + '">click here to reset your password</a>'
 
     part1 = MIMEText(text, "html")
     message.attach(part1)
@@ -76,13 +76,13 @@ def change_password():
     # confirmation = request.json.get("confirmation")
     # eva = request.json.get("challenge_code")
 
-    evc = request.form["evc"]
+    evc = request.json.get("evc")
     if evc == None:
     	return "<h1>password change unsuccessfully page (no verification code) </h1>", 400
 
 
-    password = request.form["password"]
-    confirmation = request.form["confirmation"]
+    password = request.json.get("password")
+    confirmation = request.json.get("confirmation")
 
     print("password:", password)
     print("evc:", evc)
@@ -94,13 +94,13 @@ def change_password():
                 user.password = password
                 user.email_verified_code = None
                 db.session.commit()
-                return "<h1>password changed successfully</h1>", 200
+                return {"msg": "Password change successfull" }, 200
             else:
-                return "<h1>Email does not exist</h1>", 404
+                return {"msg": "Password change unsuccessfull"}, 404
         except:
-            return "<h1>Unexpected error</h1>", 500
+            return {"msg": "Unexpected error"}, 500
     else:
-        return "<h1>Passwords do not match</h1>", 400
+        return {"msg": "Passwords do not match"}, 400
 
 
 def update_password():

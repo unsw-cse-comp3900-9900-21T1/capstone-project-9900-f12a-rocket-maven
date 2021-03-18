@@ -1,10 +1,13 @@
 import { Switch, Route, Redirect } from 'react-router-dom'
+import { urls } from '../../data/urls'
+import { useStore } from '../../hooks/store'
 import LogIn from "../../pages/LogIn"
+import Forgot from "../../pages/Forgot"
 import SignUp from "../../pages/SignUp"
 import Portfolio from "../../pages/Portfolio"
 import Account from '../../pages/Account'
-import { urls } from '../../data/urls'
-import { useStore } from '../../hooks/store'
+import HomeStub from '../../pages/HomeStub'
+import PasswordReset from '../../pages/PasswordReset'
 
 const Routes = () => {
   const { isLoggedIn } = useStore()
@@ -18,7 +21,10 @@ const Routes = () => {
         : <Redirect to={urls.login} />
       )}>
       </Route>
+      <Route exact path={urls.homeStub} component={HomeStub} />
       <Route exact path={urls.login} component={LogIn} />
+      <Route exact path={urls.forgot} component={Forgot} />
+      <Route exact path={urls.passwordReset} component={PasswordReset} />
       <Route exact path={urls.signup} component={SignUp} />
       <Route path={urls.login} component={LogIn} />
       <Route path={urls.portfolio} component={Portfolio}/>

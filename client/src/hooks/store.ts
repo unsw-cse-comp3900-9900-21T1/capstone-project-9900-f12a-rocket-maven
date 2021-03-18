@@ -1,5 +1,6 @@
 import { useContext } from 'react'
 import { storeContext } from '../data/app/store'
+import { countryCodeToName } from '../data/country-code-to-name'
 
 // TODO(Jude): Consider separating into more specific 'use' functions
 export const useStore = () => {
@@ -11,4 +12,15 @@ export const useStore = () => {
 export const useUserId = () => {
   const { state } = useContext(storeContext)
   return state.userId
+}
+
+// Not exactly the right place..
+export const useSortedCountryList = () => {
+  // TODO(Jude): Get a proper list of countries instead of processing
+  const countryList = Object.entries(countryCodeToName).sort((a,b) => {
+    if(a[1] > b[1]) return 1;
+    if(a[1] < b[1]) return -1;
+    return 0;
+  })
+  return countryList
 }

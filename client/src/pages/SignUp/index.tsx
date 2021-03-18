@@ -1,8 +1,8 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import { Form, Input, Button, Select, Card } from 'antd';
+import Page from '../_Page'
 import 'antd/dist/antd.css';
-import { Form, Input, Button, Checkbox, Card } from 'antd';
 import { useAuth } from '../../hooks/http'
+import { useSortedCountryList } from '../../hooks/store'
 
 const layout = {
   labelCol: {
@@ -22,14 +22,15 @@ const tailLayout = {
 const SignUp =  () => {
 
   const setValuesAndFetch = useAuth('REGISTER')
+  const countryList = useSortedCountryList()
   
   const onFinish = async (values: any) => {
     const requestBody =   {
-    "country_of_residency": "AU",
+    "country_of_residency": values.countryOfResidency,
     "date_of_birth": "2021-03-13",
     "email": values.email,
     "first_name": values.firstName,
-    "gender": "string",
+    "gender": values.gender,
     "last_name": values.lastName,
     "password": values.password,
     "username": values.username,
@@ -39,8 +40,9 @@ const SignUp =  () => {
   };
 
   return (
+    <Page>
     <Card  style={{
-      margin:"60px"
+      width:"600px",
     }}>
 
       <Form
@@ -69,7 +71,7 @@ const SignUp =  () => {
           name="firstName"
           rules={[
             {
-              required: true,
+              required: false,
               message: 'Please input your first name!',
             },
           ]}
@@ -82,7 +84,7 @@ const SignUp =  () => {
           name="lastName"
           rules={[
             {
-              required: true,
+              required: false,
               message: 'Please input your last name!',
             },
           ]}
@@ -107,6 +109,62 @@ const SignUp =  () => {
           <Input />
         </Form.Item>
 
+        <Form.Item
+          label="Country of residency"
+          name="countryOfResidency"
+          rules={[
+            {
+              required: true,
+              message: 'Please select a country',
+            },
+          ]}
+        >
+          <Select>
+            {
+              countryList.map(([code, name], value) => {
+                return(
+                  <Select.Option value={code}>{name}</Select.Option>
+                )
+              })
+            }
+          </Select>
+        </Form.Item>
+        <Form.Item
+          label="Gender"
+          name="gender"
+          rules={[
+            {
+              required: true,
+              message: 'Please select a country',
+            },
+          ]}
+        >
+          <Select>
+              <Select.Option value={'Female'}>Female</Select.Option>
+              <Select.Option value={'Male'}>Male</Select.Option>
+              <Select.Option value={'Other'}>Other</Select.Option>
+          </Select>
+        </Form.Item>
+        <Form.Item
+          label="Date of Birth"
+          name="date_of_birth"
+          rules={[
+            {
+              required: false,
+            },
+            () => ({
+              validator(_, value) {
+                if (/^\d{4}-([0]\d|1[0-2])-([0-2]\d|3[01])$/.test(value)) {
+                  return Promise.resolve();
+                }
+                // Maybe add better date processing?
+                return Promise.reject(new Error('Please make sure the date is of the format XXXX-XX-XX'));
+              },
+            }),
+          ]}
+        >
+          <Input />
+        </Form.Item>
         <Form.Item
           label="Password"
           name="password"
@@ -151,6 +209,7 @@ const SignUp =  () => {
         </Form.Item>
       </Form>
     </Card>
+    </Page>
   );
 };
 

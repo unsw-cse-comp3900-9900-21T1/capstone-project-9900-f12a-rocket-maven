@@ -17,7 +17,7 @@ class PortfolioAssetHoldingList(Resource):
         """
         ---
         summary: Holdings in a Portfolio
-        description: List the holdings in a portfolio
+        description: List the current holdings in a portfolio
         tags:
           - Assets
         parameters:
@@ -50,8 +50,8 @@ class PortfolioEventList(Resource):
     def get(self, portfolio_id):
         """
         ---
-        summary: Assets in a Portfolio
-        description: List the assets in a portfolio
+        summary: Asset Events in a Portfolio
+        description: List the asset event history in a portfolio
         tags:
           - Assets
         parameters:
@@ -79,8 +79,8 @@ class PortfolioEventList(Resource):
     def post(self, portfolio_id):
         """
         ---
-        summary: Asset Create
-        description: Creates a new asset for a portfolio
+        summary: Asset Event Create
+        description: Creates a new asset event for a portfolio
         tags:
           - Assets
         requestBody:

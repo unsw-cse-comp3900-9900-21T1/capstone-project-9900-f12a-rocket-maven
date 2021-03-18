@@ -1,10 +1,14 @@
 import React from "react"
 import { Link } from 'react-router-dom';
-import { FaHome } from 'react-icons/fa'
-import { SidebarWrap } from "./styled"
+import { FaHome, FaUserPlus } from 'react-icons/fa'
+// import { SidebarWrap } from "./styled"
 import { urls } from '../../data/urls'
 import { Subtitle } from '../../componentsStyled/Typography'
 import { useStore } from "../../hooks/store";
+
+import { Layout, Menu, Breadcrumb } from 'antd';
+const { SubMenu } = Menu;
+const { Header, Content, Footer, Sider } = Layout;
 
 const size = {
   width: 30,
@@ -20,13 +24,11 @@ type SideBarItem = {
 
 function sideBarItems(isLoggedIn: boolean) {
   const itemsWhenNotLoggedIn: Array<SideBarItem> = [
-    { name: "HomeStub", to: urls.root, icon: FaHome },
-    { name: "Sign up", to: urls.signup, icon: FaHome },
-    { name: "Login", to: urls.login, icon: FaHome },
-    { name: "Login2", to: urls.login2, icon: FaHome },
+    { name: "Sign Up", to: urls.signup, icon: FaUserPlus },
+    { name: "Sign In", to: urls.login, icon: FaUserPlus },
   ];
   const itemsWhenLoggedIn: Array<SideBarItem> = [
-    { name: "HomeStub", to: urls.root, icon: FaHome },
+    { name: "Test", to: urls.homeStub, icon: FaHome },
     { name: "Portfolio", to: urls.portfolio, icon: FaHome },
     { name: "Account", to: urls.account, icon: FaHome },
   ];
@@ -34,32 +36,32 @@ function sideBarItems(isLoggedIn: boolean) {
 }
 
 
+{/*
+<React.Fragment>
+  <item.icon />
+  <Link to={item.to}>{item.name} </Link>
+</React.Fragment>
+*/}
+
 const SideBar = () => {
   const { isLoggedIn } = useStore();
   const sideBar = sideBarItems(isLoggedIn).map(item => ( 
     // TODO(Jude): Space and style appropriately here
     <React.Fragment>
-      <item.icon />
-      <Link to={item.to}>{item.name} </Link>
+      <Menu.Item>
+        <Link to={item.to}>{item.name} </Link>
+      </Menu.Item>
     </React.Fragment>
   ))
 
-  // Basic logout functionality - get rid of when we have a proper logout button
-  const { dispatch } = useStore()
-  sideBar.push(
-    <React.Fragment>
-      <Link onClick={()=>{dispatch({type:'LOGOUT'})}} to={urls.root}>
-        Logout
-      </Link>
-    </React.Fragment>
-  )
+
   return (
-    <SidebarWrap>
-      <Subtitle>
-        Website logo maybe here
-      </Subtitle>
-      {sideBar}
-    </SidebarWrap>
+    <Menu>
+    <Subtitle>
+      <a href="/"><img src="/testlogo.svg" width="200px" /></a>
+    </Subtitle>
+    {sideBar}
+    </Menu>
   )
 }
 

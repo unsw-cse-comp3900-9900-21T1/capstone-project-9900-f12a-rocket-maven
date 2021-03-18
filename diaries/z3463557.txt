@@ -29,4 +29,7 @@ Week 4
 - particularly time consuming tasks
 
 Week 5
-- refactored client side Auth fixes
+- Finished client side login state management with Tyson
+- Started on Portfolio Detail, Event History, and Holding pages; finshed by Andy
+- Finished Account edit and styling
+-

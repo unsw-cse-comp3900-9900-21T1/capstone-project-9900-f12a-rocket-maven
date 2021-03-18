@@ -5,10 +5,12 @@ import { Title, Text, Code, Link, StyledLink } from '../../componentsStyled/Typo
 import { StubWrap } from '../../componentsStyled/Layouts'
 import logo from '../../assets/svg/logo.svg'
 import { useStore } from '../../hooks/store'
+import { useAccessToken } from '../../hooks/http'
 
 const HomeStub = () => {
 
   const [time, setTime] = useState();
+  const { accessToken, revalidateAccessToken } = useAccessToken()
 
   useEffect(() => {
     fetch('/api/v1/get-time')
@@ -22,27 +24,15 @@ const HomeStub = () => {
   }, [])
 
 
-  const { accessToken } = useStore()
-  // Testing api call with authentication
+  // Testing api call with refresh token
   // TODO(Jude): Separate fetch requests and create refresh token handling
   useEffect(() => {
-    fetch('/api/v1/investors', {
-      headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`
-      }
-    })
-    .then(response  => {
-      console.log("Response status is ", response.status)
-      return response.json()
-    })
-    .then(data => {
-      console.log("************8 data is ", data)
-    })
-    .catch(error =>{
-      throw error
-    })
+    // try {
+    //   revalidateAccessToken()
+    // } catch(e) {
+    //   console.log("**************** error is ", e)
+    // }
+
   }, [])
 
   return (

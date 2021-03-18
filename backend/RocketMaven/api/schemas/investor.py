@@ -16,4 +16,5 @@ class InvestorSchema(ma.SQLAlchemyAutoSchema):
         exclude = (
             "_password",
             "admin_account",
+            "email_verified_code",
         )

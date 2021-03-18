@@ -16,7 +16,7 @@ class PortfolioAssetHolding(db.Model):
         primary_key=True,
         nullable=False,
     )
-    asset = relationship("Asset", backref="asset")
+    portfolio = relationship("Portfolio", backref="portfolio")
 
     portfolio_id = db.Column(
         db.Integer, db.ForeignKey("portfolio.id"), primary_key=True, nullable=False
@@ -33,16 +33,25 @@ class PortfolioAssetHolding(db.Model):
     def __repr__(self):
         return "<PortfolioAssetHolding %s, %s>" % (self.asset_id, self.portfolio_id)
 
+    asset = relationship("Asset", backref="asset")
     market_price = association_proxy("asset", "current_price")
+
+    investor_id = association_proxy("portfolio", "investor_id")
+
+    _current_value = db.Column(db.Float(), nullable=True)
 
     @hybrid_property
     def current_value(self):
         return self.market_price * self.available_units
 
+    _purchase_value = db.Column(db.Float(), nullable=True)
+
+    @hybrid_property
+    def purchase_value(self):
+        return self.average_price * self.available_units
+
     _unrealised_units = db.Column(db.Float(), nullable=True)
 
     @hybrid_property
     def unrealised_units(self):
-        return (self.market_price * self.available_units) - (
-            self.average_price * self.available_units
-        )
+        return self.current_value - self.purchase_value

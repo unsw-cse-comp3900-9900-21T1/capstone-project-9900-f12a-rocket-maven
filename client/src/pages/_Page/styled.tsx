@@ -1,9 +1,13 @@
 import styled from "styled-components"
 
 export const PageWrap = styled.div`
+  overflow: scroll;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  min-height: 280px;
+  padding: 24px;
+  background: #fff;
 `
 
 export const HeaderWrap = styled.header`
@@ -11,7 +15,7 @@ export const HeaderWrap = styled.header`
 `
 
 export const NavWrap = styled.nav`
-  background-color: #fecc91;
+  background-color: white;
 `
 
 export const BodyWrap = styled.main`
