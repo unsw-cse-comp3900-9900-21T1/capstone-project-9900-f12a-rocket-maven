@@ -1,11 +1,12 @@
 from flask import request
 from flask_restful import Resource
-from RocketMaven.services import EmailService
-from RocketMaven.models import Investor###
 
+from RocketMaven.services import EmailService
+from RocketMaven.models import Investor
 
 
 class Iforgot(Resource):
+
 	def post(self):
 		"""
         ---
@@ -32,6 +33,8 @@ class Iforgot(Resource):
                   type: object
                   properties:
                     investor: InvestorSchema
+          400:
+            description: Malformed request
           404:
             description: investor does not exist
         """

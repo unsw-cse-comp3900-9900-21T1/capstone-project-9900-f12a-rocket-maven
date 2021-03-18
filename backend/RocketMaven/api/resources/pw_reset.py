@@ -31,6 +31,8 @@ class Pw_reset(Resource):
                   type: object
                   properties:
                     investor: InvestorSchema
+          400:
+            description: Malformed request
           404:
             description: investor does not exist
         """
