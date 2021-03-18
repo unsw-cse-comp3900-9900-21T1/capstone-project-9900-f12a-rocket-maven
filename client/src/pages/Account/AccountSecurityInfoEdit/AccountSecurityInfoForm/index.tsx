@@ -11,8 +11,7 @@ type Props = {
 }
 
 const AccountSecurityInfoForm = ({investorData}: Props) => {
-  const routerObject = useHistory()
-  const setValuesAndFetch: Function = useFetchMutationWithUserId('', 'PUT')
+  const setValuesAndFetch: Function = useFetchMutationWithUserId('', 'PUT', urls.account)
   const onFinish = (values: any) => {
     console.log("*************** values are ", values)
     setValuesAndFetch({
@@ -20,8 +19,6 @@ const AccountSecurityInfoForm = ({investorData}: Props) => {
       // confirm field removed since it is only to ensule
       confirm: undefined,
     })
-    // TODO(Jude): Error handling. Reroute will trigger despite failed mutation
-    routerObject.push(urls.account)
   }
 
   return (

@@ -57,6 +57,7 @@ export const useFetchGetWithUserId = (urlEnd:string): any => {
   useEffect(() => {
     const myFetch = async () => {
       try {
+        setIsLoading(true)
         if (isExpired(accessToken)) {
           await revalidateAccessToken()
         }
@@ -81,6 +82,7 @@ export const useFetchGetWithUserId = (urlEnd:string): any => {
       }
     }
     myFetch()
+    return
   }, [])
 
   return { data, isLoading }
