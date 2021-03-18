@@ -52,6 +52,14 @@ const AccountDetailCard = ({investor}: Investor) => {
         </Row>
         <Row>
           <Col>
+            Country
+          </Col>
+          <Col>
+            {investor.country_of_residency ? investor.country_of_residency: ''}
+          </Col>
+        </Row>
+        <Row>
+          <Col>
             Date of Birth
           </Col>
           <Col>
