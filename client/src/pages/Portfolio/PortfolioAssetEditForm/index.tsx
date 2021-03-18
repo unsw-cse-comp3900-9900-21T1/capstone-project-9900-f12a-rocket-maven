@@ -5,8 +5,11 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { urls } from '../../../data/urls'
 import { useAuth } from '../../../hooks/http'
 import { useState, useEffect, useRef, useMemo } from 'react'
+import { useHistory } from "react-router";
 import { SelectProps } from "antd/es/select";
 import { isEmpty } from  'ramda'
+import { PortfolioInfo, PortfolioEventCreate } from '../types'
+import { useFetchGetWithUserId, useFetchMutationWithUserId } from '../../../hooks/http'
 
 import { Select, Spin } from 'antd';
 import debounce from 'lodash/debounce';
@@ -30,6 +33,11 @@ export type AssetSearchPagination = {
   prev: string,
   total: number,
   results: [AssetSearch]
+}
+
+
+type Props = {
+  portfolioId?: string
 }
 
 // https://ant.design/components/select/#components-select-demo-select-users
@@ -83,6 +91,7 @@ function DebounceSelect<
 interface DebounceValue {
   label: string;
   value: string;
+  key: string;
 }
 
 
@@ -99,7 +108,7 @@ async function fetchUserList(query: string): Promise<DebounceValue[]> {
         const histories:[AssetSearch] = (data as AssetSearchPagination).results;
         
         const search_simple = histories.map(item => {
-          return {"value": item.ticker_symbol, "label": item.ticker_symbol + " | " + item.name}
+          return {"key": item.ticker_symbol, "value": item.ticker_symbol, "label": item.ticker_symbol + " | " + item.name}
         })
         
         return search_simple;
@@ -123,15 +132,34 @@ const formItemLayout = {
   },
 };
 
-const PortfolioAssetEditForm = () => {
 
-  const setValuesAndFetch = useAuth('LOGIN')
-  const onFinish = (values: any) => {
-    setValuesAndFetch(values)
-  };
-  
-     
-  const [value, setValue] = useState<DebounceValue[]>([]);
+const PortfolioAssetEditForm = ({portfolioId}: Props) => {
+  let initialValues: PortfolioEventCreate = {
+    add_action: true,
+    asset_id: "",
+    fees: 0,
+    note: "",
+    price_per_share: 0,
+    units: 0
+  }
+  let urlEnd = `../../../portfolios/${portfolioId}/history`
+
+console.log("**************** initial values are", initialValues)
+// Will add redirect after we get some seed data. Right now it's useful to be able to populate
+// values quickly
+const setValuesAndFetch: Function = useFetchMutationWithUserId(urlEnd, 'POST')
+
+const routerObject = useHistory()
+
+const onFinish = (values: any) => {
+values.asset_id = values.asset_id.value
+setValuesAndFetch({
+        ...values
+})
+}
+
+
+  const [ valued, setValued ] = useState();
 
 
   return (
@@ -161,11 +189,11 @@ const PortfolioAssetEditForm = () => {
                   
           <DebounceSelect
           showSearch
-            value={value}
+            value={valued}
             placeholder="Search Asset"
             fetchOptions={fetchUserList}
             onChange={newValue => {
-              setValue(newValue);
+              setValued(newValue.key);
             }}
             style={{ width: '100%' }}
           />
@@ -202,7 +230,7 @@ const PortfolioAssetEditForm = () => {
         
         <Form.Item
           name="price_per_share"
-          label="Price Per Share"
+          label="Price Per Unit"
           rules={[
             {
               required: true,
@@ -227,14 +255,14 @@ const PortfolioAssetEditForm = () => {
         
         
 
-        <Form.Item style={{textAlign: "center"}}>
-          <Button type="primary" htmlType="submit" style={{
+        <Form.Item style={{textAlign: "center"}}  name="add_action" initialValue="1">
+          <Button type="primary" htmlType="submit" value="1" style={{
    marginRight: "8px",
    marginBottom: "12px",
     }}>
           Add
           </Button>
-          <Button type="primary" htmlType="submit" danger style={{
+          <Button type="primary" htmlType="submit" value="0" danger style={{
    marginRight: "8px",
    marginBottom: "12px",
     }}>

@@ -1,6 +1,5 @@
- import * as Yup from 'yup'
+
 import { Fragment } from 'react'
-import { Formik, Field, ErrorMessage } from 'formik'
 import { Form, Input, Button,  Card, Switch, Select } from 'antd';
 // import { MySelect, MyTextInput } from '../../../forms'
 import { numberRequired, stringRequired, booleanRequired} from '../../../forms/validators'
@@ -9,13 +8,7 @@ import { PortfolioInfo } from '../types'
 import { useHistory } from "react-router";
 const { Option } = Select;
 
-const schema = Yup.object({
-  competition_portfolio: booleanRequired,
-  description: stringRequired,
-  name: stringRequired,
-  tax_residency: stringRequired,
-  visibility: booleanRequired,
-})
+
 type Props = {
   portfolioInfo?: {
     portfolio: PortfolioInfo
@@ -57,6 +50,7 @@ const PortfolioEditForm = ({portfolioInfo, portfolioId, action}: Props) => {
     })
     routerObject.push('/portfolio')
   };
+
 
   return (
     <Card  style={{

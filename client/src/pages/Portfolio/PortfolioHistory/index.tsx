@@ -4,7 +4,7 @@ import { isEmpty } from  'ramda'
 import { Subtitle } from '../../../componentsStyled/Typography'
 import { useParams, Link } from 'react-router-dom'
 import { useGetPortfolioHistory } from '../../../hooks/http'
-import { PortfolioEvent, PortfolioEventPagination } from './types'
+import { PortfolioEvent, PortfolioEventPagination } from '../types'
 import { urls } from '../../../data/urls'
 import { Table } from 'antd';
 
@@ -52,7 +52,7 @@ const PortfolioHistory = () => {
         dataIndex: "units"
       },
       {
-        title: "Price Per Share",
+        title: "Price Per Unit",
         dataIndex: "price_per_share"
       },
       {
