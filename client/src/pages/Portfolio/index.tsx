@@ -21,13 +21,13 @@ const Portfolio = () => {
       <Switch>
         <Route exact path={urls.portfolio} component={PortfolioList} />
         {/* TODO(Jude): crudify routes */}
-        <Route path={urls.portfolio + '/detail'} component={PortfolioDetail} />
         {/* TODO(Jude): change id to portfolio:id */}
         <Route path={urls.portfolio + '/create'} component={PortfolioCreate} />
         <Route path={urls.portfolio + '/:id/edit'} component={PortfolioEdit} />
         <Route exact path={urls.portfolio + '/:id/history'} component={PortfolioHistory} />
         <Route path={urls.portfolio + '/:id/addremove'} component={PortfolioAssetCreate} />
         <Route path={urls.portfolio + '/:id/holdings'} component={PortfolioHoldings} />
+        <Route exact path={urls.portfolio + '/:id'} component={PortfolioDetail} />
       </Switch>
     </Page>
   )

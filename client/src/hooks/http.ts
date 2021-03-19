@@ -1,12 +1,11 @@
 import jwt_decode from "jwt-decode";
 import { useState, useEffect } from 'react'
 import { useHistory } from "react-router";
-import { useStore, useUserId } from './store'
+import { useStore, useUserId, useIsLoggedIn } from './store'
 import { isExpired } from 'react-jwt'
 import { urls}  from  '../data/urls'
 
 //TODO(Jude): Can probably extract and generalise fetchFunctions and reuse in each hook
-
 // Rushed implementation of authToken refresh
 // Getting a 404 error with the fetch request
 export const useAccessToken = () => {
@@ -47,6 +46,45 @@ export const useAccessToken = () => {
   return {accessToken, revalidateAccessToken}
 }
 
+export const useFetchGetPublicPortfolio = (portfolioId:string): any => {
+
+  const [ data, setData ] = useState({})
+  const [ isLoading, setIsLoading ] = useState(true)
+  const { accessToken, revalidateAccessToken } = useAccessToken()
+  const isLoggedIn = useIsLoggedIn()
+
+  useEffect(() => {
+    const myFetch = async () => {
+      try {
+        setIsLoading(true)
+        if (isLoggedIn && isExpired(accessToken)) {
+          await revalidateAccessToken()
+        }
+        const response = await fetch(`/api/v1/public-portfolios/${portfolioId}`, {
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        })
+        console.log("*********************** status is", response.status)
+        if (!response.ok) {
+            throw Error(`${response.status}`)
+        }
+        const data = await response.json()
+        setData(data)
+        setIsLoading(false)
+      } catch(error) {
+        setData({})
+        setIsLoading(false)
+      }
+    }
+    myFetch()
+    return
+  }, [])
+
+  return { data, isLoading }
+}
 export const useFetchGetWithUserId = (urlEnd:string): any => {
 
   const [ data, setData ] = useState({})
@@ -276,7 +314,7 @@ export const useGetPortfolioHoldings = (portfolioId: string): any => {
         if (isExpired(accessToken)) {
           await revalidateAccessToken()
         }
-        const response = await fetch(`/api/v1/portfolios/${portfolioId}/history`, {
+        const response = await fetch(`/api/v1/portfolios/${portfolioId}/holdings`, {
           headers: {
             "Accept": "application/json",
             "Content-Type": "application/json",

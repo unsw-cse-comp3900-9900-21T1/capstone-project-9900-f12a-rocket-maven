@@ -9,6 +9,7 @@ from RocketMaven.api.resources import (
     InvestorResource,
     InvestorList,
     PortfolioResource,
+    PublicPortfolioResource,
     PortfolioList,
     Time,
     LoginStub,
@@ -71,6 +72,11 @@ api.add_resource(
     endpoint="portfolio_by_id",
 )
 api.add_resource(
+    PublicPortfolioResource,
+    "/public-portfolios/<int:portfolio_id>",
+    endpoint="public_portfolio_by_id",
+)
+api.add_resource(
     PortfolioList, "/investors/<int:investor_id>/portfolios", endpoint="portfolios"
 )
 
@@ -90,6 +96,7 @@ def register_controllers():
     apispec.spec.path(view=InvestorList, app=current_app, api=api)
 
     apispec.spec.components.schema("PortfolioSchema", schema=PortfolioSchema)
+    apispec.spec.path(view=PublicPortfolioResource, app=current_app, api=api)
     apispec.spec.path(view=PortfolioResource, app=current_app, api=api)
     apispec.spec.path(view=PortfolioList, app=current_app, api=api)
 
