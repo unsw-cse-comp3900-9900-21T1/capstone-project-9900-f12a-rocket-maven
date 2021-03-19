@@ -37,17 +37,19 @@ def get_portfolios(investor_id):
         .all()
     )
     
-    for asset in assets:
-        ok, msg = update_asset(asset)
-        if not ok:
-            return (
-                {
-                    "msg": "Unable to update asset {} - {}".format(
-                        asset.ticker_symbol, msg
-                    )
-                },
-                500,
-            )
+    # Set to False when debugging to reduce Yahoo API calls
+    if True:
+        for asset in assets:
+            ok, msg = update_asset(asset)
+            if not ok:
+                return (
+                    {
+                        "msg": "Unable to update asset {} - {}".format(
+                            asset.ticker_symbol, msg
+                        )
+                    },
+                    500,
+                )
 
     query = Portfolio.query.filter_by(investor_id=investor_id)
     return paginate(query, schema)

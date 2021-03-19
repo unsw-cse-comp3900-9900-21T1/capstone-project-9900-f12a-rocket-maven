@@ -1,4 +1,4 @@
-import { Fragment, useState, useEffect } from 'react'
+import { Fragment, useState, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom';
 import { isEmpty } from 'ramda'
 import { Text } from '../../../../componentsStyled/Typography'
@@ -11,6 +11,7 @@ import { useHistory } from 'react-router-dom'
 import { urls } from '../../../../data/urls'
 import { Tooltip, Button, Divider, Table } from 'antd';
 import { EditOutlined, EllipsisOutlined, SettingOutlined, EyeOutlined } from '@ant-design/icons';
+import { useAccessToken } from '../../../../hooks/http'
 
 
 type Props = {
@@ -18,34 +19,40 @@ type Props = {
 }
 
 
-
-
-
 const PaginatedPortfolioDisplay = ({ portfolioPagination }: Props) => {
 
 
+  const routerObject = useHistory()
+  const { accessToken, revalidateAccessToken } = useAccessToken()
+  /* (portfolio_id: string, asset_id: string) */
+  async function useDeleteAssetPortfolioHolding(e: any) {
+    // Double check that the password reset works in the browser we're going to demo it in
+    // Briefly read that URLSearchParams may not have extensive support
+    const asset_id = e.target.getAttribute("title")
+    const portfolio_id = e.target.getAttribute("aria-valuenow")
+    routerObject.push('/')
+    
+      const response = await fetch(`/api/v1/portfolios/${portfolio_id}/holdings`, {
+        method: 'DELETE',
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({"asset_id": asset_id})
+      })
+      const data = await response.json()
+      if (!response.ok) {
+        throw Error(`${data.msg}`)
+      } 
+      routerObject.push('/')
+  }
+
+  
   if (!portfolioPagination || isEmpty(portfolioPagination)) {
     return null
   }
 
-  const useDeleteAssetPortfolioHolding = (portfolio_id: any) => (e: any) => {
-    let urlEnd = `../../../portfolios/${portfolio_id}/history`
-    /*
-    const setValuesAndFetch: Function = useFetchMutationWithUserId(urlEnd, 'DELETE')
-
-    // const routerObject = useHistory()
-
-    const onFinish = (values: any) => {
-      values.asset_id = values.asset_id.value
-      values.add_action = addActionValue
-      console.log("************** values are ", values)
-      setValuesAndFetch({
-              ...values
-      })
-      // routerObject.push(urls.portfolio)
-    }
-    */
-  }
 
   const numberChangeRenderer = (testVal: string, record: any) => {
     const text = parseFloat(testVal).toFixed(2)
@@ -87,20 +94,20 @@ const PaginatedPortfolioDisplay = ({ portfolioPagination }: Props) => {
               title: 'Action',
               dataIndex: 'asset_id',
               key: 'x',
-              render: (value: string) => <a onClick={() => alert(portfolio.id)}>Delete</a>,
+              render: (value: string) => <a title={value} aria-valuenow={portfolio.id} onClick={useDeleteAssetPortfolioHolding}>Delete</a>,
             }]
 
           const valueColumns = [
+            { title: "Purchase Cost", dataIndex: "Purchase Cost" },
             { title: "Current Market", dataIndex: "Current Market" },
-            { title: "Purchase", dataIndex: "Purchase" },
-            { title: "Unrealised (Purchase - Market)", dataIndex: "Unrealised", render: numberChangeRenderer, },
+            { title: "Unrealised (Market - Purchase)", dataIndex: "Unrealised", render: numberChangeRenderer, },
             { title: "Realised (Sold Value)", dataIndex: "Realised (Sold Value)", render: numberChangeRenderer, },
           ]
 
           const value = [{
             "Current Market": portfolio.current_value_sum.toFixed(2),
-            "Purchase": portfolio.purchase_value_sum.toFixed(2),
-            "Unrealised": (portfolio.purchase_value_sum - portfolio.current_value_sum).toFixed(2),
+            "Purchase Cost": portfolio.purchase_value_sum.toFixed(2),
+            "Unrealised": (portfolio.current_value_sum - portfolio.purchase_value_sum).toFixed(2),
             "Realised (Sold Value)": portfolio.realised_sum.toFixed(2),
           }]
 
