@@ -34,6 +34,37 @@ class LeaderboardList(Resource):
         return CompetitionService.get_leaderboard()
 
 
+class PublicPortfolioResource(Resource):
+
+    @jwt_required(optional=True)
+    def get(self, portfolio_id):
+        """
+        ---
+        summary: Portfolio Get
+        description: Get a public portfolio belonging to the specified investor
+        tags:
+          - Portfolios
+        parameters:
+          - in: path
+            name: portfolio_id
+            schema:
+              type: integer
+        responses:
+          200:
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    portfolio: PortfolioSchema
+          404:
+            description: portfolio does not exist
+          401:
+            description: unauthorised portfolio read
+        """
+        # return {'msg': 'testing to see if this works'}
+        return PortfolioService.get_public_portfolio(portfolio_id)
+
 class PortfolioResource(Resource):
 
     method_decorators = [jwt_required()]

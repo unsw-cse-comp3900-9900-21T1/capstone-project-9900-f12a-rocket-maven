@@ -14,6 +14,11 @@ export const useUserId = () => {
   return state.userId
 }
 
+export const useIsLoggedIn = () => {
+  const { state } = useContext(storeContext)
+  return state.isLoggedIn
+}
+
 // Not exactly the right place..
 export const useSortedCountryList = () => {
   // TODO(Jude): Get a proper list of countries instead of processing
