@@ -50,6 +50,7 @@ def get_portfolios(investor_id):
         .join(PortfolioEvent)
         .join(Portfolio)
         .filter_by(investor_id=investor_id)
+        .filter_by(deleted=false) #TODO: Andy can you confirm this filter is correct?
         .distinct(PortfolioEvent.asset_id)
         .all()
     )
