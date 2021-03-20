@@ -32,6 +32,13 @@ def update_portfolio(portfolio_id):
 
     return {"msg": "portfolio updated", "portfolio": schema.dump(data)}
 
+def delete_portfolio(portfolio_id):
+    portfolio = Portfolio.query.get_or_404(portfolio_id)
+    portfolio.deleted = True
+
+    db.session.commit()
+
+    return {"msg": "portfolio deleted"}
 
 def get_portfolios(investor_id):
     schema = PortfolioSchema(many=True)
