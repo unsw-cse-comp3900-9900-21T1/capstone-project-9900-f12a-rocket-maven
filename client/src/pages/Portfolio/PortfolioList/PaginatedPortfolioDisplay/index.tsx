@@ -17,9 +17,10 @@ import { useAccessToken } from '../../../../hooks/http'
 
 type Props = {
   portfolioPagination: PortfolioPagination
+  refreshPortfolios: () => void
 }
 
-const PaginatedPortfolioDisplay = ({ portfolioPagination }: Props) => {
+const PaginatedPortfolioDisplay = ({ portfolioPagination, refreshPortfolios }: Props) => {
   const { state } = useContext(storeContext)
   const { userId } = state
 
@@ -178,7 +179,7 @@ const PaginatedPortfolioDisplay = ({ portfolioPagination }: Props) => {
 
           if (response.ok) {
             message.success(data.msg)
-            // TODO: refresh portfolios collection
+            refreshPortfolios()
           } else {
             message.error(data.msg)
           }
