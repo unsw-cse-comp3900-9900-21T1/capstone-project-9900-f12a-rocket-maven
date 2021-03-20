@@ -49,8 +49,7 @@ def get_portfolios(investor_id):
         .query(Asset)
         .join(PortfolioEvent)
         .join(Portfolio)
-        .filter_by(investor_id=investor_id)
-        .filter_by(deleted=false) #TODO: Andy can you confirm this filter is correct?
+        .filter_by(investor_id=investor_id)        
         .distinct(PortfolioEvent.asset_id)
         .all()
     )
@@ -69,7 +68,8 @@ def get_portfolios(investor_id):
                     500,
                 )
 
-    query = Portfolio.query.filter_by(investor_id=investor_id)
+    query = Portfolio.query.filter_by(investor_id=investor_id).filter_by(deleted=False)
+
     return paginate(query, schema)
 
 
