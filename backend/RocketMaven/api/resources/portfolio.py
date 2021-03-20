@@ -135,6 +135,36 @@ class PortfolioResource(Resource):
         """
         return PortfolioService.update_portfolio(portfolio_id)
 
+    def delete(self, investor_id, portfolio_id):
+        """
+        ---
+        summary: Portfolio Delete
+        description: Delete an empty portfolio belonging to the specified investor
+        tags:
+          - Portfolios
+        parameters:
+          - in: path
+            name: investor_id
+            schema:
+              type: integer
+          - in: path
+            name: portfolio_id
+            schema:
+              type: integer
+        responses:
+          200:
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    msg:
+                      type: string
+                      example: portfolio deleted
+          404:
+            description: portfolio does not exists
+        """
+        return PortfolioService.delete_portfolio(portfolio_id)
 
 class PortfolioList(Resource):
 
