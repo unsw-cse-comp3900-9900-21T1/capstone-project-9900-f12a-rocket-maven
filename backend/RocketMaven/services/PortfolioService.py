@@ -1,8 +1,11 @@
 from flask import request
 from RocketMaven.api.schemas import PortfolioSchema
-from RocketMaven.models import Portfolio
+from RocketMaven.models import Portfolio, Asset, PortfolioEvent
 from RocketMaven.extensions import db
+from RocketMaven.services.PortfolioEventService import update_asset
 from RocketMaven.commons.pagination import paginate
+from flask_jwt_extended import get_jwt_identity
+import sys
 
 
 def get_portfolio(portfolio_id):
@@ -10,6 +13,14 @@ def get_portfolio(portfolio_id):
     data = Portfolio.query.get_or_404(portfolio_id)
     return {"portfolio": schema.dump(data)}
 
+# May not need this function, could just extend the logic of get_portfolio
+def get_public_portfolio(portfolio_id):
+    schema = PortfolioSchema()
+    data = Portfolio.query.get_or_404(portfolio_id)
+    if data.visibility or data.investor_id == get_jwt_identity():
+        return {"portfolio": schema.dump(data)}
+    else:
+        return {"msg": "Portfolio is private"}, 401
 
 def update_portfolio(portfolio_id):
     schema = PortfolioSchema(partial=True)
@@ -24,6 +35,32 @@ def update_portfolio(portfolio_id):
 
 def get_portfolios(investor_id):
     schema = PortfolioSchema(many=True)
+    
+    # Get the assets that are part of this portfolio
+    assets = (
+        db.session()
+        .query(Asset)
+        .join(PortfolioEvent)
+        .join(Portfolio)
+        .filter_by(investor_id=investor_id)
+        .distinct(PortfolioEvent.asset_id)
+        .all()
+    )
+    
+    # Set to False when debugging to reduce Yahoo API calls
+    if True:
+        for asset in assets:
+            ok, msg = update_asset(asset)
+            if not ok:
+                return (
+                    {
+                        "msg": "Unable to update asset {} - {}".format(
+                            asset.ticker_symbol, msg
+                        )
+                    },
+                    500,
+                )
+
     query = Portfolio.query.filter_by(investor_id=investor_id)
     return paginate(query, schema)
 

@@ -33,3 +33,12 @@ The meeting was also to reaffirm that all group members know their role in draft
     - Refactored code in-line with our system architecture
     - Modelled the database in-line with our er diagram
 
+# Week 5
+
+- Organised the regular stand-ups that help the team make progress
+- Held a meeting with Tyson to resolve the details of adding/removing an asset from a portfolio
+    - Completed the asset-portfolio event history models and implementation
+- Extended Syd's API ingestion to allow for search functionality
+- Worked with Jin to incorporate password resetting
+- Worked with the front-end team to better integrate the back-end system with the front-end system
+- Held meetings with Jude to help out with the front-end effort

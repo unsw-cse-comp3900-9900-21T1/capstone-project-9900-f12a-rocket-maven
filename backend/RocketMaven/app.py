@@ -6,6 +6,7 @@ from RocketMaven.extensions import db
 from RocketMaven.extensions import jwt
 from RocketMaven.extensions import migrate
 from flask import request
+import datetime
 
 import sys
 
@@ -23,6 +24,7 @@ def create_app(testing=False):
 
     if testing is True:
         app.config["TESTING"] = True
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = datetime.timedelta(minutes=60*24*30)
 
     configure_extensions(app)
     configure_apispec(app)

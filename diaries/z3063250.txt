@@ -11,4 +11,13 @@ Wk 3
 
 Worked on user stories in report, proof reading of other sections of report, read up on react-js, repo familiarisation, set up development environment and verified backend/frontend worked in Ubuntu environment
 
+Wk 4
+
+Attended face-to-face meeting with Andy to get better understanding of the backend code base.
+Worked on the backend, developing portfolio/asset services and integration with third party APIs
+
+Wk 5
+
+Worked on the backend, developed caching of Y! Finance API responses and preloading system database with stocks.
+General backend enhancements, formatting, documentation, tidying up.
 

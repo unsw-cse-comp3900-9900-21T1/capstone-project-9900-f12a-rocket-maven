@@ -1,11 +1,69 @@
 from flask import request
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required
-from RocketMaven.api.schemas import PortfolioSchema
-from RocketMaven.services import PortfolioService
+from RocketMaven.api.schemas import LeaderboardSchema, PortfolioSchema
+from RocketMaven.services import CompetitionService, PortfolioService
 from RocketMaven.models import Portfolio
 from RocketMaven.extensions import db
 
+
+
+class LeaderboardList(Resource):
+
+    def get(self):
+        """Leaderboard
+        ---
+        summary: Leaderboard List
+        description: List portfolios in the competition!
+        tags:
+          - Portfolios
+        responses:
+          200:
+            content:
+              application/json:
+                schema:
+                  allOf:
+                    - $ref: '#/components/schemas/PaginatedResult'
+                    - type: object
+                      properties:
+                        results:
+                          type: array
+                          items:
+                            $ref: '#/components/schemas/LeaderboardSchema'
+        """
+        return CompetitionService.get_leaderboard()
+
+
+class PublicPortfolioResource(Resource):
+
+    @jwt_required(optional=True)
+    def get(self, portfolio_id):
+        """
+        ---
+        summary: Portfolio Get
+        description: Get a public portfolio belonging to the specified investor
+        tags:
+          - Portfolios
+        parameters:
+          - in: path
+            name: portfolio_id
+            schema:
+              type: integer
+        responses:
+          200:
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    portfolio: PortfolioSchema
+          404:
+            description: portfolio does not exist
+          401:
+            description: unauthorised portfolio read
+        """
+        # return {'msg': 'testing to see if this works'}
+        return PortfolioService.get_public_portfolio(portfolio_id)
 
 class PortfolioResource(Resource):
 
@@ -111,6 +169,7 @@ class PortfolioList(Resource):
         """
         return PortfolioService.get_portfolios(investor_id)
 
+    @jwt_required()
     def post(self, investor_id):
         """
         ---

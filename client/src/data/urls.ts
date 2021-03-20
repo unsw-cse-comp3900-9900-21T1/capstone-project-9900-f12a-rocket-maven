@@ -1,11 +1,13 @@
 export const urls = {
   /** Root URL which would then redirect to the appropriate page */
-  root: "/",
+  root: '/',
   login: '/login',
-  login2: '/login2', //Tyson's LogIn page
+  forgot: '/forgot',
+  passwordReset: '/reset',
   signup: '/signup',
   portfolioDetails: '/portfolio-details',
   // TODO(Jude): Crudify routes 
   account: '/account',
   portfolio: '/portfolio',
+  homeStub: '/home-stub',
 }

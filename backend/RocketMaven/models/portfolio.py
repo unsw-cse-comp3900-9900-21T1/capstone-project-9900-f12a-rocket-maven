@@ -2,6 +2,9 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy_utils import CountryType
 
 from RocketMaven.extensions import db, pwd_context
+from RocketMaven.models.portfolio_asset_holding import PortfolioAssetHolding
+from sqlalchemy.orm import relationship, backref
+from sqlalchemy import select, func
 
 
 class Portfolio(db.Model):
@@ -17,16 +20,60 @@ class Portfolio(db.Model):
     description = db.Column(db.String(80), unique=False, nullable=True)
 
     # Competition portfolio = True, Regular portfolio = False
-    competition_portfolio = db.Column(db.String(80), default=False)
+    competition_portfolio = db.Column(db.Boolean, default=False)
 
-    buying_power = db.Column(db.Float(), unique=False, nullable=True)
+    buying_power = db.Column(db.Float(), unique=False, nullable=True, default=10000)
 
     # Portfolio owner, 1 to many (1 side)
-    investor_id = db.Column(db.Integer, db.ForeignKey("investor.id"), nullable=False)
     investor = db.relationship("Investor")
+    investor_id = db.Column(db.Integer, db.ForeignKey("investor.id"), nullable=False)
 
     def __repr__(self):
         if self.competition_portfolio:
             return "<Competition Portfolio %s>" % self.name
         else:
             return "<Regular Portfolio %s>" % self.name
+
+    portfolio_asset_holding = relationship("PortfolioAssetHolding", backref="subject")
+
+    _realised_sum = db.Column(db.Float(), nullable=True)
+
+    @hybrid_property
+    def realised_sum(self):
+        return sum(acc.realised_total for acc in self.portfolio_asset_holding)
+
+    @realised_sum.expression
+    def realised_sum(cls):
+        return (
+            select([func.sum(PortfolioAssetHolding.realised_total)])
+            .where(PortfolioAssetHolding.investor_id == cls.investor_id)
+            .label("realised_total")
+        )
+
+    _purchase_value_sum = db.Column(db.Float(), nullable=True)
+
+    @hybrid_property
+    def purchase_value_sum(self):
+        return sum(acc.purchase_value for acc in self.portfolio_asset_holding)
+
+    @purchase_value_sum.expression
+    def purchase_value_sum(cls):
+        return (
+            select([func.sum(PortfolioAssetHolding.purchase_value)])
+            .where(PortfolioAssetHolding.investor_id == cls.investor_id)
+            .label("purchase_value")
+        )
+
+    _current_value_sum = db.Column(db.Float(), nullable=True)
+
+    @hybrid_property
+    def current_value_sum(self):
+        return sum(acc.current_value for acc in self.portfolio_asset_holding)
+
+    @current_value_sum.expression
+    def current_value_sum(cls):
+        return (
+            select([func.sum(PortfolioAssetHolding.current_value)])
+            .where(PortfolioAssetHolding.investor_id == cls.investor_id)
+            .label("current_value")
+        )

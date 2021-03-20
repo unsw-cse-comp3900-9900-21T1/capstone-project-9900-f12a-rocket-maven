@@ -42,7 +42,7 @@ Alternative command: `python -m pip install tox` (for Python installed from the 
 
 `rm -r .tox` - clean up: removes tox from the backend folder if present
 
-`tox -e dev -r` - sets up a Tox python development environment at ../.tox/ (an out-of-tree .tox folder at the same level of this repo's folder, isolated from your main Python installation)
+`tox -e dev -r` - sets up a Tox python development environment at ../.tox/ (an out-of-tree .tox folder at the same level of this repo's folder, isolated from your main Python installation). Note! This is important when the requirements.txt file is changed.
 
 ### Development
 

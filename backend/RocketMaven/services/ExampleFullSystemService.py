@@ -1,4 +1,5 @@
 from RocketMaven.models import Asset, Investor, Portfolio, PortfolioEvent
+from RocketMaven.services import AssetService
 import datetime
 
 
@@ -52,7 +53,7 @@ def populate_full_system(db):
         portfolio = Portfolio(
             tax_residency="AU",
             name="My First Portfolio!",
-            description="Growth stocks in a sell-off?",
+            description="Seeing if I should invest or not",
             competition_portfolio=False,
             buying_power=None,
             investor_id=user.id,
@@ -88,6 +89,7 @@ def populate_full_system(db):
         db.session.add(asset)
         db.session.commit()
 
+    
     test_portfolio_event = (
         db.session.query(PortfolioEvent)
         .filter_by(asset_id="VIRT:A", portfolio_id=portfolio.id)
@@ -165,35 +167,6 @@ def populate_full_system(db):
         db.session.add(asset_cba)
         db.session.commit()
 
-        create_asset_event_with_current_price(
-            dict(
-                units=100,
-                add_action=True,
-                fees=15,
-                price_per_share=80,
-                note="I think this stock has growth potential",
-                asset_id="VIRT:CBA",
-                portfolio_id=portfolio.id,
-                event_date=datetime.date(2021, 1, 1),
-            ),
-            asset_cba,
-            db,
-        )
-
-        create_asset_event_with_current_price(
-            dict(
-                units=100,
-                add_action=True,
-                fees=15,
-                price_per_share=80,
-                note="I think this stock has growth potential",
-                asset_id="VIRT:CBA",
-                portfolio_id=portfolio.id,
-                event_date=datetime.date(2021, 1, 1),
-            ),
-            asset_cba,
-            db,
-        )
 
         create_asset_event_with_current_price(
             dict(
@@ -276,7 +249,7 @@ def populate_full_system(db):
                 add_action=False,
                 fees=15,
                 price_per_share=70,
-                note="Just got to cut losses, why would there be a sell-off in a bank stock anyways?",
+                note="Just got to cut losses, but it's a bank stock",
                 asset_id="VIRT:CBA",
                 portfolio_id=portfolio.id,
                 event_date=datetime.date(2021, 1, 13),
@@ -284,3 +257,21 @@ def populate_full_system(db):
             asset_cba,
             db,
         )
+
+        create_asset_event_with_current_price(
+            dict(
+                units=200,
+                add_action=True,
+                fees=15,
+                price_per_share=100,
+                note="I like the bank",
+                asset_id="VIRT:CBA",
+                portfolio_id=portfolio.id,
+                event_date=datetime.date(2021, 1, 15),
+            ),
+            asset_cba,
+            db,
+        )
+
+    AssetService.load_asset_data(db)
+    
