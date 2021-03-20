@@ -15,6 +15,7 @@ class Portfolio(db.Model):
     tax_residency = db.Column(CountryType, unique=False, nullable=False)
 
     visibility = db.Column(db.Boolean, default=False)
+    deleted = db.Column(db.Boolean, default=False)
     creation_date = db.Column(db.DateTime, default=db.func.current_timestamp())
     name = db.Column(db.String(80), unique=False, nullable=False)
     description = db.Column(db.String(80), unique=False, nullable=True)
