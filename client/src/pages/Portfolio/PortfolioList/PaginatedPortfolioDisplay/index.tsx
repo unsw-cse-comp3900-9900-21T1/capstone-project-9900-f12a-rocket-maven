@@ -71,7 +71,13 @@ const PaginatedPortfolioDisplay = ({ portfolioPagination }: Props) => {
     <Fragment>
       {portfolios.map((portfolio, index) => {
         const columns = [
-          { title: 'Ticker Symbol', dataIndex: 'asset_id' },
+          {
+            title: 'Ticker Symbol',
+            dataIndex: 'asset_id',
+            render: (value: string) => (
+              <Link to={`/portfolio/${portfolio.id}/holdings/${value}`}>{value}</Link>
+            )
+          },
           {
             title: 'Available Units',
             dataIndex: 'available_units',
