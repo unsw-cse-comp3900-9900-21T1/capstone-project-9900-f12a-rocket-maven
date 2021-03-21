@@ -47,6 +47,14 @@ def get_investors():
         return {"msg": "Operation failed!"}
 
 
+def handle_empty_date_of_birth():
+    if "date_of_birth" in request.json and request.json["date_of_birth"]:
+        request.json["date_of_birth"] = request.json["date_of_birth"].split("T",1)[0]
+            
+        if len(request.json["date_of_birth"].strip()) == 0:
+            request.json["date_of_birth"] = None
+
+            
 def create_investor():
 
     if get_jwt_identity():
