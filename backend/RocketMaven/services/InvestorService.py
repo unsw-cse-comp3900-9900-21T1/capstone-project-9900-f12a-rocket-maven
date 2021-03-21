@@ -1,11 +1,12 @@
 from flask import request
+import sqlite3
 from RocketMaven.api.schemas import InvestorSchema
 from RocketMaven.models import Investor
 from RocketMaven.extensions import db
 from RocketMaven.commons.pagination import paginate
 from RocketMaven.auth import controllers as auth_controllers
 from flask_jwt_extended import get_jwt_identity
-
+from marshmallow import ValidationError
 
 def get_investor(investor_id):
     try:
@@ -47,21 +48,33 @@ def get_investors():
 
 
 def create_investor():
+
+    if get_jwt_identity():
+        return {
+            "msg": "investor not created, please log out first"
+        }, 422
     try:
-        if not get_jwt_identity():
-            schema = InvestorSchema()
-            investor = schema.load(request.json)
-
-            db.session.add(investor)
-            db.session.commit()
-
-            return {"msg": "investor created", "investor": schema.dump(investor)}, 201
-        else:
-            return {"msg": "investor not created, please log out first"}, 422
-
-    except Exception as e:
+        schema = InvestorSchema()
+        investor = schema.load(request.json)
+    except ValidationError as e:
         print(e)
-        return {"msg": "Operation failed!"}, 422
+        return {
+            "msg": "Operation failed!",
+            "errors": e.messages
+        }, 422
+
+    try:
+        db.session.add(investor)
+        db.session.commit()
+
+        return {
+            "msg": "investor created", "investor": schema.dump(investor)
+        }, 201
+    except Exception:
+        return {
+            "msg": "Operation failed",
+        }, 422
+        
 
 
 def automatically_login_user_after_creation(response_data):
