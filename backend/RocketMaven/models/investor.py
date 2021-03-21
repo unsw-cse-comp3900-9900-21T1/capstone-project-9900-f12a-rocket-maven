@@ -1,5 +1,8 @@
+import re
+
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy_utils import CountryType, EmailType
+from sqlalchemy.orm import validates
 
 from RocketMaven.extensions import db, pwd_context
 
@@ -32,7 +35,10 @@ investor_watches = db.Table(
         db.Float() # ? or float
     ),
     db.Column(
-        "investor_id", db.Integer, db.ForeignKey("investor.id"), primary_key=True
+        "investor_id", 
+        db.Integer, 
+        db.ForeignKey("investor.id"), 
+        primary_key=True
     ),
 )
 
@@ -87,3 +93,10 @@ class Investor(db.Model):
 
     def __repr__(self):
         return "<Investor %s>" % self.username
+
+    # @validates("email")
+    # def validate_email(self, key, email):
+    #     assert '@' in email
+    #     return email
+
+    
