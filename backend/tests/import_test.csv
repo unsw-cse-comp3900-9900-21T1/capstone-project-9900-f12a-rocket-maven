@@ -1,0 +1,4 @@
+ticker,action,units,price
+NASDAQ:AAPL,buy,5,120
+NASDAQ:AAPL,sell,2,115
+NASDAQ:AAPL,buy,10,110
