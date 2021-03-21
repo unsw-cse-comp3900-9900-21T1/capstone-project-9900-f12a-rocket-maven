@@ -69,7 +69,7 @@ const PortfolioHistory = () => {
   // TODO(Jude)
   return !isEmpty(portfolioHistory) ? (
     <Fragment>
-      <Subtitle>Portfolio History</Subtitle>
+      <Subtitle>Holding History</Subtitle>
       {historyTable}
     </Fragment>
   ) : null
