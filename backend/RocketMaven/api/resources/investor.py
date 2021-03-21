@@ -134,6 +134,8 @@ class InvestorList(Resource):
                       example: Operation failed!
         """
         investor_creation = InvestorService.create_investor()
+        if investor_creation[1] == 422:
+            return investor_creation
         return InvestorService.automatically_login_user_after_creation(
             investor_creation
         )
