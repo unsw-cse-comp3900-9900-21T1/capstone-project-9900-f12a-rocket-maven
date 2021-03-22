@@ -1,0 +1,1 @@
+from RocketMaven.extensions import db
