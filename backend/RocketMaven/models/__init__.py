@@ -1,5 +1,5 @@
 from RocketMaven.models.asset import Asset
-from RocketMaven.models.investor import Investor
+from RocketMaven.models.investor import Investor, investor_watches
 from RocketMaven.models.portfolio import Portfolio
 from RocketMaven.models.portfolio_event import PortfolioEvent
 from RocketMaven.models.portfolio_asset_holding import PortfolioAssetHolding
@@ -13,4 +13,5 @@ __all__ = [
     "PortfolioEvent",
     "PortfolioAssetHolding",
     "TokenBlocklist",
+    "investor_watches"
 ]

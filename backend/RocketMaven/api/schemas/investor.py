@@ -1,7 +1,7 @@
 import re
 
 from marshmallow import ValidationError
-from RocketMaven.models import Investor
+from RocketMaven.models import Investor, investor_watches
 from RocketMaven.extensions import ma, db
 
 
