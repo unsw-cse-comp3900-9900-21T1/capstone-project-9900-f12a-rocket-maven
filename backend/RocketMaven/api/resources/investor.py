@@ -165,8 +165,7 @@ class WatchAsset(Resource):
             description: investor does not exist
         """
         current_user = get_jwt_identity()
-        print(ticker_symbol, current_user)
-        return {}, 501
+        return WatchlistService.add_watchlist(current_user, ticker_symbol)
 
     @jwt_required()
     def delete(self, ticker_symbol):
@@ -191,7 +190,7 @@ class WatchAsset(Resource):
         """
         current_user = get_jwt_identity()
         print(ticker_symbol, current_user)
-        return {}, 501
+        return WatchlistService.del_watchlist(current_user, ticker_symbol)
 
 class WatchList(Resource):
 
@@ -217,7 +216,6 @@ class WatchList(Resource):
             description: investor does not exist
         """
         current_user = get_jwt_identity()
-        print(current_user)
-        return {}, 501
-    
+        return WatchlistService.get_watchlist(current_user)
+
 
