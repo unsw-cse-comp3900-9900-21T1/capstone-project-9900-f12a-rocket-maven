@@ -4,7 +4,7 @@ from RocketMaven.models import PortfolioEvent, PortfolioAssetHolding, Portfolio,
 from RocketMaven.extensions import db
 from RocketMaven.commons.pagination import paginate
 import sqlalchemy.exc
-
+from sqlalchemy import func
 import requests
 
 YAHOO_FINANCE_ENDPOINT = "https://query2.finance.yahoo.com/v7/finance/quote?formatted=true&lang=en-AU&region=AU&symbols={ticker}&fields=longName,shortName,regularMarketPrice"
@@ -41,6 +41,7 @@ def update_asset(asset) -> (bool, str):
                     asset.current_price = data["quoteResponse"]["result"][0][
                         "regularMarketPrice"
                     ]["raw"]
+                    # asset.price_last_updated = func.current_timetstamp()
                     db.session.commit()
                 except IndexError:
                     return False, "Malformed API response"
