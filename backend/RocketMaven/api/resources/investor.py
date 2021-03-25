@@ -162,7 +162,7 @@ class WatchAsset(Resource):
           400:
             description: Malformed request
           404:
-            description: investor does not exist
+            description: asset/investor does not exist
         """
         current_user = get_jwt_identity()
         return WatchlistService.add_watchlist(current_user, ticker_symbol)
@@ -186,10 +186,9 @@ class WatchAsset(Resource):
           400:
             description: Malformed request
           404:
-            description: investor does not exist
+            description: asset/investor does not exist
         """
         current_user = get_jwt_identity()
-        print(ticker_symbol, current_user)
         return WatchlistService.del_watchlist(current_user, ticker_symbol)
 
 class WatchList(Resource):
@@ -207,9 +206,14 @@ class WatchList(Resource):
             content:
               application/json:
                 schema:
-                  type: array
-                  items:
-                    $ref: '#/components/schemas/AssetSchema'
+                  allOf:
+                    - $ref: '#/components/schemas/PaginatedResult'
+                    - type: object
+                      properties:
+                        results:
+                          type: array
+                          items:
+                            $ref: '#/components/schemas/AssetSchema'
           400:
             description: Malformed request
           404:
