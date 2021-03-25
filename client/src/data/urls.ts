@@ -6,8 +6,9 @@ export const urls = {
   passwordReset: '/reset',
   signup: '/signup',
   portfolioDetails: '/portfolio-details',
-  // TODO(Jude): Crudify routes 
+  // TODO(Jude): Crudify routes
   account: '/account',
   portfolio: '/portfolio',
-  homeStub: '/home-stub',
+  watchlists: '/watchlists',
+  homeStub: '/home-stub'
 }
