@@ -6,7 +6,7 @@ class PortfolioEventSchema(ma.SQLAlchemyAutoSchema):
 
     id = ma.Int(dump_only=True)
     portfolio_id = ma.Int(dump_only=True)
-    event_date = ma.DateTime(dump_only=True)
+    # event_date = ma.DateTime(dump_only=True)
     asset_id = ma.String(required=True)
 
     class Meta:

@@ -6,6 +6,7 @@ import { useParams } from 'react-router-dom'
 import { useGetPortfolioHistory } from '../../../hooks/http'
 import { PortfolioEventPagination } from './types'
 import PortfolioAssetEditForm from '../PortfolioAssetEditForm'
+import PortfolioAssetCSVUpload from '../PortfolioAssetCSVUpload'
 
 type Params = {
   id: string
@@ -23,6 +24,7 @@ const PortfolioAssetCreate = () => {
         Event Create
       </Subtitle>
       <PortfolioAssetEditForm portfolioId={id} />
+      <PortfolioAssetCSVUpload portfolioId={id} />
     </Fragment>
     :
       null

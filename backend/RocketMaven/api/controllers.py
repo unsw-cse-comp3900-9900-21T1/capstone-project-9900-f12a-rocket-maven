@@ -19,6 +19,8 @@ from RocketMaven.api.resources import (
     Iforgot,
     Pw_reset,
     LeaderboardList,
+    WatchAsset,
+    WatchList,
 )
 from RocketMaven.api.schemas import (
     AssetSchema,
@@ -80,6 +82,14 @@ api.add_resource(
     PortfolioList, "/investors/<int:investor_id>/portfolios", endpoint="portfolios"
 )
 
+api.add_resource(
+    WatchList, "/watchlist", endpoint="watchlist"
+)
+
+api.add_resource(
+    WatchAsset, "/watchlist/<string:ticker_symbol>", endpoint="watchlist_update"
+)
+
 api.add_resource(Iforgot, "/iforgot", endpoint="iforgot")
 
 api.add_resource(Pw_reset, "/pw_reset", endpoint="pw_reset")
@@ -116,6 +126,8 @@ def register_controllers():
     apispec.spec.path(view=LoginStub, app=current_app, api=api)
     apispec.spec.path(view=PortfolioStub, app=current_app, api=api)
 
+    apispec.spec.path(view=WatchList, app=current_app, api=api)
+    apispec.spec.path(view=WatchAsset, app=current_app, api=api)
     apispec.spec.path(view=Iforgot, app=current_app, api=api)
 
     apispec.spec.path(view=Pw_reset, app=current_app, api=api)

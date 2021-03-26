@@ -9,9 +9,9 @@ import PortfolioDetail from './PortfolioDetail'
 import PortfolioHistory from './PortfolioHistory'
 import PortfolioHoldings from './PortfolioHoldings'
 import PortfolioAssetCreate from './PortfolioAssetCreate'
+import HoldingHistory from './HoldingHistory'
 
 const Portfolio = () => {
-
   return (
     <Page>
       <Title>
@@ -26,6 +26,7 @@ const Portfolio = () => {
         <Route path={urls.portfolio + '/:id/edit'} component={PortfolioEdit} />
         <Route exact path={urls.portfolio + '/:id/history'} component={PortfolioHistory} />
         <Route path={urls.portfolio + '/:id/addremove'} component={PortfolioAssetCreate} />
+        <Route path={urls.portfolio + '/:id/holdings/:hid'} component={HoldingHistory} />
         <Route path={urls.portfolio + '/:id/holdings'} component={PortfolioHoldings} />
         <Route exact path={urls.portfolio + '/:id'} component={PortfolioDetail} />
       </Switch>

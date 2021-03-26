@@ -85,57 +85,61 @@ export const useFetchGetPublicPortfolio = (portfolioId:string): any => {
 
   return { data, isLoading }
 }
-export const useFetchGetWithUserId = (urlEnd:string): any => {
-
-  const [ data, setData ] = useState({})
-  const [ isLoading, setIsLoading ] = useState(true)
+export const useFetchGetWithUserId = (urlEnd: string, refreshFlag?: number): any => {
+  const [data, setData] = useState({})
+  const [isLoading, setIsLoading] = useState(true)
   const { accessToken, revalidateAccessToken } = useAccessToken()
   const userId = useUserId()
 
-  useEffect(() => {
-    const myFetch = async () => {
-      try {
-        setIsLoading(true)
-        if (isExpired(accessToken)) {
-          await revalidateAccessToken()
-        }
-        const response = await fetch(`/api/v1/investors/${userId}${urlEnd}`, {
-          headers: {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-        })
-        console.log("*********************** status is", response.status)
-        if (!response.ok) {
-            throw Error(`Get failed - ${response.statusText}`)
-        }
-        const data = await response.json()
-        setData(data)
-        setIsLoading(false)
-      } catch(error) {
-        alert(error)
-        setData({})
-        setIsLoading(false)
+  const myFetch = async () => {
+    try {
+      setIsLoading(true)
+      if (isExpired(accessToken)) {
+        await revalidateAccessToken()
       }
+      const response = await fetch(`/api/v1/investors/${userId}${urlEnd}`, {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`
+        }
+      })
+      console.log('*********************** status is', response.status)
+      if (!response.ok) {
+        throw Error(`Get failed - ${response.statusText}`)
+      }
+      const data = await response.json()
+      setData(data)
+      setIsLoading(false)
+    } catch (error) {
+      alert(error)
+      setData({})
+      setIsLoading(false)
     }
+  }
+  useEffect(() => {
     myFetch()
-    return
   }, [])
+  useEffect(() => {
+    myFetch()
+  }, [refreshFlag])
 
   return { data, isLoading }
 }
 
 type HttpMutation = 'POST' | 'PUT'
-export const useFetchMutationWithUserId = (urlEnd:string, methodInput: HttpMutation, redirectPath?: string): Function => {
-
+export const useFetchMutationWithUserId = (
+  urlEnd: string,
+  methodInput: HttpMutation,
+  redirectPath?: string
+): Function => {
   const { accessToken, revalidateAccessToken } = useAccessToken()
   const userId = useUserId()
   const routerObject = useHistory()
-  const [ values, setValues ] = useState()
+  const [values, setValues] = useState()
 
   // TODO(Jude): Get rid of useEffect and just use return an async fetch that takes in values to submit
-  useEffect( () => {
+  useEffect(() => {
     if (!values) {
       return
     }

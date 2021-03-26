@@ -1,5 +1,8 @@
+import re
+
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy_utils import CountryType, EmailType
+from sqlalchemy.orm import validates
 
 from RocketMaven.extensions import db, pwd_context
 
@@ -32,9 +35,21 @@ investor_watches = db.Table(
         db.Float() # ? or float
     ),
     db.Column(
-        "investor_id", db.Integer, db.ForeignKey("investor.id"), primary_key=True
+        "investor_id", 
+        db.Integer, 
+        db.ForeignKey("investor.id"), 
+        primary_key=True
     ),
 )
+# class investor_watches(db.Model):
+#     """ An investor's watchlist """
+#     asset_id = db.Column(db.String(80), db.ForeignKey("asset.ticker_symbol"),
+#         primary_key=True        )
+#     investor_id = db.Column(db.Integer, db.ForeignKey("investor.id"), 
+#          primary_key=True)
+#     price_high = db.Column(db.Float())
+#     price_low = db.Column(db.Float())
+
 
 
 class Investor(db.Model):
@@ -73,8 +88,8 @@ class Investor(db.Model):
     watchlist_items = db.relationship(
         "Asset",
         secondary=investor_watches,
-        lazy="subquery",
-        backref=db.backref("investors", lazy=True),
+        lazy="dynamic",
+        backref=db.backref("investors", lazy="dynamic"),
     )
 
     @hybrid_property
@@ -87,3 +102,10 @@ class Investor(db.Model):
 
     def __repr__(self):
         return "<Investor %s>" % self.username
+
+    # @validates("email")
+    # def validate_email(self, key, email):
+    #     assert '@' in email
+    #     return email
+
+    

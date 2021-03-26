@@ -1,9 +1,9 @@
 from flask import request
 from flask_restful import Resource
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from RocketMaven.api.schemas import InvestorSchema
-from RocketMaven.services import InvestorService
-from RocketMaven.models import Investor
+from RocketMaven.services import InvestorService, WatchlistService
+from RocketMaven.models import Investor, Asset
 from RocketMaven.extensions import db
 
 
@@ -134,6 +134,92 @@ class InvestorList(Resource):
                       example: Operation failed!
         """
         investor_creation = InvestorService.create_investor()
+        if investor_creation[1] == 422:
+            return investor_creation
         return InvestorService.automatically_login_user_after_creation(
             investor_creation
         )
+
+
+class WatchAsset(Resource):
+
+    @jwt_required()
+    def post(self, ticker_symbol):
+        """
+        ---
+        summary: Add an asset to watchlist
+        description: Add an asset to watchlist
+        tags:
+          - WatchList
+        parameters:
+          - in: path
+            name: ticker_symbol
+            schema:
+              type: string
+        responses:
+          201:
+            description: Asset added to watchlist
+          400:
+            description: Malformed request
+          404:
+            description: asset/investor does not exist
+        """
+        current_user = get_jwt_identity()
+        return WatchlistService.add_watchlist(current_user, ticker_symbol)
+
+    @jwt_required()
+    def delete(self, ticker_symbol):
+        """
+        ---
+        summary: Remove an asset from the investor's watchlist
+        description: Remove an asset from the investor's watchlist
+        tags:
+          - WatchList
+        parameters:
+          - in: path
+            name: ticker_symbol
+            schema:
+              type: string
+        responses:
+          200:
+            description: Asset removed from watchlist
+          400:
+            description: Malformed request
+          404:
+            description: asset/investor does not exist
+        """
+        current_user = get_jwt_identity()
+        return WatchlistService.del_watchlist(current_user, ticker_symbol)
+
+class WatchList(Resource):
+
+    @jwt_required()
+    def get(self):
+        """
+        ---
+        summary: Get the user's watchlist
+        tags:
+          - WatchList
+        responses:
+          200:
+            description: Get the assets in user's watchlist
+            content:
+              application/json:
+                schema:
+                  allOf:
+                    - $ref: '#/components/schemas/PaginatedResult'
+                    - type: object
+                      properties:
+                        results:
+                          type: array
+                          items:
+                            $ref: '#/components/schemas/AssetSchema'
+          400:
+            description: Malformed request
+          404:
+            description: investor does not exist
+        """
+        current_user = get_jwt_identity()
+        return WatchlistService.get_watchlist(current_user)
+
+

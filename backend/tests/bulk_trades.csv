@@ -1,0 +1,3 @@
+Trade Date,Exchange,Symbol,Quantity,Price,Transaction Type,Brokerage,Exchange Rate (1 AUD to foreign currency) (optional) (default = 1),Brokerage Currency (optional) (default = AUD)
+04-11-14,NASDAQ,AAPL,50,47.57,BUY,10,0.8708,USD
+13-02-02,ASX,CBA,100,16.2,BUY,5,,
