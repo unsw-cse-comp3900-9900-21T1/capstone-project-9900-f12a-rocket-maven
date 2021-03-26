@@ -20,8 +20,6 @@ def update_asset(asset) -> (bool, str):
     """
     exchange, stock = asset.ticker_symbol.split(":")
 
-    print(datetime.datetime.now(), asset.price_last_updated, datetime.datetime.now() - asset.price_last_updated)
-
     if datetime.datetime.now() - asset.price_last_updated < datetime.timedelta(minutes=10):
         return True, "Asset Price not updated"
 
