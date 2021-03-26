@@ -24,6 +24,8 @@ def handle_empty_date_of_birth():
 
         if len(request.json["date_of_birth"].strip()) == 0:
             request.json["date_of_birth"] = None
+    else:
+        request.json["date_of_birth"] = None
 
 
 def update_investor(investor_id):
