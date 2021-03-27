@@ -24,11 +24,13 @@ type SideBarItem = {
 
 function sideBarItems(isLoggedIn: boolean) {
   const itemsWhenNotLoggedIn: Array<SideBarItem> = [
+    {name: 'Rocket Maven', to:urls.explore, icon: FaUserPlus},
     { name: 'Sign Up', to: urls.signup, icon: FaUserPlus },
     { name: 'Sign In', to: urls.login, icon: FaUserPlus }
   ]
   const itemsWhenLoggedIn: Array<SideBarItem> = [
     /* { name: "Test", to: urls.homeStub, icon: FaHome }, */
+    {name: 'Rocket Maven', to:urls.explore, icon: FaUserPlus},
     { name: 'Portfolio', to: urls.portfolio, icon: FaHome },
     { name: 'Account', to: urls.account, icon: FaHome },
     { name: 'Watchlists', to: urls.watchlists, icon: FaHome }
