@@ -10,11 +10,8 @@ def validate_password(password):
     if not password:
         raise ValidationError("Cannot have an empty password")
 
-    if len(password) < 8:
-        raise ValidationError("Password cannot be less than 8 characters")
-
-    if re.search("[0-9]", password) is None:
-        raise ValidationError("Password must contain at least one digit")
+    if len(password) < 12:
+        raise ValidationError("Password cannot be less than 12 characters")
     
     if re.search("[A-Z]", password) is None:
         raise ValidationError("Password must contain at least one capital letter")
@@ -22,8 +19,11 @@ def validate_password(password):
     if re.search("[a-z]", password) is None:
         raise ValidationError("Password must contain at least one lowercase letter")
 
-    if not any(x in password for x in special_chars):
-       raise ValidationError("Password must contain at least one special character")
+    # if re.search("[0-9]", password) is None:
+    #     raise ValidationError("Password must contain at least one digit")
+
+    # if not any(x in password for x in special_chars):
+    #    raise ValidationError("Password must contain at least one special character")
 
 
 class InvestorSchema(ma.SQLAlchemyAutoSchema):
