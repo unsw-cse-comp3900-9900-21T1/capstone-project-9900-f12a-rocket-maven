@@ -20,6 +20,9 @@ def update_asset(asset) -> (bool, str):
     """
     exchange, stock = asset.ticker_symbol.split(":")
 
+    if datetime.datetime.now() - asset.price_last_updated < datetime.timedelta(minutes=10):
+        return True, "Asset Price not updated"
+
     if exchange != "VIRT":
         # For finance yahoo, the ticker needs to be formatted according to its exchange
         if exchange == "ASX":
@@ -44,7 +47,7 @@ def update_asset(asset) -> (bool, str):
                     asset.current_price = data["quoteResponse"]["result"][0][
                         "regularMarketPrice"
                     ]["raw"]
-                    # asset.price_last_updated = func.current_timetstamp()
+                    asset.price_last_updated = datetime.datetime.now()
                     db.session.commit()
                 except IndexError:
                     return False, "Malformed API response"
