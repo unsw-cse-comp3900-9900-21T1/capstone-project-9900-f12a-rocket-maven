@@ -21,7 +21,7 @@ const Routes = () => {
         exact
         path={urls.root}
         render={() =>
-          isLoggedIn ? <Redirect to={urls.portfolio} /> : <Redirect to={urls.login} />
+          isLoggedIn ? <Redirect to={urls.portfolio} /> : <Redirect to={urls.explore} />
         }
       ></Route>
       <Route exact path={urls.explore} component={Explore}/>
