@@ -9,6 +9,7 @@ import Account from '../../pages/Account'
 import HomeStub from '../../pages/HomeStub'
 import PasswordReset from '../../pages/PasswordReset'
 import Watchlists from '../../pages/Watchlists'
+import Explore from '../../pages/Explore'
 
 const Routes = () => {
   const { isLoggedIn } = useStore()
@@ -23,6 +24,7 @@ const Routes = () => {
           isLoggedIn ? <Redirect to={urls.portfolio} /> : <Redirect to={urls.login} />
         }
       ></Route>
+      <Route exact path={urls.explore} component={Explore}/>
       <Route exact path={urls.homeStub} component={HomeStub} />
       <Route exact path={urls.login} component={LogIn} />
       <Route exact path={urls.forgot} component={Forgot} />
