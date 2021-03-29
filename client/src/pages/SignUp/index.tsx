@@ -1,4 +1,4 @@
-import { Form, Input, Button, Select } from 'antd'
+import { Form, Input, Button, Select, Alert } from 'antd'
 import { Card } from '../../componentsStyled/Card'
 import PasswordInput from '../../components/PasswordInput'
 import Page from '../_Page'
@@ -94,6 +94,7 @@ const SignUp = () => {
           <Form.Item
             name="email"
             label="Email"
+            extra="Choose wisely, your email cannot be changed!"
             rules={[
               {
                 type: 'email',
