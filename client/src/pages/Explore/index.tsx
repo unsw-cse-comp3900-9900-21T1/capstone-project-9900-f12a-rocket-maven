@@ -114,7 +114,6 @@ async function fetchUserList(query: string): Promise<DebounceValue[]> {
 
 
 
-
 const Explore = () => {
     const [ addActionValue, setAddActionValue ] = useState(true);
     const [ valued, setValued ] = useState();
@@ -163,6 +162,7 @@ const Explore = () => {
                         onChange={newValue => {
                         setValued(newValue.key);
                         console.log(newValue);
+
                         }}
                         
                         style={{ width: '500px' }}
@@ -171,7 +171,7 @@ const Explore = () => {
                     </Form.Item>
 
                 </Form>
-                
+                      
 
             </Col>
             </Row>
