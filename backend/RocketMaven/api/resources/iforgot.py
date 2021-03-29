@@ -10,7 +10,7 @@ class Iforgot(Resource):
 	def post(self):
 		"""
         ---
-        summary: password forgot
+        summary: Password Forgot
         description: password reset page
         tags:
           - Public
@@ -37,5 +37,6 @@ class Iforgot(Resource):
             description: Malformed request
           404:
             description: investor does not exist
+        security: []
         """
 		return EmailService.try_reset()

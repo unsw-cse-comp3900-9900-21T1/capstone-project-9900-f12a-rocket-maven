@@ -33,6 +33,7 @@ class AssetResource(Resource):
             description: Missing ticker symbol
           404:
             description: Asset does not exist
+        security: []
         """
         return AssetService.get_asset(ticker_symbol)
 
@@ -69,5 +70,6 @@ class AssetSearchResource(Resource):
             description: Missing search query
           404:
             description: No assets found
+        security: []
         """
         return AssetService.search_asset()
