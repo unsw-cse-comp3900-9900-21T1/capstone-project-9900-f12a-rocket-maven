@@ -44,3 +44,7 @@ class InvestorSchema(ma.SQLAlchemyAutoSchema):
             "admin_account",
             "email_verified_code",
         )
+
+class InvestorCreateSchema(InvestorSchema):
+
+    email = ma.Email()
