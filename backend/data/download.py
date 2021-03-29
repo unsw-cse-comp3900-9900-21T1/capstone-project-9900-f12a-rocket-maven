@@ -55,7 +55,7 @@ def load_data(
     out_path: str, src_path: str, row_headers: list, endpoint_fmt: Callable[[str], str]
 ):
     if not os.path.exists(out_path):
-        # Load ASX tickers
+        # Load tickers
 
         chunks = []
         rows = {}
