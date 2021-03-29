@@ -26,6 +26,7 @@ class Time(Resource):
                     currentTime:
                       type: string
                       example: "23:04:08"
+        security: []
         """
         print('Passed through the "current-time" endpoint!', file=sys.stderr)
         print(os.environ["DATABASE_URI"])
@@ -50,6 +51,7 @@ class LoginStub(Resource):
                     msg:
                       type: string
                       example: "Form submission successful"
+        security: []
         """
         print('Passed through the "login" endpoint!', file=sys.stderr)
         return
@@ -69,6 +71,7 @@ class LoginStub(Resource):
                     msg:
                       type: string
                       example: "Form submission successful"
+        security: []
         """
         print("Inside the login stub", file=sys.stderr)
         print(f"Values received are {request.json}", file=sys.stderr)
@@ -92,6 +95,7 @@ class PortfolioStub(Resource):
                     msg:
                       type: string
                       example: "Form submission successful"
+        security: []
         """
         print("Inside the portfolio get", file=sys.stderr)
         portfolio = (
@@ -134,6 +138,7 @@ class AssetStub(Resource):
                     msg:
                       type: string
                       example: "Form submission successful"
+        security: []
         """
         print("Inside the asset get", file=sys.stderr)
         asset = (

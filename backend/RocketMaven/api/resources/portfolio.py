@@ -16,7 +16,7 @@ class LeaderboardList(Resource):
         summary: Leaderboard List
         description: List portfolios in the competition!
         tags:
-          - Portfolios
+          - Public
         responses:
           200:
             content:
@@ -30,6 +30,7 @@ class LeaderboardList(Resource):
                           type: array
                           items:
                             $ref: '#/components/schemas/LeaderboardSchema'
+        security: []
         """
         return CompetitionService.get_leaderboard()
 
@@ -43,7 +44,7 @@ class PublicPortfolioResource(Resource):
         summary: Portfolio Get
         description: Get a public portfolio belonging to the specified investor
         tags:
-          - Portfolios
+          - Public
         parameters:
           - in: path
             name: portfolio_id
@@ -61,6 +62,7 @@ class PublicPortfolioResource(Resource):
             description: portfolio does not exist
           401:
             description: unauthorised portfolio read
+        security: []
         """
         # return {'msg': 'testing to see if this works'}
         return PortfolioService.get_public_portfolio(portfolio_id)

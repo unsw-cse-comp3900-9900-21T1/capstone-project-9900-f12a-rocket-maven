@@ -132,6 +132,7 @@ class InvestorList(Resource):
                     msg:
                       type: string
                       example: Operation failed!
+        security: []
         """
         investor_creation = InvestorService.create_investor()
         if investor_creation[1] == 422:
