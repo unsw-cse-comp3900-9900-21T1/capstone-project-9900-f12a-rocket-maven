@@ -168,7 +168,7 @@ const PaginatedPortfolioDisplay = ({ portfolioPagination, refreshPortfolios }: P
         }
 
         const onDeletePortfolio = async () => {
-          const url = `/api/v1/investors/${userId}/portfolios/${portfolio.id}`
+          const url = `/api/v1/portfolios/${portfolio.id}`
 
           const response = await fetch(url, {
             method: 'DELETE',
@@ -192,7 +192,7 @@ const PaginatedPortfolioDisplay = ({ portfolioPagination, refreshPortfolios }: P
         const cardTitle = (
           <div>
             {portfolio.name}
-            {isPortfolioEmpty && <Button onClick={onDeletePortfolio}>Delete</Button>}
+            {isPortfolioEmpty && <Button onClick={onDeletePortfolio} style={{float:"right"}}>Delete</Button>}
           </div>
         )
         return (

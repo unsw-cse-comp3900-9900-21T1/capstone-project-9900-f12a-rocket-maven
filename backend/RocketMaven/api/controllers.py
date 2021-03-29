@@ -70,14 +70,16 @@ api.add_resource(
 
 api.add_resource(
     PortfolioResource,
-    "/investors/<int:investor_id>/portfolios/<int:portfolio_id>",
+    "/portfolios/<int:portfolio_id>",
     endpoint="portfolio_by_id",
 )
+
 api.add_resource(
     PublicPortfolioResource,
     "/public-portfolios/<int:portfolio_id>",
     endpoint="public_portfolio_by_id",
 )
+
 api.add_resource(
     PortfolioList, "/investors/<int:investor_id>/portfolios", endpoint="portfolios"
 )

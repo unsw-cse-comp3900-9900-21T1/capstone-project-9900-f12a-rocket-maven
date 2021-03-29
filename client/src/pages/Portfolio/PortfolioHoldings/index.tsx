@@ -1,7 +1,7 @@
 import { Fragment } from 'react'
 import { Subtitle } from '../../../componentsStyled/Typography'
 import { useParams } from 'react-router-dom'
-import { useFetchGetWithUserId } from '../../../hooks/http'
+import { useGetPortfolioInfo } from '../../../hooks/http'
 import { PortfolioInfo } from '../types'
 
 type Params = {
@@ -22,7 +22,7 @@ const PortfolioHoldings = () => {
   // Might have to just make a PortfolioCreate component 
 
   // const portfolioInfo: { portfolio: PortfolioInfo } = useGetPortfolioHoldings(`${id}`)
-  const { data, isLoading }: PortfolioFetchInfo = useFetchGetWithUserId(`/portfolios/${id}`)
+  const { data, isLoading }: PortfolioFetchInfo = useGetPortfolioInfo(`${id}`)
   console.log("************************** portfolio Info is", data)
 
   return (

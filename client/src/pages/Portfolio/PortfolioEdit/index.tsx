@@ -2,7 +2,7 @@ import { Fragment } from 'react'
 import { isEmpty } from  'ramda'
 import { Subtitle } from '../../../componentsStyled/Typography'
 import { useParams } from 'react-router-dom'
-import { useFetchGetWithUserId } from '../../../hooks/http'
+import { useGetPortfolioInfo } from '../../../hooks/http'
 import PortfolioEditForm from '../PortfolioEditForm'
 import { PortfolioInfo } from '../types'
 
@@ -22,7 +22,7 @@ const PortfolioEdit = () => {
 
   // Avoid call when isCreate is true
   // Might have to just make a PortfolioCreate component 
-  const { data, isLoading }: PortfolioFetchInfo = useFetchGetWithUserId(`/portfolios/${id}`)
+  const { data, isLoading }: PortfolioFetchInfo = useGetPortfolioInfo(`${id}`)
 
   return (
     !isEmpty(data) ?

@@ -3,7 +3,7 @@ import { Fragment } from 'react'
 import { isEmpty } from  'ramda'
 import { Subtitle } from '../../../componentsStyled/Typography'
 import { useParams } from 'react-router-dom'
-import { useGetPortfolioHistory } from '../../../hooks/http'
+import { useGetPortfolioInfo } from '../../../hooks/http'
 import { PortfolioEventPagination } from './types'
 import PortfolioAssetEditForm from '../PortfolioAssetEditForm'
 import PortfolioAssetCSVUpload from '../PortfolioAssetCSVUpload'
@@ -15,7 +15,7 @@ type Params = {
 const PortfolioAssetCreate = () => {
   const { id } = useParams<Params>()
 
-  const portfolioHistory: { portfolio: PortfolioEventPagination } = useGetPortfolioHistory(id)
+  const portfolioHistory: { portfolio: PortfolioEventPagination } = useGetPortfolioInfo(id)
   
   return (
     !isEmpty(portfolioHistory) ?
