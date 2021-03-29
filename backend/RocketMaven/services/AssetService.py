@@ -7,6 +7,7 @@ from RocketMaven.commons.pagination import paginate
 from sqlalchemy import or_
 import datetime
 import io
+import re
 import zipfile
 
 
@@ -52,7 +53,8 @@ def search_asset():
             schema = AssetSchema(many=True)
             query = Asset.query.filter(or_(Asset.ticker_symbol.like(search), Asset.name.like(search))).order_by(Asset.market_cap.desc())
             return paginate(query, schema)
-        except:
+        except Exception as e:
+            print(e)
             return { "msg": "Asset search failed" }, 500
     else:
         { "msg": "Missing search query" }, 400
@@ -142,7 +144,7 @@ def load_asset_data(db):
                 market_cap=data["marketCap"]["raw"],
                 asset_additional=row["Yahoo"],
                 data_source="Yahoo",
-                country=data["region"],
+                country="US",
                 currency="USD", 
                 price_last_updated=datetime.date.fromisoformat("2021-01-01"),   
             )
@@ -186,8 +188,52 @@ def load_asset_data(db):
                 market_cap=data["marketCap"]["raw"],
                 asset_additional=row["Yahoo"],
                 data_source="Yahoo",
-                country=data["region"],
-                currency="USD",
+                country="US",
+                currency="US",
+                price_last_updated=datetime.date.fromisoformat("2021-01-01"),   
+            )
+            db.session.add(asset)
+            #print("Added {}".format(asx_code))
+        except Exception as err:
+            if not "marketCap" in str(err):
+                print("Unable to add {} - {}".format(code, err))
+
+    print("Adding CRYPTO")
+    # The format of the columns are:
+    # * Symbol
+    # * Name
+    # * ...    
+    for row in zip_dict_reader("./data/CRYPTO.zip"):
+        
+        code = row["Symbol"]
+        #print(row["Yahoo"])
+        data = json.loads(row["Yahoo"])
+        
+        company_name = re.sub(" USD$", "", data["shortName"])
+        industry = "Non-Fiat"
+        
+        ticker_symbol = "CRYPTO:{}".format(code)
+        
+        asset = db.session.query(Asset).filter_by(ticker_symbol=ticker_symbol).first()
+        if asset:
+            print("{} already exists, updating price".format(code))
+            asset.current_price = data["regularMarketPrice"]["raw"]
+            asset.market_cap = data["marketCap"]["raw"]
+            asset.asset_additional = row["Yahoo"]
+            asset.price_last_updated=datetime.date.fromisoformat("2021-01-01")
+
+            continue
+        try:
+            asset = Asset(
+                ticker_symbol=ticker_symbol,
+                name=company_name,
+                industry=industry,
+                current_price=data["regularMarketPrice"]["raw"],
+                market_cap=data["marketCap"]["raw"],
+                asset_additional=row["Yahoo"],
+                data_source="Yahoo",
+                country="ZZ",
+                currency="US",
                 price_last_updated=datetime.date.fromisoformat("2021-01-01"),   
             )
             db.session.add(asset)

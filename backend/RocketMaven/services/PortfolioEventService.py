@@ -25,7 +25,10 @@ def update_asset(asset) -> (bool, str):
 
     if exchange != "VIRT":
         # For finance yahoo, the ticker needs to be formatted according to its exchange
-        if exchange == "ASX":
+        if exchange == "CRYPTO":
+            # For CRYPTO, the price is the current USD value (similar to how forex works)
+            endpoint = YAHOO_FINANCE_ENDPOINT.format(ticker="-".join([stock, "USD"]))
+        elif exchange == "ASX":
             # For the ASX, the ticker is a combination of the asset code and ".AX"
             endpoint = YAHOO_FINANCE_ENDPOINT.format(ticker=".".join([stock, "AX"]))
         else:
