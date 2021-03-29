@@ -42,3 +42,11 @@ The meeting was also to reaffirm that all group members know their role in draft
 - Worked with Jin to incorporate password resetting
 - Worked with the front-end team to better integrate the back-end system with the front-end system
 - Held meetings with Jude to help out with the front-end effort
+- Performed Progressive Demo A and wrote Retrospective A with help from the team
+- Delegated user stories for Sprint 2
+
+# Week 6
+
+- Implemented additional portfolio management features
+- Resolved issues with the system when used from the perspective of a user
+- Held meetings and conversations with team members to resolve blocks and any potential conflicts
