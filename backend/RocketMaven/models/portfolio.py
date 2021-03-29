@@ -14,7 +14,7 @@ class Portfolio(db.Model):
 
     tax_residency = db.Column(CountryType, unique=False, nullable=False)
 
-    visibility = db.Column(db.Boolean, default=False)
+    public_portfolio = db.Column(db.Boolean, default=False)
     deleted = db.Column(db.Boolean, default=False)
     creation_date = db.Column(db.DateTime, default=db.func.current_timestamp())
     name = db.Column(db.String(80), unique=False, nullable=False)
@@ -24,6 +24,9 @@ class Portfolio(db.Model):
     competition_portfolio = db.Column(db.Boolean, default=False)
 
     buying_power = db.Column(db.Float(), unique=False, nullable=True, default=10000)
+
+    view_count = db.Column(db.Float(), unique=False, nullable=False, default=0)
+
 
     # Portfolio owner, 1 to many (1 side)
     investor = db.relationship("Investor")
@@ -37,6 +40,7 @@ class Portfolio(db.Model):
 
     portfolio_asset_holding = relationship("PortfolioAssetHolding", backref="subject")
 
+    # realised_sum is the sum of the realised units of all holdings
     _realised_sum = db.Column(db.Float(), nullable=True)
 
     @hybrid_property
@@ -53,6 +57,7 @@ class Portfolio(db.Model):
 
     _purchase_value_sum = db.Column(db.Float(), nullable=True)
 
+    # purchase_value_sum is the sum of the purechase value of all holdings
     @hybrid_property
     def purchase_value_sum(self):
         return sum(acc.purchase_value for acc in self.portfolio_asset_holding)
@@ -67,6 +72,7 @@ class Portfolio(db.Model):
 
     _current_value_sum = db.Column(db.Float(), nullable=True)
 
+    # current_value_sum is the sum of the current value (calculated from the asset's current price) of all holdings
     @hybrid_property
     def current_value_sum(self):
         return sum(acc.current_value for acc in self.portfolio_asset_holding)

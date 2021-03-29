@@ -82,16 +82,7 @@ def load_asset_data(db):
         industry = row["GICs industry group"]
         data = json.loads(row["Yahoo"])
         ticker_symbol = "ASX:{}".format(asx_code)
-        
-        asset = db.session.query(Asset).filter_by(ticker_symbol=ticker_symbol).first()
-        if asset:
-            print("{} already exists, updating price".format(asx_code))
-            asset.current_price = data["regularMarketPrice"]["raw"]
-            asset.market_cap = data["marketCap"]["raw"]
-            asset.asset_additional = row["Yahoo"]
-            asset.price_last_updated=datetime.date.fromisoformat("2021-01-01")
 
-            continue
         try:
             asset = Asset(
                 ticker_symbol=ticker_symbol,
@@ -105,7 +96,7 @@ def load_asset_data(db):
                 currency="AUD",
                 price_last_updated=datetime.date.fromisoformat("2021-01-01"),              
             )
-            db.session.add(asset)
+            db.session.merge(asset)
             #print("Added {}".format(asx_code))
         except Exception as err:
             if not "marketCap" in str(err):
@@ -126,15 +117,7 @@ def load_asset_data(db):
         #print(row["Yahoo"])
         data = json.loads(row["Yahoo"])
         ticker_symbol = "NASDAQ:{}".format(code)
-        
-        asset = db.session.query(Asset).filter_by(ticker_symbol=ticker_symbol).first()
-        if asset:
-            print("{} already exists, updating price".format(code))
-            asset.current_price = data["regularMarketPrice"]["raw"]
-            asset.market_cap = data["marketCap"]["raw"]
-            asset.asset_additional = row["Yahoo"]
-            asset.price_last_updated=datetime.date.fromisoformat("2021-01-01")
-            continue
+
         try:
             asset = Asset(
                 ticker_symbol=ticker_symbol,
@@ -148,7 +131,7 @@ def load_asset_data(db):
                 currency="USD", 
                 price_last_updated=datetime.date.fromisoformat("2021-01-01"),   
             )
-            db.session.add(asset)
+            db.session.merge(asset)
             #print("Added {}".format(asx_code))
         except Exception as err:
             if not "marketCap" in str(err):
@@ -169,16 +152,7 @@ def load_asset_data(db):
         #print(row["Yahoo"])
         data = json.loads(row["Yahoo"])
         ticker_symbol = "NYSE:{}".format(code)
-        
-        asset = db.session.query(Asset).filter_by(ticker_symbol=ticker_symbol).first()
-        if asset:
-            print("{} already exists, updating price".format(code))
-            asset.current_price = data["regularMarketPrice"]["raw"]
-            asset.market_cap = data["marketCap"]["raw"]
-            asset.asset_additional = row["Yahoo"]
-            asset.price_last_updated=datetime.date.fromisoformat("2021-01-01")
 
-            continue
         try:
             asset = Asset(
                 ticker_symbol=ticker_symbol,
@@ -192,7 +166,7 @@ def load_asset_data(db):
                 currency="US",
                 price_last_updated=datetime.date.fromisoformat("2021-01-01"),   
             )
-            db.session.add(asset)
+            db.session.merge(asset)
             #print("Added {}".format(asx_code))
         except Exception as err:
             if not "marketCap" in str(err):
@@ -213,16 +187,7 @@ def load_asset_data(db):
         industry = "Non-Fiat"
         
         ticker_symbol = "CRYPTO:{}".format(code)
-        
-        asset = db.session.query(Asset).filter_by(ticker_symbol=ticker_symbol).first()
-        if asset:
-            print("{} already exists, updating price".format(code))
-            asset.current_price = data["regularMarketPrice"]["raw"]
-            asset.market_cap = data["marketCap"]["raw"]
-            asset.asset_additional = row["Yahoo"]
-            asset.price_last_updated=datetime.date.fromisoformat("2021-01-01")
 
-            continue
         try:
             asset = Asset(
                 ticker_symbol=ticker_symbol,
@@ -236,7 +201,7 @@ def load_asset_data(db):
                 currency="US",
                 price_last_updated=datetime.date.fromisoformat("2021-01-01"),   
             )
-            db.session.add(asset)
+            db.session.merge(asset)
             #print("Added {}".format(asx_code))
         except Exception as err:
             if not "marketCap" in str(err):

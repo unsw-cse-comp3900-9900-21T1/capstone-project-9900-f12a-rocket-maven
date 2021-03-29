@@ -46,6 +46,41 @@ export const useAccessToken = () => {
   return {accessToken, revalidateAccessToken}
 }
 
+export const useFetchGetLeaderboards = () => {
+
+  const [ data, setData ] = useState({})
+  const [ isLoading, setIsLoading ] = useState(true)
+  const isLoggedIn = useIsLoggedIn()
+
+  useEffect(() => {
+    const myFetch = async () => {
+      try {
+        setIsLoading(true)
+        const response = await fetch(`/api/v1/leaderboard`, {
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+          },
+        })
+        console.log("*********************** status is", response.status)
+        if (!response.ok) {
+            throw Error(`${response.status}`)
+        }
+        const data = await response.json()
+        setData(data)
+        setIsLoading(false)
+      } catch(error) {
+        setData({})
+        setIsLoading(false)
+      }
+    }
+    myFetch()
+    return
+  }, [])
+
+  return { data, isLoading }
+}
+
 export const useFetchGetPublicPortfolio = (portfolioId:string): any => {
 
   const [ data, setData ] = useState({})

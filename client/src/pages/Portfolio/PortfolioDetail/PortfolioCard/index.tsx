@@ -115,7 +115,7 @@ export const PortfolioCard = ({portfolio}: Props) => {
           Visibility(to remove)
         </Col>
         <Col>
-          {portfolio.visibility ? 'Public' : 'Private'}
+          {portfolio.public_portfolio ? 'Public' : 'Private'}
         </Col>
       </Row>
 

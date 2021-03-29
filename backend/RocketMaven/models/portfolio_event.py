@@ -149,7 +149,8 @@ class PortfolioEvent(db.Model):
                 realised_running_local_sum = -new_update
 
             asset_holding.available_units = available_units
-            asset_holding.latest_note = portfolio_event.note
+            if portfolio_event.note and len(portfolio_event.note.strip()) > 0:
+                asset_holding.latest_note = portfolio_event.note
 
             db.session.commit()
 

@@ -71,9 +71,10 @@ const PaginatedPortfolioDisplay = ({ portfolioPagination, refreshPortfolios }: P
   return (
     <Fragment>
       {portfolios.map((portfolio, index) => {
-        const columns = [
+        let columns: any = [
           {
             title: 'Ticker Symbol',
+            key: 'asset_id',
             dataIndex: 'asset_id',
             render: (value: string) => (
               <Link to={`/portfolio/${portfolio.id}/holdings/${value}`}>{value}</Link>
@@ -113,8 +114,11 @@ const PaginatedPortfolioDisplay = ({ portfolioPagination, refreshPortfolios }: P
           {
             title: 'Latest Note',
             dataIndex: 'latest_note'
-          } /* https://ant.design/components/table/ */,
-          {
+          } /* https://ant.design/components/table/ */
+        ]
+
+        if (!portfolio.competition_portfolio) {
+          columns.push({
             title: 'Action',
             dataIndex: 'asset_id',
             key: 'x',
@@ -127,8 +131,8 @@ const PaginatedPortfolioDisplay = ({ portfolioPagination, refreshPortfolios }: P
                 Delete
               </a>
             )
-          }
-        ]
+          })
+        }
 
         const valueColumns = [
           { title: 'Purchase Cost', dataIndex: 'Purchase Cost' },
@@ -240,7 +244,7 @@ const PaginatedPortfolioDisplay = ({ portfolioPagination, refreshPortfolios }: P
             </Row>
             <Row>
               <Col>Visibility:</Col>
-              <Col>{portfolio.visibility ? 'Public' : 'Private'}</Col>
+              <Col>{portfolio.public_portfolio ? 'Public' : 'Private'}</Col>
             </Row>
 
             <Divider>Value Summary</Divider>

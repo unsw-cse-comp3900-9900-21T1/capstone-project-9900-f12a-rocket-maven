@@ -11,6 +11,8 @@ import debounce from 'lodash/debounce';
 import { useState, useRef, useMemo } from 'react'
 import { isEmpty } from  'ramda'
 import { useFetchGetWithUserId, useFetchMutationWithUserId } from '../../hooks/http'
+import { url } from 'node:inspector';
+import { Link } from 'react-router-dom';
 
 
 export type AssetSearch = {
@@ -171,6 +173,9 @@ const Explore = () => {
                     </Form.Item>
 
                 </Form>
+
+                <Button type="primary"><Link to={urls.leaderboard}>Rocket Maven Portfolio Competition Leaderboard</Link></Button>
+                
                       
 
             </Col>

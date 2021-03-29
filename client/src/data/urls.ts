@@ -11,5 +11,6 @@ export const urls = {
   portfolio: '/portfolio',
   watchlists: '/watchlists',
   homeStub: '/home-stub',
-  explore: '/explore'
+  explore: '/explore',
+  leaderboard: '/leaderboard'
 }
