@@ -4,6 +4,7 @@ import { useHistory } from "react-router";
 import { useStore, useUserId, useIsLoggedIn } from './store'
 import { isExpired } from 'react-jwt'
 import { urls}  from  '../data/urls'
+import { message } from 'antd'
 
 //TODO(Jude): Can probably extract and generalise fetchFunctions and reuse in each hook
 // Rushed implementation of authToken refresh
@@ -140,14 +141,18 @@ export const useFetchGetWithUserId = (urlEnd: string, refreshFlag?: number): any
         }
       })
       console.log('*********************** status is', response.status)
-      if (!response.ok) {
-        throw Error(`Get failed - ${response.statusText}`)
-      }
       const data = await response.json()
+
+      if (!response.ok) {
+        if (data.msg) {
+          throw Error(data.msg)
+        }
+        throw Error(`Request failed - ${response.statusText}`)
+      }
       setData(data)
       setIsLoading(false)
     } catch (error) {
-      alert(error)
+      message.error(error.toString());
       setData({})
       setIsLoading(false)
     }
@@ -193,16 +198,20 @@ export const useFetchMutationWithUserId = (
           body: JSON.stringify(values)
         })
         console.log("*********************** status is", response.status)
-        if (!response.ok) {
-            throw Error(`Mutation failed - ${response.statusText}`)
-        }
         const data = await response.json()
+
+        if (!response.ok) {
+          if (data.msg) {
+            throw Error(data.msg)
+          }
+          throw Error(`Request failed - ${response.statusText}`)
+        }
         console.log("********************* data is ", data)
         if (redirectPath) {
           routerObject.push(redirectPath)
         }
       } catch(error) {
-        alert(error)
+        message.error(error.toString());
       }
     }
     myFetch()
@@ -265,7 +274,7 @@ export const useAuth = (authType: AuthType): Function => {
     })
     .catch(error =>{
       // TEMP
-      alert(error)
+      message.error(error.toString())
     })
   }, [values])
 
@@ -291,14 +300,19 @@ export const useGetPortfolioInfo = (portfolioId: string): any => {
           },
         })
         console.log("*********************** status is", response.status)
-        if (!response.ok) {
-            throw Error(`Get failed - ${response.statusText}`)
-        }
         const data = await response.json()
+
+        if (!response.ok) {
+          if (data.msg) {
+            throw Error(data.msg)
+          }
+          throw Error(`Request failed - ${response.statusText}`)
+        }
+
         console.log("********************* data is ", data)
         setData(data)
       } catch(error) {
-        alert(error)
+        message.error(error.toString());
       }
     }
     myFetch()
@@ -326,14 +340,18 @@ export const useGetPortfolioHistory = (portfolioId: string): any => {
           },
         })
         console.log("*********************** status is", response.status)
-        if (!response.ok) {
-            throw Error(`Get failed - ${response.statusText}`)
-        }
         const data = await response.json()
+
+        if (!response.ok) {
+          if (data.msg) {
+            throw Error(data.msg)
+          }
+          throw Error(`Request failed - ${response.statusText}`)
+        }
         console.log("********************* data is ", data)
         setData(data)
       } catch(error) {
-        alert(error)
+        message.error(error.toString());
       }
     }
     myFetch()
@@ -361,14 +379,18 @@ export const useCreatePortfolioHistory = (portfolioId: string): any => {
           },
         })
         console.log("*********************** status is", response.status)
-        if (!response.ok) {
-            throw Error(`Get failed - ${response.statusText}`)
-        }
         const data = await response.json()
+
+        if (!response.ok) {
+          if (data.msg) {
+            throw Error(data.msg)
+          }
+          throw Error(`Request failed - ${response.statusText}`)
+        }
         console.log("********************* data is ", data)
         setData(data)
       } catch(error) {
-        alert(error)
+        message.error(error.toString());
       }
     }
     myFetch()
@@ -396,14 +418,18 @@ export const useGetPortfolioHoldings = (portfolioId: string): any => {
           },
         })
         console.log("*********************** status is", response.status)
-        if (!response.ok) {
-            throw Error(`Get failed - ${response.statusText}`)
-        }
         const data = await response.json()
+
+        if (!response.ok) {
+          if (data.msg) {
+            throw Error(data.msg)
+          }
+          throw Error(`Request failed - ${response.statusText}`)
+        }
         console.log("********************* data is ", data)
         setData(data)
       } catch(error) {
-        alert(error)
+        message.error(error.toString());
       }
     }
     myFetch()

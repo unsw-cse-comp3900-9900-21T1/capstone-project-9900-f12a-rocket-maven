@@ -1,7 +1,7 @@
 import Page from '../_Page'
 import { useHistory, Redirect } from 'react-router-dom'
 import { Card } from '../../componentsStyled/Card'
-import { Form, Input, Button } from 'antd'
+import { Form, Input, Button, message } from 'antd'
 import { Title } from '../../componentsStyled/Typography'
 import PasswordInput from '../../components/PasswordInput'
 import 'antd/dist/antd.css'
@@ -42,9 +42,9 @@ const PasswordReset = () => {
         throw Error(`${data.msg}`)
       }
       routerObject.push('/')
-      alert(`${data.msg}`)
+      message.success(`${data.msg}`);
     } catch (error) {
-      alert(error)
+      message.error(error);
     }
   }
 
