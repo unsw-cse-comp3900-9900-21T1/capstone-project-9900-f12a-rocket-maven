@@ -5,6 +5,7 @@ import Page from '../_Page'
 import 'antd/dist/antd.css'
 import { useAuth } from '../../hooks/http'
 import { useSortedCountryList } from '../../hooks/store'
+import DateOfBirthInput from '../../components/DateOfBirthInput'
 
 const layout = {
   labelCol: {
@@ -35,7 +36,7 @@ const SignUp = () => {
       last_name: values.lastName,
       password: values.password,
       username: values.username,
-      public_portfolio: true
+      visibility: true
     }
     setValuesAndFetch(requestBody)
   }
@@ -110,6 +111,7 @@ const SignUp = () => {
           <Form.Item
             label="Country of Residency"
             name="countryOfResidency"
+            initialValue="AU"
             rules={[
               {
                 required: true,
@@ -139,29 +141,8 @@ const SignUp = () => {
               <Select.Option value={'Other'}>Other</Select.Option>
             </Select>
           </Form.Item>
-          <Form.Item
-            label="Date of Birth"
-            name="date_of_birth"
-            initialValue=""
-            rules={[
-              {
-                required: false
-              },
-              () => ({
-                validator(_, value) {
-                  if (value.length == 0 || /^\d{4}-([0]\d|1[0-2])-([0-2]\d|3[01])$/.test(value)) {
-                    return Promise.resolve()
-                  }
-                  // Maybe add better date processing?
-                  return Promise.reject(
-                    new Error('Please make sure the date is of the format XXXX-XX-XX')
-                  )
-                }
-              })
-            ]}
-          >
-            <Input />
-          </Form.Item>
+
+          <DateOfBirthInput />
 
           <PasswordInput />
 

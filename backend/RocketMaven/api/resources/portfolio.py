@@ -71,7 +71,7 @@ class PortfolioResource(Resource):
 
     method_decorators = [jwt_required()]
 
-    def get(self, investor_id, portfolio_id):
+    def get(self, portfolio_id):
         """
         ---
         summary: Portfolio Get
@@ -79,10 +79,6 @@ class PortfolioResource(Resource):
         tags:
           - Portfolios
         parameters:
-          - in: path
-            name: investor_id
-            schema:
-              type: integer
           - in: path
             name: portfolio_id
             schema:
@@ -100,7 +96,7 @@ class PortfolioResource(Resource):
         """
         return PortfolioService.get_portfolio(portfolio_id)
 
-    def put(self, investor_id, portfolio_id):
+    def put(self, portfolio_id):
         """
         ---
         summary: Portfolio Update
@@ -108,10 +104,6 @@ class PortfolioResource(Resource):
         tags:
           - Portfolios
         parameters:
-          - in: path
-            name: investor_id
-            schema:
-              type: integer
           - in: path
             name: portfolio_id
             schema:
@@ -137,7 +129,7 @@ class PortfolioResource(Resource):
         """
         return PortfolioService.update_portfolio(portfolio_id)
 
-    def delete(self, investor_id, portfolio_id):
+    def delete(self, portfolio_id):
         """
         ---
         summary: Portfolio Delete
@@ -145,10 +137,6 @@ class PortfolioResource(Resource):
         tags:
           - Portfolios
         parameters:
-          - in: path
-            name: investor_id
-            schema:
-              type: integer
           - in: path
             name: portfolio_id
             schema:

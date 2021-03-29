@@ -33,6 +33,7 @@ const AccountSecurityInfoForm = ({ investorData }: Props) => {
           initialValues={{ ...investorData.investor }}
           onFinish={onFinish}
         >
+          {/*
           <Form.Item
             name="email"
             label="Email"
@@ -44,6 +45,7 @@ const AccountSecurityInfoForm = ({ investorData }: Props) => {
           >
             <Input />
           </Form.Item>
+          */}
 
           <PasswordInput />
 

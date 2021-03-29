@@ -272,6 +272,41 @@ export const useAuth = (authType: AuthType): Function => {
   return setValues
 }
 
+export const useGetPortfolioInfo = (portfolioId: string): any => {
+
+  const [ data, setData ] = useState({})
+  const { accessToken, revalidateAccessToken } = useAccessToken()
+
+  useEffect(() => {
+    const myFetch = async () => {
+      try {
+        if (isExpired(accessToken)) {
+          await revalidateAccessToken()
+        }
+        const response = await fetch(`/api/v1/portfolios/${portfolioId}`, {
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        })
+        console.log("*********************** status is", response.status)
+        if (!response.ok) {
+            throw Error(`Get failed - ${response.statusText}`)
+        }
+        const data = await response.json()
+        console.log("********************* data is ", data)
+        setData(data)
+      } catch(error) {
+        alert(error)
+      }
+    }
+    myFetch()
+  }, [])
+
+  return data
+}
+
 export const useGetPortfolioHistory = (portfolioId: string): any => {
 
   const [ data, setData ] = useState({})
