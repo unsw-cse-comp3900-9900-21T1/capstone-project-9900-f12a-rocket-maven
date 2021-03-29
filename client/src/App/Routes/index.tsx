@@ -10,6 +10,7 @@ import HomeStub from '../../pages/HomeStub'
 import PasswordReset from '../../pages/PasswordReset'
 import Watchlists from '../../pages/Watchlists'
 import Explore from '../../pages/Explore'
+import Leaderboard from '../../pages/Leaderboard'
 
 const Routes = () => {
   const { isLoggedIn } = useStore()
@@ -25,6 +26,7 @@ const Routes = () => {
         }
       ></Route>
       <Route exact path={urls.explore} component={Explore}/>
+      <Route exact path={urls.leaderboard} component={Leaderboard}/>
       <Route exact path={urls.homeStub} component={HomeStub} />
       <Route exact path={urls.login} component={LogIn} />
       <Route exact path={urls.forgot} component={Forgot} />

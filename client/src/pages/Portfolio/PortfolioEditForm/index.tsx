@@ -27,7 +27,7 @@ const PortfolioEditForm = ({portfolioInfo, portfolioId, action}: Props) => {
     name: '',
     tax_residency: '',
     // TODO(Jude): Add visibility
-    visibility: true,
+    public_portfolio: true,
 
     // Bottom 2 not used, just here for typing validation
     creation_date: '',
@@ -133,9 +133,9 @@ const PortfolioEditForm = ({portfolioInfo, portfolioId, action}: Props) => {
           </Select>
         </Form.Item>
     
-        <Form.Item label="Public" name="visibility">
+        <Form.Item label="Public" name="public_portfolio">
           <Switch 
-          defaultChecked={initialValues.visibility?true:false} />
+          defaultChecked={initialValues.public_portfolio?true:false} />
         </Form.Item>
 
         <Form.Item>

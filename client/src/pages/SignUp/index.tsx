@@ -35,7 +35,7 @@ const SignUp = () => {
       last_name: values.lastName,
       password: values.password,
       username: values.username,
-      visibility: true
+      public_portfolio: true
     }
     setValuesAndFetch(requestBody)
   }

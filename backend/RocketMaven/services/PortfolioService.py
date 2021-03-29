@@ -17,7 +17,7 @@ def get_portfolio(portfolio_id):
 def get_public_portfolio(portfolio_id):
     schema = PortfolioSchema()
     data = Portfolio.query.get_or_404(portfolio_id)
-    if data.visibility or data.investor_id == get_jwt_identity():
+    if data.public_portfolio or data.investor_id == get_jwt_identity():
         return {"portfolio": schema.dump(data)}
     else:
         return {"msg": "Portfolio is private"}, 401
