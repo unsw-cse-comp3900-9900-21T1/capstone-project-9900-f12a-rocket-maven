@@ -5,6 +5,20 @@ from RocketMaven.api.schemas import AssetSchema
 from RocketMaven.models import Asset
 from RocketMaven.commons.pagination import paginate
 from sqlalchemy import or_
+import datetime
+import io
+import zipfile
+
+
+# https://stackoverflow.com/questions/43269278/python-how-to-convert-a-large-zipped-csv-file-to-a-dictionary
+def zip_dict_reader(filename: str) -> dict:
+    """ Generates dictionary rows from a zipped CSV file
+    """
+    with zipfile.ZipFile(filename) as zipFile:
+        for fname in zipFile.infolist():
+            with zipFile.open(fname) as file:
+                for m in DictReader(io.TextIOWrapper(file, encoding="utf-8")):
+                    yield m
 
 
 def get_asset(ticker_symbol: str):
@@ -58,42 +72,42 @@ def load_asset_data(db):
     # * Listing Date
     # * GICs industry group
     # * Yahoo Finance response
-    with open("./data/ASX.csv") as fd:
-        
-        for row in DictReader(fd):
-            
-            asx_code = row["ASX code"]
-            company_name = row["Company name"]
-            industry = row["GICs industry group"]
-            data = json.loads(row["Yahoo"])
-            ticker_symbol = "ASX:{}".format(asx_code)
-            
-            asset = db.session.query(Asset).filter_by(ticker_symbol=ticker_symbol).first()
-            if asset:
-                print("{} already exists, updating price".format(asx_code))
-                asset.current_price = data["regularMarketPrice"]["raw"]
-                asset.market_cap = data["marketCap"]["raw"]
-                asset.asset_additional = row["Yahoo"]
 
-                continue
-            try:
-                asset = Asset(
-                    ticker_symbol=ticker_symbol,
-                    name=company_name,
-                    industry=industry,
-                    current_price=data["regularMarketPrice"]["raw"],
-                    market_cap=data["marketCap"]["raw"],
-                    asset_additional=row["Yahoo"],
-                    data_source="Yahoo",
-                    country=data["region"],
-                    currency="AUD", 
-                )
-                db.session.add(asset)
-                #print("Added {}".format(asx_code))
-            except Exception as err:
-                if not "marketCap" in str(err):
-                    print("Unable to add {} - {}".format(asx_code, err))
-        db.session.commit()
+    for row in zip_dict_reader("./data/ASX.zip"):
+        
+        asx_code = row["ASX code"]
+        company_name = row["Company name"]
+        industry = row["GICs industry group"]
+        data = json.loads(row["Yahoo"])
+        ticker_symbol = "ASX:{}".format(asx_code)
+        
+        asset = db.session.query(Asset).filter_by(ticker_symbol=ticker_symbol).first()
+        if asset:
+            print("{} already exists, updating price".format(asx_code))
+            asset.current_price = data["regularMarketPrice"]["raw"]
+            asset.market_cap = data["marketCap"]["raw"]
+            asset.asset_additional = row["Yahoo"]
+            asset.price_last_updated=datetime.date.fromisoformat("2021-01-01")
+
+            continue
+        try:
+            asset = Asset(
+                ticker_symbol=ticker_symbol,
+                name=company_name,
+                industry=industry,
+                current_price=data["regularMarketPrice"]["raw"],
+                market_cap=data["marketCap"]["raw"],
+                asset_additional=row["Yahoo"],
+                data_source="Yahoo",
+                country=data["region"],
+                currency="AUD",
+                price_last_updated=datetime.date.fromisoformat("2021-01-01"),              
+            )
+            db.session.add(asset)
+            #print("Added {}".format(asx_code))
+        except Exception as err:
+            if not "marketCap" in str(err):
+                print("Unable to add {} - {}".format(asx_code, err))
 
     print("Adding NASDAQ")
     # Load NASDAQ tickers from NASDAQ.csv which is an enriched version of nasdaq_screener_1615582712192-NASDAQ.csv
@@ -102,42 +116,41 @@ def load_asset_data(db):
     # * Name
     # * ...
     # * Industry
-    with open("./data/NASDAQ.csv") as fd:
+    for row in zip_dict_reader("./data/NASDAQ.zip"):
         
-        for row in DictReader(fd):
-            
-            code = row["Symbol"]
-            company_name = row["Name"]
-            industry = row["Industry"]
-            #print(row["Yahoo"])
-            data = json.loads(row["Yahoo"])
-            ticker_symbol = "NASDAQ:{}".format(code)
-            
-            asset = db.session.query(Asset).filter_by(ticker_symbol=ticker_symbol).first()
-            if asset:
-                print("{} already exists, updating price".format(code))
-                asset.current_price = data["regularMarketPrice"]["raw"]
-                asset.market_cap = data["marketCap"]["raw"]
-                asset.asset_additional = row["Yahoo"]
-                continue
-            try:
-                asset = Asset(
-                    ticker_symbol=ticker_symbol,
-                    name=company_name,
-                    industry=industry,
-                    current_price=data["regularMarketPrice"]["raw"],
-                    market_cap=data["marketCap"]["raw"],
-                    asset_additional=row["Yahoo"],
-                    data_source="Yahoo",
-                    country=data["region"],
-                    currency="AUD", 
-                )
-                db.session.add(asset)
-                #print("Added {}".format(asx_code))
-            except Exception as err:
-                if not "marketCap" in str(err):
-                    print("Unable to add {} - {}".format(code, err)) 
-        db.session.commit()
+        code = row["Symbol"]
+        company_name = row["Name"]
+        industry = row["Industry"]
+        #print(row["Yahoo"])
+        data = json.loads(row["Yahoo"])
+        ticker_symbol = "NASDAQ:{}".format(code)
+        
+        asset = db.session.query(Asset).filter_by(ticker_symbol=ticker_symbol).first()
+        if asset:
+            print("{} already exists, updating price".format(code))
+            asset.current_price = data["regularMarketPrice"]["raw"]
+            asset.market_cap = data["marketCap"]["raw"]
+            asset.asset_additional = row["Yahoo"]
+            asset.price_last_updated=datetime.date.fromisoformat("2021-01-01")
+            continue
+        try:
+            asset = Asset(
+                ticker_symbol=ticker_symbol,
+                name=company_name,
+                industry=industry,
+                current_price=data["regularMarketPrice"]["raw"],
+                market_cap=data["marketCap"]["raw"],
+                asset_additional=row["Yahoo"],
+                data_source="Yahoo",
+                country=data["region"],
+                currency="USD", 
+                price_last_updated=datetime.date.fromisoformat("2021-01-01"),   
+            )
+            db.session.add(asset)
+            #print("Added {}".format(asx_code))
+        except Exception as err:
+            if not "marketCap" in str(err):
+                print("Unable to add {} - {}".format(code, err))
 
     print("Adding NYSE")
     # Load NYSE tickers from NYSE.csv which is an enriched version of nasdaq_screener_1615582729240-NYSE.csv
@@ -145,42 +158,42 @@ def load_asset_data(db):
     # * Symbol
     # * Name
     # * ...
-    # * Industry
-    with open("./data/NYSE.csv") as fd:
+    # * Industry        
+    for row in zip_dict_reader("./data/NYSE.zip"):
         
-        for row in DictReader(fd):
-            
-            code = row["Symbol"]
-            company_name = row["Name"]
-            industry = row["Industry"]
-            #print(row["Yahoo"])
-            data = json.loads(row["Yahoo"])
-            ticker_symbol = "NYSE:{}".format(code)
-            
-            asset = db.session.query(Asset).filter_by(ticker_symbol=ticker_symbol).first()
-            if asset:
-                print("{} already exists, updating price".format(code))
-                asset.current_price = data["regularMarketPrice"]["raw"]
-                asset.market_cap = data["marketCap"]["raw"]
-                asset.asset_additional = row["Yahoo"]
+        code = row["Symbol"]
+        company_name = row["Name"]
+        industry = row["Industry"]
+        #print(row["Yahoo"])
+        data = json.loads(row["Yahoo"])
+        ticker_symbol = "NYSE:{}".format(code)
+        
+        asset = db.session.query(Asset).filter_by(ticker_symbol=ticker_symbol).first()
+        if asset:
+            print("{} already exists, updating price".format(code))
+            asset.current_price = data["regularMarketPrice"]["raw"]
+            asset.market_cap = data["marketCap"]["raw"]
+            asset.asset_additional = row["Yahoo"]
+            asset.price_last_updated=datetime.date.fromisoformat("2021-01-01")
 
-                continue
-            try:
-                asset = Asset(
-                    ticker_symbol=ticker_symbol,
-                    name=company_name,
-                    industry=industry,
-                    current_price=data["regularMarketPrice"]["raw"],
-                    market_cap=data["marketCap"]["raw"],
-                    asset_additional=row["Yahoo"],
-                    data_source="Yahoo",
-                    country=data["region"],
-                    currency="AUD", 
-                )
-                db.session.add(asset)
-                #print("Added {}".format(asx_code))
-            except Exception as err:
-                if not "marketCap" in str(err):
-                    print("Unable to add {} - {}".format(code, err))
+            continue
+        try:
+            asset = Asset(
+                ticker_symbol=ticker_symbol,
+                name=company_name,
+                industry=industry,
+                current_price=data["regularMarketPrice"]["raw"],
+                market_cap=data["marketCap"]["raw"],
+                asset_additional=row["Yahoo"],
+                data_source="Yahoo",
+                country=data["region"],
+                currency="USD",
+                price_last_updated=datetime.date.fromisoformat("2021-01-01"),   
+            )
+            db.session.add(asset)
+            #print("Added {}".format(asx_code))
+        except Exception as err:
+            if not "marketCap" in str(err):
+                print("Unable to add {} - {}".format(code, err))
 
-        db.session.commit()
+    db.session.commit()
