@@ -3,7 +3,6 @@ import { Fragment } from 'react'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Link } from 'react-router-dom'
-import 'antd/dist/antd.css'
 
 import { Card } from '../../componentsStyled/Card'
 import { Form, Input, Button } from 'antd'

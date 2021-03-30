@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import 'antd/dist/antd.css';
 import { Form, Input, Button } from 'antd';
 import { Card } from '../../../componentsStyled/Card'
 import { urls } from '../../../data/urls'

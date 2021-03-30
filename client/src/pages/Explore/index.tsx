@@ -1,7 +1,6 @@
 import Page from '../_Page'
 import { Form, Input, Button, Row, Col} from 'antd';
 import { urls } from '../../data/urls';
-import 'antd/dist/antd.css';
 import { Investor } from '../Account/types';
 import { Card } from '../../componentsStyled/Card'
 import { SearchOutlined } from '@ant-design/icons';
