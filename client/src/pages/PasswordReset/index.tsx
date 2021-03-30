@@ -4,7 +4,6 @@ import { Card } from '../../componentsStyled/Card'
 import { Form, Input, Button, message } from 'antd'
 import { Title } from '../../componentsStyled/Typography'
 import PasswordInput from '../../components/PasswordInput'
-import 'antd/dist/antd.css'
 
 const layout = {
   labelCol: {

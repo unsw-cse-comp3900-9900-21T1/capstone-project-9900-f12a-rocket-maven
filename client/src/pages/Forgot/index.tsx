@@ -5,7 +5,6 @@ import { Card } from '../../componentsStyled/Card'
 import { Form, Input, Button} from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { urls } from '../../data/urls'
-import 'antd/dist/antd.css';
 import { Investor } from '../Account/types';
 
 const Forgot = () => {
