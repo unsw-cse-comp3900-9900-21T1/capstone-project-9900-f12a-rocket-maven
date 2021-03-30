@@ -32,9 +32,15 @@ npm run start
 
 `Python 3.7`
 
-Global tox install (tox and its dependencies are the only global python packages required for the Rocket Maven system): `pip3 install tox`
+Global [tox](https://tox.readthedocs.io/en/latest/index.html) install: `pip3 install tox`
 
 Alternative command: `python -m pip install tox` (for Python installed from the Windows store)
+
+Global [tox-conda](https://github.com/tox-dev/tox-conda) install: `pip3 install tox-conda`
+
+Alternative command: `python -m pip install tox-conda` (for Python installed from the Windows store)
+
+Install [Miniconda](https://conda.io/en/master/index.html): https://conda.io/en/master/miniconda.html
 
 ### Setup
 
