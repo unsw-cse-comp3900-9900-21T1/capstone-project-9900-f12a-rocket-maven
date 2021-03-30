@@ -5,7 +5,7 @@ from RocketMaven.api.schemas import AssetSchema
 from RocketMaven.models import Asset
 from RocketMaven.commons.pagination import paginate
 from sqlalchemy import or_
-import datetime
+from datetime import datetime
 import io
 import re
 import zipfile
@@ -94,7 +94,7 @@ def load_asset_data(db):
                 data_source="Yahoo",
                 country=data["region"],
                 currency="AUD",
-                price_last_updated=datetime.date.fromisoformat("2021-01-01"),              
+                price_last_updated=datetime.strptime("2021-01-01", "%Y-%m-%d"), #datetime.date.fromisoformat("2021-01-01"),              
             )
             db.session.merge(asset)
             #print("Added {}".format(asx_code))
@@ -129,7 +129,7 @@ def load_asset_data(db):
                 data_source="Yahoo",
                 country="US",
                 currency="USD", 
-                price_last_updated=datetime.date.fromisoformat("2021-01-01"),   
+                price_last_updated=datetime.strptime("2021-01-01", "%Y-%m-%d"), #datetime.date.fromisoformat("2021-01-01"),   
             )
             db.session.merge(asset)
             #print("Added {}".format(asx_code))
@@ -164,7 +164,7 @@ def load_asset_data(db):
                 data_source="Yahoo",
                 country="US",
                 currency="US",
-                price_last_updated=datetime.date.fromisoformat("2021-01-01"),   
+                price_last_updated=datetime.strptime("2021-01-01", "%Y-%m-%d"), #datetime.date.fromisoformat("2021-01-01"),   
             )
             db.session.merge(asset)
             #print("Added {}".format(asx_code))
@@ -199,7 +199,7 @@ def load_asset_data(db):
                 data_source="Yahoo",
                 country="ZZ",
                 currency="US",
-                price_last_updated=datetime.date.fromisoformat("2021-01-01"),   
+                price_last_updated=datetime.strptime("2021-01-01", "%Y-%m-%d"), #datetime.date.fromisoformat("2021-01-01"),   
             )
             db.session.merge(asset)
             #print("Added {}".format(asx_code))
