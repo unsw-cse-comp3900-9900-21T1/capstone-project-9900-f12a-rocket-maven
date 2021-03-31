@@ -1,38 +1,44 @@
 import styled from 'styled-components'
 import { Layout, Menu } from 'antd'
 import { StyledLink } from '@rocketmaven/componentsStyled/Typography'
-
-const { Header, Content } = Layout
+import { ContentWrap } from '@rocketmaven/App/styled'
+import { Card } from '@rocketmaven/componentsStyled/Card'
+const { Header, Content, Sider } = Layout
 
 const sidebarWidth = 200
 const headerHeight = 84
 
 export const PageWrap = styled.div`
-  overflow: scroll;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   min-height: 280px;
   padding: 24px;
-  background: #f0f2f5;
+  background: #fafbfc;
 `
 
+export const SiderWrap = styled(Sider)`
+  min-height: 100vh;
+  min-width: ${sidebarWidth}px;
+  max-width: ${sidebarWidth}px;
+  background-color: white;
+`
+
+export const MenuItemWrap = styled(Menu.Item)`
+  ${SiderWrap}:not(.ant-layout-sider-collapsed) & {
+    margin: 1rem 2rem;
+    border-radius: 12px;
+  }
+`
 export const SidebarWrap = styled(Menu)`
   min-height: 100vh;
-  min-width: ${sidebarWidth}px;
-  max-width: ${sidebarWidth}px;
   position: fixed;
-`
-
-export const SideBarInvisible = styled.div`
-  min-height: 100vh;
-  min-width: ${sidebarWidth}px;
-  max-width: ${sidebarWidth}px;
-  visibility: hidden;
+  overflow-x: hidden;
 `
 
 export const LogoWrap = styled.div`
   height: ${headerHeight - 4}px;
+  margin-bottom: 2rem;
 `
 
 export const HeaderWrap = styled(Header)`
@@ -41,14 +47,23 @@ export const HeaderWrap = styled(Header)`
   right: 0;
   left: 0;
   z-index: 1030;
-  margin-left: ${sidebarWidth}px;
+  ${ContentWrap}[data-collapsed="false"] & {
+    margin-left: ${sidebarWidth}px;
+  }
+  ${ContentWrap}[data-collapsed="true"] & {
+    margin-left: 80px;
+  }
   background: white;
   height: ${headerHeight}px;
-  line-height: ${headerHeight}px;
+  line-height: ${headerHeight}px !important;
 `
 
 export const BodyWrap = styled(Content)`
   margin-top: ${headerHeight}px;
+  min-height: 80vh;
 `
 
-export const FooterWrap = styled.footer``
+export const FooterWrap = styled(Card)`
+  background: #fafbfc;
+  width: 100%;
+`

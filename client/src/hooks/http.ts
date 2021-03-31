@@ -36,6 +36,7 @@ export const useAccessToken = () => {
     } catch (error) {
       // Refresh token expired
       dispatch({ type: 'LOGOUT' })
+      message.error(error.message)
       routerObject.push(urls.root)
       throw Error(error)
     }
@@ -70,7 +71,7 @@ const abstractFetchLoggedInURL = async (
 
     if (!response.ok) {
       if (data.msg) {
-        if (data.msg == 'Token has been revoked') {
+        if (data.msg == 'Token has been revoked' || data.msg == 'Not enough segments') {
         }
         throw Error(data.msg)
       }
@@ -81,7 +82,7 @@ const abstractFetchLoggedInURL = async (
     setData(data)
     setIsLoading(false)
   } catch (error) {
-    message.error(error.toString())
+    message.error(error.message)
     setData({})
     setIsLoading(false)
   }

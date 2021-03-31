@@ -1,13 +1,18 @@
 import React, { useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { FaHome, FaUserPlus } from 'react-icons/fa'
-import { SidebarWrap, LogoWrap } from '@rocketmaven/pages/_Page/styled'
+import {
+  FaBriefcase,
+  FaNetworkWired,
+  FaSignInAlt,
+  FaStar,
+  FaUser,
+  FaUserPlus
+} from 'react-icons/fa'
+import { SidebarWrap, LogoWrap, MenuItemWrap } from '@rocketmaven/pages/_Page/styled'
 import { urls } from '@rocketmaven/data/urls'
 import { useStore } from '@rocketmaven/hooks/store'
 
-import { Layout, Menu, Breadcrumb } from 'antd'
-const { SubMenu } = Menu
-const { Header, Content, Footer, Sider } = Layout
+import { Menu, Breadcrumb } from 'antd'
 
 const size = {
   width: 30,
@@ -23,16 +28,15 @@ type SideBarItem = {
 
 function sideBarItems(isLoggedIn: boolean) {
   const itemsWhenNotLoggedIn: Array<SideBarItem> = [
-    { name: 'Explore', to: urls.explore, icon: FaUserPlus },
-    { name: 'Sign Up', to: urls.signup, icon: FaUserPlus },
-    { name: 'Log In', to: urls.login, icon: FaUserPlus }
+    { name: 'Explore', to: urls.explore, icon: <FaNetworkWired /> },
+    { name: 'Sign Up', to: urls.signup, icon: <FaUserPlus /> },
+    { name: 'Log In', to: urls.login, icon: <FaSignInAlt /> }
   ]
   const itemsWhenLoggedIn: Array<SideBarItem> = [
-    /* { name: "Test", to: urls.homeStub, icon: FaHome }, */
-    { name: 'Explore', to: urls.explore, icon: FaUserPlus },
-    { name: 'Portfolio', to: urls.portfolio, icon: FaHome },
-    { name: 'Account', to: urls.account, icon: FaHome },
-    { name: 'Watchlists', to: urls.watchlists, icon: FaHome }
+    { name: 'Explore', to: urls.explore, icon: <FaNetworkWired /> },
+    { name: 'Portfolio', to: urls.portfolio, icon: <FaBriefcase /> },
+    { name: 'Account', to: urls.account, icon: <FaUser /> },
+    { name: 'Watchlists', to: urls.watchlists, icon: <FaStar /> }
   ]
   return isLoggedIn ? itemsWhenLoggedIn : itemsWhenNotLoggedIn
 }
@@ -47,16 +51,20 @@ const Logo = () => {
   )
 }
 
-const SideBar = () => {
+type Props = {
+  collapsed: boolean
+}
+
+const SideBar = ({ collapsed }: Props) => {
   const location = useLocation()
   const { isLoggedIn } = useStore()
 
   const items = sideBarItems(isLoggedIn)
   const sideBar = items.map((item) => (
     <React.Fragment>
-      <Menu.Item key={item.to}>
+      <MenuItemWrap key={item.to} icon={item.icon}>
         <Link to={item.to}>{item.name} </Link>
-      </Menu.Item>
+      </MenuItemWrap>
     </React.Fragment>
   ))
 

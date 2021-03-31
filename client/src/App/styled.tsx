@@ -7,7 +7,7 @@ export const AppWrap = styled.div`
     'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #f0f2f5;
+  background: #fafbfc;
 `
 
 export const ContentWrap = styled.div`
