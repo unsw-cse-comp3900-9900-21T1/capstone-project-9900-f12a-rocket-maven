@@ -4,7 +4,7 @@ import { Subtitle } from '@rocketmaven/componentsStyled/Typography'
 import { useParams } from 'react-router-dom'
 import { useFetchGetPublicPortfolio } from '@rocketmaven/hooks/http'
 import { PortfolioInfo } from '@rocketmaven/pages/Portfolio/types'
-import PortfolioCard from './PortfolioCard'
+import PortfolioCard from '@rocketmaven/pages/Portfolio/PortfolioDetail/PortfolioCard'
 
 type Params = {
   id: string

@@ -1,5 +1,5 @@
 import React, { Dispatch, createContext, useReducer, useEffect } from "react";
-import Reducer from './reducer'
+import Reducer from '@rocketmaven/data/app/reducer'
 
 // https://dev.to/bigaru/creating-persistent-synchronized-global-store-using-react-hooks-in-typescript-209a
 // https://blog.logrocket.com/use-hooks-and-context-not-react-and-redux/#usecontext

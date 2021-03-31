@@ -1,7 +1,7 @@
 import { BrowserRouter } from 'react-router-dom'
-import { AppWrap, ContentWrap } from './styled'
-import Routes from './Routes'
-import SideBar from './SideBar'
+import { AppWrap, ContentWrap } from '@rocketmaven/App/styled'
+import Routes from '@rocketmaven/App/Routes'
+import SideBar from '@rocketmaven/App/SideBar'
 import NavBar from '@rocketmaven/components/NavBar'
 import { Store } from '@rocketmaven/data/app/store'
 import 'antd/dist/antd.less';

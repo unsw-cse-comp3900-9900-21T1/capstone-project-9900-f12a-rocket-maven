@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import {  ReactLogoImg,  } from './styled'
+import {  ReactLogoImg,  } from '@rocketmaven/pages/HomeStub/styled'
 import Page from '@rocketmaven/pages/_Page'
 import { Title, Text, Code, Link, StyledLink } from '@rocketmaven/componentsStyled/Typography'
 import { StubWrap } from '@rocketmaven/componentsStyled/Layouts'
