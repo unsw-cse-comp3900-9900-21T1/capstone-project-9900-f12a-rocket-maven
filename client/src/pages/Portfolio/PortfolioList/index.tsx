@@ -33,8 +33,6 @@ const PortfolioList = () => {
       </Subtitle>
       {/* TODO(Jude): Crudify routes */}
 
-      <Divider>Portfolios</Divider>
-
       <PaginatedPortfolioDisplay portfolioPagination={data} refreshPortfolios={refreshPortfolios} />
     </Fragment>
   ) : null

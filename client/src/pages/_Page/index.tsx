@@ -1,9 +1,6 @@
 import * as React from 'react'
-import NavBar from '@rocketmaven/components/NavBar'
 import { BodyWrap, FooterWrap, HeaderWrap, PageWrap } from './styled'
 import { Layout, Menu, Breadcrumb } from 'antd'
-
-const { Header, Content, Footer } = Layout
 
 // This component is a wrapper for the other pages content.
 // Note only the body will change and all the other sections of the DOM will
@@ -15,11 +12,10 @@ type Props = {
 const Page = ({ children }: Props) => {
   return (
     <PageWrap>
-      <NavBar />
-      <BodyWrap className="site-layout">
-        {children}
-      </BodyWrap>
-      <Footer style={{ textAlign: 'center' }}>Rocket Maven ©2021</Footer>
+      <BodyWrap className="site-layout">{children}</BodyWrap>
+      <footer>
+        <FooterWrap style={{ textAlign: 'center' }}>Rocket Maven ©2021</FooterWrap>
+      </footer>
     </PageWrap>
   )
 }

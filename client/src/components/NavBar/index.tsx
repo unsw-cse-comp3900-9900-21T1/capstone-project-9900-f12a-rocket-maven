@@ -8,8 +8,11 @@ import { urls } from '@rocketmaven/data/urls'
 import { HeaderWrap } from '@rocketmaven/pages/_Page/styled'
 
 import { Layout, Menu, Breadcrumb, message } from 'antd'
+type Props = {
+  children: React.ReactNode
+}
 
-const NavBar = () => {
+const NavBar = ({ children }: Props) => {
   const { state } = useContext(storeContext)
   const { isLoggedIn } = state
 
@@ -19,7 +22,7 @@ const NavBar = () => {
   let logoutButton = null
   if (isLoggedIn) {
     logoutButton = (
-      <Menu.Item icon={FaSignOutAlt}>
+      <Menu.Item icon={<FaSignOutAlt />}>
         <Link
           onClick={() => {
             dispatch({ type: 'LOGOUT' })
@@ -35,6 +38,7 @@ const NavBar = () => {
 
   return (
     <HeaderWrap>
+      {children}
       <Menu mode="horizontal" defaultSelectedKeys={['2']} style={{ float: 'right' }}>
         <Menu.Item key="1"></Menu.Item>
         {logoutButton}
