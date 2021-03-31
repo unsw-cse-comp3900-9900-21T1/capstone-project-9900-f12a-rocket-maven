@@ -1,5 +1,5 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import { FaHome, FaUserPlus } from 'react-icons/fa'
 // import { SidebarWrap } from "./styled"
 import { urls } from '@rocketmaven/data/urls'
@@ -24,13 +24,13 @@ type SideBarItem = {
 
 function sideBarItems(isLoggedIn: boolean) {
   const itemsWhenNotLoggedIn: Array<SideBarItem> = [
-    {name: 'Explore', to:urls.explore, icon: FaUserPlus},
+    { name: 'Explore', to: urls.explore, icon: FaUserPlus },
     { name: 'Sign Up', to: urls.signup, icon: FaUserPlus },
-    { name: 'Sign In', to: urls.login, icon: FaUserPlus }
+    { name: 'Log In', to: urls.login, icon: FaUserPlus }
   ]
   const itemsWhenLoggedIn: Array<SideBarItem> = [
     /* { name: "Test", to: urls.homeStub, icon: FaHome }, */
-    {name: 'Explore', to:urls.explore, icon: FaUserPlus},
+    { name: 'Explore', to: urls.explore, icon: FaUserPlus },
     { name: 'Portfolio', to: urls.portfolio, icon: FaHome },
     { name: 'Account', to: urls.account, icon: FaHome },
     { name: 'Watchlists', to: urls.watchlists, icon: FaHome }
@@ -38,33 +38,21 @@ function sideBarItems(isLoggedIn: boolean) {
   return isLoggedIn ? itemsWhenLoggedIn : itemsWhenNotLoggedIn
 }
 
-{
-  /*
-<React.Fragment>
-  <item.icon />
-  <Link to={item.to}>{item.name} </Link>
-</React.Fragment>
-*/
-}
-
 const SideBar = () => {
+  const location = useLocation()
   const { isLoggedIn } = useStore()
-  const sideBar = sideBarItems(isLoggedIn).map((item) => (
-    // TODO(Jude): Space and style appropriately here
+  
+  const items = sideBarItems(isLoggedIn);
+  const sideBar = items.map((item) => (
     <React.Fragment>
-      <Menu.Item>
+      <Menu.Item key={item.to}>
         <Link to={item.to}>{item.name} </Link>
       </Menu.Item>
     </React.Fragment>
   ))
 
   return (
-    <Menu>
-      <Subtitle>
-        <a href="/">
-          <img src="/testlogo.svg" width="200px" />
-        </a>
-      </Subtitle>
+    <Menu defaultSelectedKeys={['/']} selectedKeys={[location.pathname]} style={{ border: "0" }}>
       {sideBar}
     </Menu>
   )
