@@ -154,12 +154,18 @@ def create_event(portfolio_id):
 
     schema = PortfolioEventSchema()
 
+    query = Portfolio.query.filter_by(id=portfolio_id).first()
+
     if "files[]" not in request.files:
         try:
+            if query.competition_portfolio == True:
+                request.json["price_per_share"] = 0
+                request.json["fees"] = 0
             portfolio_event = schema.load(request.json)
             portfolio_event.portfolio_id = portfolio_id
             portfolio_events = [portfolio_event]
-        except:
+        except Exception as e:
+            print(e)
             return (
                 {"msg": "error encountered in input asset creation json!",},
                 500,
@@ -190,8 +196,6 @@ def create_event(portfolio_id):
                 {"msg": "no files in form found!",},
                 400,
             )
-
-    query = Portfolio.query.filter_by(id=portfolio_id).first()
 
     if query.competition_portfolio == True and (len(portfolio_events) > 1 or file_mode):
         return (
@@ -238,6 +242,8 @@ def create_event(portfolio_id):
                 buying_power_diff = (
                     portfolio_event.price_per_share * portfolio_event.units
                 )
+
+            print("Buying power change: ", query.buying_power, buying_power_diff)
 
             query.buying_power += buying_power_diff
 

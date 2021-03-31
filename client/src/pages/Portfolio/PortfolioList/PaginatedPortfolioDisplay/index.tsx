@@ -27,7 +27,13 @@ import {
   Descriptions,
   Statistic
 } from 'antd'
-import { EditOutlined, EllipsisOutlined, SettingOutlined, EyeOutlined } from '@ant-design/icons'
+import {
+  EditOutlined,
+  EllipsisOutlined,
+  PlusOutlined,
+  SettingOutlined,
+  EyeOutlined
+} from '@ant-design/icons'
 import { useAccessToken } from '@rocketmaven/hooks/http'
 const AntText = Typography.Text
 
@@ -230,7 +236,7 @@ const PaginatedPortfolioDisplay = ({ portfolioPagination, refreshPortfolios }: P
             actions={[
               <Tooltip placement="topLeft" title="Add New Event" arrowPointAtCenter>
                 <Link to={urls.portfolio + `/${portfolio.id}/addremove`}>
-                  <EditOutlined key="edit" />
+                  <PlusOutlined key="edit" />
                 </Link>
               </Tooltip>,
 
@@ -247,14 +253,10 @@ const PaginatedPortfolioDisplay = ({ portfolioPagination, refreshPortfolios }: P
               </Tooltip>
             ]}
           >
-            {portfolio.competition_portfolio ? (
-              <Row>
-                <Col>Buying Power:</Col>
-                <Col>{portfolio.buying_power}</Col>
-              </Row>
-            ) : null}
-
-            <Descriptions size="small" column={2}>
+            <Descriptions column={2} size="small" bordered style={{ marginBottom: '1rem' }}>
+              {portfolio.competition_portfolio ? (
+                <Descriptions.Item label="Buying Power">{portfolio.buying_power}</Descriptions.Item>
+              ) : null}
               <Descriptions.Item label="Tax Residency">{portfolio.tax_residency}</Descriptions.Item>
             </Descriptions>
 
