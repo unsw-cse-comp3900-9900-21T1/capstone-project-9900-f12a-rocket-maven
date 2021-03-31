@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { FaHome, FaUserPlus } from 'react-icons/fa'
-// import { SidebarWrap } from "./styled"
+import { SidebarWrap, LogoWrap } from '@rocketmaven/pages/_Page/styled'
 import { urls } from '@rocketmaven/data/urls'
-import { Subtitle } from '@rocketmaven/componentsStyled/Typography'
 import { useStore } from '@rocketmaven/hooks/store'
 
 import { Layout, Menu, Breadcrumb } from 'antd'
@@ -38,11 +37,21 @@ function sideBarItems(isLoggedIn: boolean) {
   return isLoggedIn ? itemsWhenLoggedIn : itemsWhenNotLoggedIn
 }
 
+const Logo = () => {
+  return (
+    <LogoWrap>
+      <a href="/">
+        <img src="/testlogo.svg" width="200px" />
+      </a>
+    </LogoWrap>
+  )
+}
+
 const SideBar = () => {
   const location = useLocation()
   const { isLoggedIn } = useStore()
-  
-  const items = sideBarItems(isLoggedIn);
+
+  const items = sideBarItems(isLoggedIn)
   const sideBar = items.map((item) => (
     <React.Fragment>
       <Menu.Item key={item.to}>
@@ -52,9 +61,14 @@ const SideBar = () => {
   ))
 
   return (
-    <Menu defaultSelectedKeys={['/']} selectedKeys={[location.pathname]} style={{ border: "0" }}>
+    <SidebarWrap
+      defaultSelectedKeys={['/']}
+      selectedKeys={[location.pathname]}
+      style={{ border: '0' }}
+    >
+      <Logo />
       {sideBar}
-    </Menu>
+    </SidebarWrap>
   )
 }
 

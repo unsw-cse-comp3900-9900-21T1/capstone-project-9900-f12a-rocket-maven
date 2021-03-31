@@ -1,12 +1,7 @@
 import * as React from 'react'
 import NavBar from '@rocketmaven/components/NavBar'
-import {
-  BodyWrap,
-  FooterWrap,
-  HeaderWrap,
-  PageWrap,
-} from "./styled"
-import { Layout, Menu, Breadcrumb } from 'antd';
+import { BodyWrap, FooterWrap, HeaderWrap, PageWrap } from './styled'
+import { Layout, Menu, Breadcrumb } from 'antd'
 
 const { Header, Content, Footer } = Layout
 
@@ -19,12 +14,13 @@ type Props = {
 }
 const Page = ({ children }: Props) => {
   return (
-    <Layout style={{ height: '100vh', width: '100%', margin: '20px' }}>
-      <Content className="site-layout" style={{ padding: '0 50px', marginTop: 64 }}>
+    <PageWrap>
+      <NavBar />
+      <BodyWrap className="site-layout">
         {children}
-      </Content>
+      </BodyWrap>
       <Footer style={{ textAlign: 'center' }}>Rocket Maven ©2021</Footer>
-    </Layout>
+    </PageWrap>
   )
 }
 
