@@ -1,9 +1,9 @@
 import { Fragment } from 'react'
 import { isEmpty } from 'ramda'
-import { Subtitle } from '../../../componentsStyled/Typography'
+import { Subtitle } from '@rocketmaven/componentsStyled/Typography'
 import { useParams } from 'react-router-dom'
-import { useFetchGetPublicPortfolio } from '../../../hooks/http'
-import { PortfolioInfo } from '../types'
+import { useFetchGetPublicPortfolio } from '@rocketmaven/hooks/http'
+import { PortfolioInfo } from '@rocketmaven/pages/Portfolio/types'
 import PortfolioCard from './PortfolioCard'
 
 type Params = {

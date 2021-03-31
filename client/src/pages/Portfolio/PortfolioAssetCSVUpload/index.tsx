@@ -1,106 +1,101 @@
-import { Form, Input, Button } from "antd";
-import { Card } from "../../../componentsStyled/Card";
-import { urls } from "../../../data/urls";
-import { useState, useRef, useMemo } from "react";
-import { useHistory } from "react-router";
+import { Form, Input, Button } from 'antd'
+import { Card } from '@rocketmaven/componentsStyled/Card'
+import { urls } from '@rocketmaven/data/urls'
+import { useState, useRef, useMemo } from 'react'
+import { useHistory } from 'react-router'
 import {
   useAccessToken,
   useFetchGetWithUserId,
-  useFetchMutationWithUserId,
-} from "../../../hooks/http";
+  useFetchMutationWithUserId
+} from '@rocketmaven/hooks/http'
 
-import { Upload, message } from "antd";
+import { Upload, message } from 'antd'
 
-import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
+import { LoadingOutlined, PlusOutlined } from '@ant-design/icons'
 
 type Props = {
-  portfolioId?: string;
-};
+  portfolioId?: string
+}
 
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
-    sm: { span: 10 },
+    sm: { span: 10 }
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 16 },
-  },
-};
+    sm: { span: 16 }
+  }
+}
 
 const PortfolioAssetEditForm = ({ portfolioId }: Props) => {
-  const [fileList, setFileList] = useState<any[]>([]);
-  const [form] = Form.useForm();
-  const routerObject = useHistory();
-  const { accessToken, revalidateAccessToken } = useAccessToken();
+  const [fileList, setFileList] = useState<any[]>([])
+  const [form] = Form.useForm()
+  const routerObject = useHistory()
+  const { accessToken, revalidateAccessToken } = useAccessToken()
 
-  let urlEnd = `/api/v1/portfolios/${portfolioId}/history`;
+  let urlEnd = `/api/v1/portfolios/${portfolioId}/history`
 
-  const setValuesAndFetch: Function = useFetchMutationWithUserId(
-    urlEnd,
-    "POST",
-    urls.portfolio
-  );
+  const setValuesAndFetch: Function = useFetchMutationWithUserId(urlEnd, 'POST', urls.portfolio)
 
   const onFinish = async (values: any) => {
-    const formData = new FormData();
+    const formData = new FormData()
     fileList.forEach((file) => {
-      formData.append("files[]", file);
-    });
+      formData.append('files[]', file)
+    })
 
     const response = await fetch(urlEnd, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${accessToken}`
       },
-      body: formData,
-    });
-    const data = await response.json();
+      body: formData
+    })
+    const data = await response.json()
     if (!response.ok) {
-      message.error(`${data.msg}`);
-      return;
+      message.error(`${data.msg}`)
+      return
     }
-    routerObject.push("/");
+    routerObject.push('/')
 
-    console.log("************** values are ", values);
+    console.log('************** values are ', values)
     setValuesAndFetch({
-      ...values,
-    });
-  };
+      ...values
+    })
+  }
 
   const uploadButton = (
     <div>
       {false ? <LoadingOutlined /> : <PlusOutlined />}
       <div style={{ marginTop: 8 }}>Drop CSV File Here</div>
     </div>
-  );
+  )
 
   const handleChange = (info: any) => {
-    if (info.file.status === "uploading") {
+    if (info.file.status === 'uploading') {
       /* this.setState({ loading: true }); */
-      return;
+      return
     }
-    if (info.file.status === "done") {
+    if (info.file.status === 'done') {
     }
-  };
+  }
 
   const beforeUpload = function (file: any) {
-    setFileList([...fileList, file]);
-    return false;
-  };
+    setFileList([...fileList, file])
+    return false
+  }
 
-  
   const onRemove = function (file: any) {
-    const index = fileList.indexOf(file);
-    const newFileList = fileList.slice();
-    newFileList.splice(index, 1);
-    setFileList(newFileList);
+    const index = fileList.indexOf(file)
+    const newFileList = fileList.slice()
+    newFileList.splice(index, 1)
+    setFileList(newFileList)
   }
 
   return (
     <Card>
       <Form
-        style={{ textAlign: "center" }}
+        style={{ textAlign: 'center' }}
         name="csv_upload"
         className="csv-upload-form"
         form={form}
@@ -125,8 +120,8 @@ const PortfolioAssetEditForm = ({ portfolioId }: Props) => {
             type="primary"
             htmlType="submit"
             style={{
-              marginRight: "8px",
-              marginBottom: "12px",
+              marginRight: '8px',
+              marginBottom: '12px'
             }}
           >
             Upload
@@ -134,7 +129,7 @@ const PortfolioAssetEditForm = ({ portfolioId }: Props) => {
         </Form.Item>
       </Form>
     </Card>
-  );
-};
+  )
+}
 
-export default PortfolioAssetEditForm;
+export default PortfolioAssetEditForm

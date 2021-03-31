@@ -1,8 +1,8 @@
-import Page from '../_Page'
-import { Title } from '../../componentsStyled/Typography'
+import Page from '@rocketmaven/pages/_Page'
+import { Title } from '@rocketmaven/componentsStyled/Typography'
 import AccountDetail from './AccountDetail'
 import { Switch, Route } from 'react-router-dom'
-import { urls } from '../../data/urls'
+import { urls } from '@rocketmaven/data/urls'
 import AccountPersonalInfoEdit from './AccountPersonalInfoEdit'
 import AccountSecurityInfoEdit from './AccountSecurityInfoEdit'
 

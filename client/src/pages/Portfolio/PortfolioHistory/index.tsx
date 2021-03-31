@@ -1,11 +1,11 @@
 
 import { Fragment } from 'react'
 import { isEmpty } from  'ramda'
-import { Subtitle } from '../../../componentsStyled/Typography'
+import { Subtitle } from '@rocketmaven/componentsStyled/Typography'
 import { useParams, Link } from 'react-router-dom'
-import { useGetPortfolioHistory } from '../../../hooks/http'
-import { PortfolioEvent, PortfolioEventPagination } from '../types'
-import { urls } from '../../../data/urls'
+import { useGetPortfolioHistory } from '@rocketmaven/hooks/http'
+import { PortfolioEvent, PortfolioEventPagination } from '@rocketmaven/pages/Portfolio/types'
+import { urls } from '@rocketmaven/data/urls'
 import { Table } from 'antd';
 
 type Params = {

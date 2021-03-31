@@ -1,8 +1,8 @@
 import { Fragment } from 'react'
-import { Subtitle } from '../../../componentsStyled/Typography'
+import { Subtitle } from '@rocketmaven/componentsStyled/Typography'
 import { useParams } from 'react-router-dom'
-import { useGetPortfolioInfo } from '../../../hooks/http'
-import { PortfolioInfo } from '../types'
+import { useGetPortfolioInfo } from '@rocketmaven/hooks/http'
+import { PortfolioInfo } from '@rocketmaven/pages/Portfolio/types'
 
 type Params = {
   id?: string

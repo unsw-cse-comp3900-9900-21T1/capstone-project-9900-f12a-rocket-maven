@@ -1,12 +1,12 @@
 import { Fragment, useState } from 'react'
-import { Subtitle } from '../../../../componentsStyled/Typography'
-import PasswordInput from '../../../../components/PasswordInput'
-import { useFetchMutationWithUserId } from '../../../../hooks/http'
+import { Subtitle } from '@rocketmaven/componentsStyled/Typography'
+import PasswordInput from '@rocketmaven/components/PasswordInput'
+import { useFetchMutationWithUserId } from '@rocketmaven/hooks/http'
 import { useHistory } from 'react-router'
-import { Card } from '../../../../componentsStyled/Card'
+import { Card } from '@rocketmaven/componentsStyled/Card'
 import { Form, Input, Button, Switch } from 'antd'
-import { Investor } from '../../types'
-import { urls } from '../../../../data/urls'
+import { Investor } from '@rocketmaven/pages/Account/types'
+import { urls } from '@rocketmaven/data/urls'
 
 type Props = {
   investorData: Investor

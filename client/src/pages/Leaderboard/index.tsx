@@ -1,17 +1,17 @@
-import Page from '../_Page'
+import Page from '@rocketmaven/pages/_Page'
 import { Form, Input, Button, Row, Col } from 'antd'
-import { urls } from '../../data/urls'
-import { Investor } from '../Account/types'
-import { Card } from '../../componentsStyled/Card'
+import { urls } from '@rocketmaven/data/urls'
+import { Investor } from '@rocketmaven/pages/Account/types'
+import { Card } from '@rocketmaven/componentsStyled/Card'
 import { Table } from 'antd'
 import { useState, useRef, useMemo } from 'react'
-import { Title } from '../../componentsStyled/Typography'
+import { Title } from '@rocketmaven/componentsStyled/Typography'
 import { isEmpty } from 'ramda'
-import { useFetchGetLeaderboards } from '../../hooks/http'
-import { PortfolioInfo, PortfolioPagination } from '../Portfolio/types'
+import { useFetchGetLeaderboards } from '@rocketmaven/hooks/http'
+import { PortfolioInfo, PortfolioPagination } from '@rocketmaven/pages/Portfolio/types'
 import {  message } from "antd";
 import { Link } from 'react-router-dom';
-import { Text } from '../../componentsStyled/Typography'
+import { Text } from '@rocketmaven/componentsStyled/Typography'
 
 type PortfolioListFetchResults = {
   data: PortfolioPagination

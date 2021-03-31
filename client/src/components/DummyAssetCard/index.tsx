@@ -1,4 +1,4 @@
-import { Text } from '../../componentsStyled/Typography'
+import { Text } from '@rocketmaven/componentsStyled/Typography'
 import { useHistory } from 'react-router-dom'
 
 type Props = {

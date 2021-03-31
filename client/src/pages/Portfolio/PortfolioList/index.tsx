@@ -1,10 +1,10 @@
 import { Fragment, useState } from 'react'
-import { Subtitle } from '../../../componentsStyled/Typography'
-import { useFetchGetWithUserId } from '../../../hooks/http'
-import { PortfolioPagination } from '../types'
+import { Subtitle } from '@rocketmaven/componentsStyled/Typography'
+import { useFetchGetWithUserId } from '@rocketmaven/hooks/http'
+import { PortfolioPagination } from '@rocketmaven/pages/Portfolio/types'
 import PaginatedPortfolioDisplay from './PaginatedPortfolioDisplay'
 import { Link } from 'react-router-dom'
-import { urls } from '../../../data/urls'
+import { urls } from '@rocketmaven/data/urls'
 import { Button, Divider } from 'antd'
 
 type PortfolioListFetchResults = {

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import NavBar from '../../components/NavBar'
+import NavBar from '@rocketmaven/components/NavBar'
 import {
   BodyWrap,
   FooterWrap,

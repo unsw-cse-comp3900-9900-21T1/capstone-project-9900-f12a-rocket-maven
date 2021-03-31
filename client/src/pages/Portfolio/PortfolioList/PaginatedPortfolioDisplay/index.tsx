@@ -1,19 +1,19 @@
 import { Fragment, useState, useEffect, useCallback, useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { isEmpty } from 'ramda'
-import { storeContext } from '../../../../data/app/store'
+import { storeContext } from '@rocketmaven/data/app/store'
 
-import { Text } from '../../../../componentsStyled/Typography'
-import { useFetchMutationWithUserId } from '../../../../hooks/http'
-import { Card } from '../../../../componentsStyled/Card'
-import { Row, Col } from '../../../../componentsStyled/Grid'
-import { PortfolioInfo, PortfolioPagination, PortfolioHolding } from '../../types'
+import { Text } from '@rocketmaven/componentsStyled/Typography'
+import { useFetchMutationWithUserId } from '@rocketmaven/hooks/http'
+import { Card } from '@rocketmaven/componentsStyled/Card'
+import { Row, Col } from '@rocketmaven/componentsStyled/Grid'
+import { PortfolioInfo, PortfolioPagination, PortfolioHolding } from '@rocketmaven/pages/Portfolio/types'
 import { useHistory } from 'react-router-dom'
 // import { PortfolioWrap } from './styled'
-import { urls } from '../../../../data/urls'
+import { urls } from '@rocketmaven/data/urls'
 import { Tooltip, Button, Divider, Table, message } from 'antd'
 import { EditOutlined, EllipsisOutlined, SettingOutlined, EyeOutlined } from '@ant-design/icons'
-import { useAccessToken } from '../../../../hooks/http'
+import { useAccessToken } from '@rocketmaven/hooks/http'
 
 type Props = {
   portfolioPagination: PortfolioPagination

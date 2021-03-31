@@ -2,9 +2,9 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { FaHome, FaUserPlus } from 'react-icons/fa'
 // import { SidebarWrap } from "./styled"
-import { urls } from '../../data/urls'
-import { Subtitle } from '../../componentsStyled/Typography'
-import { useStore } from '../../hooks/store'
+import { urls } from '@rocketmaven/data/urls'
+import { Subtitle } from '@rocketmaven/componentsStyled/Typography'
+import { useStore } from '@rocketmaven/hooks/store'
 
 import { Layout, Menu, Breadcrumb } from 'antd'
 const { SubMenu } = Menu

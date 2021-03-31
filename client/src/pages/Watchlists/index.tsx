@@ -1,6 +1,6 @@
 import { Table } from 'antd'
 import React, { useEffect, useState } from 'react'
-import { useFetchGetWithUserId, useFetchMutationWithUserId } from '../../hooks/http' // use later. at the moment backend is not ready
+import { useFetchGetWithUserId, useFetchMutationWithUserId } from '@rocketmaven/hooks/http' // use later. at the moment backend is not ready
 import Axios from 'axios'
 
 const url = 'http://localhost:5000/api/v1/investors/3/watch_lists'

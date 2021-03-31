@@ -1,10 +1,10 @@
 import { useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { FaHome, FaSignOutAlt } from 'react-icons/fa'
-import { storeContext } from '../../data/app/store'
-import { Text, Subtitle } from '../../componentsStyled/Typography'
-import { useStore } from '../../hooks/store'
-import { urls } from '../../data/urls'
+import { storeContext } from '@rocketmaven/data/app/store'
+import { Text, Subtitle } from '@rocketmaven/componentsStyled/Typography'
+import { useStore } from '@rocketmaven/hooks/store'
+import { urls } from '@rocketmaven/data/urls'
 
 import { Layout, Menu, Breadcrumb } from 'antd'
 

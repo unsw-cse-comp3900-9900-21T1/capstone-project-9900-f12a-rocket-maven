@@ -1,9 +1,9 @@
-import Page from '../_Page'
+import Page from '@rocketmaven/pages/_Page'
 import { useHistory, Redirect } from 'react-router-dom'
-import { Card } from '../../componentsStyled/Card'
+import { Card } from '@rocketmaven/componentsStyled/Card'
 import { Form, Input, Button, message } from 'antd'
-import { Title } from '../../componentsStyled/Typography'
-import PasswordInput from '../../components/PasswordInput'
+import { Title } from '@rocketmaven/componentsStyled/Typography'
+import PasswordInput from '@rocketmaven/components/PasswordInput'
 
 const layout = {
   labelCol: {
