@@ -6,6 +6,7 @@ import PaginatedPortfolioDisplay from '@rocketmaven/pages/Portfolio/PortfolioLis
 import { Link } from 'react-router-dom'
 import { urls } from '@rocketmaven/data/urls'
 import { Button, Divider } from 'antd'
+import { FaPlus } from 'react-icons/fa'
 
 type PortfolioListFetchResults = {
   data: PortfolioPagination
@@ -28,7 +29,7 @@ const PortfolioList = () => {
       <Subtitle>
         Portfolio List
         <Button type="primary" style={{ marginLeft: '20px' }}>
-          <Link to={urls.portfolio + '/create'}>New Portfolio</Link>
+          <Link to={urls.portfolio + '/create'}><FaPlus /> New Portfolio</Link>
         </Button>
       </Subtitle>
       {/* TODO(Jude): Crudify routes */}

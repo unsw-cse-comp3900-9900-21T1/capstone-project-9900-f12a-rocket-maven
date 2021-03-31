@@ -66,4 +66,5 @@ export const BodyWrap = styled(Content)`
 export const FooterWrap = styled(Card)`
   background: #fafbfc;
   width: 100%;
+  padding-right: 24px;
 `

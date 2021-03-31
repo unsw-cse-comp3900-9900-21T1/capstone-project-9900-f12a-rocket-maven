@@ -11,7 +11,7 @@ import {
 
 import { Upload, message } from 'antd'
 
-import { LoadingOutlined, PlusOutlined } from '@ant-design/icons'
+import { LoadingOutlined, PlusOutlined, InboxOutlined } from '@ant-design/icons'
 
 type Props = {
   portfolioId?: string
@@ -102,17 +102,20 @@ const PortfolioAssetEditForm = ({ portfolioId }: Props) => {
         {...formItemLayout}
         onFinish={onFinish}
       >
-        <Upload
-          name="csv"
-          listType="picture-card"
-          className="csv-uploader"
-          showUploadList={true}
-          beforeUpload={beforeUpload}
-          onChange={handleChange}
-          onRemove={onRemove}
-        >
-          {uploadButton}
-        </Upload>
+        <Form.Item name="dragger" className="csv-uploader" noStyle>
+          <Upload.Dragger
+            name="files"
+            beforeUpload={beforeUpload}
+            onChange={handleChange}
+            onRemove={onRemove}
+          >
+            <p className="ant-upload-drag-icon">
+              <InboxOutlined />
+            </p>
+            <p className="ant-upload-text">Click or drag file to this area to upload</p>
+            <p className="ant-upload-hint">Support for a single or bulk upload.</p>
+          </Upload.Dragger>
+        </Form.Item>
 
         {/* <Button type="primary" onClick={() => setAddActionValue(true)} htmlType="submit" value={addActionValue} style={{ */}
         <Form.Item>

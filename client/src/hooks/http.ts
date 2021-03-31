@@ -226,7 +226,7 @@ export const useFetchMutationWithUserId = (
           routerObject.push(redirectPath)
         }
       } catch (error) {
-        message.error(error.toString())
+        message.error(error.message)
       }
     }
     myFetch()
@@ -295,7 +295,7 @@ export const useAuth = (authType: AuthType): Function => {
       })
       .catch((error) => {
         // TEMP
-        message.error(error.toString())
+        message.error(error.messge)
       })
   }, [values])
 
