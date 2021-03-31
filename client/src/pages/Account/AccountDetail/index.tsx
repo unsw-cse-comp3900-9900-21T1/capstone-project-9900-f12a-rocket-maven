@@ -1,6 +1,6 @@
 import { useFetchGetWithUserId } from '@rocketmaven/hooks/http'
 import { Investor } from '@rocketmaven/pages/Account/types'
-import AccountDetailCard from './AccountDetailCard'
+import AccountDetailCard from '@rocketmaven/pages/Account/AccountDetail/AccountDetailCard'
 import { isEmpty } from 'ramda'
 
 type AccountFetch = {
