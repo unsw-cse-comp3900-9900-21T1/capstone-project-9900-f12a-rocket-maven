@@ -1,13 +1,13 @@
 import { Link } from 'react-router-dom';
 import { Form, Input, Button } from 'antd';
-import { Card } from '../../../componentsStyled/Card'
-import { urls } from '../../../data/urls'
+import { Card } from '@rocketmaven/componentsStyled/Card'
+import { urls } from '@rocketmaven/data/urls'
 import { useState, useRef, useMemo } from 'react'
 import { useHistory } from "react-router";
 import { SelectProps } from "antd/es/select";
 import { isEmpty } from  'ramda'
-import { PortfolioInfo, PortfolioEventCreate } from '../types'
-import { useFetchGetWithUserId, useFetchMutationWithUserId } from '../../../hooks/http'
+import { PortfolioInfo, PortfolioEventCreate } from '@rocketmaven/pages/Portfolio/types'
+import { useFetchGetWithUserId, useFetchMutationWithUserId } from '@rocketmaven/hooks/http'
 
 import { Select, Spin } from 'antd';
 import debounce from 'lodash/debounce';

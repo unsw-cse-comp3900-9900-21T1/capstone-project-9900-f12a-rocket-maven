@@ -1,12 +1,12 @@
 import { Fragment } from 'react'
-import { Card } from '../../../componentsStyled/Card'
+import { Card } from '@rocketmaven/componentsStyled/Card'
 import { Form, Input, Button, Switch, Select } from 'antd'
-import { useSortedCountryList } from '../../../hooks/store'
-// import { MySelect, MyTextInput } from '../../../forms'
-import { numberRequired, stringRequired, booleanRequired } from '../../../forms/validators'
-import { useFetchMutationWithUserId } from '../../../hooks/http'
-import { PortfolioInfoEdit } from '../types'
-import { urls } from '../../../data/urls'
+import { useSortedCountryList } from '@rocketmaven/hooks/store'
+// import { MySelect, MyTextInput } from '@rocketmaven/forms'
+import { numberRequired, stringRequired, booleanRequired } from '@rocketmaven/forms/validators'
+import { useFetchMutationWithUserId } from '@rocketmaven/hooks/http'
+import { PortfolioInfoEdit } from '@rocketmaven/pages/Portfolio/types'
+import { urls } from '@rocketmaven/data/urls'
 const { Option } = Select
 
 type Props = {

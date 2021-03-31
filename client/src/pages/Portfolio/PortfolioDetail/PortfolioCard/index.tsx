@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
-import { PortfolioInfo } from '../../types'
+import { PortfolioInfo } from '@rocketmaven/pages/Portfolio/types'
 import { Tooltip, Button, Divider, Table } from 'antd';
 import { EditOutlined, SettingOutlined, EyeOutlined } from '@ant-design/icons';
-import { Row, Col } from '../../../../componentsStyled/Grid'
-import { urls } from '../../../../data/urls'
-import { Card } from '../../../../componentsStyled/Card'
+import { Row, Col } from '@rocketmaven/componentsStyled/Grid'
+import { urls } from '@rocketmaven/data/urls'
+import { Card } from '@rocketmaven/componentsStyled/Card'
 
 type Props = {
   portfolio: PortfolioInfo

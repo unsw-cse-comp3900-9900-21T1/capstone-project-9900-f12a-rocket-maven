@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components'
-import { StyledLink } from '../../componentsStyled/Typography'
+import { StyledLink } from '@rocketmaven/componentsStyled/Typography'
 // import { FromProp } from "helpers/FromProp"
 // import { linker } from "hoc/linker"
 

@@ -1,10 +1,10 @@
 import { Form, Input, Button, Select, Alert } from 'antd'
-import { Card } from '../../componentsStyled/Card'
-import PasswordInput from '../../components/PasswordInput'
-import Page from '../_Page'
-import { useAuth } from '../../hooks/http'
-import { useSortedCountryList } from '../../hooks/store'
-import DateOfBirthInput from '../../components/DateOfBirthInput'
+import { Card } from '@rocketmaven/componentsStyled/Card'
+import PasswordInput from '@rocketmaven/components/PasswordInput'
+import Page from '@rocketmaven/pages/_Page'
+import { useAuth } from '@rocketmaven/hooks/http'
+import { useSortedCountryList } from '@rocketmaven/hooks/store'
+import DateOfBirthInput from '@rocketmaven/components/DateOfBirthInput'
 
 const layout = {
   labelCol: {

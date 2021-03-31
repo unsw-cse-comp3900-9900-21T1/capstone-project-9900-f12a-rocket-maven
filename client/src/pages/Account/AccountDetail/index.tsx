@@ -1,5 +1,5 @@
-import { useFetchGetWithUserId } from '../../../hooks/http'
-import { Investor } from '../types'
+import { useFetchGetWithUserId } from '@rocketmaven/hooks/http'
+import { Investor } from '@rocketmaven/pages/Account/types'
 import AccountDetailCard from './AccountDetailCard'
 
 type AccountFetch = {

@@ -1,12 +1,12 @@
 import { Fragment, useState } from 'react'
-import { Subtitle } from '../../../../componentsStyled/Typography'
-import { useFetchMutationWithUserId } from '../../../../hooks/http'
-import { Card } from '../../../../componentsStyled/Card'
+import { Subtitle } from '@rocketmaven/componentsStyled/Typography'
+import { useFetchMutationWithUserId } from '@rocketmaven/hooks/http'
+import { Card } from '@rocketmaven/componentsStyled/Card'
 import { Form, Input, Button, Select, DatePicker } from 'antd'
-import { Investor } from '../../types'
-import { useSortedCountryList } from '../../../../hooks/store'
-import { urls } from '../../../../data/urls'
-import DateOfBirthInput from '../../../../components/DateOfBirthInput'
+import { Investor } from '@rocketmaven/pages/Account/types'
+import { useSortedCountryList } from '@rocketmaven/hooks/store'
+import { urls } from '@rocketmaven/data/urls'
+import DateOfBirthInput from '@rocketmaven/components/DateOfBirthInput'
 
 type Props = {
   investorData: Investor

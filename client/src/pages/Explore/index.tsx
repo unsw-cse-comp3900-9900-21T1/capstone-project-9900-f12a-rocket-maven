@@ -1,15 +1,15 @@
-import Page from '../_Page'
+import Page from '@rocketmaven/pages/_Page'
 import { Form, Input, Button, Row, Col} from 'antd';
-import { urls } from '../../data/urls';
-import { Investor } from '../Account/types';
-import { Card } from '../../componentsStyled/Card'
+import { urls } from '@rocketmaven/data/urls';
+import { Investor } from '@rocketmaven/pages/Account/types';
+import { Card } from '@rocketmaven/componentsStyled/Card'
 import { SearchOutlined } from '@ant-design/icons';
 import { Select, Spin } from 'antd';
 import { SelectProps } from 'antd/es/select';
 import debounce from 'lodash/debounce';
 import { useState, useRef, useMemo } from 'react'
 import { isEmpty } from  'ramda'
-import { useFetchGetWithUserId, useFetchMutationWithUserId } from '../../hooks/http'
+import { useFetchGetWithUserId, useFetchMutationWithUserId } from '@rocketmaven/hooks/http'
 import { url } from 'node:inspector';
 import { Link } from 'react-router-dom';
 

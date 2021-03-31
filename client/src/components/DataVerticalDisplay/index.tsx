@@ -1,6 +1,6 @@
 import { Fragment, useEffect } from 'react'
-import { Col } from '../../componentsStyled/Grid'
-import { Flex } from '../../componentsStyled/Flex'
+import { Col } from '@rocketmaven/componentsStyled/Grid'
+import { Flex } from '@rocketmaven/componentsStyled/Flex'
 
 // Temporary component to data in an object (Abandoned because of re-rendering issues)
 const DataVerticalDisplay = (data: any) => {

@@ -1,9 +1,9 @@
 import { Fragment  } from 'react'
-import { Row, Col } from '../../../../componentsStyled/Grid'
-import { Card } from '../../../../componentsStyled/Card'
+import { Row, Col } from '@rocketmaven/componentsStyled/Grid'
+import { Card } from '@rocketmaven/componentsStyled/Card'
 import { Link } from 'react-router-dom';
-import { urls } from '../../../../data/urls'
-import { Investor } from '../../types'
+import { urls } from '@rocketmaven/data/urls'
+import { Investor } from '@rocketmaven/pages/Account/types'
 import { Button, Divider } from 'antd';
 
 
