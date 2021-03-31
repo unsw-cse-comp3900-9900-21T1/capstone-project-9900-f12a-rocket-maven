@@ -5,10 +5,9 @@ import { storeContext } from '@rocketmaven/data/app/store'
 import { Text, Subtitle } from '@rocketmaven/componentsStyled/Typography'
 import { useStore } from '@rocketmaven/hooks/store'
 import { urls } from '@rocketmaven/data/urls'
+import { HeaderWrap } from '@rocketmaven/pages/_Page/styled'
 
 import { Layout, Menu, Breadcrumb, message } from 'antd'
-
-const { Header, Content, Footer } = Layout
 
 const NavBar = () => {
   const { state } = useContext(storeContext)
@@ -35,17 +34,12 @@ const NavBar = () => {
   }
 
   return (
-    <Header style={{ position: 'fixed', zIndex: 1, width: '100%', background: 'white' }}>
-      <Subtitle>
-        <a href="/">
-          <img src="/testlogo.svg" width="200px" />
-        </a>
-      </Subtitle>
+    <HeaderWrap>
       <Menu mode="horizontal" defaultSelectedKeys={['2']} style={{ float: 'right' }}>
         <Menu.Item key="1"></Menu.Item>
         {logoutButton}
       </Menu>
-    </Header>
+    </HeaderWrap>
   )
 }
 
