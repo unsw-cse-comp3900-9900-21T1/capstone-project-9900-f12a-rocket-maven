@@ -1,4 +1,4 @@
-import styled from "styled-components"
+import styled from 'styled-components'
 
 export const PageWrap = styled.div`
   overflow: scroll;
@@ -14,13 +14,8 @@ export const HeaderWrap = styled.header`
   width: 100%;
 `
 
-export const NavWrap = styled.nav`
-  background-color: white;
-`
-
 export const BodyWrap = styled.main`
   flex: 1;
 `
 
-export const FooterWrap = styled.footer`
-`
+export const FooterWrap = styled.footer``

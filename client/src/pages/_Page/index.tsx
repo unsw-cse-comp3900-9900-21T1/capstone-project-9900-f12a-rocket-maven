@@ -4,12 +4,11 @@ import {
   BodyWrap,
   FooterWrap,
   HeaderWrap,
-  NavWrap,
   PageWrap,
 } from "./styled"
 import { Layout, Menu, Breadcrumb } from 'antd';
 
-const { Header, Content, Footer } = Layout;
+const { Header, Content, Footer } = Layout
 
 // This component is a wrapper for the other pages content.
 // Note only the body will change and all the other sections of the DOM will
@@ -18,21 +17,15 @@ const { Header, Content, Footer } = Layout;
 type Props = {
   children: React.ReactNode
 }
-const Page = ({children}: Props) => {
-
+const Page = ({ children }: Props) => {
   return (
-  <Layout className="layout" style={{height: "100vh"}}>
-      <NavWrap>
-        <NavBar/>
-      </NavWrap>
-      <Content style={{margin:"20px", overflow: "scroll"}}>
+    <Layout style={{ height: '100vh', width: '100%', margin: '20px' }}>
+      <Content className="site-layout" style={{ padding: '0 50px', marginTop: 64 }}>
         {children}
       </Content>
       <Footer style={{ textAlign: 'center' }}>Rocket Maven ©2021</Footer>
     </Layout>
   )
 }
-
-
 
 export default Page
