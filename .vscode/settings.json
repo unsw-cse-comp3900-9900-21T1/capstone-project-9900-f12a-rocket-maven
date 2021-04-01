@@ -2,6 +2,7 @@
     "search.exclude": {
         "backend/RocketMaven/static": true,
         "backend/RocketMaven/commons/templates": true,
+        "backend/RocketMaven/backend/data": true,
         "client/package-lock.json": true,
     },
 }

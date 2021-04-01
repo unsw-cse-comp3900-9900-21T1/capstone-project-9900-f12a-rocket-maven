@@ -29,6 +29,9 @@ export const MenuItemWrap = styled(Menu.Item)`
     margin: 1rem 2rem;
     border-radius: 12px;
   }
+  ${SiderWrap}.ant-layout-sider-collapsed & {
+    padding-left: 32px !important;
+  }
 `
 export const SidebarWrap = styled(Menu)`
   min-height: 100vh;
