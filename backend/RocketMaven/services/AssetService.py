@@ -11,15 +11,12 @@ import re
 import zipfile
 
 
-# https://stackoverflow.com/questions/43269278/python-how-to-convert-a-large-zipped-csv-file-to-a-dictionary
 def zip_dict_reader(filename: str) -> dict:
     """ Generates dictionary rows from a zipped CSV file
     """
-    with zipfile.ZipFile(filename) as zipFile:
-        for fname in zipFile.infolist():
-            with zipFile.open(fname) as file:
-                for m in DictReader(io.TextIOWrapper(file, encoding="utf-8")):
-                    yield m
+    with open(filename.replace(".zip", ".csv"), "rb") as file:
+        for m in DictReader(io.TextIOWrapper(file, encoding="utf-8")):
+            yield m
 
 
 def get_asset(ticker_symbol: str):
