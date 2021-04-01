@@ -12,23 +12,19 @@ from typing import Callable
 from csv import DictReader, DictWriter, reader, writer
 import json
 import io
-import zipfile
 
 
 YAHOO_FINANCE_ENDPOINT = "https://query2.finance.yahoo.com/v7/finance/quote?formatted=true&lang=en-AU&region=AU&symbols={ticker}"
 
 
-# https://stackoverflow.com/questions/43269278/python-how-to-convert-a-large-zipped-csv-file-to-a-dictionary
 def zip_row_reader(filename: str) -> dict:
     """ Generates list rows from a zipped JSON file
     """
-    with zipfile.ZipFile(filename) as zipFile:
-        for fname in zipFile.infolist():
-            with zipFile.open(fname) as file:
-                rdr = json.load(io.TextIOWrapper(file, encoding="utf-8"))
-                for m in rdr:
-                    if m["quoteCurrency"] == "USD":
-                        yield m
+    with open(filename.replace(".zip", ".json"), "rb") as file:
+        rdr = json.load(io.TextIOWrapper(file, encoding="utf-8"))
+        for m in rdr:
+            if m["quoteCurrency"] == "USD":
+                yield m
 
 def batch_endpoint_get(rows: dict, chunks, endpoint_fmt: Callable[[str], str]):
     endpoint = YAHOO_FINANCE_ENDPOINT.format(ticker=(",".join(chunks)).upper())

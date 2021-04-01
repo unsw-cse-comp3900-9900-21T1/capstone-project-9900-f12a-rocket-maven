@@ -18,17 +18,14 @@ import zipfile
 YAHOO_FINANCE_ENDPOINT = "https://query2.finance.yahoo.com/v7/finance/quote?formatted=true&lang=en-AU&region=AU&symbols={ticker}&fields=lastSplitDate,gmtOffSetMilliseconds,annualHoldingsTurnover,shortName,legalType,morningStarOverallRating,shortPercentOfFloat,averageVolume,headSymbolAsString,averageDailyVolume10Day,maxSupply,volumeAllCurrencies,quoteType,strikePrice,52WeekChange,priceToBook,underlyingSymbol,beta,exchange,lastSplitFactor,threeYearAverageReturn,fundFamily,longBusinessSummary,heldPercentInstitutions,sharesOutstanding,fiftyTwoWeekHigh,exchangeTimezoneName,volume24Hr,city,revenueQuarterlyGrowth,regularMarketDayHigh,heldPercentInsiders,regularMarketPreviousClose,country,address1,trailingAnnualDividendRate,fiveYearAvgDividendYield,regularMarketChange,mostRecentQuarter,maxAge,algorithm,uuid,dividendRate,ask,fromCurrency,sharesShortPreviousMonthDate,state,profitMargins,beta3Year,totalAssets,exchangeTimezoneShortName,sharesShortPriorMonth,regularMarketDayLow,expireDate,fundInceptionDate,openInterest,forwardEps,annualReportExpenseRatio,lastMarket,regularMarketPrice,underlyingExchangeSymbol,payoutRatio,sharesPercentSharesOut,bidSize,pegRatio,circulatingSupply,market,lastFiscalYearEnd,netIncomeToCommon,priceToSalesTrailing12Months,zip,dividendYield,tradeable,averageVolume10days,symbol,trailingAnnualDividendYield,regularMarketChangePercent,isEsgPopulated,forwardPE,logo_url,fiftyTwoWeekLow,floatShares,trailingPE,startDate,industry,dateShortInterest,fiftyDayAverage,currency,messageBoardId,regularMarketOpen,bid,fax,sharesShort,toCurrency,sector,phone,bookValue,nextFiscalYearEnd,enterpriseToEbitda,category,fromExchange,regularMarketVolume,longName,dayLow,trailingEps,morningStarRiskRating,exDividendDate,website,navPrice,toExchange,previousClose,open,companyOfficers,fiveYearAverageReturn,priceHint,lastDividendValue,askSize,marketCap,lastCapGain,twoHundredDayAverage,yield,SandP52WeekChange,earningsQuarterlyGrowth,fullTimeEmployees,enterpriseValue,volume,dayHigh,shortRatio,ytdReturn,enterpriseToRevenue"
 
 
-# https://stackoverflow.com/questions/43269278/python-how-to-convert-a-large-zipped-csv-file-to-a-dictionary
 def zip_row_reader(filename: str) -> dict:
     """ Generates list rows from a zipped CSV file
     """
-    with zipfile.ZipFile(filename) as zipFile:
-        for fname in zipFile.infolist():
-            with zipFile.open(fname) as file:
-                rdr = reader(io.TextIOWrapper(file, encoding="utf-8"))
-                next(rdr)  # Skip header row
-                for m in rdr:
-                    yield m
+    with open(filename.replace(".zip", ".csv"), "rb") as file:
+        rdr = reader(io.TextIOWrapper(file, encoding="utf-8"))
+        next(rdr)  # Skip header row
+        for m in rdr:
+            yield m
                     
 def batch_endpoint_get(rows: dict, chunks, endpoint_fmt: Callable[[str], str]):
     endpoint = YAHOO_FINANCE_ENDPOINT.format(ticker=(",".join(chunks)).upper())
@@ -65,7 +62,7 @@ def load_data(
             # False = no write to csv
             rows[yahoo_stock] = [False, row]
             chunks.append(yahoo_stock)
-            if len(chunks) > 20:
+            if len(chunks) > 50:
                 batch_endpoint_get(rows, chunks, endpoint_fmt)
                 chunks = []
 
