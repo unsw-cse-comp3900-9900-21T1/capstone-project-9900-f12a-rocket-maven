@@ -10,6 +10,7 @@ export const urls = {
   account: '/account',
   portfolio: '/portfolio',
   watchlists: '/watchlists',
+  report: '/report',
   homeStub: '/home-stub',
   explore: '/explore',
   leaderboard: '/leaderboard'
