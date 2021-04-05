@@ -161,6 +161,46 @@ export const useFetchGetPublicPortfolio = (portfolioId: string): any => {
   return { data, isLoading }
 }
 
+export const useFetchTopAdditions = (): any => {
+  const [data, setData] = useState({})
+  const [isLoading, setIsLoading] = useState(true)
+  const { accessToken, revalidateAccessToken } = useAccessToken()
+  const isLoggedIn = useIsLoggedIn()
+
+  useEffect(() => {
+    const myFetch = async () => {
+      try {
+        setIsLoading(true)
+        if (isLoggedIn && isExpired(accessToken)) {
+          await revalidateAccessToken()
+        }
+        const response = await fetch(`/api/v1/top_additions`, {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`
+          }
+        })
+        console.log('*********************** status is', response.status)
+        if (!response.ok) {
+          throw Error(`${response.status}`)
+        }
+        const data = await response.json()
+        setData(data)
+        setIsLoading(false)
+      } catch (error) {
+        setData({})
+        setIsLoading(false)
+      }
+    }
+    myFetch()
+    return
+  }, [])
+
+  return { data, isLoading }
+}
+
+
 export const useFetchGetWithUserId = (urlEnd: string, refreshFlag?: number): any => {
   const [data, setData] = useState({})
   const [isLoading, setIsLoading] = useState(true)

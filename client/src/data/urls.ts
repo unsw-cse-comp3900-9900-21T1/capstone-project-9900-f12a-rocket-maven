@@ -13,5 +13,6 @@ export const urls = {
   report: '/report',
   homeStub: '/home-stub',
   explore: '/explore',
-  leaderboard: '/leaderboard'
+  leaderboard: '/leaderboard',
+  topAdditions: '/top-additions'
 }
