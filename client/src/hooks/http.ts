@@ -342,6 +342,26 @@ export const useGetPortfolioHistory = (portfolioId: string): any => {
   return data
 }
 
+export const useGetWatchlist = (): any => {
+  const { accessToken, revalidateAccessToken } = useAccessToken()
+  const [data, setData] = useState({})
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    abstractFetchLoggedInURL(
+      accessToken,
+      revalidateAccessToken,
+      data,
+      setData,
+      isLoading,
+      setIsLoading,
+      `/api/v1/watchlist`
+    )
+  }, [])
+
+  return data
+}
+
 export const useGetPortfolioHoldings = (portfolioId: string): any => {
   const { accessToken, revalidateAccessToken } = useAccessToken()
   const [data, setData] = useState({})

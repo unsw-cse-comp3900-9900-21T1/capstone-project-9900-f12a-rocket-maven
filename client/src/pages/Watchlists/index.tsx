@@ -1,41 +1,108 @@
+import Page from '@rocketmaven/pages/_Page'
+import { urls } from '@rocketmaven/data/urls'
 import { Table } from 'antd'
 import React, { useEffect, useState } from 'react'
-import { useFetchGetWithUserId, useFetchMutationWithUserId } from '@rocketmaven/hooks/http' // use later. at the moment backend is not ready
-import Axios from 'axios'
+import { Subtitle, Title } from '@rocketmaven/componentsStyled/Typography'
+import {
+  useFetchGetWithUserId,
+  useFetchMutationWithUserId,
+  useGetWatchlist
+} from '@rocketmaven/hooks/http' // use later. at the moment backend is not ready
+import { isEmpty } from 'ramda'
+import { useHistory } from 'react-router-dom'
+import { useAccessToken } from '@rocketmaven/hooks/http'
 
-const url = 'http://localhost:5000/api/v1/investors/3/watch_lists'
-
-type WatchList = { id: number; name: string; assets: Asset[] }
-type Asset = {
-  id: number
+type WatchListItem = {
+  industry: string
+  price_last_updated: Date
+  asset_additional: string
+  current_price: number
+  currency: string
+  market_cap: number
   ticker_symbol: string
   name: string
-  current_price: number
-  market_cap: number
+  country: string
+  data_source: string
+}
+
+export type WatchListPagination = {
+  next: string
+  pages: number
+  prev: string
+  total: number
+  results: [WatchListItem]
 }
 
 const Watchlists = () => {
-  const [watchlists, setWatchlists] = useState<WatchList[]>([])
-  const [currentWatchlist, setCurrentWatchlist] = useState<WatchList | undefined>(undefined)
-  console.log({ watchlists, currentWatchlist })
+  // Avoid call when isCreate is true
+  const watchlist: WatchListPagination = useGetWatchlist()
 
-  const fetchWatchlists = async () => {
-    try {
-      const { data } = await Axios.get(url)
-      setWatchlists(data)
-    } catch (error) {
-      console.log(error)
+  const routerObject = useHistory()
+  const { accessToken, revalidateAccessToken } = useAccessToken()
+
+  async function useDeleteWatchlist(e: any) {
+    const asset_id = e.target.getAttribute('title')
+    routerObject.push('/')
+
+    const response = await fetch(`/api/v1/watchlist/${asset_id}`, {
+      method: 'DELETE',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: JSON.stringify({ asset_id: asset_id })
+    })
+    const data = await response.json()
+    if (!response.ok) {
+      throw Error(`${data.msg}`)
     }
+    routerObject.push(urls.watchlists)
   }
-  useEffect(() => {
-    fetchWatchlists()
-  }, [])
 
-  useEffect(() => {
-    setCurrentWatchlist(watchlists[0])
-  }, [watchlists])
+  var watchlistable = null
+  if (!watchlist || isEmpty(watchlist)) {
+    // do nothing
+  } else {
+    const watchlistitems: [WatchListItem] = watchlist.results
 
-  return <Table dataSource={currentWatchlist?.assets || []} columns={columns} />
+    const columns = [
+      {
+        title: 'Ticker',
+        dataIndex: 'ticker_symbol'
+      },
+      {
+        title: 'Name',
+        dataIndex: 'name'
+      },
+      {
+        title: 'Price',
+        dataIndex: 'current_price'
+      },
+      {
+        title: 'Market Cap',
+        dataIndex: 'market_cap'
+      },
+      {
+        title: 'Delete',
+        dataIndex: 'ticker_symbol',
+        key: 'x',
+        render: (value: string) => (
+          <a title={value} onClick={useDeleteWatchlist}>
+            Delete
+          </a>
+        )
+      }
+    ]
+    watchlistable = <Table columns={columns} dataSource={watchlistitems} rowKey="id" />
+  }
+
+  return !isEmpty(watchlistable) ? (
+    <Page>
+      <Title>Watchlist</Title>
+      {watchlistable}
+    </Page>
+  ) : null
 }
 type Column = { title: string; dataIndex: string; key: string }
 const columns: Column[] = [
