@@ -1,6 +1,6 @@
 import Page from '@rocketmaven/pages/_Page'
 import { urls } from '@rocketmaven/data/urls'
-import { Table } from 'antd'
+import { Table, Form, Button } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { Subtitle, Title } from '@rocketmaven/componentsStyled/Typography'
 import {
@@ -11,6 +11,8 @@ import {
 import { isEmpty } from 'ramda'
 import { useHistory } from 'react-router-dom'
 import { useAccessToken } from '@rocketmaven/hooks/http'
+import { Card } from '@rocketmaven/componentsStyled/Card'
+import AssetSearchBox from '@rocketmaven/components/AssetSearchBox'
 
 type WatchListItem = {
   industry: string
@@ -25,7 +27,7 @@ type WatchListItem = {
   data_source: string
 }
 
-export type WatchListPagination = {
+type WatchListPagination = {
   next: string
   pages: number
   prev: string
@@ -42,7 +44,6 @@ const Watchlists = () => {
 
   async function useDeleteWatchlist(e: any) {
     const asset_id = e.target.getAttribute('title')
-    routerObject.push('/')
 
     const response = await fetch(`/api/v1/watchlist/${asset_id}`, {
       method: 'DELETE',
@@ -57,7 +58,7 @@ const Watchlists = () => {
     if (!response.ok) {
       throw Error(`${data.msg}`)
     }
-    routerObject.push(urls.watchlists)
+    routerObject.go(0)
   }
 
   var watchlistable = null
@@ -96,10 +97,55 @@ const Watchlists = () => {
     ]
     watchlistable = <Table columns={columns} dataSource={watchlistitems} rowKey="id" />
   }
+  const onFinish = async (values: any) => {
+    const response = await fetch(`/api/v1/watchlist/${values.asset_id.value}`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`
+      }
+    })
+    const data = await response.json()
+    if (!response.ok) {
+      throw Error(`${data.msg}`)
+    }
+    routerObject.go(0)
+  }
 
   return !isEmpty(watchlistable) ? (
     <Page>
       <Title>Watchlist</Title>
+
+      <Card title="Add to watchlist">
+        <Form onFinish={onFinish}>
+          <Form.Item
+            name="asset_id"
+            label="Ticker (EXCHANGE:SYMBOL)"
+            rules={[
+              {
+                required: true,
+                message: 'Please input a ticker!'
+              }
+            ]}
+          >
+            <AssetSearchBox showSearch style={{ width: '100%' }} />
+          </Form.Item>
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              style={{
+                marginRight: '8px',
+                marginBottom: '12px'
+              }}
+            >
+              Add
+            </Button>
+          </Form.Item>
+        </Form>
+      </Card>
+
       {watchlistable}
     </Page>
   ) : null
