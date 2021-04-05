@@ -109,7 +109,6 @@ const Leaderboard = () => {
     historyTable = <Table columns={valueColumns} dataSource={datas} rowKey="id" />
   }
 
-  // TODO(Jude)
   return (
   <Page>
     <Title>Competition Leaderboard</Title>
