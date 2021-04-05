@@ -11,6 +11,7 @@ import PasswordReset from '@rocketmaven/pages/PasswordReset'
 import Watchlists from '@rocketmaven/pages/Watchlists'
 import Explore from '@rocketmaven/pages/Explore'
 import Leaderboard from '@rocketmaven/pages/Leaderboard'
+import Report from '@rocketmaven/pages/Report'
 
 const Routes = () => {
   const { isLoggedIn } = useStore()
@@ -36,6 +37,7 @@ const Routes = () => {
       <Route path={urls.portfolio} component={Portfolio} />
       <Route path={urls.account} component={Account} />
       <Route path={urls.watchlists} component={Watchlists} />
+      <Route path={urls.report} component={Report} />
     </Switch>
   )
 }

@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import {
   FaBriefcase,
+  FaFileAlt,
   FaNetworkWired,
   FaSignInAlt,
   FaStar,
@@ -30,13 +31,14 @@ function sideBarItems(isLoggedIn: boolean) {
   const itemsWhenNotLoggedIn: Array<SideBarItem> = [
     { name: 'Explore', to: urls.explore, icon: <FaNetworkWired /> },
     { name: 'Sign Up', to: urls.signup, icon: <FaUserPlus /> },
-    { name: 'Log In', to: urls.login, icon: <FaSignInAlt /> }
+    { name: 'Log In', to: urls.login, icon: <FaSignInAlt /> },
   ]
   const itemsWhenLoggedIn: Array<SideBarItem> = [
     { name: 'Explore', to: urls.explore, icon: <FaNetworkWired /> },
     { name: 'Portfolio', to: urls.portfolio, icon: <FaBriefcase /> },
     { name: 'Account', to: urls.account, icon: <FaUser /> },
-    { name: 'Watchlists', to: urls.watchlists, icon: <FaStar /> }
+    { name: 'Watchlists', to: urls.watchlists, icon: <FaStar /> },
+    { name: 'Report', to: urls.report, icon: <FaFileAlt /> }
   ]
   return isLoggedIn ? itemsWhenLoggedIn : itemsWhenNotLoggedIn
 }
