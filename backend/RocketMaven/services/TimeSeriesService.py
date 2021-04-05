@@ -183,7 +183,7 @@ def get_daily_minute(ticker_symbol: str):
     print("Daily", str(start_date), str(end_date))
     return get_timeseries_data_advanced(ticker_symbol, start_date, end_date, TimeSeriesInterval.OneMinute)
     
-# Cache for 1 minute
+# Cache for 5 minutes
 @cached(cache=TTLCache(maxsize=1024, ttl=60 * 5))
 def get_weekly_fiveminute(ticker_symbol: str):
     """ """ 
@@ -205,7 +205,7 @@ def get_weekly_fiveminute(ticker_symbol: str):
     print("Weekly", str(start_date), str(end_date))
     return get_timeseries_data_advanced(ticker_symbol, start_date, end_date, TimeSeriesInterval.FiveMinutes)
     
-# Cache for 1 month
+# Cache for 30 days (1 month)
 @cached(cache=TTLCache(maxsize=1024, ttl=60 * 60 * 24 * 30))
 def get_monthly_hourly(ticker_symbol: str):
     """ """
@@ -225,7 +225,7 @@ def get_monthly_hourly(ticker_symbol: str):
     print("Monthly", str(start_date), str(end_date))
     return get_timeseries_data_advanced(ticker_symbol, start_date, end_date, TimeSeriesInterval.OneHour)
 
-# Cache for 1 year
+# Cache for 365 days (1 year)
 @cached(cache=TTLCache(maxsize=1024, ttl=60 * 60 * 24 * 365))
 def get_yearly_daily(ticker_symbol: str):
     """ """
