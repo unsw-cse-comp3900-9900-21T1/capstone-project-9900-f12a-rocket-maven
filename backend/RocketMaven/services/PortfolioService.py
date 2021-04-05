@@ -1,10 +1,11 @@
 from flask import request
-from RocketMaven.api.schemas import PortfolioSchema
+from RocketMaven.api.schemas import PortfolioSchema, PublicPortfolioSchema
 from RocketMaven.models import Portfolio, Asset, PortfolioEvent
 from RocketMaven.extensions import db
 from RocketMaven.services.PortfolioEventService import update_asset
 from RocketMaven.commons.pagination import paginate
 from flask_jwt_extended import get_jwt_identity
+from RocketMaven.models import Investor
 import sys
 
 
@@ -13,9 +14,8 @@ def get_portfolio(portfolio_id):
     data = Portfolio.query.get_or_404(portfolio_id)
     return {"portfolio": schema.dump(data)}
 
-# May not need this function, could just extend the logic of get_portfolio
 def get_public_portfolio(portfolio_id):
-    schema = PortfolioSchema()
+    schema = PublicPortfolioSchema()
     data = Portfolio.query.get_or_404(portfolio_id)
     if data.public_portfolio or data.investor_id == get_jwt_identity():
         return {"portfolio": schema.dump(data)}

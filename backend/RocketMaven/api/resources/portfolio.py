@@ -1,7 +1,7 @@
 from flask import request
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required
-from RocketMaven.api.schemas import LeaderboardSchema, PortfolioSchema
+from RocketMaven.api.schemas import LeaderboardSchema, PortfolioSchema, PublicPortfolioSchema
 from RocketMaven.services import CompetitionService, PortfolioService
 from RocketMaven.models import Portfolio
 from RocketMaven.extensions import db
@@ -57,14 +57,13 @@ class PublicPortfolioResource(Resource):
                 schema:
                   type: object
                   properties:
-                    portfolio: PortfolioSchema
+                    portfolio: PublicPortfolioSchema
           404:
             description: portfolio does not exist
           401:
             description: unauthorised portfolio read
         security: []
         """
-        # return {'msg': 'testing to see if this works'}
         return PortfolioService.get_public_portfolio(portfolio_id)
 
 class PortfolioResource(Resource):
