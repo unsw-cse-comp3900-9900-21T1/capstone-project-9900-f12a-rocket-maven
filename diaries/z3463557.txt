@@ -32,4 +32,11 @@ Week 5
 - Finished client side login state management with Tyson
 - Started on Portfolio Detail, Event History, and Holding pages; finshed by Andy
 - Finished Account edit and styling
--
+
+Week 6 ( Break )
+
+Week 7
+- Didn't do anything
+
+Week 8
+- Added username to public portfolio details and hooked up top additions end points
