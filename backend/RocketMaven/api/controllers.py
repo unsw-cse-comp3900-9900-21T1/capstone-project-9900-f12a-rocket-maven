@@ -17,13 +17,11 @@ from RocketMaven.api.resources import (
     PortfolioResource,
     PublicPortfolioResource,
     PortfolioList,
-    Time,
-    LoginStub,
-    PortfolioStub,
     PortfolioEventList,
     PortfolioAssetHoldingList,
     Iforgot,
     Pw_reset,
+    TopAdditions,
     LeaderboardList,
     WatchAsset,
     WatchList,
@@ -40,12 +38,6 @@ from RocketMaven.api.schemas import (
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
 api = Api(blueprint)
-
-# Stub endpoints for front end testing
-api.add_resource(Time, "/get-time", endpoint="current_time")
-api.add_resource(LoginStub, "/login-stub", endpoint="login_stub")
-api.add_resource(PortfolioStub, "/portfolio-stub", endpoint="portfolio_stub")
-
 
 api.add_resource(
     InvestorResource, "/investors/<int:investor_id>", endpoint="investor_by_id"
@@ -66,6 +58,10 @@ api.add_resource(
 
 api.add_resource(
     LeaderboardList, "/leaderboard", endpoint="leaderboard",
+)
+
+api.add_resource(
+    TopAdditions, "/top_additions", endpoint="top_additions",
 )
 
 api.add_resource(
@@ -125,6 +121,7 @@ def register_controllers():
     apispec.spec.path(view=PublicPortfolioResource, app=current_app, api=api)
     apispec.spec.path(view=PortfolioResource, app=current_app, api=api)
     apispec.spec.path(view=PortfolioList, app=current_app, api=api)
+    apispec.spec.path(view=TopAdditions, app=current_app, api=api)
 
     apispec.spec.components.schema("PortfolioEventSchema", schema=PortfolioEventSchema)
     apispec.spec.path(view=PortfolioEventList, app=current_app, api=api)
@@ -137,10 +134,6 @@ def register_controllers():
 
     apispec.spec.components.schema("LeaderboardSchema", schema=LeaderboardSchema)
     apispec.spec.path(view=LeaderboardList, app=current_app, api=api)
-
-    apispec.spec.path(view=Time, app=current_app, api=api)
-    apispec.spec.path(view=LoginStub, app=current_app, api=api)
-    apispec.spec.path(view=PortfolioStub, app=current_app, api=api)
 
     apispec.spec.path(view=TimeSeriesResource, app=current_app, api=api)
     apispec.spec.path(view=AdvancedTimeSeriesResource, app=current_app, api=api)

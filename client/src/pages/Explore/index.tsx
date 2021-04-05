@@ -13,6 +13,7 @@ import { useFetchGetWithUserId, useFetchMutationWithUserId } from '@rocketmaven/
 import { url } from 'node:inspector'
 import { Link } from 'react-router-dom'
 import { FaTrophy } from 'react-icons/fa'
+import { FaHeart } from 'react-icons/fa'
 
 export type AssetSearch = {
   ticker_symbol: string
@@ -165,12 +166,20 @@ const Explore = () => {
               />
             </Form.Item>
           </Form>
-
-          <Button type="primary">
-            <Link to={urls.leaderboard}>
-              <FaTrophy /> Rocket Maven Portfolio Competition Leaderboard
-            </Link>
-          </Button>
+          <Row>
+            <Button type="primary">
+              <Link to={urls.leaderboard}>
+                <FaTrophy /> Rocket Maven Portfolio Competition Leaderboard
+              </Link>
+            </Button>
+            </Row>
+          <Row>
+            <Button type="primary">
+              <Link to={urls.topAdditions}>
+                <FaHeart /> Top Additions
+              </Link>
+            </Button>
+          </Row>
         </Col>
       </Row>
     </Page>

@@ -1,7 +1,7 @@
 from flask import request
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required
-from RocketMaven.api.schemas import LeaderboardSchema, PortfolioSchema, PublicPortfolioSchema
+from RocketMaven.api.schemas import LeaderboardSchema, PortfolioSchema, PublicPortfolioSchema, AssetSchema
 from RocketMaven.services import CompetitionService, PortfolioService
 from RocketMaven.models import Portfolio
 from RocketMaven.extensions import db
@@ -219,3 +219,27 @@ class PortfolioList(Resource):
                     portfolio: PortfolioSchema
         """
         return PortfolioService.create_portfolio(investor_id)
+
+class TopAdditions(Resource):
+
+    # TODO(Jude): Fix schema definition
+    def get(self):
+        """Top Additions
+        ---
+        summary: Portfolios List
+        description: List portfolios belonging to the specified investor
+        tags:
+          - Public
+        responses:
+          200:
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    portfolio: PublicPortfolioSchema
+                    asset: AssetSchema
+          404:
+            description: error finding resources
+        """
+        return PortfolioService.get_top_additions()

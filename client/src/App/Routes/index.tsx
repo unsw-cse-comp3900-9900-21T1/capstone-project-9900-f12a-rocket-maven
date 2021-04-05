@@ -12,6 +12,7 @@ import Watchlists from '@rocketmaven/pages/Watchlists'
 import Explore from '@rocketmaven/pages/Explore'
 import Leaderboard from '@rocketmaven/pages/Leaderboard'
 import Report from '@rocketmaven/pages/Report'
+import TopAdditions from '@rocketmaven/pages/TopAdditions'
 
 const Routes = () => {
   const { isLoggedIn } = useStore()
@@ -38,6 +39,7 @@ const Routes = () => {
       <Route path={urls.account} component={Account} />
       <Route path={urls.watchlists} component={Watchlists} />
       <Route path={urls.report} component={Report} />
+      <Route path={urls.topAdditions} component={TopAdditions} />
     </Switch>
   )
 }

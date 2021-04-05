@@ -15,7 +15,6 @@ const Portfolio = () => {
   return (
     <Page>
       <Title>
-        {/* Remove when content's fleshed out */}
         Portfolio
       </Title>
       <Switch>
