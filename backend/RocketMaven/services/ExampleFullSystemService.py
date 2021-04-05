@@ -1,5 +1,5 @@
 from RocketMaven.models import Asset, Investor, Portfolio, PortfolioEvent
-from RocketMaven.services import AssetService
+from RocketMaven.services import AssetService, WatchlistService
 import datetime
 
 
@@ -278,6 +278,10 @@ def populate_full_system(db):
         )
 
     AssetService.load_asset_data(db)
+
+    WatchlistService.add_watchlist(user.id, "NASDAQ:AAPL")
+    WatchlistService.add_watchlist(user.id, "ASX:CBA")
+    WatchlistService.add_watchlist(user.id, "ASX:ART")
 
     # Competition portfolio test data
     competition_user_1 = Investor(
