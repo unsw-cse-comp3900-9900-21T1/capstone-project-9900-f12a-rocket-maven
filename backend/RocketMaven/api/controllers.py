@@ -6,6 +6,12 @@ from RocketMaven.extensions import apispec
 from RocketMaven.api.resources import (
     AssetResource,
     AssetSearchResource,
+    TimeSeriesResource,
+    AdvancedTimeSeriesResource,
+    DailyTimeSeriesResource,
+    WeeklyTimeSeriesResource,
+    MonthlyTimeSeriesResource,
+    YearlyTimeSeriesResource,
     InvestorResource,
     InvestorList,
     PortfolioResource,
@@ -92,9 +98,17 @@ api.add_resource(
     WatchAsset, "/watchlist/<string:ticker_symbol>", endpoint="watchlist_update"
 )
 
+
 api.add_resource(Iforgot, "/iforgot", endpoint="iforgot")
 
 api.add_resource(Pw_reset, "/pw_reset", endpoint="pw_reset")
+
+api.add_resource(TimeSeriesResource, "/chart/<string:ticker_symbol>/<string:range>", endpoint="chart")
+api.add_resource(AdvancedTimeSeriesResource, "/chart/advanced/<string:ticker_symbol>", endpoint="advanced_chart")
+api.add_resource(DailyTimeSeriesResource, "/chart/daily/<string:ticker_symbol>", endpoint="chart_daily")
+api.add_resource(WeeklyTimeSeriesResource, "/chart/weekly/<string:ticker_symbol>", endpoint="chart_weekly")
+api.add_resource(MonthlyTimeSeriesResource, "/chart/monthly/<string:ticker_symbol>", endpoint="chart_monthly")
+api.add_resource(YearlyTimeSeriesResource, "/chart/yearly/<string:ticker_symbol>", endpoint="chart_yearly")
 
 
 @blueprint.before_app_first_request
@@ -128,6 +142,13 @@ def register_controllers():
     apispec.spec.path(view=LoginStub, app=current_app, api=api)
     apispec.spec.path(view=PortfolioStub, app=current_app, api=api)
 
+    apispec.spec.path(view=TimeSeriesResource, app=current_app, api=api)
+    apispec.spec.path(view=AdvancedTimeSeriesResource, app=current_app, api=api)
+    apispec.spec.path(view=DailyTimeSeriesResource, app=current_app, api=api)
+    apispec.spec.path(view=WeeklyTimeSeriesResource, app=current_app, api=api)
+    apispec.spec.path(view=MonthlyTimeSeriesResource, app=current_app, api=api)
+    apispec.spec.path(view=YearlyTimeSeriesResource, app=current_app, api=api)
+    
     apispec.spec.path(view=WatchList, app=current_app, api=api)
     apispec.spec.path(view=WatchAsset, app=current_app, api=api)
     apispec.spec.path(view=Iforgot, app=current_app, api=api)
