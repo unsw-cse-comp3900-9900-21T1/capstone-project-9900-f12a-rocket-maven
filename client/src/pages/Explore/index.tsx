@@ -166,14 +166,14 @@ const Explore = () => {
               />
             </Form.Item>
           </Form>
-          <Row>
+          <Row  style={{ marginBottom: '0.5rem' }}>
             <Button type="primary">
               <Link to={urls.leaderboard}>
                 <FaTrophy /> Rocket Maven Portfolio Competition Leaderboard
               </Link>
             </Button>
             </Row>
-          <Row>
+          <Row  style={{ marginBottom: '0.5rem' }}>
             <Button type="primary">
               <Link to={urls.topAdditions}>
                 <FaHeart /> Top Additions
