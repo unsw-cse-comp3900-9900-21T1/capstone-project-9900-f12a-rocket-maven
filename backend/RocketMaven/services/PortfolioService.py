@@ -88,10 +88,14 @@ def create_portfolio(investor_id):
 
 def get_top_additions():
     # View count of portfolio
-    most_viewed_portfolio_result = db.session.query(Portfolio, db.func.max(Portfolio.view_count)).first()
+    most_viewed_portfolio_result = (
+        db.session.query(Portfolio, db.func.max(Portfolio.view_count))
+        .filter(Portfolio.public_portfolio == True)
+        .first()
+    )
     portfolio = most_viewed_portfolio_result[0]
 
-    # Count holdings
+    # Order by most "used" holding
     most_frequent_holding_result = (
         db.session.query(
             PortfolioAssetHolding,
