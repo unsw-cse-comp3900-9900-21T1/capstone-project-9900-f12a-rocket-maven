@@ -69,7 +69,9 @@ const PortfolioHistory = () => {
   // TODO(Jude)
   return !isEmpty(portfolioHistory) ? (
     <Fragment>
-      <Subtitle>Holding History</Subtitle>
+      <Subtitle>
+        Holding History for <Link to={`/asset/${hid}`}>{hid}</Link>
+      </Subtitle>
       {historyTable}
     </Fragment>
   ) : null
