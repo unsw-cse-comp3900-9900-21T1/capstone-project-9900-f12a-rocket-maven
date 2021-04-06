@@ -31,7 +31,7 @@ class InvestorSchema(ma.SQLAlchemyAutoSchema):
     id = ma.Int(dump_only=True)
     join_date = ma.Date(dump_only=True)
     email_verified = ma.Bool(dump_only=True)
-    email = ma.Email()
+    email = ma.Email(dump_only=True)
 
     password = ma.String(load_only=True, required=True, validate=validate_password)
 
@@ -44,3 +44,7 @@ class InvestorSchema(ma.SQLAlchemyAutoSchema):
             "admin_account",
             "email_verified_code",
         )
+
+class InvestorCreateSchema(InvestorSchema):
+
+    email = ma.Email()

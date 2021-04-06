@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
-import {  ReactLogoImg,  } from './styled'
-import Page from '../_Page'
-import { Title, Text, Code, Link, StyledLink } from '../../componentsStyled/Typography'
-import { StubWrap } from '../../componentsStyled/Layouts'
-import logo from '../../assets/svg/logo.svg'
-import { useStore } from '../../hooks/store'
-import { useAccessToken } from '../../hooks/http'
+import {  ReactLogoImg,  } from '@rocketmaven/pages/HomeStub/styled'
+import Page from '@rocketmaven/pages/_Page'
+import { Title, Text, Code, Link, StyledLink } from '@rocketmaven/componentsStyled/Typography'
+import { StubWrap } from '@rocketmaven/componentsStyled/Layouts'
+import logo from '@rocketmaven/assets/svg/logo.svg'
+import { useStore } from '@rocketmaven/hooks/store'
+import { useAccessToken } from '@rocketmaven/hooks/http'
 
 const HomeStub = () => {
 

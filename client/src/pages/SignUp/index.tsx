@@ -1,10 +1,10 @@
-import { Form, Input, Button, Select } from 'antd'
-import { Card } from '../../componentsStyled/Card'
-import PasswordInput from '../../components/PasswordInput'
-import Page from '../_Page'
-import 'antd/dist/antd.css'
-import { useAuth } from '../../hooks/http'
-import { useSortedCountryList } from '../../hooks/store'
+import { Form, Input, Button, Select, Alert } from 'antd'
+import { Card } from '@rocketmaven/componentsStyled/Card'
+import PasswordInput from '@rocketmaven/components/PasswordInput'
+import Page from '@rocketmaven/pages/_Page'
+import { useAuth } from '@rocketmaven/hooks/http'
+import { useSortedCountryList } from '@rocketmaven/hooks/store'
+import DateOfBirthInput from '@rocketmaven/components/DateOfBirthInput'
 
 const layout = {
   labelCol: {
@@ -93,6 +93,7 @@ const SignUp = () => {
           <Form.Item
             name="email"
             label="Email"
+            extra="Choose wisely, your email cannot be changed!"
             rules={[
               {
                 type: 'email',
@@ -110,6 +111,7 @@ const SignUp = () => {
           <Form.Item
             label="Country of Residency"
             name="countryOfResidency"
+            initialValue="AU"
             rules={[
               {
                 required: true,
@@ -139,29 +141,8 @@ const SignUp = () => {
               <Select.Option value={'Other'}>Other</Select.Option>
             </Select>
           </Form.Item>
-          <Form.Item
-            label="Date of Birth"
-            name="date_of_birth"
-            initialValue=""
-            rules={[
-              {
-                required: false
-              },
-              () => ({
-                validator(_, value) {
-                  if (value.length == 0 || /^\d{4}-([0]\d|1[0-2])-([0-2]\d|3[01])$/.test(value)) {
-                    return Promise.resolve()
-                  }
-                  // Maybe add better date processing?
-                  return Promise.reject(
-                    new Error('Please make sure the date is of the format XXXX-XX-XX')
-                  )
-                }
-              })
-            ]}
-          >
-            <Input />
-          </Form.Item>
+
+          <DateOfBirthInput />
 
           <PasswordInput />
 

@@ -1,10 +1,10 @@
-import Page from '../_Page'
-import { Title } from '../../componentsStyled/Typography'
-import AccountDetail from './AccountDetail'
+import Page from '@rocketmaven/pages/_Page'
+import { Title } from '@rocketmaven/componentsStyled/Typography'
+import AccountDetail from '@rocketmaven/pages/Account/AccountDetail'
 import { Switch, Route } from 'react-router-dom'
-import { urls } from '../../data/urls'
-import AccountPersonalInfoEdit from './AccountPersonalInfoEdit'
-import AccountSecurityInfoEdit from './AccountSecurityInfoEdit'
+import { urls } from '@rocketmaven/data/urls'
+import AccountPersonalInfoEdit from '@rocketmaven/pages/Account/AccountPersonalInfoEdit'
+import AccountSecurityInfoEdit from '@rocketmaven/pages/Account/AccountSecurityInfoEdit'
 
 const Account = () => {
 

@@ -6,18 +6,22 @@ from RocketMaven.extensions import apispec
 from RocketMaven.api.resources import (
     AssetResource,
     AssetSearchResource,
+    TimeSeriesResource,
+    AdvancedTimeSeriesResource,
+    DailyTimeSeriesResource,
+    WeeklyTimeSeriesResource,
+    MonthlyTimeSeriesResource,
+    YearlyTimeSeriesResource,
     InvestorResource,
     InvestorList,
     PortfolioResource,
     PublicPortfolioResource,
     PortfolioList,
-    Time,
-    LoginStub,
-    PortfolioStub,
     PortfolioEventList,
     PortfolioAssetHoldingList,
     Iforgot,
     Pw_reset,
+    TopAdditions,
     LeaderboardList,
     WatchAsset,
     WatchList,
@@ -34,12 +38,6 @@ from RocketMaven.api.schemas import (
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
 api = Api(blueprint)
-
-# Stub endpoints for front end testing
-api.add_resource(Time, "/get-time", endpoint="current_time")
-api.add_resource(LoginStub, "/login-stub", endpoint="login_stub")
-api.add_resource(PortfolioStub, "/portfolio-stub", endpoint="portfolio_stub")
-
 
 api.add_resource(
     InvestorResource, "/investors/<int:investor_id>", endpoint="investor_by_id"
@@ -63,6 +61,10 @@ api.add_resource(
 )
 
 api.add_resource(
+    TopAdditions, "/top_additions", endpoint="top_additions",
+)
+
+api.add_resource(
     PortfolioAssetHoldingList,
     "/portfolios/<int:portfolio_id>/holdings",
     endpoint="asset_holding_by_id",
@@ -70,14 +72,16 @@ api.add_resource(
 
 api.add_resource(
     PortfolioResource,
-    "/investors/<int:investor_id>/portfolios/<int:portfolio_id>",
+    "/portfolios/<int:portfolio_id>",
     endpoint="portfolio_by_id",
 )
+
 api.add_resource(
     PublicPortfolioResource,
     "/public-portfolios/<int:portfolio_id>",
     endpoint="public_portfolio_by_id",
 )
+
 api.add_resource(
     PortfolioList, "/investors/<int:investor_id>/portfolios", endpoint="portfolios"
 )
@@ -90,9 +94,17 @@ api.add_resource(
     WatchAsset, "/watchlist/<string:ticker_symbol>", endpoint="watchlist_update"
 )
 
+
 api.add_resource(Iforgot, "/iforgot", endpoint="iforgot")
 
 api.add_resource(Pw_reset, "/pw_reset", endpoint="pw_reset")
+
+api.add_resource(TimeSeriesResource, "/chart/<string:ticker_symbol>/<string:range>", endpoint="chart")
+api.add_resource(AdvancedTimeSeriesResource, "/chart/advanced/<string:ticker_symbol>", endpoint="advanced_chart")
+api.add_resource(DailyTimeSeriesResource, "/chart/daily/<string:ticker_symbol>", endpoint="chart_daily")
+api.add_resource(WeeklyTimeSeriesResource, "/chart/weekly/<string:ticker_symbol>", endpoint="chart_weekly")
+api.add_resource(MonthlyTimeSeriesResource, "/chart/monthly/<string:ticker_symbol>", endpoint="chart_monthly")
+api.add_resource(YearlyTimeSeriesResource, "/chart/yearly/<string:ticker_symbol>", endpoint="chart_yearly")
 
 
 @blueprint.before_app_first_request
@@ -109,6 +121,7 @@ def register_controllers():
     apispec.spec.path(view=PublicPortfolioResource, app=current_app, api=api)
     apispec.spec.path(view=PortfolioResource, app=current_app, api=api)
     apispec.spec.path(view=PortfolioList, app=current_app, api=api)
+    apispec.spec.path(view=TopAdditions, app=current_app, api=api)
 
     apispec.spec.components.schema("PortfolioEventSchema", schema=PortfolioEventSchema)
     apispec.spec.path(view=PortfolioEventList, app=current_app, api=api)
@@ -122,10 +135,13 @@ def register_controllers():
     apispec.spec.components.schema("LeaderboardSchema", schema=LeaderboardSchema)
     apispec.spec.path(view=LeaderboardList, app=current_app, api=api)
 
-    apispec.spec.path(view=Time, app=current_app, api=api)
-    apispec.spec.path(view=LoginStub, app=current_app, api=api)
-    apispec.spec.path(view=PortfolioStub, app=current_app, api=api)
-
+    apispec.spec.path(view=TimeSeriesResource, app=current_app, api=api)
+    apispec.spec.path(view=AdvancedTimeSeriesResource, app=current_app, api=api)
+    apispec.spec.path(view=DailyTimeSeriesResource, app=current_app, api=api)
+    apispec.spec.path(view=WeeklyTimeSeriesResource, app=current_app, api=api)
+    apispec.spec.path(view=MonthlyTimeSeriesResource, app=current_app, api=api)
+    apispec.spec.path(view=YearlyTimeSeriesResource, app=current_app, api=api)
+    
     apispec.spec.path(view=WatchList, app=current_app, api=api)
     apispec.spec.path(view=WatchAsset, app=current_app, api=api)
     apispec.spec.path(view=Iforgot, app=current_app, api=api)

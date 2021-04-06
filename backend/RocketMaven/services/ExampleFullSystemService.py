@@ -1,5 +1,5 @@
 from RocketMaven.models import Asset, Investor, Portfolio, PortfolioEvent
-from RocketMaven.services import AssetService
+from RocketMaven.services import AssetService, WatchlistService
 import datetime
 
 
@@ -123,6 +123,10 @@ def populate_full_system(db):
         )
         db.session.add(asset_aapl)
         db.session.commit()
+        
+        
+        
+        
 
         portfolio_event = PortfolioEvent(
             units=10,
@@ -274,4 +278,69 @@ def populate_full_system(db):
         )
 
     AssetService.load_asset_data(db)
-    
+
+    WatchlistService.add_watchlist(user.id, "NASDAQ:AAPL")
+    WatchlistService.add_watchlist(user.id, "ASX:CBA")
+    WatchlistService.add_watchlist(user.id, "ASX:ART")
+
+    # Competition portfolio test data
+    competition_user_1 = Investor(
+        username="janesmith",
+        first_name="Jane",
+        email="janesmith@example.org",
+        admin_account=False,
+        password="WjjTeWGdylJkH2Pq",
+        email_verified=True,
+        country_of_residency="AU",
+    )
+    db.session.add(competition_user_1)
+    db.session.commit()
+    competition_portfolio_1 = Portfolio(
+        tax_residency="AU",
+        name="Safe stocks",
+        description="",
+        competition_portfolio=True,
+        public_portfolio=True,
+        buying_power=10000,
+        investor_id=competition_user_1.id,
+    )
+    db.session.add(competition_portfolio_1)
+    db.session.commit()
+
+    competition_user_2 = Investor(
+        username="johnsmith",
+        email="johnsmith@example.org",
+        admin_account=False,
+        password="WjjTeWGdylJkH2Pq",
+        email_verified=True,
+        country_of_residency="AU",
+    )
+    db.session.add(competition_user_2)
+    db.session.commit()
+    competition_portfolio_2 = Portfolio(
+        tax_residency="AU",
+        name="HODL!!",
+        description="",
+        competition_portfolio=True,
+        public_portfolio=True,
+        buying_power=10000,
+        investor_id=competition_user_2.id,
+    )
+    db.session.add(competition_portfolio_2)
+    db.session.commit()
+
+    portfolio_event = PortfolioEvent(
+        units=50000,
+        add_action=True,
+        fees=0,
+        price_per_share=0.0788,
+        note="",
+        asset_id="CRYPTO:DOGE",
+        portfolio_id=competition_portfolio_2.id,
+        event_date=datetime.date(2021, 2, 8),
+    )
+    db.session.add(portfolio_event)
+    db.session.commit()
+    portfolio_event.update_portfolio_asset_holding()
+    db.session.commit()
+

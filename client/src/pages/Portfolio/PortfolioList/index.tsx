@@ -1,11 +1,12 @@
 import { Fragment, useState } from 'react'
-import { Subtitle } from '../../../componentsStyled/Typography'
-import { useFetchGetWithUserId } from '../../../hooks/http'
-import { PortfolioPagination } from '../types'
-import PaginatedPortfolioDisplay from './PaginatedPortfolioDisplay'
+import { Subtitle } from '@rocketmaven/componentsStyled/Typography'
+import { useFetchGetWithUserId } from '@rocketmaven/hooks/http'
+import { PortfolioPagination } from '@rocketmaven/pages/Portfolio/types'
+import PaginatedPortfolioDisplay from '@rocketmaven/pages/Portfolio/PortfolioList/PaginatedPortfolioDisplay'
 import { Link } from 'react-router-dom'
-import { urls } from '../../../data/urls'
+import { urls } from '@rocketmaven/data/urls'
 import { Button, Divider } from 'antd'
+import { FaPlus } from 'react-icons/fa'
 
 type PortfolioListFetchResults = {
   data: PortfolioPagination
@@ -28,12 +29,10 @@ const PortfolioList = () => {
       <Subtitle>
         Portfolio List
         <Button type="primary" style={{ marginLeft: '20px' }}>
-          <Link to={urls.portfolio + '/create'}>New Portfolio</Link>
+          <Link to={urls.portfolio + '/create'}><FaPlus /> New Portfolio</Link>
         </Button>
       </Subtitle>
       {/* TODO(Jude): Crudify routes */}
-
-      <Divider>Portfolios</Divider>
 
       <PaginatedPortfolioDisplay portfolioPagination={data} refreshPortfolios={refreshPortfolios} />
     </Fragment>

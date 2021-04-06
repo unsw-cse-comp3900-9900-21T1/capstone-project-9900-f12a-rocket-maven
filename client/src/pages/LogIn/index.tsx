@@ -1,15 +1,14 @@
-import Page from '../_Page'
+import Page from '@rocketmaven/pages/_Page'
 import { Fragment } from 'react'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Link } from 'react-router-dom'
-import 'antd/dist/antd.css'
 
-import { Card } from '../../componentsStyled/Card'
+import { Card } from '@rocketmaven/componentsStyled/Card'
 import { Form, Input, Button } from 'antd'
 import { UserOutlined, LockOutlined } from '@ant-design/icons'
-import { urls } from '../../data/urls'
-import { useAuth } from '../../hooks/http'
+import { urls } from '@rocketmaven/data/urls'
+import { useAuth } from '@rocketmaven/hooks/http'
 
 const LogIn = () => {
   const setValuesAndFetch = useAuth('LOGIN')

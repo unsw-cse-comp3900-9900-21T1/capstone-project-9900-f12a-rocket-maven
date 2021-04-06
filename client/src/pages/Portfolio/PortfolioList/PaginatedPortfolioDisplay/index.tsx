@@ -1,19 +1,41 @@
 import { Fragment, useState, useEffect, useCallback, useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { isEmpty } from 'ramda'
-import { storeContext } from '../../../../data/app/store'
+import { storeContext } from '@rocketmaven/data/app/store'
 
-import { Text } from '../../../../componentsStyled/Typography'
-import { useFetchMutationWithUserId } from '../../../../hooks/http'
-import { Card } from '../../../../componentsStyled/Card'
-import { Row, Col } from '../../../../componentsStyled/Grid'
-import { PortfolioInfo, PortfolioPagination, PortfolioHolding } from '../../types'
+import { Text, Subtitle } from '@rocketmaven/componentsStyled/Typography'
+import { useFetchMutationWithUserId } from '@rocketmaven/hooks/http'
+import { Card } from '@rocketmaven/componentsStyled/Card'
+import { Row, Col } from '@rocketmaven/componentsStyled/Grid'
+import {
+  PortfolioInfo,
+  PortfolioPagination,
+  PortfolioHolding
+} from '@rocketmaven/pages/Portfolio/types'
 import { useHistory } from 'react-router-dom'
-// import { PortfolioWrap } from './styled'
-import { urls } from '../../../../data/urls'
-import { Tooltip, Button, Divider, Table, message } from 'antd'
-import { EditOutlined, EllipsisOutlined, SettingOutlined, EyeOutlined } from '@ant-design/icons'
-import { useAccessToken } from '../../../../hooks/http'
+// import { PortfolioWrap } from '@rocketmaven/pages/Portfolio/PortfolioList/PaginatedPortfolioDisplay/styled'
+import { urls } from '@rocketmaven/data/urls'
+import {
+  Tooltip,
+  Button,
+  Divider,
+  Table,
+  message,
+  Typography,
+  PageHeader,
+  Tag,
+  Descriptions,
+  Statistic
+} from 'antd'
+import {
+  EditOutlined,
+  EllipsisOutlined,
+  PlusOutlined,
+  SettingOutlined,
+  EyeOutlined
+} from '@ant-design/icons'
+import { useAccessToken } from '@rocketmaven/hooks/http'
+const AntText = Typography.Text
 
 type Props = {
   portfolioPagination: PortfolioPagination
@@ -54,11 +76,15 @@ const PaginatedPortfolioDisplay = ({ portfolioPagination, refreshPortfolios }: P
     return null
   }
 
+  const getColorOfValue = (value: number) => {
+    return value < 0 ? 'red' : 'green'
+  }
+
   const numberChangeRenderer = (testVal: string, record: any) => {
     const text = parseFloat(testVal).toFixed(2)
     return {
       props: {
-        style: { color: parseFloat(testVal) < 0 ? 'red' : 'green' }
+        style: { color: getColorOfValue(parseFloat(testVal)) }
       },
       children: <span>{text}</span>
     }
@@ -71,12 +97,46 @@ const PaginatedPortfolioDisplay = ({ portfolioPagination, refreshPortfolios }: P
   return (
     <Fragment>
       {portfolios.map((portfolio, index) => {
-        const columns = [
+        let columns: any = [
           {
             title: 'Ticker Symbol',
+            key: 'asset_id',
             dataIndex: 'asset_id',
             render: (value: string) => (
-              <Link to={`/portfolio/${portfolio.id}/holdings/${value}`}>{value}</Link>
+              <span>
+                <Tooltip
+                  placement="left"
+                  title={`View ${value} details and graph`}
+                  arrowPointAtCenter
+                >
+                  <Link
+                    to={`/asset/${value}`}
+                    style={{
+                      marginRight: '8px',
+                      marginBottom: '12px'
+                    }}
+                  >
+                    {value}
+                  </Link>
+                </Tooltip>
+
+                <Tooltip
+                  placement="left"
+                  title={`Filter holding history by ${value}`}
+                  arrowPointAtCenter
+                >
+                  <Button
+                    type="primary"
+                    style={{
+                      marginRight: '8px',
+                      marginBottom: '12px',
+                      float: 'right'
+                    }}
+                  >
+                    <Link to={`/portfolio/${portfolio.id}/holdings/${value}`}>History</Link>
+                  </Button>
+                </Tooltip>
+              </span>
             )
           },
           {
@@ -113,8 +173,11 @@ const PaginatedPortfolioDisplay = ({ portfolioPagination, refreshPortfolios }: P
           {
             title: 'Latest Note',
             dataIndex: 'latest_note'
-          } /* https://ant.design/components/table/ */,
-          {
+          } /* https://ant.design/components/table/ */
+        ]
+
+        if (!portfolio.competition_portfolio) {
+          columns.push({
             title: 'Action',
             dataIndex: 'asset_id',
             key: 'x',
@@ -127,32 +190,18 @@ const PaginatedPortfolioDisplay = ({ portfolioPagination, refreshPortfolios }: P
                 Delete
               </a>
             )
-          }
-        ]
+          })
+        }
 
-        const valueColumns = [
-          { title: 'Purchase Cost', dataIndex: 'Purchase Cost' },
-          { title: 'Current Market', dataIndex: 'Current Market' },
-          {
-            title: 'Unrealised (Market - Purchase)',
-            dataIndex: 'Unrealised',
-            render: numberChangeRenderer
-          },
-          {
-            title: 'Realised (Sold Value)',
-            dataIndex: 'Realised (Sold Value)',
-            render: numberChangeRenderer
-          }
-        ]
-
-        const value = [
-          {
-            'Current Market': portfolio.current_value_sum.toFixed(2),
-            'Purchase Cost': portfolio.purchase_value_sum.toFixed(2),
-            Unrealised: (portfolio.current_value_sum - portfolio.purchase_value_sum).toFixed(2),
-            'Realised (Sold Value)': portfolio.realised_sum.toFixed(2)
-          }
-        ]
+        const value = {
+          'Current Market': [false, portfolio.current_value_sum],
+          'Purchase Cost': [false, portfolio.purchase_value_sum],
+          'Unrealised (Market - Purchase)': [
+            true,
+            portfolio.current_value_sum - portfolio.purchase_value_sum
+          ],
+          'Realised (Sold Value)': [true, portfolio.realised_sum]
+        }
 
         let isPortfolioEmpty = true
 
@@ -164,7 +213,7 @@ const PaginatedPortfolioDisplay = ({ portfolioPagination, refreshPortfolios }: P
         }
 
         const onDeletePortfolio = async () => {
-          const url = `/api/v1/investors/${userId}/portfolios/${portfolio.id}`
+          const url = `/api/v1/portfolios/${portfolio.id}`
 
           const response = await fetch(url, {
             method: 'DELETE',
@@ -186,18 +235,41 @@ const PaginatedPortfolioDisplay = ({ portfolioPagination, refreshPortfolios }: P
         }
 
         const cardTitle = (
-          <div>
-            {portfolio.name}
-            {isPortfolioEmpty && <Button onClick={onDeletePortfolio}>Delete</Button>}
+          <div title={portfolio.creation_date}>
+            <PageHeader
+              style={{ padding: '0px' }}
+              title={portfolio.name}
+              subTitle={portfolio.description}
+              tags={[
+                portfolio.competition_portfolio ? (
+                  <Tag color="red">Competition</Tag>
+                ) : (
+                  <Tag color="blue">Regular</Tag>
+                ),
+                portfolio.public_portfolio ? (
+                  <Tag color="red">Public</Tag>
+                ) : (
+                  <Tag color="blue">Private</Tag>
+                )
+              ]}
+              extra={[
+                isPortfolioEmpty ? (
+                  <Button onClick={onDeletePortfolio} style={{ float: 'right' }}>
+                    Delete
+                  </Button>
+                ) : null
+              ]}
+            />
           </div>
         )
         return (
           <Card
+            bodyStyle={{ paddingTop: '0px' }}
             title={cardTitle}
             actions={[
               <Tooltip placement="topLeft" title="Add New Event" arrowPointAtCenter>
                 <Link to={urls.portfolio + `/${portfolio.id}/addremove`}>
-                  <EditOutlined key="edit" />
+                  <PlusOutlined key="edit" />
                 </Link>
               </Tooltip>,
 
@@ -214,38 +286,29 @@ const PaginatedPortfolioDisplay = ({ portfolioPagination, refreshPortfolios }: P
               </Tooltip>
             ]}
           >
-            <Row>
-              <Col>Type:</Col>
-              <Col>
-                {portfolio.competition_portfolio ? 'Competition Portfolio' : 'Regular Portfolio'}
-              </Col>
-            </Row>
-            {portfolio.competition_portfolio ? (
-              <Row>
-                <Col>Buying Power:</Col>
-                <Col>{portfolio.buying_power}</Col>
-              </Row>
-            ) : null}
-            <Row>
-              <Col>Description:</Col>
-              <Col>{portfolio.description}</Col>
-            </Row>
-            <Row>
-              <Col>Created at:</Col>
-              <Col>{portfolio.creation_date}</Col>
-            </Row>
-            <Row>
-              <Col>Tax Residency:</Col>
-              <Col>{portfolio.tax_residency}</Col>
-            </Row>
-            <Row>
-              <Col>Visibility:</Col>
-              <Col>{portfolio.visibility ? 'Public' : 'Private'}</Col>
-            </Row>
+            <Descriptions column={2} size="small" bordered style={{ marginBottom: '1rem' }}>
+              {portfolio.competition_portfolio ? (
+                <Descriptions.Item label="Buying Power">{portfolio.buying_power}</Descriptions.Item>
+              ) : null}
+              <Descriptions.Item label="Tax Residency">{portfolio.tax_residency}</Descriptions.Item>
+            </Descriptions>
 
-            <Divider>Value Summary</Divider>
-
-            <Table columns={valueColumns} dataSource={value} pagination={false} rowKey="id" />
+            <Row>
+              {Object.entries(value).map(function (e) {
+                return (
+                  <Statistic
+                    title={e[0]}
+                    value={(e[1] as [boolean, number])[1]}
+                    precision={2}
+                    valueStyle={{
+                      color: (e[1] as [boolean, number])[0]
+                        ? getColorOfValue((e[1] as [boolean, number])[1])
+                        : 'initial'
+                    }}
+                  />
+                )
+              })}
+            </Row>
 
             <Divider>Holdings</Divider>
 

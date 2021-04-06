@@ -1,6 +1,6 @@
 from flask import request
 import sqlite3
-from RocketMaven.api.schemas import InvestorSchema
+from RocketMaven.api.schemas import InvestorSchema, InvestorCreateSchema
 from RocketMaven.models import Investor
 from RocketMaven.extensions import db
 from RocketMaven.commons.pagination import paginate
@@ -64,12 +64,14 @@ def create_investor():
     if get_jwt_identity():
         return {"msg": "investor not created, please log out first"}, 422
     try:
-        schema = InvestorSchema()
+        schema = InvestorCreateSchema()
         handle_empty_date_of_birth()
         investor = schema.load(request.json)
     except ValidationError as e:
         print(e)
         return {"msg": "Operation failed!", "errors": e.messages}, 422
+    except Exception as e:
+        print(e)
 
     try:
         db.session.add(investor)

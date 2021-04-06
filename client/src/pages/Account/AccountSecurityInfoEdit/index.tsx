@@ -1,6 +1,6 @@
-import { useFetchGetWithUserId } from '../../../hooks/http'
-import { Investor } from '../types'
-import AccountSecurityInfoForm from './AccountSecurityInfoForm'
+import { useFetchGetWithUserId } from '@rocketmaven/hooks/http'
+import { Investor } from '@rocketmaven/pages/Account/types'
+import AccountSecurityInfoForm from '@rocketmaven/pages/Account/AccountSecurityInfoEdit/AccountSecurityInfoForm'
 
 type AccountInfoFetch = {
   data: Investor,

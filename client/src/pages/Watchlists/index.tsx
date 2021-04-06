@@ -1,41 +1,219 @@
-import { Table } from 'antd'
+import Page from '@rocketmaven/pages/_Page'
+import { Link } from 'react-router-dom'
+import { urls } from '@rocketmaven/data/urls'
+import { Table, Form, Button } from 'antd'
 import React, { useEffect, useState } from 'react'
-import { useFetchGetWithUserId, useFetchMutationWithUserId } from '../../hooks/http' // use later. at the moment backend is not ready
-import Axios from 'axios'
+import { Subtitle, Title } from '@rocketmaven/componentsStyled/Typography'
+import {
+  useFetchGetWithUserId,
+  useFetchMutationWithUserId,
+  useGetWatchlist
+} from '@rocketmaven/hooks/http' // use later. at the moment backend is not ready
+import { isEmpty } from 'ramda'
+import { useHistory } from 'react-router-dom'
+import { useAccessToken } from '@rocketmaven/hooks/http'
+import { Card } from '@rocketmaven/componentsStyled/Card'
+import AssetSearchBox from '@rocketmaven/components/AssetSearchBox'
 
-const url = 'http://localhost:5000/api/v1/investors/3/watch_lists'
-
-type WatchList = { id: number; name: string; assets: Asset[] }
-type Asset = {
-  id: number
+type WatchListItem = {
+  industry: string
+  price_last_updated: Date
+  asset_additional: string
+  current_price: number
+  currency: string
+  market_cap: number
   ticker_symbol: string
   name: string
-  current_price: number
-  market_cap: number
+  country: string
+  data_source: string
+}
+
+type WatchListPagination = {
+  next: string
+  pages: number
+  prev: string
+  total: number
+  results: [WatchListItem]
 }
 
 const Watchlists = () => {
-  const [watchlists, setWatchlists] = useState<WatchList[]>([])
-  const [currentWatchlist, setCurrentWatchlist] = useState<WatchList | undefined>(undefined)
-  console.log({ watchlists, currentWatchlist })
+  // Avoid call when isCreate is true
+  const watchlist: WatchListPagination = useGetWatchlist()
 
-  const fetchWatchlists = async () => {
-    try {
-      const { data } = await Axios.get(url)
-      setWatchlists(data)
-    } catch (error) {
-      console.log(error)
+  const routerObject = useHistory()
+  const { accessToken, revalidateAccessToken } = useAccessToken()
+
+  async function useDeleteWatchlist(e: any) {
+    const asset_id = e.target.getAttribute('title')
+
+    const response = await fetch(`/api/v1/watchlist/${asset_id}`, {
+      method: 'DELETE',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: JSON.stringify({ asset_id: asset_id })
+    })
+    const data = await response.json()
+    if (!response.ok) {
+      throw Error(`${data.msg}`)
     }
+    routerObject.go(0)
   }
-  useEffect(() => {
-    fetchWatchlists()
-  }, [])
 
-  useEffect(() => {
-    setCurrentWatchlist(watchlists[0])
-  }, [watchlists])
+  var watchlistable = null
+  if (!watchlist || isEmpty(watchlist)) {
+    // do nothing
+  } else {
+    const watchlistitems: [WatchListItem] = watchlist.results
 
-  return <Table dataSource={currentWatchlist?.assets || []} columns={columns} />
+    const columns = [
+      {
+        title: 'Ticker',
+        dataIndex: 'ticker_symbol',
+        render: (value: string) => (
+          <Link
+            to={`/asset/${value}`}
+            style={{
+              marginRight: '8px',
+              marginBottom: '12px'
+            }}
+          >
+            {value}
+          </Link>
+        )
+      },
+      {
+        title: 'Name',
+        dataIndex: 'asset_additional',
+        render: (value: string) => {
+          console.log(JSON.parse(value))
+          const asset_additional = JSON.parse(value)
+          const focus = asset_additional.longName
+          if (focus) {
+            return <div>{focus}</div>
+          }
+          return null
+        }
+      },
+      {
+        title: 'Price',
+        dataIndex: 'current_price'
+      },
+      {
+        title: 'Change',
+        dataIndex: 'asset_additional',
+        render: (value: string) => {
+          const asset_additional = JSON.parse(value)
+          const focus = asset_additional.regularMarketChange
+          if (focus) {
+            return <div>{focus.fmt}</div>
+          }
+          return null
+        }
+      },
+      {
+        title: 'Market Cap',
+        dataIndex: 'asset_additional',
+        render: (value: string) => {
+          const asset_additional = JSON.parse(value)
+          const focus = asset_additional.marketCap
+          if (focus) {
+            return <div>{focus.fmt}</div>
+          }
+          return null
+        }
+      },
+      {
+        title: '52-Week High',
+        dataIndex: 'asset_additional',
+        render: (value: string) => {
+          const asset_additional = JSON.parse(value)
+          const focus = asset_additional.fiftyTwoWeekHigh
+          if (focus) {
+            return <div>{focus.fmt}</div>
+          }
+          return null
+        }
+      },
+      {
+        title: '52-Week Low',
+        dataIndex: 'asset_additional',
+        render: (value: string) => {
+          const asset_additional = JSON.parse(value)
+          const focus = asset_additional.fiftyTwoWeekLow
+          if (focus) {
+            return <div>{focus.fmt}</div>
+          }
+          return null
+        }
+      },
+      {
+        title: 'Delete',
+        dataIndex: 'ticker_symbol',
+        key: 'x',
+        render: (value: string) => (
+          <a title={value} onClick={useDeleteWatchlist}>
+            Delete
+          </a>
+        )
+      }
+    ]
+    watchlistable = <Table columns={columns} dataSource={watchlistitems} rowKey="id" />
+  }
+  const onFinish = async (values: any) => {
+    const response = await fetch(`/api/v1/watchlist/${values.asset_id.value}`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`
+      }
+    })
+    const data = await response.json()
+    if (!response.ok) {
+      throw Error(`${data.msg}`)
+    }
+    routerObject.go(0)
+  }
+
+  return !isEmpty(watchlistable) ? (
+    <Page>
+      <Title>Watchlist</Title>
+
+      <Card title="Add to watchlist">
+        <Form onFinish={onFinish}>
+          <Form.Item
+            name="asset_id"
+            label="Ticker (EXCHANGE:SYMBOL)"
+            rules={[
+              {
+                required: true,
+                message: 'Please input a ticker!'
+              }
+            ]}
+          >
+            <AssetSearchBox showSearch style={{ width: '100%' }} />
+          </Form.Item>
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              style={{
+                marginRight: '8px',
+                marginBottom: '12px'
+              }}
+            >
+              Add
+            </Button>
+          </Form.Item>
+        </Form>
+      </Card>
+
+      {watchlistable}
+    </Page>
+  ) : null
 }
 type Column = { title: string; dataIndex: string; key: string }
 const columns: Column[] = [

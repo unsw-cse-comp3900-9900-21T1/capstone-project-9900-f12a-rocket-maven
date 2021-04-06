@@ -28,7 +28,7 @@ export type PortfolioEventPagination = {
 }
 
 export type PortfolioInfoEdit = {
-  visibility:            boolean;
+  public_portfolio:      boolean;
   description:           string;
   creation_date:         string;
   name:                  string;
@@ -50,9 +50,33 @@ export type PortfolioHolding = {
     realised_total:   number;
     unrealised_units: number;
 }
+
+export type LeaderboardInvestor = {
+  first_name: string;
+  last_name:  string;
+  username:   string;
+  id:         number;
+}
     
 export type PortfolioInfo = {
-  visibility:            boolean;
+  public_portfolio:      boolean;
+  buying_power:          number;
+  realised_sum:          number;
+  description:           string;
+  creation_date:         string;
+  id:                    number;
+  purchase_value_sum:    number;
+  competition_portfolio: boolean;
+  current_value_sum:     number;
+  name:                  string;
+  tax_residency:         string;
+  username:              string;
+  portfolio_asset_holding: [PortfolioHolding];
+  investor: [LeaderboardInvestor];
+}
+
+export type PublicPortfolioInfo = {
+  public_portfolio:      boolean;
   buying_power:          number;
   realised_sum:          number;
   description:           string;
@@ -64,7 +88,7 @@ export type PortfolioInfo = {
   name:                  string;
   tax_residency:         string;
   portfolio_asset_holding: [PortfolioHolding];
-  
+  investor: LeaderboardInvestor;
 }
 
 export type PortfolioPagination = {

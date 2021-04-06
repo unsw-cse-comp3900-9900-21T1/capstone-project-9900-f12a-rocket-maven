@@ -1,5 +1,5 @@
 import { useField } from 'formik'
-import { Error } from '../componentsStyled/Typography'
+import { Error } from '@rocketmaven/componentsStyled/Typography'
 
 // Copy and pasted code from official formik tutorials
 // TODO(Jude): Make code more specific for our use case

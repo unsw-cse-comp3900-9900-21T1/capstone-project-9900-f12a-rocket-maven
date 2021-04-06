@@ -1,16 +1,18 @@
 import { useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { FaHome, FaSignOutAlt } from 'react-icons/fa'
-import { storeContext } from '../../data/app/store'
-import { Text, Subtitle } from '../../componentsStyled/Typography'
-import { useStore } from '../../hooks/store'
-import { urls } from '../../data/urls'
+import { storeContext } from '@rocketmaven/data/app/store'
+import { Text, Subtitle } from '@rocketmaven/componentsStyled/Typography'
+import { useStore } from '@rocketmaven/hooks/store'
+import { urls } from '@rocketmaven/data/urls'
+import { HeaderWrap } from '@rocketmaven/pages/_Page/styled'
 
-import { Layout, Menu, Breadcrumb } from 'antd'
+import { Layout, Menu, Breadcrumb, message } from 'antd'
+type Props = {
+  children: React.ReactNode
+}
 
-const { Header, Content, Footer } = Layout
-
-const NavBar = () => {
+const NavBar = ({ children }: Props) => {
   const { state } = useContext(storeContext)
   const { isLoggedIn } = state
 
@@ -20,30 +22,28 @@ const NavBar = () => {
   let logoutButton = null
   if (isLoggedIn) {
     logoutButton = (
-      <Menu.Item icon={FaSignOutAlt}>
+      <Menu.Item icon={<FaSignOutAlt />}>
         <Link
           onClick={() => {
             dispatch({ type: 'LOGOUT' })
+            message.info('You have logged out!')
           }}
           to={urls.root}
         >
-          Sign Out
+          Log Out
         </Link>
       </Menu.Item>
     )
   }
 
   return (
-    <div>
-      <div className="logo" />
-      <Menu mode="horizontal" style={{ float: 'right' }} defaultSelectedKeys={['2']}>
-        {/*<Menu.Item key="1">nav 1</Menu.Item>
-        <Menu.Item key="2">nav 2</Menu.Item>
-        */}
+    <HeaderWrap>
+      {children}
+      <Menu mode="horizontal" defaultSelectedKeys={['2']} style={{ float: 'right' }}>
         <Menu.Item key="1"></Menu.Item>
         {logoutButton}
       </Menu>
-    </div>
+    </HeaderWrap>
   )
 }
 

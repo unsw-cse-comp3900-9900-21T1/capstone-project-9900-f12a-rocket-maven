@@ -1,13 +1,10 @@
-import { Link } from 'react-router-dom';
-import { PortfolioInfo } from '../../types'
-import { Tooltip, Button, Divider, Table } from 'antd';
-import { EditOutlined, SettingOutlined, EyeOutlined } from '@ant-design/icons';
-import { Row, Col } from '../../../../componentsStyled/Grid'
-import { urls } from '../../../../data/urls'
-import { Card } from '../../../../componentsStyled/Card'
+import { PublicPortfolioInfo } from '@rocketmaven/pages/Portfolio/types'
+import { Divider, Table } from 'antd';
+import { Row, Col } from '@rocketmaven/componentsStyled/Grid'
+import { Card } from '@rocketmaven/componentsStyled/Card'
 
 type Props = {
-  portfolio: PortfolioInfo
+  portfolio: PublicPortfolioInfo
 }
 
 export const PortfolioCard = ({portfolio}: Props) => {
@@ -29,13 +26,7 @@ export const PortfolioCard = ({portfolio}: Props) => {
     { title: "Available Units", dataIndex: "available_units", render: (value: number) => (value.toFixed(2)), },
     { title: "Avg. Purchase Price", dataIndex: "average_price", render: (value: number) => (value.toFixed(2)), },
     { title: "Current Market Price", dataIndex: "market_price", render: (value: number) => (value.toFixed(2)), },
-    /* { title: "Portfolio Id", dataIndex: "portfolio_id"}, */
     { title: "Current Value", dataIndex: "current_value", render: (value: number) => (value.toFixed(2)), },
-    /* Single portfolio view? */
-    /* { title: "Purchase Value", dataIndex: "purchase_value", render:  (value: number) => (value.toFixed(2)),}, */
-    /* { title: "Last Updated", dataIndex: "last_updated"}, */
-    /* Single portfolio view? */
-    /* { title: "Realised Total", dataIndex: "realised_total", render:  (value: number) => (value.toFixed(2)),}, */
     { title: "Unrealised Profit/Loss", dataIndex: "unrealised_units", render: numberChangeRenderer, },
     { title: "Latest Note", dataIndex: "latest_note" },/* https://ant.design/components/table/ */
     ]
@@ -46,7 +37,6 @@ export const PortfolioCard = ({portfolio}: Props) => {
     { title: "Unrealised (Market - Purchase)", dataIndex: "Unrealised", render: numberChangeRenderer, },
     { title: "Realised (Sold Value)", dataIndex: "Realised (Sold Value)", render: numberChangeRenderer, },
   ]
-
   const value = [{
     "Current Market": portfolio.current_value_sum.toFixed(2),
     "Purchase Cost": portfolio.purchase_value_sum.toFixed(2),
@@ -57,6 +47,14 @@ export const PortfolioCard = ({portfolio}: Props) => {
     <Card
       title={portfolio.name}
     >
+      <Row>
+        <Col>
+          Owner:
+        </Col>
+        <Col>
+          {portfolio.investor.username}
+        </Col>
+      </Row>
       <Row>
         <Col>
           Type:
@@ -80,18 +78,10 @@ export const PortfolioCard = ({portfolio}: Props) => {
       }
       <Row>
         <Col>
-          Description:
+          Created:
         </Col>
         <Col>
-          {portfolio.description}
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          Created at:
-        </Col>
-        <Col>
-          {portfolio.creation_date}
+          {portfolio.creation_date.substring(0, 10)}
         </Col>
       </Row>
       <Row>
@@ -102,23 +92,17 @@ export const PortfolioCard = ({portfolio}: Props) => {
           {portfolio.tax_residency}
         </Col>
       </Row>
-      <Row>
-        <Col>
-          Belongs to:
-        </Col>
-        <Col>
-          Replace with username and put somewhere better
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          Visibility(to remove)
-        </Col>
-        <Col>
-          {portfolio.visibility ? 'Public' : 'Private'}
-        </Col>
-      </Row>
-
+      {
+        portfolio.description &&
+        <Row>
+          <Col>
+            Description:
+          </Col>
+          <Col>
+            {portfolio.description}
+          </Col>
+        </Row>
+      }
       <Divider>Value Summary</Divider>
 
       <Table columns={valueColumns} dataSource={value} pagination={false} rowKey="id" />

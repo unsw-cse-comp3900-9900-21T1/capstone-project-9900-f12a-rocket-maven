@@ -16,7 +16,10 @@
     "antd": "^4.13.1",
     "axios": "^0.21.1",
     "chart.js": "^2.9.4",
+    "craco": "0.0.3",
     "formik": "^2.2.6",
+    "highcharts": "^9.0.1",
+    "highcharts-react-official": "^3.0.0",
     "jwt-decode": "^3.1.2",
     "ramda": "^0.27.1",
     "react": "^17.0.1",
@@ -32,9 +35,9 @@
     "yup": "^0.32.9"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
     "eject": "react-scripts eject",
     "start-backend": "cd ../backend && tox -e dev"
   },
@@ -58,6 +61,8 @@
   },
   "proxy": "http://localhost:5100",
   "devDependencies": {
-    "@types/styled-components": "^5.1.7"
+    "@types/styled-components": "^5.1.7",
+    "craco-alias": "^2.2.0",
+    "craco-less": "^1.17.1"
   }
 }

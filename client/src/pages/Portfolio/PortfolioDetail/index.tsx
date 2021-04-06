@@ -1,10 +1,10 @@
 import { Fragment } from 'react'
 import { isEmpty } from 'ramda'
-import { Subtitle } from '../../../componentsStyled/Typography'
+import { Subtitle } from '@rocketmaven/componentsStyled/Typography'
 import { useParams } from 'react-router-dom'
-import { useFetchGetPublicPortfolio } from '../../../hooks/http'
-import { PortfolioInfo } from '../types'
-import PortfolioCard from './PortfolioCard'
+import { useFetchGetPublicPortfolio } from '@rocketmaven/hooks/http'
+import { PublicPortfolioInfo } from '@rocketmaven/pages/Portfolio/types'
+import PortfolioCard from '@rocketmaven/pages/Portfolio/PortfolioDetail/PortfolioCard'
 
 type Params = {
   id: string
@@ -12,7 +12,7 @@ type Params = {
 
 type PortfolioFetchInfo  = {
   data: {
-    portfolio: PortfolioInfo
+    portfolio: PublicPortfolioInfo
   }
   isLoading: boolean,
 }
@@ -21,7 +21,6 @@ const PortfolioDetail = () => {
   const { id } = useParams<Params>()
 
   const { data, isLoading }: PortfolioFetchInfo = useFetchGetPublicPortfolio(`${id}`)
-
   const content = 
     isEmpty(data)
       ? 'Portfolio is private or doesn\'t exist'
@@ -30,7 +29,7 @@ const PortfolioDetail = () => {
   return (
     isLoading
     ? 
-      null // Spinner here??
+      null
     :
       <Fragment>
         <Subtitle>

@@ -1,10 +1,11 @@
 from flask import request
-from RocketMaven.api.schemas import PortfolioSchema
-from RocketMaven.models import Portfolio, Asset, PortfolioEvent
+from RocketMaven.api.schemas import PortfolioSchema, PublicPortfolioSchema, AssetSchema
+from RocketMaven.models import Portfolio, Asset, PortfolioEvent, PortfolioAssetHolding
 from RocketMaven.extensions import db
 from RocketMaven.services.PortfolioEventService import update_asset
 from RocketMaven.commons.pagination import paginate
 from flask_jwt_extended import get_jwt_identity
+from RocketMaven.models import Investor
 import sys
 
 
@@ -13,11 +14,12 @@ def get_portfolio(portfolio_id):
     data = Portfolio.query.get_or_404(portfolio_id)
     return {"portfolio": schema.dump(data)}
 
-# May not need this function, could just extend the logic of get_portfolio
 def get_public_portfolio(portfolio_id):
-    schema = PortfolioSchema()
+    schema = PublicPortfolioSchema()
     data = Portfolio.query.get_or_404(portfolio_id)
-    if data.visibility or data.investor_id == get_jwt_identity():
+    if data.public_portfolio or data.investor_id == get_jwt_identity():
+        data.view_count += 1
+        db.session.commit()
         return {"portfolio": schema.dump(data)}
     else:
         return {"msg": "Portfolio is private"}, 401
@@ -83,3 +85,28 @@ def create_portfolio(investor_id):
     db.session.commit()
 
     return {"msg": "portfolio created", "portfolio": schema.dump(portfolio)}, 201
+
+def get_top_additions():
+    # View count of portfolio
+    most_viewed_portfolio_result = (
+        db.session.query(Portfolio, db.func.max(Portfolio.view_count))
+        .filter(Portfolio.public_portfolio == True)
+        .first()
+    )
+    portfolio = most_viewed_portfolio_result[0]
+
+    # Order by most "used" holding
+    most_frequent_holding_result = (
+        db.session.query(
+            PortfolioAssetHolding,
+            db.func.count(PortfolioAssetHolding.asset_id)
+        )
+        .group_by(PortfolioAssetHolding.asset_id)
+        .order_by(db.func.max(PortfolioAssetHolding.asset_id).asc())
+        .first()
+    )
+    holding = most_frequent_holding_result[0]
+    asset = Asset.query.get_or_404(holding.asset_id)
+    asset_schema = AssetSchema()
+    portfolio_schema = PublicPortfolioSchema()
+    return {"portfolio": portfolio_schema.dump(portfolio), "asset": asset_schema.dump(asset)}, 200

@@ -1,10 +1,10 @@
 import { Fragment } from 'react'
 import { isEmpty } from 'ramda'
-import { Subtitle } from '../../../componentsStyled/Typography'
+import { Subtitle } from '@rocketmaven/componentsStyled/Typography'
 import { useParams, Link } from 'react-router-dom'
-import { useGetPortfolioHistory } from '../../../hooks/http'
-import { PortfolioEvent, PortfolioEventPagination } from '../types'
-import { urls } from '../../../data/urls'
+import { useGetPortfolioHistory } from '@rocketmaven/hooks/http'
+import { PortfolioEvent, PortfolioEventPagination } from '@rocketmaven/pages/Portfolio/types'
+import { urls } from '@rocketmaven/data/urls'
 import { Table } from 'antd'
 import { convertLegacyProps } from 'antd/lib/button/button'
 
@@ -69,7 +69,9 @@ const PortfolioHistory = () => {
   // TODO(Jude)
   return !isEmpty(portfolioHistory) ? (
     <Fragment>
-      <Subtitle>Holding History</Subtitle>
+      <Subtitle>
+        Holding History for <Link to={`/asset/${hid}`}>{hid}</Link>
+      </Subtitle>
       {historyTable}
     </Fragment>
   ) : null

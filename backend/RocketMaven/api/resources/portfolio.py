@@ -1,7 +1,7 @@
 from flask import request
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required
-from RocketMaven.api.schemas import LeaderboardSchema, PortfolioSchema
+from RocketMaven.api.schemas import LeaderboardSchema, PortfolioSchema, PublicPortfolioSchema, AssetSchema
 from RocketMaven.services import CompetitionService, PortfolioService
 from RocketMaven.models import Portfolio
 from RocketMaven.extensions import db
@@ -16,7 +16,7 @@ class LeaderboardList(Resource):
         summary: Leaderboard List
         description: List portfolios in the competition!
         tags:
-          - Portfolios
+          - Public
         responses:
           200:
             content:
@@ -30,6 +30,7 @@ class LeaderboardList(Resource):
                           type: array
                           items:
                             $ref: '#/components/schemas/LeaderboardSchema'
+        security: []
         """
         return CompetitionService.get_leaderboard()
 
@@ -43,7 +44,7 @@ class PublicPortfolioResource(Resource):
         summary: Portfolio Get
         description: Get a public portfolio belonging to the specified investor
         tags:
-          - Portfolios
+          - Public
         parameters:
           - in: path
             name: portfolio_id
@@ -56,20 +57,20 @@ class PublicPortfolioResource(Resource):
                 schema:
                   type: object
                   properties:
-                    portfolio: PortfolioSchema
+                    portfolio: PublicPortfolioSchema
           404:
             description: portfolio does not exist
           401:
             description: unauthorised portfolio read
+        security: []
         """
-        # return {'msg': 'testing to see if this works'}
         return PortfolioService.get_public_portfolio(portfolio_id)
 
 class PortfolioResource(Resource):
 
     method_decorators = [jwt_required()]
 
-    def get(self, investor_id, portfolio_id):
+    def get(self, portfolio_id):
         """
         ---
         summary: Portfolio Get
@@ -77,10 +78,6 @@ class PortfolioResource(Resource):
         tags:
           - Portfolios
         parameters:
-          - in: path
-            name: investor_id
-            schema:
-              type: integer
           - in: path
             name: portfolio_id
             schema:
@@ -98,7 +95,7 @@ class PortfolioResource(Resource):
         """
         return PortfolioService.get_portfolio(portfolio_id)
 
-    def put(self, investor_id, portfolio_id):
+    def put(self, portfolio_id):
         """
         ---
         summary: Portfolio Update
@@ -106,10 +103,6 @@ class PortfolioResource(Resource):
         tags:
           - Portfolios
         parameters:
-          - in: path
-            name: investor_id
-            schema:
-              type: integer
           - in: path
             name: portfolio_id
             schema:
@@ -135,7 +128,7 @@ class PortfolioResource(Resource):
         """
         return PortfolioService.update_portfolio(portfolio_id)
 
-    def delete(self, investor_id, portfolio_id):
+    def delete(self, portfolio_id):
         """
         ---
         summary: Portfolio Delete
@@ -143,10 +136,6 @@ class PortfolioResource(Resource):
         tags:
           - Portfolios
         parameters:
-          - in: path
-            name: investor_id
-            schema:
-              type: integer
           - in: path
             name: portfolio_id
             schema:
@@ -230,3 +219,27 @@ class PortfolioList(Resource):
                     portfolio: PortfolioSchema
         """
         return PortfolioService.create_portfolio(investor_id)
+
+class TopAdditions(Resource):
+
+    # TODO(Jude): Fix schema definition
+    def get(self):
+        """Top Additions
+        ---
+        summary: Portfolios List
+        description: List portfolios belonging to the specified investor
+        tags:
+          - Public
+        responses:
+          200:
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    portfolio: PublicPortfolioSchema
+                    asset: AssetSchema
+          404:
+            description: error finding resources
+        """
+        return PortfolioService.get_top_additions()

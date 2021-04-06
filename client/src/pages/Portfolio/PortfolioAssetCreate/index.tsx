@@ -1,33 +1,37 @@
-
 import { Fragment } from 'react'
-import { isEmpty } from  'ramda'
-import { Subtitle } from '../../../componentsStyled/Typography'
+import { Subtitle } from '@rocketmaven/componentsStyled/Typography'
 import { useParams } from 'react-router-dom'
-import { useGetPortfolioHistory } from '../../../hooks/http'
-import { PortfolioEventPagination } from './types'
-import PortfolioAssetEditForm from '../PortfolioAssetEditForm'
-import PortfolioAssetCSVUpload from '../PortfolioAssetCSVUpload'
+import { useGetPortfolioInfo } from '@rocketmaven/hooks/http'
+import PortfolioAssetEditForm from '@rocketmaven/pages/Portfolio/PortfolioAssetEditForm'
+import PortfolioAssetCSVUpload from '@rocketmaven/pages/Portfolio/PortfolioAssetCSVUpload'
+import { PortfolioInfo } from '../types'
 
 type Params = {
   id: string
 }
 
+type PortfolioFetchInfo = {
+  data: {
+    portfolio: PortfolioInfo,
+  }
+  isLoading: boolean
+}
+
 const PortfolioAssetCreate = () => {
   const { id } = useParams<Params>()
+  const { data, isLoading }: PortfolioFetchInfo = useGetPortfolioInfo(id)
 
-  const portfolioHistory: { portfolio: PortfolioEventPagination } = useGetPortfolioHistory(id)
-  
   return (
-    !isEmpty(portfolioHistory) ?
-    <Fragment>
-      <Subtitle>
-        Event Create
-      </Subtitle>
-      <PortfolioAssetEditForm portfolioId={id} />
-      <PortfolioAssetCSVUpload portfolioId={id} />
-    </Fragment>
+    isLoading
+    ? null
     :
-      null
+      <Fragment>
+        <Subtitle>Event Create</Subtitle>
+        <PortfolioAssetEditForm portfolioId={id} portfolioInfo={data.portfolio} />
+        {!data.portfolio.competition_portfolio && (
+          <PortfolioAssetCSVUpload portfolioId={id} />
+        )}
+      </Fragment>
   )
 }
 

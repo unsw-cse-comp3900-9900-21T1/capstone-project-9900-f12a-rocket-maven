@@ -1,21 +1,19 @@
-import Page from '../_Page'
-import { Title } from '../../componentsStyled/Typography'
+import Page from '@rocketmaven/pages/_Page'
+import { Title } from '@rocketmaven/componentsStyled/Typography'
 import { Switch, Route } from 'react-router-dom'
-import { urls } from '../../data/urls'
-import PortfolioList from './PortfolioList'
-import PortfolioEdit from './PortfolioEdit'
-import PortfolioCreate from './PortfolioCreate'
-import PortfolioDetail from './PortfolioDetail'
-import PortfolioHistory from './PortfolioHistory'
-import PortfolioHoldings from './PortfolioHoldings'
-import PortfolioAssetCreate from './PortfolioAssetCreate'
-import HoldingHistory from './HoldingHistory'
+import { urls } from '@rocketmaven/data/urls'
+import PortfolioList from '@rocketmaven/pages/Portfolio/PortfolioList'
+import PortfolioEdit from '@rocketmaven/pages/Portfolio/PortfolioEdit'
+import PortfolioCreate from '@rocketmaven/pages/Portfolio/PortfolioCreate'
+import PortfolioDetail from '@rocketmaven/pages/Portfolio/PortfolioDetail'
+import PortfolioHistory from '@rocketmaven/pages/Portfolio/PortfolioHistory'
+import PortfolioAssetCreate from '@rocketmaven/pages/Portfolio/PortfolioAssetCreate'
+import HoldingHistory from '@rocketmaven/pages/Portfolio/HoldingHistory'
 
 const Portfolio = () => {
   return (
     <Page>
       <Title>
-        {/* Remove when content's fleshed out */}
         Portfolio
       </Title>
       <Switch>
@@ -27,7 +25,6 @@ const Portfolio = () => {
         <Route exact path={urls.portfolio + '/:id/history'} component={PortfolioHistory} />
         <Route path={urls.portfolio + '/:id/addremove'} component={PortfolioAssetCreate} />
         <Route path={urls.portfolio + '/:id/holdings/:hid'} component={HoldingHistory} />
-        <Route path={urls.portfolio + '/:id/holdings'} component={PortfolioHoldings} />
         <Route exact path={urls.portfolio + '/:id'} component={PortfolioDetail} />
       </Switch>
     </Page>

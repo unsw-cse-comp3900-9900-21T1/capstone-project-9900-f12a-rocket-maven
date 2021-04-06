@@ -1,6 +1,6 @@
 import { useContext } from 'react'
-import { storeContext } from '../data/app/store'
-import { countryCodeToName } from '../data/country-code-to-name'
+import { storeContext } from '@rocketmaven/data/app/store'
+import { countryCodeToName } from '@rocketmaven/data/country-code-to-name'
 
 // TODO(Jude): Consider separating into more specific 'use' functions
 export const useStore = () => {

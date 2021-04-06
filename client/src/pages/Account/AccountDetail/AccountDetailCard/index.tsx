@@ -1,98 +1,55 @@
-import { Fragment  } from 'react'
-import { Row, Col } from '../../../../componentsStyled/Grid'
-import { Card } from '../../../../componentsStyled/Card'
-import { Link } from 'react-router-dom';
-import { urls } from '../../../../data/urls'
-import { Investor } from '../../types'
-import { Button, Divider } from 'antd';
+import { Fragment } from 'react'
+import { Row, Col } from '@rocketmaven/componentsStyled/Grid'
+import { Card } from '@rocketmaven/componentsStyled/Card'
+import { Link } from 'react-router-dom'
+import { urls } from '@rocketmaven/data/urls'
+import { Investor } from '@rocketmaven/pages/Account/types'
+import { Button, Divider, Descriptions } from 'antd'
+import { FaCogs, FaEdit } from 'react-icons/fa'
 
-
-const AccountDetailCard = ({investor}: Investor) => {
+const AccountDetailCard = ({ investor }: Investor) => {
   return (
     <Fragment>
-      <Card style={{width:"600px", marginTop: "30px",  marginBottom: "30px"}}>
-        <Row>
-          <Col>
-            Username
-          </Col>
-          <Col>
-            {investor.username}
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            Email
-          </Col>
-          <Col>
-            {investor.email}
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            First Name
-          </Col>
-          <Col>
+      <Card style={{ width: '600px', marginTop: '30px', marginBottom: '30px' }}>
+        <Descriptions size="small" column={1} bordered>
+          <Descriptions.Item label="Username">{investor.username}</Descriptions.Item>
+
+          <Descriptions.Item label="Email">{investor.email}</Descriptions.Item>
+
+          <Descriptions.Item label="First Name">
             {investor.first_name ? investor.first_name : ''}
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            Last Name
-          </Col>
-          <Col>
+          </Descriptions.Item>
+
+          <Descriptions.Item label="Last Name">
             {investor.last_name ? investor.last_name : ''}
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            Gender
-          </Col>
-          <Col>
-            {investor.gender ? investor.gender: ''}
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            Country
-          </Col>
-          <Col>
-            {investor.country_of_residency ? investor.country_of_residency: ''}
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            Date of Birth
-          </Col>
-          <Col>
-            {investor.date_of_birth ? investor.date_of_birth: ''}
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            Join Date
-          </Col>
-          <Col>
-            {investor.join_date ? investor.join_date: ''}
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            Profile Visibility
-          </Col>
-          <Col>
+          </Descriptions.Item>
+
+          <Descriptions.Item label="Gender">
+            {investor.gender ? investor.gender : ''}
+          </Descriptions.Item>
+
+          <Descriptions.Item label="Country">
+            {investor.country_of_residency ? investor.country_of_residency : ''}
+          </Descriptions.Item>
+
+          <Descriptions.Item label="Date of Birth">
+            {investor.date_of_birth ? investor.date_of_birth : ''}
+          </Descriptions.Item>
+
+          <Descriptions.Item label="Join Date">
+            {investor.join_date ? investor.join_date : ''}
+          </Descriptions.Item>
+
+          <Descriptions.Item label="Profile Visibility">
             {investor.visibility ? 'Public' : 'Private'}
-          </Col>
-        </Row>
+          </Descriptions.Item>
+        </Descriptions>
         <Divider>Edit</Divider>
-        <Button type="primary" style={{marginRight: "8px",  marginBottom: "12px"}}>
-        <Link to={urls.account + '/personal'}>
-          Edit Personal Details 
-        </Link>
+        <Button type="primary" danger style={{ marginRight: '8px', marginBottom: '12px' }}>
+          <Link to={urls.account + '/personal'}><FaEdit /> Edit Personal Details</Link>
         </Button>
-        <Button type="primary" style={{marginRight: "8px",  marginBottom: "12px"}}>
-        <Link to={urls.account + '/security'}>
-          Edit Security 
-        </Link>
+        <Button type="primary" danger style={{ marginRight: '8px', marginBottom: '12px' }}>
+          <Link to={urls.account + '/security'}><FaCogs /> Edit Security</Link>
         </Button>
       </Card>
     </Fragment>

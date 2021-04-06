@@ -8,15 +8,6 @@ from RocketMaven.extensions import db, pwd_context
 
 
 # https://flask-sqlalchemy.palletsprojects.com/en/2.x/models/
-# investor_holds = db.Table(
-#     "investor_holds",
-#     db.Column(
-#         "portfolio_id", db.Integer, db.ForeignKey("portfolio.id"), primary_key=True
-#     ),
-#     db.Column(
-#         "investor_id", db.Integer, db.ForeignKey("investor.id"), primary_key=True
-#     ),
-# )
 
 investor_watches = db.Table(
     "investor_watches",
@@ -41,15 +32,6 @@ investor_watches = db.Table(
         primary_key=True
     ),
 )
-# class investor_watches(db.Model):
-#     """ An investor's watchlist """
-#     asset_id = db.Column(db.String(80), db.ForeignKey("asset.ticker_symbol"),
-#         primary_key=True        )
-#     investor_id = db.Column(db.Integer, db.ForeignKey("investor.id"), 
-#          primary_key=True)
-#     price_high = db.Column(db.Float())
-#     price_low = db.Column(db.Float())
-
 
 
 class Investor(db.Model):

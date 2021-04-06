@@ -1,6 +1,6 @@
 import { Fragment } from 'react'
-import { Subtitle } from '../../../componentsStyled/Typography'
-import PortfolioEditForm from '../PortfolioEditForm'
+import { Subtitle } from '@rocketmaven/componentsStyled/Typography'
+import PortfolioEditForm from '@rocketmaven/pages/Portfolio/PortfolioEditForm'
 
 const PortfolioCreate = () => {
 
