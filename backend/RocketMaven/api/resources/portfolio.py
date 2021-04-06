@@ -1,15 +1,18 @@
 from flask import request
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required
-from RocketMaven.api.schemas import LeaderboardSchema, PortfolioSchema, PublicPortfolioSchema, AssetSchema
+from RocketMaven.api.schemas import (
+    LeaderboardSchema,
+    PortfolioSchema,
+    PublicPortfolioSchema,
+    AssetSchema,
+)
 from RocketMaven.services import CompetitionService, PortfolioService
 from RocketMaven.models import Portfolio
 from RocketMaven.extensions import db
 
 
-
 class LeaderboardList(Resource):
-
     def get(self):
         """Leaderboard
         ---
@@ -36,7 +39,6 @@ class LeaderboardList(Resource):
 
 
 class PublicPortfolioResource(Resource):
-
     @jwt_required(optional=True)
     def get(self, portfolio_id):
         """
@@ -65,6 +67,7 @@ class PublicPortfolioResource(Resource):
         security: []
         """
         return PortfolioService.get_public_portfolio(portfolio_id)
+
 
 class PortfolioResource(Resource):
 
@@ -155,6 +158,7 @@ class PortfolioResource(Resource):
         """
         return PortfolioService.delete_portfolio(portfolio_id)
 
+
 class PortfolioList(Resource):
 
     # method_decorators = [jwt_required()]
@@ -219,6 +223,76 @@ class PortfolioList(Resource):
                     portfolio: PortfolioSchema
         """
         return PortfolioService.create_portfolio(investor_id)
+
+
+class PortfolioListAll(Resource):
+
+    # method_decorators = [jwt_required()]
+
+    @jwt_required()
+    def get(self, investor_id):
+        """List all portfolios
+        ---
+        summary: Portfolios List All
+        description: List all portfolios belonging to the specified investor without an additional api request and including deleted portfolios
+        tags:
+          - Portfolios
+        parameters:
+          - in: path
+            name: investor_id
+            schema:
+              type: integer
+        responses:
+          200:
+            content:
+              application/json:
+                schema:
+                  allOf:
+                    - $ref: '#/components/schemas/PaginatedResult'
+                    - type: object
+                      properties:
+                        results:
+                          type: array
+                          items:
+                            $ref: '#/components/schemas/PortfolioSchema'
+        """
+        return PortfolioService.get_all_portfolios(investor_id)
+
+
+class Report(Resource):
+    @jwt_required()
+    def post(self):
+        """Report generation
+        ---
+        summary: Generate Report
+        description: Generate a report for portfolios (belonging to the investor) that the investor has chosen
+        tags:
+          - Portfolios
+        requestBody:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  portfolios:
+                    type: array
+                    portfolio_id:
+                      type: integer
+                  report_type:
+                    type: string
+                example:
+                  portfolios: [1, 2]
+                  report_type: "Diversification"
+        responses:
+          200:
+            content:
+              application/json:
+                schema:
+                    portfolio_id:
+                      type: integer
+        """
+        return PortfolioService.get_report()
+
 
 class TopAdditions(Resource):
 
