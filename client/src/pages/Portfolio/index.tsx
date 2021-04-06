@@ -7,7 +7,6 @@ import PortfolioEdit from '@rocketmaven/pages/Portfolio/PortfolioEdit'
 import PortfolioCreate from '@rocketmaven/pages/Portfolio/PortfolioCreate'
 import PortfolioDetail from '@rocketmaven/pages/Portfolio/PortfolioDetail'
 import PortfolioHistory from '@rocketmaven/pages/Portfolio/PortfolioHistory'
-import PortfolioHoldings from '@rocketmaven/pages/Portfolio/PortfolioHoldings'
 import PortfolioAssetCreate from '@rocketmaven/pages/Portfolio/PortfolioAssetCreate'
 import HoldingHistory from '@rocketmaven/pages/Portfolio/HoldingHistory'
 
@@ -26,7 +25,6 @@ const Portfolio = () => {
         <Route exact path={urls.portfolio + '/:id/history'} component={PortfolioHistory} />
         <Route path={urls.portfolio + '/:id/addremove'} component={PortfolioAssetCreate} />
         <Route path={urls.portfolio + '/:id/holdings/:hid'} component={HoldingHistory} />
-        <Route path={urls.portfolio + '/:id/holdings'} component={PortfolioHoldings} />
         <Route exact path={urls.portfolio + '/:id'} component={PortfolioDetail} />
       </Switch>
     </Page>

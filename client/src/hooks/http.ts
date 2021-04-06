@@ -66,7 +66,6 @@ const abstractFetchLoggedInURL = async (
         Authorization: `Bearer ${accessToken}`
       }
     })
-    console.log('*********************** status is', response.status)
     const data = await response.json()
 
     if (!response.ok) {
@@ -78,7 +77,6 @@ const abstractFetchLoggedInURL = async (
       throw Error(`Request failed - ${response.statusText}`)
     }
 
-    console.log('********************* data is ', data)
     setData(data)
     setIsLoading(false)
   } catch (error) {
@@ -352,7 +350,48 @@ export const useGetPortfolioInfo = (portfolioId: string): any => {
     )
   }, [])
 
-  return data
+  return { data, isLoading }
+}
+
+export const useUpdatePortfolioInfo = (
+  methodInput: HttpMutation,
+  portfolioId?: string,
+): Function => {
+  const { accessToken, revalidateAccessToken } = useAccessToken()
+  const routerObject = useHistory()
+  const userId = useUserId()
+
+  let url = `/api/v1/investors/${userId}/portfolios`
+  if (methodInput === 'PUT') {
+    url = `/api/v1/portfolios/${portfolioId}`
+  }
+
+  // fix type into json
+  const submit = async (values: any) => {
+    try {
+      if (isExpired(accessToken)) {
+        await revalidateAccessToken()
+      }
+      const response = await fetch(url, {
+        method: methodInput,
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`
+        },
+        body: JSON.stringify(values)
+      })
+      
+      if (!response.ok) {
+          throw Error(response.statusText)
+      }
+      routerObject.push(urls.portfolio)
+    } catch (error) {
+        message.error(error.messge)
+    }
+  }
+
+  return submit
 }
 
 export const useGetPortfolioHistory = (portfolioId: string): any => {

@@ -4,7 +4,7 @@ import { Form, Input, Button, Switch, Select } from 'antd'
 import { useSortedCountryList } from '@rocketmaven/hooks/store'
 // import { MySelect, MyTextInput } from '@rocketmaven/forms'
 import { numberRequired, stringRequired, booleanRequired } from '@rocketmaven/forms/validators'
-import { useFetchMutationWithUserId } from '@rocketmaven/hooks/http'
+import { useFetchMutationWithUserId, useUpdatePortfolioInfo } from '@rocketmaven/hooks/http'
 import { PortfolioInfoEdit } from '@rocketmaven/pages/Portfolio/types'
 import { urls } from '@rocketmaven/data/urls'
 const { Option } = Select
@@ -24,32 +24,23 @@ const PortfolioEditForm = ({ portfolioInfo, portfolioId, action }: Props) => {
     description: '',
     name: '',
     tax_residency: '',
-    // TODO(Jude): Add visibility
     public_portfolio: true,
-
     // Bottom 2 not used, just here for typing validation
     creation_date: '',
     id: 0
   }
-  let urlEnd = '/portfolios'
   let countryElement: [string, string] = ['AU', 'Australia']
   if (portfolioInfo) {
     initialValues = { ...portfolioInfo.portfolio }
-    urlEnd = urlEnd + `/${portfolioId}`
     // Get the country code of the name returned
     countryElement = countryList.find(
       (element) => portfolioInfo.portfolio.tax_residency === element[1]
     ) as [string, string]
   }
-  console.log('**************** initial values are', initialValues)
-  // Will add redirect after we get some seed data. Right now it's useful to be able to populate
-  // values quickly
-  const setValuesAndFetch: Function = useFetchMutationWithUserId(
-    urlEnd,
+  const setValuesAndFetch: Function = useUpdatePortfolioInfo(
     portfolioInfo ? 'PUT' : 'POST',
-    urls.portfolio
+    portfolioId,
   )
-
   const onFinish = (values: any) => {
     setValuesAndFetch({
       ...values,
