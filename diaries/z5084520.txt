@@ -50,3 +50,17 @@ The meeting was also to reaffirm that all group members know their role in draft
 - Implemented additional portfolio management features
 - Resolved issues with the system when used from the perspective of a user
 - Held meetings and conversations with team members to resolve blocks and any potential conflicts
+
+# Week 7
+
+- Refreshed the front-end's appearance (design, layout, components, error messages)
+- Added an additional asset class to the back-end (so our system now has a broader scope than just stocks)
+- Updated the tooling for the back-end so that the system will run more consistently for all team members
+- Converted the front-end to using absolute paths
+- Created the front-end for the competition leaderboard, and enhanced its functionality to get a basic flow working
+
+# Week 8
+
+- Completed the front-end for the watchlist (continuing Syd's back-end contributions)
+- Started and completed the front-end for the asset detail page (continuing Syd's back-end contributions)
+- Started on the front-end for the report generation feature
