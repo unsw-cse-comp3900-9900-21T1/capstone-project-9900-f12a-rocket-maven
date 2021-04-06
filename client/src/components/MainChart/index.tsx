@@ -4,7 +4,7 @@ import { Form, Input } from 'antd'
 import 'highcharts/css/stocktools/gui.css'
 import 'highcharts/css/annotations/popup.css'
 
-import Highcharts from 'highcharts/highstock'
+import Highcharts, { getOptions } from 'highcharts/highstock'
 import HighchartsReact from 'highcharts-react-official'
 
 import exporting from 'highcharts/modules/exporting'
@@ -25,6 +25,13 @@ exporting(Highcharts)
 offlineExporting(Highcharts)
 exportData(Highcharts)
 accessibility(Highcharts)
+indicatorsAll(Highcharts)
+dragPanes(Highcharts)
+annotationsAdvanced(Highcharts)
+priceIndicator(Highcharts)
+fullScreen(Highcharts)
+stockTools(Highcharts)
+drilldown(Highcharts)
 
 const MainChart = (props: any) => {
   props.options.navigation = {
@@ -32,15 +39,10 @@ const MainChart = (props: any) => {
   }
 
   if ('customType' in props && props.customType == 'stock') {
-    indicatorsAll(Highcharts)
-    dragPanes(Highcharts)
-    annotationsAdvanced(Highcharts)
-    priceIndicator(Highcharts)
-    fullScreen(Highcharts)
-    stockTools(Highcharts)
+    props.options.stockTools = { gui: { enabled: true } }
   }
   if ('customType' in props && props.customType == 'pie') {
-    drilldown(Highcharts)
+    props.options.stockTools = { gui: { enabled: false } }
   }
 
   return (

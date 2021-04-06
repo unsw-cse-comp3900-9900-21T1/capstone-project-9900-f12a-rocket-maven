@@ -94,8 +94,11 @@ const ReportGenerate = () => {
       body: JSON.stringify(values)
     })
     const data = await response.json()
-    setDrilldownData(data['drilldown'])
-    setSeriesData(data['series'])
+
+    if (values.report_type == "Diversification") {
+      setDrilldownData(data['drilldown'])
+      setSeriesData(data['series'])
+    }
     if (!response.ok) {
       throw Error(`${data.msg}`)
     }
