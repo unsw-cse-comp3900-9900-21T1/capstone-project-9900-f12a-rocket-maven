@@ -1,0 +1,8 @@
+.highcharts-menu-wrapper {
+  padding: 0px !important;
+}
+
+.highcharts-bindings-wrapper .highcharts-arrow-wrapper {
+  left: 0px !important;
+  bottom: 30px;
+}

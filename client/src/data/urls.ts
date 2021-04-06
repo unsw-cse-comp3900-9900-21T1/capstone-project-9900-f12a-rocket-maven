@@ -9,6 +9,7 @@ export const urls = {
   // TODO(Jude): Crudify routes
   account: '/account',
   portfolio: '/portfolio',
+  asset: '/asset',
   watchlists: '/watchlists',
   report: '/report',
   homeStub: '/home-stub',

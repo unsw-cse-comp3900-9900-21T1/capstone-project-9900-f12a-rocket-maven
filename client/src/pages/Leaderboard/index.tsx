@@ -1,17 +1,14 @@
 import Page from '@rocketmaven/pages/_Page'
-import { Form, Input, Button, Row, Col } from 'antd'
 import { urls } from '@rocketmaven/data/urls'
-import { Investor } from '@rocketmaven/pages/Account/types'
-import { Card } from '@rocketmaven/componentsStyled/Card'
 import { Table } from 'antd'
-import { useState, useRef, useMemo } from 'react'
 import { Title } from '@rocketmaven/componentsStyled/Typography'
 import { isEmpty } from 'ramda'
-import { useFetchGetLeaderboards } from '@rocketmaven/hooks/http'
+import { useFetchAPIPublicData } from '@rocketmaven/hooks/http'
 import { PortfolioInfo, PortfolioPagination } from '@rocketmaven/pages/Portfolio/types'
-import {  message } from "antd";
-import { Link } from 'react-router-dom';
+import { message } from 'antd'
+import { Link } from 'react-router-dom'
 import { Text } from '@rocketmaven/componentsStyled/Typography'
+import { useState } from 'react'
 
 type PortfolioListFetchResults = {
   data: PortfolioPagination
@@ -19,8 +16,9 @@ type PortfolioListFetchResults = {
 }
 
 const Leaderboard = () => {
+  const [data, setData] = useState<null | { results: any }>(null)
+  useFetchAPIPublicData('/leaderboard', setData)
 
-  const { data, isLoading }: any = useFetchGetLeaderboards();
   var historyTable = null
   if (data && !isEmpty(data)) {
     const numberChangeRenderer = (testVal: string, record: any) => {
@@ -33,12 +31,12 @@ const Leaderboard = () => {
       }
     }
     const investorRenderer = (testVal: any, record: any) => {
-      console.log(testVal);
-      let username = testVal.username;
+      console.log(testVal)
+      let username = testVal.username
       if (testVal.first_name) {
         username = testVal.first_name
         if (testVal.last_name) {
-          username += " " + testVal.last_name
+          username += ' ' + testVal.last_name
         }
       }
 
@@ -48,13 +46,9 @@ const Leaderboard = () => {
     }
     const portfolioLinkRenderer = (testVal: string, record: any) => {
       if (testVal) {
-        return (
-          <Link to={urls.portfolio + "/" + testVal}>View Portfolio</Link>
-        )
+        return <Link to={urls.portfolio + '/' + testVal}>View Portfolio</Link>
       }
-      return (
-        <Text>Private Portfolio</Text>
-      );
+      return <Text>Private Portfolio</Text>
     }
     const portfolios: [PortfolioInfo] = data.results
 
@@ -87,22 +81,21 @@ const Leaderboard = () => {
     let datas: any = []
 
     if (!portfolios || isEmpty(portfolios)) {
-      message.error("Leaderboard is empty!")
-      return null;
+      message.error('Leaderboard is empty!')
+      return null
     }
 
-    {portfolios.map((portfolio, index) => {
-      datas.push(
-          {
-            'Investor': portfolio.investor,
-            'Buying Power': portfolio.buying_power.toFixed(2),
-            'Current Market': portfolio.current_value_sum.toFixed(2),
-            'Purchase Cost': portfolio.purchase_value_sum.toFixed(2),
-            Unrealised: (portfolio.current_value_sum - portfolio.purchase_value_sum),
-            'Realised (Sold Value)': portfolio.realised_sum,
-            'View Portfolio': portfolio.public_portfolio ? portfolio.id : 0,
-          }
-        )
+    {
+      portfolios.map((portfolio, index) => {
+        datas.push({
+          Investor: portfolio.investor,
+          'Buying Power': portfolio.buying_power.toFixed(2),
+          'Current Market': portfolio.current_value_sum.toFixed(2),
+          'Purchase Cost': portfolio.purchase_value_sum.toFixed(2),
+          Unrealised: portfolio.current_value_sum - portfolio.purchase_value_sum,
+          'Realised (Sold Value)': portfolio.realised_sum,
+          'View Portfolio': portfolio.public_portfolio ? portfolio.id : 0
+        })
       })
     }
 
@@ -110,10 +103,10 @@ const Leaderboard = () => {
   }
 
   return (
-  <Page>
-    <Title>Competition Leaderboard</Title>
-    {historyTable}
-  </Page>
+    <Page>
+      <Title>Competition Leaderboard</Title>
+      {historyTable}
+    </Page>
   )
 }
 

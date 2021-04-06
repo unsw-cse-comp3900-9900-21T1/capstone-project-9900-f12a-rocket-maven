@@ -18,6 +18,8 @@
     "chart.js": "^2.9.4",
     "craco": "0.0.3",
     "formik": "^2.2.6",
+    "highcharts": "^9.0.1",
+    "highcharts-react-official": "^3.0.0",
     "jwt-decode": "^3.1.2",
     "ramda": "^0.27.1",
     "react": "^17.0.1",
