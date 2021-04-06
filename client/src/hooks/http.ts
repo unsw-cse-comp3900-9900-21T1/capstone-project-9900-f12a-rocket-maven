@@ -1,7 +1,7 @@
 import jwt_decode from 'jwt-decode'
 import { useState, useEffect } from 'react'
 import { useHistory } from 'react-router'
-import { useStore, useUserId, useIsLoggedIn } from './store'
+import { useStore, useUserId, useIsLoggedIn } from '@rocketmaven/hooks/store'
 import { isExpired } from 'react-jwt'
 import { urls } from '../data/urls'
 import { message } from 'antd'

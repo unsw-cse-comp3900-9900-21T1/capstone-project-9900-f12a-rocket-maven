@@ -2,10 +2,12 @@ import Page from '@rocketmaven/pages/_Page'
 import { urls } from '@rocketmaven/data/urls'
 import { useParams, Link, Route, Switch } from 'react-router-dom'
 import { Card } from '@rocketmaven/componentsStyled/Card'
-import { Row, Col, Statistic, message } from 'antd'
+import { useHistory } from 'react-router'
+import { Row, Col, Statistic, Button, message, Tooltip } from 'antd'
 import { useFetchAPIPublicData } from '@rocketmaven/hooks/http'
 import { isEmpty } from 'ramda'
 import { useEffect, useState } from 'react'
+import { useStore, useUserId, useIsLoggedIn } from '@rocketmaven/hooks/store'
 
 // https://www.npmjs.com/package/highcharts-react-official
 import 'highcharts/css/stocktools/gui.css'
@@ -26,6 +28,7 @@ import stockTools from 'highcharts/modules/stock-tools'
 
 import '@rocketmaven/pages/Asset/AssetView/AdditionalChart.css'
 import { Subtitle } from '@rocketmaven/componentsStyled/Typography'
+import { FaRegStar } from 'react-icons/fa'
 
 exporting(Highcharts)
 offlineExporting(Highcharts)
@@ -274,6 +277,29 @@ const AssetView = () => {
     )
   }
 
+  const isLoggedIn = useIsLoggedIn()
+  const routerObject = useHistory()
+  const { accessToken, refreshToken, dispatch } = useStore()
+
+  const addToWatchlist = async () => {
+    if (isLoggedIn) {
+
+      const response = await fetch(`/api/v1/watchlist/${ticker_symbol}`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`
+        }
+      })
+      const data = await response.json()
+      if (!response.ok) {
+        throw Error(`${data.msg}`)
+      }
+      routerObject.push(urls.watchlists)
+    }
+  }
+
   useEffect(() => {
     const api_part = `/chart/${seriesContext}/${ticker_symbol}`
 
@@ -327,7 +353,16 @@ const AssetView = () => {
   }, [graphData])
   return (
     <div>
-      <Subtitle>{ticker_symbol}</Subtitle>
+      <Subtitle>
+        {ticker_symbol}{' '}
+        {isLoggedIn ? (
+          <Tooltip placement="topLeft" title="Add to Watchlist" arrowPointAtCenter>
+            <Button onClick={addToWatchlist}>
+              <FaRegStar />
+            </Button>
+          </Tooltip>
+        ) : null}
+      </Subtitle>
       {asset_card}
       {graph_card}
     </div>
