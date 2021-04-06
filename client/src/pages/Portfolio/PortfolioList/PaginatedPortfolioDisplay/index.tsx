@@ -104,25 +104,38 @@ const PaginatedPortfolioDisplay = ({ portfolioPagination, refreshPortfolios }: P
             dataIndex: 'asset_id',
             render: (value: string) => (
               <span>
-                <Link
-                  to={`/asset/${value}`}
-                  style={{
-                    marginRight: '8px',
-                    marginBottom: '12px'
-                  }}
+                <Tooltip
+                  placement="left"
+                  title={`View ${value} details and graph`}
+                  arrowPointAtCenter
                 >
-                  {value}
-                </Link>
-                <Button
-                  type="primary"
-                  style={{
-                    marginRight: '8px',
-                    marginBottom: '12px',
-                    float: 'right'
-                  }}
+                  <Link
+                    to={`/asset/${value}`}
+                    style={{
+                      marginRight: '8px',
+                      marginBottom: '12px'
+                    }}
+                  >
+                    {value}
+                  </Link>
+                </Tooltip>
+
+                <Tooltip
+                  placement="left"
+                  title={`Filter holding history by ${value}`}
+                  arrowPointAtCenter
                 >
-                  <Link to={`/portfolio/${portfolio.id}/holdings/${value}`}>History</Link>
-                </Button>
+                  <Button
+                    type="primary"
+                    style={{
+                      marginRight: '8px',
+                      marginBottom: '12px',
+                      float: 'right'
+                    }}
+                  >
+                    <Link to={`/portfolio/${portfolio.id}/holdings/${value}`}>History</Link>
+                  </Button>
+                </Tooltip>
               </span>
             )
           },
