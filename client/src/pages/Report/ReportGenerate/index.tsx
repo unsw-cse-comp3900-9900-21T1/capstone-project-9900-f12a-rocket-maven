@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { urls } from '@rocketmaven/data/urls'
-import Page from '@rocketmaven/pages/_Page'
+// import { urls } from '@rocketmaven/data/urls'
+// import Page from '@rocketmaven/pages/_Page'
 import { Link, Route, Switch, useLocation } from 'react-router-dom'
 import { Card } from '@rocketmaven/componentsStyled/Card'
 import { Button } from '@rocketmaven/componentsStyled/Button'
-import { Title } from '@rocketmaven/componentsStyled/Typography'
+// import { Title } from '@rocketmaven/componentsStyled/Typography'
 import { Form, DatePicker, Radio, Input, Select } from 'antd'
 const { RangePicker } = DatePicker
 const { Option } = Select

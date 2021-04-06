@@ -8,6 +8,7 @@ import Portfolio from '@rocketmaven/pages/Portfolio'
 import Account from '@rocketmaven/pages/Account'
 import HomeStub from '@rocketmaven/pages/HomeStub'
 import PasswordReset from '@rocketmaven/pages/PasswordReset'
+import Asset from '@rocketmaven/pages/Asset'
 import Watchlists from '@rocketmaven/pages/Watchlists'
 import Explore from '@rocketmaven/pages/Explore'
 import Leaderboard from '@rocketmaven/pages/Leaderboard'
@@ -27,8 +28,8 @@ const Routes = () => {
           isLoggedIn ? <Redirect to={urls.portfolio} /> : <Redirect to={urls.explore} />
         }
       ></Route>
-      <Route exact path={urls.explore} component={Explore}/>
-      <Route exact path={urls.leaderboard} component={Leaderboard}/>
+      <Route exact path={urls.explore} component={Explore} />
+      <Route exact path={urls.leaderboard} component={Leaderboard} />
       <Route exact path={urls.homeStub} component={HomeStub} />
       <Route exact path={urls.login} component={LogIn} />
       <Route exact path={urls.forgot} component={Forgot} />
@@ -36,6 +37,7 @@ const Routes = () => {
       <Route exact path={urls.signup} component={SignUp} />
       <Route path={urls.login} component={LogIn} />
       <Route path={urls.portfolio} component={Portfolio} />
+      <Route path={urls.asset} component={Asset} />
       <Route path={urls.account} component={Account} />
       <Route path={urls.watchlists} component={Watchlists} />
       <Route path={urls.report} component={Report} />
