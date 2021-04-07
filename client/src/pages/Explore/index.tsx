@@ -9,6 +9,7 @@ import { isEmpty } from 'ramda'
 import { Link } from 'react-router-dom'
 import { FaBalanceScale, FaTrophy } from 'react-icons/fa'
 import { FaHeart } from 'react-icons/fa'
+import { useHistory } from 'react-router'
 
 export type AssetSearch = {
   ticker_symbol: string
@@ -117,6 +118,7 @@ const Explore = () => {
   const [valued, setValued] = useState()
   const [price, setPrice] = useState()
   const [form] = Form.useForm()
+  const routerObject = useHistory()
 
   // const onFinish = (values: any) => {
   //   values.asset_id = values.asset_id.value
@@ -155,7 +157,8 @@ const Explore = () => {
                 fetchOptions={fetchUserList}
                 onChange={(newValue) => {
                   setValued(newValue.key)
-                  console.log(newValue)
+                  // Place holder until/if we incooperate advanced search
+                  routerObject.push(`${urls.asset}/${newValue.key}`)
                 }}
                 style={{ width: '500px' }}
               />
