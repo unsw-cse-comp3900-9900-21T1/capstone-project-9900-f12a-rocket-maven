@@ -136,7 +136,11 @@ def get_report():
 
         for portfolio_id in series_raw:
             port_data = []
+            if total_normalise[portfolio_id] == 0:
+                continue
             for m in series_raw[portfolio_id]:
+                if series_raw[portfolio_id][m] == 0:
+                    continue
                 port_data.append(
                     {
                         "name": m,
@@ -166,7 +170,11 @@ def get_report():
                 row += 1
 
         for portfolio_id in drilldown_raw:
+            if total_normalise[portfolio_id] == 0:
+                continue
             for m in drilldown_raw[portfolio_id]:
+                if series_raw[portfolio_id][m] == 0:
+                    continue
                 port_data = []
                 for n in drilldown_raw[portfolio_id][m]:
                     port_data.append(

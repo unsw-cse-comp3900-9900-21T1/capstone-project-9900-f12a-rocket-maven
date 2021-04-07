@@ -1,35 +1,27 @@
-import { Fragment, useContext } from 'react'
-import { Link } from 'react-router-dom'
-import { isEmpty } from 'ramda'
-import { storeContext } from '@rocketmaven/data/app/store'
-
+import { EyeOutlined, PlusOutlined, SettingOutlined } from '@ant-design/icons'
 import { Card } from '@rocketmaven/componentsStyled/Card'
 import { Row } from '@rocketmaven/componentsStyled/Grid'
-import {
-  PortfolioInfo,
-  PortfolioPagination
-} from '@rocketmaven/pages/Portfolio/types'
-import { useHistory } from 'react-router-dom'
+import { storeContext } from '@rocketmaven/data/app/store'
 // import { PortfolioWrap } from '@rocketmaven/pages/Portfolio/PortfolioList/PaginatedPortfolioDisplay/styled'
 import { urls } from '@rocketmaven/data/urls'
-import {
-  Tooltip,
-  Button,
-  Divider,
-  Table,
-  message,
-  Typography,
-  PageHeader,
-  Tag,
-  Descriptions,
-  Statistic
-} from 'antd'
-import {
-  PlusOutlined,
-  SettingOutlined,
-  EyeOutlined
-} from '@ant-design/icons'
 import { useAccessToken } from '@rocketmaven/hooks/http'
+import { PortfolioInfo, PortfolioPagination } from '@rocketmaven/pages/Portfolio/types'
+import {
+  Button,
+  Descriptions,
+  Divider,
+  message,
+  PageHeader,
+  Statistic,
+  Table,
+  Tag,
+  Tooltip,
+  Typography
+} from 'antd'
+import { isEmpty } from 'ramda'
+import { Fragment, useContext } from 'react'
+import { Link, useHistory } from 'react-router-dom'
+
 const AntText = Typography.Text
 
 type Props = {
@@ -140,7 +132,7 @@ const PaginatedPortfolioDisplay = ({ portfolioPagination, refreshPortfolios }: P
             render: (value: number) => value.toFixed(2)
           },
           {
-            title: 'Avg. Purchase Price',
+            title: 'Purchase Price',
             dataIndex: 'average_price',
             render: (value: number) => value.toFixed(2)
           },

@@ -5,6 +5,7 @@ from marshmallow import ValidationError
 from RocketMaven.extensions import apispec
 from RocketMaven.api.resources import (
     AssetResource,
+    AssetPriceResource,
     AssetSearchResource,
     PortfolioAssetSearchResource,
     TimeSeriesResource,
@@ -56,6 +57,12 @@ api.add_resource(
 
 api.add_resource(
     AssetResource, "/assets/<string:ticker_symbol>", endpoint="asset_by_ticker"
+)
+
+api.add_resource(
+    AssetPriceResource,
+    "/assets/<string:ticker_symbol>/price",
+    endpoint="asset_price_by_ticker",
 )
 
 api.add_resource(
@@ -151,6 +158,8 @@ api.add_resource(
 def register_controllers():
     apispec.spec.components.schema("AssetSchema", schema=AssetSchema)
     apispec.spec.path(view=AssetResource, app=current_app, api=api)
+    apispec.spec.path(view=AssetPriceResource, app=current_app, api=api)
+
     apispec.spec.path(view=AssetSearchResource, app=current_app, api=api)
     apispec.spec.path(view=PortfolioAssetSearchResource, app=current_app, api=api)
 
