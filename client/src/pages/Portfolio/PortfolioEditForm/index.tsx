@@ -1,9 +1,9 @@
 import { Card } from '@rocketmaven/componentsStyled/Card'
-import { Form, Input, Button, Switch, Select } from 'antd'
-import { useSortedCountryList } from '@rocketmaven/hooks/store'
 // import { MySelect, MyTextInput } from '@rocketmaven/forms'
 import { useUpdatePortfolioInfo } from '@rocketmaven/hooks/http'
+import { useSortedCountryList } from '@rocketmaven/hooks/store'
 import { PortfolioInfoEdit } from '@rocketmaven/pages/Portfolio/types'
+import { Button, Form, Input, Select, Switch } from 'antd'
 const { Option } = Select
 
 type Props = {
@@ -36,9 +36,10 @@ const PortfolioEditForm = ({ portfolioInfo, portfolioId, action }: Props) => {
   }
   const setValuesAndFetch: Function = useUpdatePortfolioInfo(
     portfolioInfo ? 'PUT' : 'POST',
-    portfolioId,
+    portfolioId
   )
   const onFinish = (values: any) => {
+    console.log(values)
     setValuesAndFetch({
       ...values,
       id: undefined,
@@ -113,7 +114,11 @@ const PortfolioEditForm = ({ portfolioInfo, portfolioId, action }: Props) => {
           </Select>
         </Form.Item>
 
-        <Form.Item label="Public" name="public_portfolio">
+        <Form.Item
+          label="Public"
+          name="public_portfolio"
+          initialValue={initialValues.public_portfolio}
+        >
           <Switch defaultChecked={initialValues.public_portfolio ? true : false} />
         </Form.Item>
 

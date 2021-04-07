@@ -31,7 +31,7 @@ type ChartTooltipTop = {
 }
 
 const Compare = () => {
-  const asset_card = null
+  const [assetCard, setAssetCard] = useState<ReactElement>()
   const [graphCard, setGraphCard] = useState<ReactElement>()
   const [graphData, setGraphData] = useState<any[]>([])
   const [tickers, setTickers] = useState([])
