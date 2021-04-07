@@ -245,8 +245,9 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
               marginBottom: '12px'
             }}
             disabled={
-              portfolioInfo.competition_portfolio &&
-              portfolioInfo.buying_power - pricePerShare * units < 0
+              (portfolioInfo.competition_portfolio &&
+                portfolioInfo.buying_power - pricePerShare * units < 0) ||
+              units <= 0
             }
           >
             Add
@@ -260,7 +261,7 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
               marginRight: '8px',
               marginBottom: '12px'
             }}
-            disabled={holdings - units < 0}
+            disabled={holdings - units < 0 || units <= 0}
           >
             Remove
           </Button>

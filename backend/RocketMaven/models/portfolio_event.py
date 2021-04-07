@@ -1,6 +1,7 @@
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.sql import func
 from RocketMaven.models.portfolio_asset_holding import PortfolioAssetHolding
+from RocketMaven.models.portfolio import Portfolio
 from RocketMaven.models.asset import Asset
 
 from RocketMaven.extensions import db, pwd_context
@@ -49,12 +50,33 @@ class PortfolioEvent(db.Model):
         return self.dynamic_after_FIFO_units * self.price_per_share
 
     def update_portfolio_asset_holding(self) -> float:
-        """ Calculates the FIFO portfolio holding properties when an event occurs,
-            returns the buying power change that the event caused.
-        
+        """Calculates the FIFO portfolio holding properties when an event occurs,
+        returns the buying power change that the event caused.
+
         """
 
+        db.session.add(self)
         portfolio_event = self
+
+        portfolio_query = Portfolio.query.filter_by(
+            id=portfolio_event.portfolio_id
+        ).first()
+
+        if portfolio_query and portfolio_query.competition_portfolio == True:
+            buying_power_diff = 0
+            if portfolio_event.add_action == True:
+                # Buy
+                buying_power_diff = -(
+                    portfolio_event.price_per_share * portfolio_event.units
+                )
+            else:
+                # Sell
+                buying_power_diff = (
+                    portfolio_event.price_per_share * portfolio_event.units
+                )
+
+            # Affect buying power
+            portfolio_query.buying_power += buying_power_diff
 
         asset_price = Asset.query.filter_by(
             ticker_symbol=portfolio_event.asset_id
@@ -106,8 +128,6 @@ class PortfolioEvent(db.Model):
                         break
 
                 asset_holding.realised_total += realised_running_local_sum
-                print(asset_holding.realised_total, realised_running_local_sum)
-                db.session.commit()
 
             available_units = (
                 db.session.query(
@@ -136,8 +156,6 @@ class PortfolioEvent(db.Model):
                         latest_note="",
                     )
                     db.session.add(asset_holding)
-                    db.session.commit()
-
                 previous_update = (
                     asset_holding.available_units * asset_holding.average_price
                 )
@@ -151,8 +169,6 @@ class PortfolioEvent(db.Model):
             asset_holding.available_units = available_units
             if portfolio_event.note and len(portfolio_event.note.strip()) > 0:
                 asset_holding.latest_note = portfolio_event.note
-
-            db.session.commit()
 
             return realised_running_local_sum
 

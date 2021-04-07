@@ -185,7 +185,7 @@ const PaginatedPortfolioDisplay = ({ portfolioPagination, refreshPortfolios }: P
           'Purchase Cost': [false, portfolio.purchase_value_sum],
           'Unrealised (Market - Purchase)': [
             true,
-            portfolio.current_value_sum - portfolio.purchase_value_sum
+            (portfolio.current_value_sum - portfolio.purchase_value_sum).toFixed(2)
           ],
           'Realised (Sold Value)': [true, portfolio.realised_sum]
         }
@@ -275,7 +275,9 @@ const PaginatedPortfolioDisplay = ({ portfolioPagination, refreshPortfolios }: P
           >
             <Descriptions column={2} size="small" bordered style={{ marginBottom: '1rem' }}>
               {portfolio.competition_portfolio ? (
-                <Descriptions.Item label="Buying Power">{portfolio.buying_power}</Descriptions.Item>
+                <Descriptions.Item label="Buying Power">
+                  {portfolio.buying_power.toFixed(2)}
+                </Descriptions.Item>
               ) : null}
               <Descriptions.Item label="Tax Residency">{portfolio.tax_residency}</Descriptions.Item>
             </Descriptions>

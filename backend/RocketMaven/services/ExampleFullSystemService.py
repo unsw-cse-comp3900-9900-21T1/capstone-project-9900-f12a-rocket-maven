@@ -6,13 +6,11 @@ import datetime
 def create_asset_event_with_current_price(port_data, asset_cba, db):
     portfolio_event = PortfolioEvent(**port_data)
 
-    db.session.add(portfolio_event)
-    db.session.commit()
-
     asset_cba.current_price = port_data["price_per_share"]
     db.session.commit()
 
     portfolio_event.update_portfolio_asset_holding()
+    db.session.commit()
 
 
 def populate_full_system(db):
@@ -138,10 +136,8 @@ def populate_full_system(db):
             event_date=datetime.date(2021, 1, 26),
         )
 
-        db.session.add(portfolio_event)
-        db.session.commit()
-
         portfolio_event.update_portfolio_asset_holding()
+        db.session.commit()
 
         portfolio_event = PortfolioEvent(
             units=5,
@@ -154,9 +150,8 @@ def populate_full_system(db):
             event_date=datetime.date(2021, 3, 8),
         )
 
-        db.session.add(portfolio_event)
-        db.session.commit()
         portfolio_event.update_portfolio_asset_holding()
+        db.session.commit()
 
         # Test case from Tyson's spreadsheet
         asset_cba = Asset(
@@ -327,7 +322,6 @@ def populate_full_system(db):
         tmp_asset,
         db,
     )
-    
 
     tmp_asset = db.session.query(Asset).filter_by(ticker_symbol="ASX:WBC").first()
 
@@ -362,7 +356,6 @@ def populate_full_system(db):
         tmp_asset,
         db,
     )
-    
 
     tmp_asset = db.session.query(Asset).filter_by(ticker_symbol="ASX:ANZ").first()
 
@@ -397,8 +390,7 @@ def populate_full_system(db):
         tmp_asset,
         db,
     )
-    
-    
+
     tmp_asset = db.session.query(Asset).filter_by(ticker_symbol="ASX:BHP").first()
 
     create_asset_event_with_current_price(
@@ -415,7 +407,7 @@ def populate_full_system(db):
         tmp_asset,
         db,
     )
-    
+
     tmp_asset = db.session.query(Asset).filter_by(ticker_symbol="ASX:CSL").first()
 
     create_asset_event_with_current_price(
@@ -493,7 +485,18 @@ def populate_full_system(db):
         portfolio_id=competition_portfolio_2.id,
         event_date=datetime.date(2021, 2, 8),
     )
-    db.session.add(portfolio_event)
+    portfolio_event.update_portfolio_asset_holding()
     db.session.commit()
+
+    portfolio_event = PortfolioEvent(
+        units=10000,
+        add_action=False,
+        fees=0,
+        price_per_share=0.0388,
+        note="",
+        asset_id="CRYPTO:DOGE",
+        portfolio_id=competition_portfolio_2.id,
+        event_date=datetime.date(2021, 2, 8),
+    )
     portfolio_event.update_portfolio_asset_holding()
     db.session.commit()
