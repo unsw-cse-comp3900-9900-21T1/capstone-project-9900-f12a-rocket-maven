@@ -19,7 +19,7 @@ const Leaderboard = () => {
   const [data, setData] = useState<null | { results: any }>(null)
   useFetchAPIPublicData('/leaderboard', setData)
 
-  var historyTable = null
+  let historyTable = null
   if (data && !isEmpty(data)) {
     const numberChangeRenderer = (testVal: string, record: any) => {
       const text = parseFloat(testVal).toFixed(2)
@@ -78,7 +78,7 @@ const Leaderboard = () => {
       }
     ]
 
-    let datas: any = []
+    const datas: any = []
 
     if (!portfolios || isEmpty(portfolios)) {
       message.error('Leaderboard is empty!')

@@ -1,10 +1,7 @@
-import React, { useEffect, useState } from 'react'
-import { urls } from '@rocketmaven/data/urls'
-import Page from '@rocketmaven/pages/_Page'
-import { Link, Route, Switch } from 'react-router-dom'
+import React from 'react'
+import { Link } from 'react-router-dom'
 import { Card } from '@rocketmaven/componentsStyled/Card'
 import { Button } from '@rocketmaven/componentsStyled/Button'
-import { Title } from '@rocketmaven/componentsStyled/Typography'
 
 const ReportLanding = () => {
   return (

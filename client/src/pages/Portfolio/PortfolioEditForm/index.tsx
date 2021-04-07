@@ -1,12 +1,9 @@
-import { Fragment } from 'react'
 import { Card } from '@rocketmaven/componentsStyled/Card'
 import { Form, Input, Button, Switch, Select } from 'antd'
 import { useSortedCountryList } from '@rocketmaven/hooks/store'
 // import { MySelect, MyTextInput } from '@rocketmaven/forms'
-import { numberRequired, stringRequired, booleanRequired } from '@rocketmaven/forms/validators'
-import { useFetchMutationWithUserId, useUpdatePortfolioInfo } from '@rocketmaven/hooks/http'
+import { useUpdatePortfolioInfo } from '@rocketmaven/hooks/http'
 import { PortfolioInfoEdit } from '@rocketmaven/pages/Portfolio/types'
-import { urls } from '@rocketmaven/data/urls'
 const { Option } = Select
 
 type Props = {

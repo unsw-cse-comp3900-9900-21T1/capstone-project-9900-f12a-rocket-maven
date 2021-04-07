@@ -1,17 +1,15 @@
-import Page from '@rocketmaven/pages/_Page'
-import { urls } from '@rocketmaven/data/urls'
-import { useParams, Link, Route, Switch } from 'react-router-dom'
-import { Card } from '@rocketmaven/componentsStyled/Card'
 import MainChart from '@rocketmaven/components/MainChart'
-import { useHistory } from 'react-router'
-import { Row, Col, Statistic, Button, message, Tooltip } from 'antd'
+import { Card } from '@rocketmaven/componentsStyled/Card'
+import { Subtitle } from '@rocketmaven/componentsStyled/Typography'
+import { urls } from '@rocketmaven/data/urls'
 import { useFetchAPIPublicData } from '@rocketmaven/hooks/http'
+import { useIsLoggedIn, useStore } from '@rocketmaven/hooks/store'
+import { Button, Col, message, Row, Statistic, Tooltip } from 'antd'
 import { isEmpty } from 'ramda'
 import { useEffect, useState } from 'react'
-import { useStore, useUserId, useIsLoggedIn } from '@rocketmaven/hooks/store'
-
-import { Subtitle } from '@rocketmaven/componentsStyled/Typography'
 import { FaRegStar } from 'react-icons/fa'
+import { useHistory } from 'react-router'
+import { useParams } from 'react-router-dom'
 
 type Params = {
   ticker_symbol: string

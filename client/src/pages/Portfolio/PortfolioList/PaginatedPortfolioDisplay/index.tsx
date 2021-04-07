@@ -1,16 +1,13 @@
-import { Fragment, useState, useEffect, useCallback, useContext } from 'react'
+import { Fragment, useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { isEmpty } from 'ramda'
 import { storeContext } from '@rocketmaven/data/app/store'
 
-import { Text, Subtitle } from '@rocketmaven/componentsStyled/Typography'
-import { useFetchMutationWithUserId } from '@rocketmaven/hooks/http'
 import { Card } from '@rocketmaven/componentsStyled/Card'
-import { Row, Col } from '@rocketmaven/componentsStyled/Grid'
+import { Row } from '@rocketmaven/componentsStyled/Grid'
 import {
   PortfolioInfo,
-  PortfolioPagination,
-  PortfolioHolding
+  PortfolioPagination
 } from '@rocketmaven/pages/Portfolio/types'
 import { useHistory } from 'react-router-dom'
 // import { PortfolioWrap } from '@rocketmaven/pages/Portfolio/PortfolioList/PaginatedPortfolioDisplay/styled'
@@ -28,8 +25,6 @@ import {
   Statistic
 } from 'antd'
 import {
-  EditOutlined,
-  EllipsisOutlined,
   PlusOutlined,
   SettingOutlined,
   EyeOutlined
@@ -97,7 +92,7 @@ const PaginatedPortfolioDisplay = ({ portfolioPagination, refreshPortfolios }: P
   return (
     <Fragment>
       {portfolios.map((portfolio, index) => {
-        let columns: any = [
+        const columns: any = [
           {
             title: 'Ticker Symbol',
             key: 'asset_id',

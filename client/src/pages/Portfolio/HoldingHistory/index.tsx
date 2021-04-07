@@ -4,9 +4,7 @@ import { Subtitle } from '@rocketmaven/componentsStyled/Typography'
 import { useParams, Link } from 'react-router-dom'
 import { useGetPortfolioHistory } from '@rocketmaven/hooks/http'
 import { PortfolioEvent, PortfolioEventPagination } from '@rocketmaven/pages/Portfolio/types'
-import { urls } from '@rocketmaven/data/urls'
 import { Table } from 'antd'
-import { convertLegacyProps } from 'antd/lib/button/button'
 
 type Params = {
   id: string
@@ -20,7 +18,7 @@ const PortfolioHistory = () => {
 
   // Might have to just make a PortfolioCreate component
   const portfolioHistory: PortfolioEventPagination = useGetPortfolioHistory(id)
-  var historyTable = null
+  let historyTable = null
   if (!portfolioHistory || isEmpty(portfolioHistory)) {
     // do nothing
   } else {

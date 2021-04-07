@@ -1,10 +1,9 @@
 import Page from '@rocketmaven/pages/_Page'
 import { useState } from 'react'
-import { useHistory, Redirect } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { Card } from '@rocketmaven/componentsStyled/Card'
 import { Form, Input, Button} from 'antd';
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { urls } from '@rocketmaven/data/urls'
+import { UserOutlined } from '@ant-design/icons';
 import { Investor } from '@rocketmaven/pages/Account/types';
 
 const Forgot = () => {

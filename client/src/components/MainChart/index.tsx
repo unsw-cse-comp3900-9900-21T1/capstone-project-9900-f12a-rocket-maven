@@ -1,10 +1,8 @@
-import { Form, Input } from 'antd'
-
 // https://www.npmjs.com/package/highcharts-react-official
 import 'highcharts/css/stocktools/gui.css'
 import 'highcharts/css/annotations/popup.css'
 
-import Highcharts, { getOptions } from 'highcharts/highstock'
+import Highcharts from 'highcharts/highstock'
 import HighchartsReact from 'highcharts-react-official'
 
 import exporting from 'highcharts/modules/exporting'
@@ -18,6 +16,7 @@ import fullScreen from 'highcharts/modules/full-screen'
 import stockTools from 'highcharts/modules/stock-tools'
 import drilldown from 'highcharts/modules/drilldown'
 import accessibility from 'highcharts/modules/accessibility'
+import boost from 'highcharts/modules/boost'
 
 import '@rocketmaven/components/MainChart/AdditionalChart.css'
 
@@ -32,6 +31,7 @@ priceIndicator(Highcharts)
 fullScreen(Highcharts)
 stockTools(Highcharts)
 drilldown(Highcharts)
+boost(Highcharts)
 
 const MainChart = (props: any) => {
   props.options.navigation = {

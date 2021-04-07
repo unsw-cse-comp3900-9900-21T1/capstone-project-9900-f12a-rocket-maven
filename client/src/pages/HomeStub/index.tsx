@@ -4,7 +4,6 @@ import Page from '@rocketmaven/pages/_Page'
 import { Title, Text, Code, Link, StyledLink } from '@rocketmaven/componentsStyled/Typography'
 import { StubWrap } from '@rocketmaven/componentsStyled/Layouts'
 import logo from '@rocketmaven/assets/svg/logo.svg'
-import { useStore } from '@rocketmaven/hooks/store'
 import { useAccessToken } from '@rocketmaven/hooks/http'
 
 const HomeStub = () => {

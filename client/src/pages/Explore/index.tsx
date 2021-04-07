@@ -1,18 +1,13 @@
 import Page from '@rocketmaven/pages/_Page'
-import { Form, Input, Button, Row, Col } from 'antd'
+import { Form, Button, Row, Col } from 'antd'
 import { urls } from '@rocketmaven/data/urls'
-import { Investor } from '@rocketmaven/pages/Account/types'
-import { Card } from '@rocketmaven/componentsStyled/Card'
-import { SearchOutlined } from '@ant-design/icons'
 import { Select, Spin } from 'antd'
 import { SelectProps } from 'antd/es/select'
 import debounce from 'lodash/debounce'
 import { useState, useRef, useMemo } from 'react'
 import { isEmpty } from 'ramda'
-import { useFetchGetWithUserId, useFetchMutationWithUserId } from '@rocketmaven/hooks/http'
-import { url } from 'node:inspector'
 import { Link } from 'react-router-dom'
-import { FaTrophy } from 'react-icons/fa'
+import { FaBalanceScale, FaTrophy } from 'react-icons/fa'
 import { FaHeart } from 'react-icons/fa'
 
 export type AssetSearch = {
@@ -177,6 +172,13 @@ const Explore = () => {
             <Button type="primary">
               <Link to={urls.topAdditions}>
                 <FaHeart /> Top Additions
+              </Link>
+            </Button>
+          </Row>
+          <Row  style={{ marginBottom: '0.5rem' }}>
+            <Button type="primary">
+              <Link to={urls.compare}>
+                <FaBalanceScale /> Compare Assets
               </Link>
             </Button>
           </Row>
