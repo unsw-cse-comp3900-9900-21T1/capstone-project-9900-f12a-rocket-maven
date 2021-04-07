@@ -1,12 +1,11 @@
-import { Form, Input, Button } from 'antd'
+import UserAssetSearchBox from '@rocketmaven/components/UserAssetSearchBox'
 import { Card } from '@rocketmaven/componentsStyled/Card'
+// import { Row } from '@rocketmaven/componentsStyled/Grid'
 import { urls } from '@rocketmaven/data/urls'
-import { useState } from 'react'
-import { PortfolioInfo, PortfolioEventCreate } from '@rocketmaven/pages/Portfolio/types'
 import { useFetchMutationWithUserId } from '@rocketmaven/hooks/http'
-
-import { Row, Statistic } from 'antd'
-import AssetSearchBox from '@rocketmaven/components/AssetSearchBox'
+import { PortfolioEventCreate, PortfolioInfo } from '@rocketmaven/pages/Portfolio/types'
+import { Button, Col, Form, Input, InputNumber, Row, Statistic } from 'antd'
+import { useState } from 'react'
 
 type Props = {
   portfolioId?: string
@@ -26,8 +25,9 @@ const formItemLayout = {
 
 const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
   const [addActionValue, setAddActionValue] = useState(true)
-  const [valued, setValued] = useState()
-  const [price, setPrice] = useState()
+  const [holdings, setHoldings] = useState(0)
+  const [pricePerShare, setPricePerShare] = useState(0)
+  const [units, setUnits] = useState(0)
   const [form] = Form.useForm()
 
   const initialValues: PortfolioEventCreate = {
@@ -51,14 +51,12 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
     })
   }
 
+  const getColorOfValue = (value: number) => {
+    return value < 0 ? 'red' : 'green'
+  }
+
   return (
     <Card>
-      {portfolioInfo.competition_portfolio ? (
-        <Row>
-          <Statistic title="Buying Power" value={portfolioInfo.buying_power} precision={2} />
-        </Row>
-      ) : null}
-
       <Form
         name="normal_assetadd"
         className="assetadd-form"
@@ -79,11 +77,13 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
             }
           ]}
         >
-          <AssetSearchBox
+          <UserAssetSearchBox
             showSearch
-            value={valued}
+            portfolioid={portfolioId}
             onChange={(newValue: any) => {
-              setValued(newValue.key)
+              console.log(newValue)
+              setHoldings(parseFloat(newValue.label.props['data-holdings']))
+              setPricePerShare(newValue.label.props.title)
               form.setFieldsValue({
                 price_per_share: newValue.label.props.title
               })
@@ -102,7 +102,7 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
               }
             ]}
           >
-            <Input />
+            <InputNumber />
           </Form.Item>
         ) : null}
 
@@ -115,7 +115,7 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
             }
           ]}
         >
-          <Input />
+          <InputNumber onChange={(e: any) => setUnits(e)} />
         </Form.Item>
 
         {!portfolioInfo.competition_portfolio ? (
@@ -128,9 +128,15 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
               }
             ]}
           >
-            <Input />
+            <InputNumber />
           </Form.Item>
-        ) : null}
+        ) : (
+          <span>
+            <Form.Item name="price_per_share" label="Current Value">
+              <Input disabled />
+            </Form.Item>
+          </span>
+        )}
 
         <Form.Item
           name="note"
@@ -144,7 +150,54 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
           <Input />
         </Form.Item>
 
-        {/* <Button type="primary" onClick={() => setAddActionValue(true)} htmlType="submit" value={addActionValue} style={{ */}
+        {portfolioInfo.competition_portfolio ? (
+          <Row gutter={16}>
+            <Col span={6}>
+              <Statistic title="Buying Power" value={portfolioInfo.buying_power} precision={2} />
+            </Col>
+            <Col span={6}>
+              <Statistic title="Event Value" value={pricePerShare * units} precision={2} />
+            </Col>
+            <Col span={6}>
+              <Statistic
+                title="New Add Buying Power"
+                value={portfolioInfo.buying_power - pricePerShare * units}
+                precision={2}
+                valueStyle={{
+                  color: getColorOfValue(portfolioInfo.buying_power - pricePerShare * units)
+                }}
+              />
+            </Col>
+            <Col span={6}>
+              <Statistic
+                title="New Remove Buying Power"
+                value={portfolioInfo.buying_power + pricePerShare * units}
+                precision={2}
+              />
+            </Col>
+          </Row>
+        ) : null}
+
+        <Row gutter={16}>
+          <Col span={6}>
+            <Statistic title="Currently Holding" value={holdings} precision={2} />
+          </Col>
+          <Col span={6}>
+            <Statistic title="Units" value={units ? units : 0} precision={2} />
+          </Col>
+          <Col span={6}>
+            <Statistic title="New Add Units" value={holdings + units} precision={2} />
+          </Col>
+          <Col span={6}>
+            <Statistic
+              title="New Remove Units"
+              value={holdings - units}
+              precision={2}
+              valueStyle={{ color: getColorOfValue(holdings - units) }}
+            />
+          </Col>
+        </Row>
+
         <Form.Item style={{ textAlign: 'center' }}>
           <Button
             type="primary"
@@ -154,6 +207,10 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
               marginRight: '8px',
               marginBottom: '12px'
             }}
+            disabled={
+              portfolioInfo.competition_portfolio &&
+              portfolioInfo.buying_power - pricePerShare * units < 0
+            }
           >
             Add
           </Button>
@@ -166,6 +223,7 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
               marginRight: '8px',
               marginBottom: '12px'
             }}
+            disabled={holdings - units < 0}
           >
             Remove
           </Button>

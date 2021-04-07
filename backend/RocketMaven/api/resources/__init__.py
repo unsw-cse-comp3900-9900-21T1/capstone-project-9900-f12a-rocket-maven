@@ -1,7 +1,30 @@
-from RocketMaven.api.resources.asset import AssetResource, AssetSearchResource
-from RocketMaven.api.resources.timeseries import TimeSeriesResource, AdvancedTimeSeriesResource, DailyTimeSeriesResource, WeeklyTimeSeriesResource, MonthlyTimeSeriesResource, YearlyTimeSeriesResource
-from RocketMaven.api.resources.investor import InvestorResource, InvestorList, WatchList, WatchAsset
-from RocketMaven.api.resources.portfolio import PortfolioResource, PublicPortfolioResource, PortfolioList, PortfolioListAll, TopAdditions, Report
+from RocketMaven.api.resources.asset import (
+    AssetResource,
+    AssetSearchResource,
+    PortfolioAssetSearchResource,
+)
+from RocketMaven.api.resources.timeseries import (
+    TimeSeriesResource,
+    AdvancedTimeSeriesResource,
+    DailyTimeSeriesResource,
+    WeeklyTimeSeriesResource,
+    MonthlyTimeSeriesResource,
+    YearlyTimeSeriesResource,
+)
+from RocketMaven.api.resources.investor import (
+    InvestorResource,
+    InvestorList,
+    WatchList,
+    WatchAsset,
+)
+from RocketMaven.api.resources.portfolio import (
+    PortfolioResource,
+    PublicPortfolioResource,
+    PortfolioList,
+    PortfolioListAll,
+    TopAdditions,
+    Report,
+)
 from RocketMaven.api.resources.portfolio_event import (
     PortfolioEventList,
     PortfolioAssetHoldingList,
@@ -13,6 +36,7 @@ from RocketMaven.api.resources.portfolio import LeaderboardList
 __all__ = [
     "AssetResource",
     "AssetSearchResource",
+    "PortfolioAssetSearchResource",
     "TimeSeriesResource",
     "AdvancedTimeSeriesResource",
     "DailyTimeSeriesResource",
