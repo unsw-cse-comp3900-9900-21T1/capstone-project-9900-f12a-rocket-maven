@@ -2,6 +2,7 @@ import json
 from csv import DictReader
 from flask import request
 from RocketMaven.api.schemas import AssetSchema, PortfolioAssetHoldingSchema
+from RocketMaven.services.PortfolioEventService import update_asset
 from RocketMaven.extensions import db, ma
 from RocketMaven.models import Asset, PortfolioAssetHolding
 from RocketMaven.commons.pagination import paginate
@@ -36,6 +37,31 @@ def get_asset(ticker_symbol: str):
         data = Asset.query.get_or_404(ticker_symbol)
         return {"asset": schema.dump(data)}, 200
     except:
+        return {"msg": "Operation failed!"}, 500
+
+
+def get_asset_price(ticker_symbol: str):
+    """Returns
+    200 - the associated price for the given ticker symbol
+    400 - ticker symbol is None
+    404 - if the ticker symbol doesn't exist
+    500 - if an unexpected exception is raised
+    """
+    if ticker_symbol is None:
+        return {"msg": "Missing ticker symbol"}, 400
+    try:
+
+        print(ticker_symbol)
+        data = db.session.query(Asset).filter_by(ticker_symbol=ticker_symbol).first()
+        if data:
+            update_asset(data)
+            data = (
+                db.session.query(Asset).filter_by(ticker_symbol=ticker_symbol).first()
+            )
+            return {"price": data.current_price}, 200
+        return {"msg": "Ticker does not exist"}, 400
+    except Exception as e:
+        print(e)
         return {"msg": "Operation failed!"}, 500
 
 

@@ -38,6 +38,35 @@ class AssetResource(Resource):
         return AssetService.get_asset(ticker_symbol)
 
 
+class AssetPriceResource(Resource):
+    def get(self, ticker_symbol):
+        """
+        ---
+        summary: Get asset price
+        description: Get asset price
+        tags:
+          - Asset
+        parameters:
+          - in: path
+            name: ticker_symbol
+            schema:
+              type: string
+        responses:
+          200:
+            content:
+              application/json:
+                schema:
+                    price:
+                      type: number
+          400:
+            description: Missing ticker symbol
+          404:
+            description: Asset does not exist
+        security: []
+        """
+        return AssetService.get_asset_price(ticker_symbol)
+
+
 class AssetSearchResource(Resource):
     def get(self):
         """

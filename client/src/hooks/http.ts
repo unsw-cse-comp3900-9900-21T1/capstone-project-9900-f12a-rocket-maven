@@ -1,10 +1,10 @@
-import jwt_decode from 'jwt-decode'
-import { useState, useEffect } from 'react'
-import { useHistory } from 'react-router'
-import { useStore, useUserId, useIsLoggedIn } from '@rocketmaven/hooks/store'
-import { isExpired } from 'react-jwt'
-import { urls } from '../data/urls'
+import { useIsLoggedIn, useStore, useUserId } from '@rocketmaven/hooks/store'
 import { message } from 'antd'
+import jwt_decode from 'jwt-decode'
+import { useEffect, useState } from 'react'
+import { isExpired } from 'react-jwt'
+import { useHistory } from 'react-router'
+import { urls } from '../data/urls'
 
 //TODO(Jude): Can probably extract and generalise fetchFunctions and reuse in each hook
 // Rushed implementation of authToken refresh
@@ -126,8 +126,6 @@ export const useFetchGetPublicPortfolio = (portfolioId: string): any => {
 }
 
 export const useFetchAPIPublicData = (api_part: string, setData: any): any => {
-  const { accessToken, revalidateAccessToken } = useAccessToken()
-  const isLoggedIn = useIsLoggedIn()
 
   useEffect(() => {
     const myFetch = async () => {
@@ -138,7 +136,6 @@ export const useFetchAPIPublicData = (api_part: string, setData: any): any => {
             'Content-Type': 'application/json'
           }
         })
-        console.log('*********************** status is', response.status)
         if (!response.ok) {
           throw Error(`${response.status}`)
         }

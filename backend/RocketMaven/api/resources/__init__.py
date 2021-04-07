@@ -1,5 +1,6 @@
 from RocketMaven.api.resources.asset import (
     AssetResource,
+    AssetPriceResource,
     AssetSearchResource,
     PortfolioAssetSearchResource,
 )
@@ -35,6 +36,7 @@ from RocketMaven.api.resources.portfolio import LeaderboardList
 
 __all__ = [
     "AssetResource",
+    "AssetPriceResource",
     "AssetSearchResource",
     "PortfolioAssetSearchResource",
     "TimeSeriesResource",

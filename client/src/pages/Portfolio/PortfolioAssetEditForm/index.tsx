@@ -27,6 +27,7 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
   const [addActionValue, setAddActionValue] = useState(true)
   const [holdings, setHoldings] = useState(0)
   const [pricePerShare, setPricePerShare] = useState(0)
+  const [currentTicker, setCurrentTicker] = useState(0)
   const [units, setUnits] = useState(0)
   const [form] = Form.useForm()
 
@@ -45,7 +46,6 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
   const onFinish = (values: any) => {
     values.asset_id = values.asset_id.value
     values.add_action = addActionValue
-    console.log('************** values are ', values)
     setValuesAndFetch({
       ...values
     })
@@ -53,6 +53,28 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
 
   const getColorOfValue = (value: number) => {
     return value < 0 ? 'red' : 'green'
+  }
+
+  const getLivePrice = () => {
+    const myFetch = async () => {
+      try {
+        const response = await fetch(`/api/v1/assets/${currentTicker}/price`, {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+          }
+        })
+        if (!response.ok) {
+          throw Error(`${response.status}`)
+        }
+        const data = await response.json()
+        setPricePerShare(data.price)
+        form.setFieldsValue({
+          price_per_share: data.price
+        })
+      } catch (error) {}
+    }
+    myFetch()
   }
 
   return (
@@ -84,6 +106,7 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
               console.log(newValue)
               setHoldings(parseFloat(newValue.label.props['data-holdings']))
               setPricePerShare(newValue.label.props.title)
+              setCurrentTicker(newValue.value)
               form.setFieldsValue({
                 price_per_share: newValue.label.props.title
               })
@@ -137,6 +160,20 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
             </Form.Item>
           </span>
         )}
+
+        <Form.Item label="Update Price Per Share">
+          <Button
+            type="primary"
+            onClick={getLivePrice}
+            danger
+            style={{
+              marginRight: '8px',
+              marginBottom: '12px'
+            }}
+          >
+            Get Live Price
+          </Button>
+        </Form.Item>
 
         <Form.Item
           name="note"
