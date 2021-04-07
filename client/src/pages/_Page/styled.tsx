@@ -1,6 +1,5 @@
 import styled from 'styled-components'
 import { Layout, Menu } from 'antd'
-import { StyledLink } from '@rocketmaven/componentsStyled/Typography'
 import { ContentWrap } from '@rocketmaven/App/styled'
 import { Card } from '@rocketmaven/componentsStyled/Card'
 const { Header, Content, Sider } = Layout

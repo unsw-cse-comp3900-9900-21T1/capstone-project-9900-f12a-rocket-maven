@@ -12,6 +12,7 @@ import Asset from '@rocketmaven/pages/Asset'
 import Watchlists from '@rocketmaven/pages/Watchlists'
 import Explore from '@rocketmaven/pages/Explore'
 import Leaderboard from '@rocketmaven/pages/Leaderboard'
+import Compare from '@rocketmaven/pages/Compare'
 import Report from '@rocketmaven/pages/Report'
 import TopAdditions from '@rocketmaven/pages/TopAdditions'
 
@@ -30,6 +31,7 @@ const Routes = () => {
       ></Route>
       <Route exact path={urls.explore} component={Explore} />
       <Route exact path={urls.leaderboard} component={Leaderboard} />
+      <Route exact path={urls.compare} component={Compare} />
       <Route exact path={urls.homeStub} component={HomeStub} />
       <Route exact path={urls.login} component={LogIn} />
       <Route exact path={urls.forgot} component={Forgot} />

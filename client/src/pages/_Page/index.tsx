@@ -1,6 +1,5 @@
 import * as React from 'react'
-import { BodyWrap, FooterWrap, HeaderWrap, PageWrap } from './styled'
-import { Layout, Menu, Breadcrumb } from 'antd'
+import { BodyWrap, FooterWrap, PageWrap } from './styled'
 
 // This component is a wrapper for the other pages content.
 // Note only the body will change and all the other sections of the DOM will

@@ -1,5 +1,4 @@
 import { Fragment } from 'react'
-import { Row, Col } from '@rocketmaven/componentsStyled/Grid'
 import { Card } from '@rocketmaven/componentsStyled/Card'
 import { Link } from 'react-router-dom'
 import { urls } from '@rocketmaven/data/urls'

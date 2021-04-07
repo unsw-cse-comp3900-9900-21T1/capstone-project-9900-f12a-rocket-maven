@@ -1,7 +1,5 @@
 import Page from '@rocketmaven/pages/_Page'
-import { Fragment } from 'react'
 import React from 'react'
-import ReactDOM from 'react-dom'
 import { Link } from 'react-router-dom'
 
 import { Card } from '@rocketmaven/componentsStyled/Card'

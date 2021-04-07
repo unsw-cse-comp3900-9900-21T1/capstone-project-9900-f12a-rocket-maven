@@ -1,11 +1,9 @@
-import { Link } from 'react-router-dom'
 import { Form, Input, Button } from 'antd'
 import { Card } from '@rocketmaven/componentsStyled/Card'
 import { urls } from '@rocketmaven/data/urls'
-import { useState, useRef, useMemo } from 'react'
-import { useHistory } from 'react-router'
+import { useState } from 'react'
 import { PortfolioInfo, PortfolioEventCreate } from '@rocketmaven/pages/Portfolio/types'
-import { useFetchGetWithUserId, useFetchMutationWithUserId } from '@rocketmaven/hooks/http'
+import { useFetchMutationWithUserId } from '@rocketmaven/hooks/http'
 
 import { Row, Statistic } from 'antd'
 import AssetSearchBox from '@rocketmaven/components/AssetSearchBox'
@@ -32,7 +30,7 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
   const [price, setPrice] = useState()
   const [form] = Form.useForm()
 
-  let initialValues: PortfolioEventCreate = {
+  const initialValues: PortfolioEventCreate = {
     add_action: addActionValue,
     asset_id: '',
     fees: 0,
@@ -40,7 +38,7 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
     price_per_share: 0,
     units: 0
   }
-  let urlEnd = `../../../portfolios/${portfolioId}/history`
+  const urlEnd = `../../../portfolios/${portfolioId}/history`
 
   const setValuesAndFetch: Function = useFetchMutationWithUserId(urlEnd, 'POST', urls.portfolio)
 

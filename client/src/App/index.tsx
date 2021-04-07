@@ -6,14 +6,11 @@ import SideBar from '@rocketmaven/App/SideBar'
 import { Store } from '@rocketmaven/data/app/store'
 import 'antd/dist/antd.less'
 import NavBar from '@rocketmaven/components/NavBar'
-import { Layout, Menu } from 'antd'
+import { Layout } from 'antd'
 import React, { useState } from 'react'
 import {
   MenuUnfoldOutlined,
-  MenuFoldOutlined,
-  UserOutlined,
-  VideoCameraOutlined,
-  UploadOutlined
+  MenuFoldOutlined
 } from '@ant-design/icons'
 const { Header, Content, Sider } = Layout
 

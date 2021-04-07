@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react'
 // import Page from '@rocketmaven/pages/_Page'
-import { useHistory } from 'react-router'
-import { useStore, useUserId, useIsLoggedIn } from '@rocketmaven/hooks/store'
-import { Link, Route, Switch, useLocation } from 'react-router-dom'
+import { useStore } from '@rocketmaven/hooks/store'
+import { useLocation } from 'react-router-dom'
 import { useFetchGetWithUserId } from '@rocketmaven/hooks/http'
 import { PortfolioPagination } from '@rocketmaven/pages/Portfolio/types'
 import { Card } from '@rocketmaven/componentsStyled/Card'
 import { Button } from '@rocketmaven/componentsStyled/Button'
 import MainChart from '@rocketmaven/components/MainChart'
 // import { Title } from '@rocketmaven/componentsStyled/Typography'
-import { Form, DatePicker, Radio, Input, Select } from 'antd'
+import { Form, DatePicker, Radio, Select } from 'antd'
 import { isEmpty } from 'ramda'
 const { RangePicker } = DatePicker
 const { Option } = Select
@@ -25,7 +24,7 @@ function useQuery() {
 }
 
 const ReportGenerate = () => {
-  let query = useQuery()
+  const query = useQuery()
 
   const { accessToken, refreshToken, dispatch } = useStore()
 
@@ -39,7 +38,7 @@ const ReportGenerate = () => {
   const [reportMode, setReportMode] = React.useState('')
 
   // https://www.highcharts.com/demo/pie-drilldown
-  let chartOptions = {
+  const chartOptions = {
     chart: {
       type: 'pie'
     },
@@ -163,8 +162,8 @@ const ReportGenerate = () => {
 
   useEffect(() => {
     if (data && !isEmpty(data)) {
-      let tmpChildren: any = []
-      let tmpChildren2: any = data.results.map(function (e) {
+      const tmpChildren: any = []
+      const tmpChildren2: any = data.results.map(function (e) {
         tmpChildren.push(e.id)
         return (
           <Option key={e.id} value={e.id}>
