@@ -1,5 +1,4 @@
 import { Text } from '@rocketmaven/componentsStyled/Typography'
-import { useHistory } from 'react-router-dom'
 
 type Props = {
   // Note(Jude): Should not be leaving as any, just aiming to get some CRUD routing pattern implemented

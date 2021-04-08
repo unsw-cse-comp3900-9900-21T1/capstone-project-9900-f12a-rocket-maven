@@ -15,5 +15,6 @@ export const urls = {
   homeStub: '/home-stub',
   explore: '/explore',
   leaderboard: '/leaderboard',
+  compare: '/compare',
   topAdditions: '/top-additions'
 }

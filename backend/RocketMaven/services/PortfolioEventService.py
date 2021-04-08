@@ -14,13 +14,15 @@ YAHOO_FINANCE_ENDPOINT = "https://query2.finance.yahoo.com/v7/finance/quote?form
 
 
 def update_asset(asset) -> (bool, str):
-    """ Updates the asset current price from the Yahoo Finance API
-        Returns True (and an empty string) if there were no issues
-            False and an error message if an error was encountered.
+    """Updates the asset current price from the Yahoo Finance API
+    Returns True (and an empty string) if there were no issues
+        False and an error message if an error was encountered.
     """
     exchange, stock = asset.ticker_symbol.split(":")
 
-    if datetime.datetime.now() - asset.price_last_updated < datetime.timedelta(minutes=10):
+    if datetime.datetime.now() - asset.price_last_updated < datetime.timedelta(
+        minutes=10
+    ):
         return True, "Asset Price not updated"
 
     if exchange != "VIRT":
@@ -60,10 +62,10 @@ def update_asset(asset) -> (bool, str):
 
 
 def delete_holding(portfolio_id):
-    """ Deletes an asset from a portfolio
-        Returns
-            200 - a asset is deleted successfully
-            500 - if an unexpected exception occurs
+    """Deletes an asset from a portfolio
+    Returns
+        200 - a asset is deleted successfully
+        500 - if an unexpected exception occurs
     """
     asset_id = request.json.get("asset_id")
     print(asset_id)
@@ -84,21 +86,23 @@ def delete_holding(portfolio_id):
 
 
 def get_events(portfolio_id):
-    """ Get the list of (asset) events in a portfolio
-        Returns
-            200 - a paginated list of Portfolio events
-            500 - if an unexpected exception occurs
+    """Get the list of (asset) events in a portfolio
+    Returns
+        200 - a paginated list of Portfolio events
+        500 - if an unexpected exception occurs
     """
     schema = PortfolioEventSchema(many=True)
-    query = PortfolioEvent.query.filter_by(portfolio_id=portfolio_id)
+    query = PortfolioEvent.query.filter_by(portfolio_id=portfolio_id).order_by(
+        PortfolioEvent.event_date.asc()
+    )
     return paginate(query, schema)
 
 
 def get_holdings(portfolio_id):
-    """ Get the list of asset holdings in a portfolio
-        Returns
-            200 - a paginated list of asset holdings
-            500 - if an unexpected exception occurs
+    """Get the list of asset holdings in a portfolio
+    Returns
+        200 - a paginated list of asset holdings
+        500 - if an unexpected exception occurs
     """
     schema = PortfolioAssetHoldingSchema(many=True)
     query = PortfolioAssetHolding.query.filter_by(portfolio_id=portfolio_id)
@@ -106,8 +110,7 @@ def get_holdings(portfolio_id):
 
 
 def handle_broker_csv_row(csv_input_row: dict) -> dict:
-    """ Maps a csv column to a PortfolioEvent-compatible structure
-    """
+    """Maps a csv column to a PortfolioEvent-compatible structure"""
     output_map = {
         "add_action": False,
         "asset_id": None,
@@ -143,34 +146,47 @@ def handle_broker_csv_row(csv_input_row: dict) -> dict:
 
 
 def create_event(portfolio_id):
-    """ Create a new asset for the given portfolio in the database
-        Returns
-            201 - on successful asset creation
-            400 - Foreign key error (unknown portfolio or asset id)
-            500 - unexpected error
+    """Create a new asset for the given portfolio in the database
+    Returns
+        201 - on successful asset creation
+        400 - Foreign key error (unknown portfolio or asset id)
+        500 - unexpected error
     """
-
-    file_mode = False
 
     schema = PortfolioEventSchema()
 
     query = Portfolio.query.filter_by(id=portfolio_id).first()
 
+    if not query:
+        return (
+            {
+                "msg": "portfolio does not exist!",
+            },
+            400,
+        )
+
+    file_mode = False
+
     if "files[]" not in request.files:
+        # Handle direct form asset event input
         try:
             if query.competition_portfolio == True:
                 request.json["price_per_share"] = 0
                 request.json["fees"] = 0
+
             portfolio_event = schema.load(request.json)
             portfolio_event.portfolio_id = portfolio_id
             portfolio_events = [portfolio_event]
         except Exception as e:
             print(e)
             return (
-                {"msg": "error encountered in input asset creation json!",},
+                {
+                    "msg": "error encountered in input asset creation json!",
+                },
                 500,
             )
     else:
+        # Handle CSV events import
         portfolio_events = []
         try:
             for form_file in request.files.getlist("files[]"):
@@ -178,8 +194,8 @@ def create_event(portfolio_id):
                 csv_file = csv.DictReader(tmp_file)
                 for m in csv_file:
 
+                    # Normalise different CSV formats to one that our system can understand
                     portfolio_event = schema.load(handle_broker_csv_row(m))
-                    print(portfolio_event)
                     portfolio_event.portfolio_id = portfolio_id
                     portfolio_events.append(portfolio_event)
                     file_mode = True
@@ -187,13 +203,17 @@ def create_event(portfolio_id):
         except Exception as e:
             file_mode = False
             return (
-                {"msg": f"issue processing csv file! {e}",},
+                {
+                    "msg": f"issue processing csv file! {e}",
+                },
                 500,
             )
 
         if file_mode == False:
             return (
-                {"msg": "no files in form found!",},
+                {
+                    "msg": "no files in form found!",
+                },
                 400,
             )
 
@@ -205,54 +225,85 @@ def create_event(portfolio_id):
             400,
         )
 
-    for portfolio_event in portfolio_events:
-        # Competition portfolio ignores any user-set price. So the user should be able to refresh the real-time price that the system provides to make an informed competition entry.
-        if query.competition_portfolio == True:
-            portfolio_event.event_date = None
-            asset = Asset.query.filter_by(
-                ticker_symbol=portfolio_event.asset_id
-            ).first()
-            update_asset(asset)
-            portfolio_event.price_per_share = asset.current_price
+    try:
+        output_events = []
+        for portfolio_event in portfolio_events:
 
-            if (
-                portfolio_event.add_action == True
-                and portfolio_event.price_per_share * portfolio_event.units
-                > query.buying_power
-            ):
+            if portfolio_event.units <= 0:
+                db.session.rollback()
                 return (
                     {
-                        "msg": "competition portfolio event failed, insufficient buying power",
+                        "msg": "event failed, units cannot be negative or zero",
                     },
                     400,
                 )
 
-        db.session.add(portfolio_event)
-        buying_power_diff = portfolio_event.update_portfolio_asset_holding()
+            # Competition portfolio ignores any user-set price. So the user should be able to refresh the real-time price that the system provides to make an informed competition entry.
+            if query.competition_portfolio == True:
+                portfolio_event.event_date = None
+                asset = Asset.query.filter_by(
+                    ticker_symbol=portfolio_event.asset_id
+                ).first()
+                update_asset(asset)
+                portfolio_event.price_per_share = asset.current_price
 
-        if query.competition_portfolio == True:
-            buying_power_diff = 0
-            if portfolio_event.add_action == True:
-                # Buy
-                buying_power_diff = -(
-                    portfolio_event.price_per_share * portfolio_event.units
+                if (
+                    portfolio_event.add_action == True
+                    and portfolio_event.price_per_share * portfolio_event.units
+                    > query.buying_power
+                ):
+                    db.session.rollback()
+                    return (
+                        {
+                            "msg": "competition portfolio event failed, insufficient buying power",
+                        },
+                        400,
+                    )
+
+            if portfolio_event.price_per_share <= 0:
+                db.session.rollback()
+                return (
+                    {
+                        "msg": "event failed, price per share cannot be negative or zero",
+                    },
+                    400,
                 )
-            else:
-                # Sell
-                buying_power_diff = (
-                    portfolio_event.price_per_share * portfolio_event.units
+
+            portfolio_holdings = PortfolioAssetHolding.query.filter_by(
+                portfolio_id=portfolio_id, asset_id=portfolio_event.asset_id
+            ).first()
+
+            if (
+                portfolio_holdings
+                and portfolio_holdings.available_units - portfolio_event.units < 0
+                and portfolio_event.add_action == False
+            ):
+                db.session.rollback()
+                return (
+                    {
+                        "msg": "event failed, cannot remove more units then available",
+                    },
+                    400,
                 )
 
-            print("Buying power change: ", query.buying_power, buying_power_diff)
-
-            query.buying_power += buying_power_diff
+            portfolio_event.update_portfolio_asset_holding()
+            output_events.append(portfolio_event)
 
         db.session.commit()
+        return (
+            {
+                "msg": "portfolio events created",
+                "portfolio event": [schema.dump(x) for x in output_events],
+            },
+            201,
+        )
+    except Exception as e:
+        print(e)
+        db.session.rollback()
 
-    return (
-        {
-            "msg": "portfolio event created",
-            "portfolio event": schema.dump(portfolio_event),
-        },
-        201,
-    )
+        return (
+            {
+                "msg": "an unknown error has occured creating the portfolio event",
+            },
+            500,
+        )

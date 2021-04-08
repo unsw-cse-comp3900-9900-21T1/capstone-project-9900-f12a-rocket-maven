@@ -1,9 +1,17 @@
 {
-    "search.exclude": {
-        "backend/RocketMaven/static": true,
-        "backend/RocketMaven/commons/templates": true,
-        "backend/data": true,
-        "client/package-lock.json": true,
-        "documents": true,
-    },
+  "search.exclude": {
+    "backend/RocketMaven/static": true,
+    "backend/RocketMaven/commons/templates": true,
+    "backend/data": true,
+    "client/package-lock.json": true,
+    "documents": true,
+    "diaries": true,
+    "client/public/third-party": true
+  },
+  "eslint.lintTask.enable": true,
+  "eslint.workingDirectories": ["./client"],
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": true
+  }
 }

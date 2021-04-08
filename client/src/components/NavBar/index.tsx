@@ -1,13 +1,12 @@
 import { useContext } from 'react'
 import { Link } from 'react-router-dom'
-import { FaHome, FaSignOutAlt } from 'react-icons/fa'
+import { FaSignOutAlt } from 'react-icons/fa'
 import { storeContext } from '@rocketmaven/data/app/store'
-import { Text, Subtitle } from '@rocketmaven/componentsStyled/Typography'
 import { useStore } from '@rocketmaven/hooks/store'
 import { urls } from '@rocketmaven/data/urls'
 import { HeaderWrap } from '@rocketmaven/pages/_Page/styled'
 
-import { Layout, Menu, Breadcrumb, message } from 'antd'
+import { Menu, message } from 'antd'
 type Props = {
   children: React.ReactNode
 }

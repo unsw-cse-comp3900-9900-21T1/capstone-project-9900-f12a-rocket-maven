@@ -1,12 +1,11 @@
 import Page from '@rocketmaven/pages/_Page'
 import { Link } from 'react-router-dom'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Title, Subtitle, Text } from '@rocketmaven/componentsStyled/Typography'
 import { useFetchTopAdditions } from '@rocketmaven/hooks/http'
 import { PortfolioInfo } from '@rocketmaven/pages/Portfolio/types'
 import { urls } from '@rocketmaven/data/urls'
-import { message, Table, Space } from 'antd'
-import { isEmpty } from 'ramda'
+import { Table } from 'antd'
 
 type Asset = {
   industry: string
@@ -168,8 +167,8 @@ const TopAdditions = () => {
       }
     ]
 
-    let datas: any = []
-    let portfolios: [PortfolioInfo]= [data.portfolio]
+    const datas: any = []
+    const portfolios: [PortfolioInfo]= [data.portfolio]
     portfolios.forEach((portfolio, index) => {
       datas.push({
         Investor: portfolio.investor,

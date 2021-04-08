@@ -1,3 +1,4 @@
+import { useStore } from '@rocketmaven/hooks/store'
 import { Select, Spin } from 'antd'
 import { SelectProps } from 'antd/es/select'
 import debounce from 'lodash/debounce'
@@ -15,13 +16,10 @@ type AssetSearch = {
   price_last_updated: Date
   currency: string
   data_source: string
+  available_units: number
 }
 
 type AssetSearchPagination = {
-  next: string
-  pages: number
-  prev: string
-  total: number
   results: [AssetSearch]
 }
 
@@ -79,35 +77,47 @@ interface DebounceValue {
   key: string
 }
 
-async function fetchUserList(query: string): Promise<DebounceValue[]> {
-  return fetch(`/api/v1/assets/search?q=${query}&per_page=10`)
-    .then((response) => response.json())
-    .then((data) => {
-      if (!data || isEmpty(data) || !data.hasOwnProperty('results')) {
-      } else {
-        const histories: [AssetSearch] = (data as AssetSearchPagination).results
-
-        const search_simple = histories.map((item) => {
-          return {
-            key: item.ticker_symbol,
-            value: item.ticker_symbol,
-            label: (
-              <span title={item.current_price.toString()}>
-                {item.ticker_symbol + ' | ' + item.name}
-              </span>
-            )
-          }
-        })
-
-        return search_simple
+const UserAssetSearchBox = (props: any) => {
+  const { accessToken } = useStore()
+  async function fetchUserList(query: string): Promise<DebounceValue[]> {
+    return fetch(`/api/v1/assets/search/${props.portfolioid}?q=${query}&per_page=10`, {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`
       }
-
-      return []
     })
-}
+      .then((response) => response.json())
+      .then((data) => {
+        if (!data || isEmpty(data) || !data.hasOwnProperty('results')) {
+        } else {
+          const histories: [AssetSearch] = (data as AssetSearchPagination).results
 
-const AssetSearchBox = (props: any) => {
+          const search_simple = histories.map((item) => {
+            return {
+              key: item.ticker_symbol,
+              value: item.ticker_symbol,
+              label: (
+                <span
+                  title={item.current_price.toString()}
+                  data-holdings={item.available_units.toString()}
+                >
+                  {item.ticker_symbol + ' | ' + item.name}
+                </span>
+              )
+            }
+          })
+
+          console.log(search_simple)
+
+          return search_simple
+        }
+
+        return []
+      })
+  }
+
   return <DebounceSelect placeholder="Search Asset" fetchOptions={fetchUserList} {...props} />
 }
 
-export default AssetSearchBox
+export default UserAssetSearchBox

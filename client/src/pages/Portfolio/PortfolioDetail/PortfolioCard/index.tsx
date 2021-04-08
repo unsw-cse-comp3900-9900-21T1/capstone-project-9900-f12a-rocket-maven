@@ -1,7 +1,7 @@
-import { PublicPortfolioInfo } from '@rocketmaven/pages/Portfolio/types'
+import { Card } from '@rocketmaven/componentsStyled/Card';
+import { Col, Row } from '@rocketmaven/componentsStyled/Grid';
+import { PublicPortfolioInfo } from '@rocketmaven/pages/Portfolio/types';
 import { Divider, Table } from 'antd';
-import { Row, Col } from '@rocketmaven/componentsStyled/Grid'
-import { Card } from '@rocketmaven/componentsStyled/Card'
 
 type Props = {
   portfolio: PublicPortfolioInfo
@@ -27,7 +27,10 @@ export const PortfolioCard = ({portfolio}: Props) => {
     { title: "Avg. Purchase Price", dataIndex: "average_price", render: (value: number) => (value.toFixed(2)), },
     { title: "Current Market Price", dataIndex: "market_price", render: (value: number) => (value.toFixed(2)), },
     { title: "Current Value", dataIndex: "current_value", render: (value: number) => (value.toFixed(2)), },
+    { title: "Realised Total", dataIndex: "realised_total", render:  (value: number) => (value.toFixed(2)),},
+    { title: "Purchase Value", dataIndex: "purchase_value", render:  (value: number) => (value.toFixed(2)),},
     { title: "Unrealised Profit/Loss", dataIndex: "unrealised_units", render: numberChangeRenderer, },
+    { title: "Last Updated", dataIndex: "last_updated"},
     { title: "Latest Note", dataIndex: "latest_note" },/* https://ant.design/components/table/ */
     ]
 
@@ -46,6 +49,7 @@ export const PortfolioCard = ({portfolio}: Props) => {
   return (
     <Card
       title={portfolio.name}
+      style={{width: "90%"}}
     >
       <Row>
         <Col>

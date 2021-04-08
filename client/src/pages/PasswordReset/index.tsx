@@ -1,5 +1,5 @@
 import Page from '@rocketmaven/pages/_Page'
-import { useHistory, Redirect } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { Card } from '@rocketmaven/componentsStyled/Card'
 import { Form, Input, Button, message } from 'antd'
 import { Title } from '@rocketmaven/componentsStyled/Typography'

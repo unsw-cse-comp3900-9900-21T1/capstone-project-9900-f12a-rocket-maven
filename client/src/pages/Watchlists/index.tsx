@@ -1,12 +1,9 @@
 import Page from '@rocketmaven/pages/_Page'
 import { Link } from 'react-router-dom'
-import { urls } from '@rocketmaven/data/urls'
 import { Table, Form, Button } from 'antd'
-import React, { useEffect, useState } from 'react'
-import { Subtitle, Title } from '@rocketmaven/componentsStyled/Typography'
+import React from 'react'
+import { Title } from '@rocketmaven/componentsStyled/Typography'
 import {
-  useFetchGetWithUserId,
-  useFetchMutationWithUserId,
   useGetWatchlist
 } from '@rocketmaven/hooks/http' // use later. at the moment backend is not ready
 import { isEmpty } from 'ramda'
@@ -62,7 +59,7 @@ const Watchlists = () => {
     routerObject.go(0)
   }
 
-  var watchlistable = null
+  let watchlistable = null
   if (!watchlist || isEmpty(watchlist)) {
     // do nothing
   } else {
@@ -182,7 +179,7 @@ const Watchlists = () => {
     <Page>
       <Title>Watchlist</Title>
 
-      <Card title="Add to watchlist">
+      <Card title="Add to Watchlist">
         <Form onFinish={onFinish}>
           <Form.Item
             name="asset_id"
