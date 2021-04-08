@@ -27,6 +27,7 @@ from RocketMaven.api.resources import (
     LeaderboardList,
     WatchAsset,
     WatchList,
+    Explore,
 )
 from RocketMaven.api.schemas import (
     AssetSchema,
@@ -40,6 +41,8 @@ from RocketMaven.api.schemas import (
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
 api = Api(blueprint)
+
+api.add_resource(Explore, "/explore", endpoint="explore")
 
 api.add_resource(
     InvestorResource, "/investors/<int:investor_id>", endpoint="investor_by_id"
@@ -120,6 +123,9 @@ api.add_resource(YearlyTimeSeriesResource, "/chart/yearly/<string:ticker_symbol>
 @blueprint.before_app_first_request
 def register_controllers():
     apispec.spec.components.schema("AssetSchema", schema=AssetSchema)
+
+    apispec.spec.path(view=Explore, app=current_app,api=api)
+
     apispec.spec.path(view=AssetResource, app=current_app, api=api)
     apispec.spec.path(view=AssetSearchResource, app=current_app, api=api)
 

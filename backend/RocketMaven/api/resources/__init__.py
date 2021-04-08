@@ -9,6 +9,7 @@ from RocketMaven.api.resources.portfolio_event import (
 from RocketMaven.api.resources.iforgot import Iforgot
 from RocketMaven.api.resources.pw_reset import Pw_reset
 from RocketMaven.api.resources.portfolio import LeaderboardList
+from RocketMaven.api.resources.explore import Explore
 
 __all__ = [
     "AssetResource",
@@ -34,4 +35,5 @@ __all__ = [
     "TopAdditions",
     "WatchAsset",
     "WatchList",
+    "Explore",
 ]
