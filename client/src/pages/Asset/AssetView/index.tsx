@@ -74,7 +74,7 @@ const AssetView = () => {
 
   useFetchAPIPublicData(`/assets/${ticker_symbol}`, setData)
 
-  if (data && !isEmpty(data)) {
+  if (data && !isEmpty(data) && data.asset.asset_additional) {
     const asset_additional = JSON.parse(data.asset.asset_additional)
     console.log(asset_additional)
 

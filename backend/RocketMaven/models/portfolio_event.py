@@ -3,8 +3,8 @@ from sqlalchemy.sql import func
 from RocketMaven.models.portfolio_asset_holding import PortfolioAssetHolding
 from RocketMaven.models.portfolio import Portfolio
 from RocketMaven.models.asset import Asset
-
 from RocketMaven.extensions import db, pwd_context
+import datetime
 
 
 def default_FIFO_units(context):
@@ -30,6 +30,10 @@ class PortfolioEvent(db.Model):
 
     note = db.Column(db.String(1024), unique=False, nullable=True)
 
+    tax_snapshot = db.Column(db.Float(), unique=False, nullable=True)
+    available_snapshot = db.Column(db.Float(), unique=False, nullable=True)
+    realised_snapshot = db.Column(db.Float(), unique=False, nullable=True)
+
     event_date = db.Column(db.DateTime, default=db.func.current_timestamp())
 
     asset_id = db.Column(
@@ -50,14 +54,15 @@ class PortfolioEvent(db.Model):
         return self.dynamic_after_FIFO_units * self.price_per_share
 
     def update_portfolio_asset_holding(self) -> float:
-        """Calculates the FIFO portfolio holding properties when an event occurs,
-        returns the buying power change that the event caused.
+        """Calculates the FIFO portfolio holding properties when an event occurs"""
 
-        """
-
+        # Add the event to the database (neat helper feature)
         db.session.add(self)
+        db.session.flush()
         portfolio_event = self
 
+        # Affect the competition portfolio buying power more globally
+        # Competition portfolio does not allow out-of-sequence (by date) events, so this is safe
         portfolio_query = Portfolio.query.filter_by(
             id=portfolio_event.portfolio_id
         ).first()
@@ -78,101 +83,122 @@ class PortfolioEvent(db.Model):
             # Affect buying power
             portfolio_query.buying_power += buying_power_diff
 
-        asset_price = Asset.query.filter_by(
-            ticker_symbol=portfolio_event.asset_id
-        ).first()
-
-        asset_holding = (
-            PortfolioAssetHolding.query.filter_by(
-                portfolio_id=portfolio_event.portfolio_id
-            )
-            .filter_by(asset_id=portfolio_event.asset_id)
-            .first()
+        asset_holding = PortfolioAssetHolding(
+            asset_id=portfolio_event.asset_id,
+            portfolio_id=portfolio_event.portfolio_id,
+            last_updated=db.func.current_timestamp(),
+            available_units=0,
+            average_price=0,
+            realised_total=0,
+            latest_note="",
         )
 
-        if asset_price:
-            asset_price = asset_price.current_price
+        # FIFO update
+        # Since add action and remove action can be performed out-of-order, this means that
+        #     the add action will have to be recalculated every insertion attempt,
+        #     since the remove event will be no longer tied to the current event.
 
-            if portfolio_event.add_action == False:
-                # Sell
-                # FIFO update
-                asset_events = (
-                    PortfolioEvent.query.filter_by(
-                        portfolio_id=portfolio_event.portfolio_id
-                    )
-                    .filter_by(asset_id=portfolio_event.asset_id)
-                    .filter_by(add_action=True)
-                    .filter(PortfolioEvent.dynamic_after_FIFO_units > 0)
-                    .order_by(PortfolioEvent.event_date)
-                ).all()
+        asset_events = (
+            PortfolioEvent.query.filter_by(
+                portfolio_id=portfolio_event.portfolio_id
+            ).filter_by(asset_id=portfolio_event.asset_id)
+            # Consider adds before removes
+            .order_by(PortfolioEvent.event_date.asc(), PortfolioEvent.add_action.desc())
+        )
+        add_events = asset_events.filter_by(add_action=True).all()
 
-                remove_total = portfolio_event.units
+        # Reset dynamic_after_FIFO_units state
+        for add_event in add_events:
+            add_event.dynamic_after_FIFO_units = add_event.units
 
-                # Loop through all asset events in order of creation (from earliest to latest)
+        past_add_events = []
 
-                realised_running_local_sum = 0
+        event_taxes = 0
+        realised_running_local_sum = 0
+        for event in asset_events.all():
+            # Loop through all asset events in order of creation (from earliest to latest)
 
-                for m in asset_events:
+            if event.add_action == False:
+                # Get the sell events, these affect the FIFO calculations
+                remove_event = event
+                remove_total = remove_event.units
+
+                for add_event in past_add_events:
+                    # Loop through all add asset events in order of creation (from earliest to latest)
 
                     # Start subtracting remove_total from FIFO values
-                    cached_FIFO = m.dynamic_after_FIFO_units
-                    m.dynamic_after_FIFO_units = max(cached_FIFO - remove_total, 0)
-                    removed_difference = cached_FIFO - m.dynamic_after_FIFO_units
+                    cached_FIFO = add_event.dynamic_after_FIFO_units
+                    add_event.dynamic_after_FIFO_units = max(
+                        cached_FIFO - remove_total, 0
+                    )
+                    removed_difference = (
+                        cached_FIFO - add_event.dynamic_after_FIFO_units
+                    )
 
                     remove_total -= removed_difference
-                    realised_running_local_sum += removed_difference * (
-                        asset_price - m.price_per_share
+                    current_realised = removed_difference * (
+                        remove_event.price_per_share - add_event.price_per_share
                     )
+                    if current_realised < 0:
+                        # A loss, so can be used for tax offsetting
+                        event_taxes -= event_taxes
+                    elif current_realised > 0:
+                        # A profit, so check if the FIFO add event was from a year before the remove event
+                        add_date = datetime.datetime.timestamp(
+                            datetime.datetime.fromordinal(
+                                add_event.event_date.toordinal()
+                            )
+                        )
+                        remove_date = datetime.datetime.timestamp(
+                            datetime.datetime.fromordinal(
+                                remove_event.event_date.toordinal()
+                            )
+                        )
+                        if remove_date - add_date < 365 * 24 * 60 * 60:
+                            # Less than one year, pay full tax
+                            event_taxes += current_realised
+                        else:
+                            # One year or more, pay half tax
+                            event_taxes += current_realised / 2
+
+                    realised_running_local_sum += current_realised
 
                     if remove_total <= 0:
                         break
 
-                asset_holding.realised_total += realised_running_local_sum
-
-            available_units = (
-                db.session.query(
-                    PortfolioEvent,
-                    func.sum(PortfolioEvent.dynamic_after_FIFO_units).label("value"),
+                asset_holding.available_units = sum(
+                    [x.dynamic_after_FIFO_units for x in past_add_events]
                 )
-                .filter_by(portfolio_id=portfolio_event.portfolio_id)
-                .filter_by(asset_id=portfolio_event.asset_id)
-                .filter_by(add_action=True)
-                .first()
-                .value
-            )
-
-            if portfolio_event.add_action == True:
+            elif event.add_action == True:
+                add_event = event
                 # Buy
                 # Update the average price only on buy
+                past_add_events.append(add_event)
 
-                if not asset_holding:
-                    asset_holding = PortfolioAssetHolding(
-                        asset_id=portfolio_event.asset_id,
-                        portfolio_id=portfolio_event.portfolio_id,
-                        last_updated=db.func.current_timestamp(),
-                        available_units=0,
-                        average_price=0,
-                        realised_total=0,
-                        latest_note="",
-                    )
-                    db.session.add(asset_holding)
+                # That dynamic_after_FIFO_units affects the available units at the current event's timepoint
+                # Note that the current add event is considered to be available for the purpose of calculations
+                available_units = sum(
+                    [x.dynamic_after_FIFO_units for x in past_add_events]
+                )
+
                 previous_update = (
                     asset_holding.available_units * asset_holding.average_price
                 )
-                new_update = portfolio_event.units * portfolio_event.price_per_share
+                new_update = add_event.units * add_event.price_per_share
 
+                # Recalculate the new average price
                 new_average_price = (previous_update + new_update) / available_units
                 asset_holding.average_price = new_average_price
 
-                realised_running_local_sum = -new_update
+                asset_holding.available_units = available_units
+                if add_event.note and len(add_event.note.strip()) > 0:
+                    asset_holding.latest_note = add_event.note
 
-            asset_holding.available_units = available_units
-            if portfolio_event.note and len(portfolio_event.note.strip()) > 0:
-                asset_holding.latest_note = portfolio_event.note
+            # Save a copy of the event's data for the report
+            event.available_snapshot = asset_holding.available_units
+            event.tax_snapshot = event_taxes
+            event.realised_snapshot = realised_running_local_sum
 
-            return realised_running_local_sum
+        asset_holding.realised_total = realised_running_local_sum
 
-        else:
-            raise Exception("Asset does not exist!")
-
-        return 0
+        db.session.merge(asset_holding)
