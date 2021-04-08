@@ -1,19 +1,15 @@
 import Page from '@rocketmaven/pages/_Page'
-import { Form, Input, Button, Row, Col } from 'antd'
+import { Form, Button, Row, Col } from 'antd'
 import { urls } from '@rocketmaven/data/urls'
-import { Investor } from '@rocketmaven/pages/Account/types'
-import { Card } from '@rocketmaven/componentsStyled/Card'
-import { SearchOutlined } from '@ant-design/icons'
 import { Select, Spin } from 'antd'
 import { SelectProps } from 'antd/es/select'
 import debounce from 'lodash/debounce'
 import { useState, useRef, useMemo } from 'react'
 import { isEmpty } from 'ramda'
-import { useFetchGetWithUserId, useFetchMutationWithUserId } from '@rocketmaven/hooks/http'
-import { url } from 'node:inspector'
 import { Link } from 'react-router-dom'
-import { FaTrophy } from 'react-icons/fa'
+import { FaBalanceScale, FaTrophy } from 'react-icons/fa'
 import { FaHeart } from 'react-icons/fa'
+import { useHistory } from 'react-router'
 
 export type AssetSearch = {
   ticker_symbol: string
@@ -122,6 +118,7 @@ const Explore = () => {
   const [valued, setValued] = useState()
   const [price, setPrice] = useState()
   const [form] = Form.useForm()
+  const routerObject = useHistory()
 
   // const onFinish = (values: any) => {
   //   values.asset_id = values.asset_id.value
@@ -160,7 +157,8 @@ const Explore = () => {
                 fetchOptions={fetchUserList}
                 onChange={(newValue) => {
                   setValued(newValue.key)
-                  console.log(newValue)
+                  // Place holder until/if we incooperate advanced search
+                  routerObject.push(`${urls.asset}/${newValue.key}`)
                 }}
                 style={{ width: '500px' }}
               />
@@ -177,6 +175,13 @@ const Explore = () => {
             <Button type="primary">
               <Link to={urls.topAdditions}>
                 <FaHeart /> Top Additions
+              </Link>
+            </Button>
+          </Row>
+          <Row  style={{ marginBottom: '0.5rem' }}>
+            <Button type="primary">
+              <Link to={urls.compare}>
+                <FaBalanceScale /> Compare Assets
               </Link>
             </Button>
           </Row>

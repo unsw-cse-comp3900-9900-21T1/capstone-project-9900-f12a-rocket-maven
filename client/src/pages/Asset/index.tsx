@@ -1,7 +1,7 @@
 import Page from '@rocketmaven/pages/_Page'
 import { Title } from '@rocketmaven/componentsStyled/Typography'
 import { urls } from '@rocketmaven/data/urls'
-import { Link, Route, Switch } from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
 import AssetView from '@rocketmaven/pages/Asset/AssetView'
 
 const Asset = () => {

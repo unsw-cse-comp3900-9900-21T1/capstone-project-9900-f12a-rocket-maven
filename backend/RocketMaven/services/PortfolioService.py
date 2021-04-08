@@ -8,6 +8,7 @@ from flask_jwt_extended import get_jwt_identity
 from RocketMaven.models import Investor
 import sys
 import collections
+from sqlalchemy import and_
 
 
 def get_portfolio(portfolio_id):
@@ -95,98 +96,196 @@ def get_report():
     if not "report_type" in request.json or not "portfolios" in request.json:
         return {"msg": "invalid report parameters!"}, 400
 
-    portfolios = (
-        db.session()
-        .query(PortfolioAssetHolding)
-        .join(Asset)
-        .join(Portfolio)
-        .filter_by(investor_id=get_jwt_identity())
-        .filter(Portfolio.id.in_(request.json["portfolios"]))
-    )
-
     if request.json["report_type"] == "Diversification":
-        series_raw = collections.defaultdict(lambda: collections.defaultdict(int))
-        drilldown_raw = collections.defaultdict(
-            lambda: collections.defaultdict(lambda: collections.defaultdict(int))
-        )
-        total_normalise = collections.defaultdict(int)
-        for m in portfolios.all():
-            series_raw[m.portfolio_id][m.asset.industry] += (
-                m.average_price * m.available_units
+        try:
+            portfolios = (
+                db.session()
+                .query(PortfolioAssetHolding)
+                .join(Asset)
+                .join(Portfolio)
+                .filter_by(investor_id=get_jwt_identity())
+                .filter(Portfolio.id.in_(request.json["portfolios"]))
             )
-            drilldown_raw[m.portfolio_id][m.asset.industry][m.asset.ticker_symbol] += (
-                m.average_price * m.available_units
+            series_raw = collections.defaultdict(lambda: collections.defaultdict(int))
+            drilldown_raw = collections.defaultdict(
+                lambda: collections.defaultdict(lambda: collections.defaultdict(int))
             )
-            total_normalise[m.portfolio_id] += m.average_price * m.available_units
-
-        series = []
-        drilldown = {
-            "series": [],
-            "activeDataLabelStyle": {
-                "textDecoration": "none",
-                "fontStyle": "regular",
-                "color": "white",
-            },
-        }
-
-        col = 0.85
-        row = 0.5
-        spacing = 50
-        width = 200
-
-        for portfolio_id in series_raw:
-            port_data = []
-            for m in series_raw[portfolio_id]:
-                port_data.append(
-                    {
-                        "name": m,
-                        "drilldown": (m + str(portfolio_id)).replace(" ", "_"),
-                        "y": (
-                            series_raw[portfolio_id][m] / total_normalise[portfolio_id]
-                        )
-                        * 100,
-                    }
+            total_normalise = collections.defaultdict(int)
+            for m in portfolios.all():
+                series_raw[m.portfolio_id][m.asset.industry] += (
+                    m.average_price * m.available_units
                 )
-            series.append(
-                {
-                    "name": "Portfolio " + str(portfolio_id),
-                    "colorByPoint": True,
-                    "data": port_data,
-                    "center": [
-                        width * col + spacing * col,
-                        width * row + spacing * (row - 1),
-                    ],
-                    "size": width,
-                }
-            )
+                drilldown_raw[m.portfolio_id][m.asset.industry][
+                    m.asset.ticker_symbol
+                ] += (m.average_price * m.available_units)
+                total_normalise[m.portfolio_id] += m.average_price * m.available_units
 
-            col += 1
-            if col > 2:
-                col = 0.85
-                row += 1
+            series = []
+            drilldown = {
+                "series": [],
+                "activeDataLabelStyle": {
+                    "textDecoration": "none",
+                    "fontStyle": "regular",
+                    "color": "white",
+                },
+            }
 
-        for portfolio_id in drilldown_raw:
-            for m in drilldown_raw[portfolio_id]:
+            col = 0.85
+            row = 0.5
+            spacing = 50
+            width = 200
+
+            for portfolio_id in series_raw:
                 port_data = []
-                for n in drilldown_raw[portfolio_id][m]:
+                if total_normalise[portfolio_id] == 0:
+                    continue
+                for m in series_raw[portfolio_id]:
+                    if series_raw[portfolio_id][m] == 0:
+                        continue
                     port_data.append(
-                        [
-                            n,
-                            (
-                                drilldown_raw[portfolio_id][m][n]
-                                / series_raw[portfolio_id][m]
+                        {
+                            "name": m,
+                            "drilldown": (m + str(portfolio_id)).replace(" ", "_"),
+                            "y": (
+                                series_raw[portfolio_id][m]
+                                / total_normalise[portfolio_id]
                             )
                             * 100,
-                        ]
+                        }
                     )
-                drilldown["series"].append(
+                series.append(
                     {
-                        "name": m,
-                        "id": (m + str(portfolio_id)).replace(" ", "_"),
+                        "name": "Portfolio " + str(portfolio_id),
+                        "colorByPoint": True,
                         "data": port_data,
+                        "center": [
+                            width * col + spacing * col,
+                            width * row + spacing * (row - 1),
+                        ],
+                        "size": width,
                     }
                 )
-        return {"series": series, "drilldown": drilldown}, 200
+
+                col += 1
+                if col > 2:
+                    col = 0.85
+                    row += 1
+
+            for portfolio_id in drilldown_raw:
+                if total_normalise[portfolio_id] == 0:
+                    continue
+                for m in drilldown_raw[portfolio_id]:
+                    if series_raw[portfolio_id][m] == 0:
+                        continue
+                    port_data = []
+                    for n in drilldown_raw[portfolio_id][m]:
+                        port_data.append(
+                            [
+                                n,
+                                (
+                                    drilldown_raw[portfolio_id][m][n]
+                                    / series_raw[portfolio_id][m]
+                                )
+                                * 100,
+                            ]
+                        )
+                    drilldown["series"].append(
+                        {
+                            "name": m,
+                            "id": (m + str(portfolio_id)).replace(" ", "_"),
+                            "data": port_data,
+                        }
+                    )
+            return {"series": series, "drilldown": drilldown}, 200
+        except Exception as e:
+            print(e)
+            return {"msg": "error creating diversification report"}, 500
+
+    if request.json["report_type"] == "Realised":
+
+        portfolios = (
+            db.session()
+            .query(PortfolioEvent)
+            .join(Portfolio)
+            .filter_by(investor_id=get_jwt_identity())
+            .filter(Portfolio.id.in_(request.json["portfolios"]))
+            .order_by(PortfolioEvent.event_date.asc())
+        )
+
+        if "date_range" in request.json:
+            date_range = request.json["date_range"]
+            if len(date_range) == 2:
+                portfolios = portfolios.filter(
+                    and_(
+                        PortfolioEvent.event_date >= date_range[0],
+                        PortfolioEvent.event_date <= date_range[1],
+                    )
+                )
+
+        series = collections.defaultdict(list)
+
+        for portfolio_event in portfolios.all():
+            print(portfolio_event.event_date.timestamp())
+            series[portfolio_event.portfolio_id].append(
+                [
+                    int(portfolio_event.event_date.timestamp()) * 1000,
+                    portfolio_event.realised_snapshot,
+                ]
+            )
+
+        name = "Realised Gains/Losses for Portfolio "
+        return {
+            "series": [
+                {
+                    "name": name + str(x[0]),
+                    "id": "realised-" + str(x[0]).replace(" ", "_"),
+                    "data": x[1],
+                }
+                for x in series.items()
+            ]
+        }
+    if request.json["report_type"] == "Tax":
+
+        portfolios = (
+            db.session()
+            .query(PortfolioEvent)
+            .join(Portfolio)
+            .filter_by(investor_id=get_jwt_identity())
+            .filter(Portfolio.id.in_(request.json["portfolios"]))
+            .order_by(PortfolioEvent.event_date.asc())
+        )
+
+        if "date_range" in request.json:
+            date_range = request.json["date_range"]
+            if len(date_range) == 2:
+                portfolios = portfolios.filter(
+                    and_(
+                        PortfolioEvent.event_date >= date_range[0],
+                        PortfolioEvent.event_date <= date_range[1],
+                    )
+                )
+
+        series = collections.defaultdict(list)
+
+        for portfolio_event in portfolios.all():
+            series[portfolio_event.portfolio_id].append(
+                [
+                    int(portfolio_event.event_date.timestamp()) * 1000,
+                    portfolio_event.tax_snapshot,
+                ]
+            )
+
+        name = "Taxes for Portfolio "
+        return {
+            "series": [
+                {
+                    "name": name + str(x[0]),
+                    "id": "realised-" + str(x[0]).replace(" ", "_"),
+                    "data": x[1],
+                }
+                for x in series.items()
+            ]
+        }
 
     return True
 

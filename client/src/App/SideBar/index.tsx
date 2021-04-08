@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import {
   FaBriefcase,
@@ -13,7 +13,6 @@ import { SidebarWrap, LogoWrap, MenuItemWrap } from '@rocketmaven/pages/_Page/st
 import { urls } from '@rocketmaven/data/urls'
 import { useStore } from '@rocketmaven/hooks/store'
 
-import { Menu, Breadcrumb } from 'antd'
 
 const size = {
   width: 30,

@@ -1,11 +1,10 @@
-import { Form, Input, Button } from 'antd'
+import { Form, Button } from 'antd'
 import { Card } from '@rocketmaven/componentsStyled/Card'
 import { urls } from '@rocketmaven/data/urls'
-import { useState, useRef, useMemo } from 'react'
+import { useState } from 'react'
 import { useHistory } from 'react-router'
 import {
   useAccessToken,
-  useFetchGetWithUserId,
   useFetchMutationWithUserId
 } from '@rocketmaven/hooks/http'
 
@@ -34,7 +33,7 @@ const PortfolioAssetEditForm = ({ portfolioId }: Props) => {
   const routerObject = useHistory()
   const { accessToken, revalidateAccessToken } = useAccessToken()
 
-  let urlEnd = `/api/v1/portfolios/${portfolioId}/history`
+  const urlEnd = `/api/v1/portfolios/${portfolioId}/history`
 
   const setValuesAndFetch: Function = useFetchMutationWithUserId(urlEnd, 'POST', urls.portfolio)
 

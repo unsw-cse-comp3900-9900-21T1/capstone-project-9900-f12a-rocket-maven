@@ -5,7 +5,7 @@ import { PortfolioPagination } from '@rocketmaven/pages/Portfolio/types'
 import PaginatedPortfolioDisplay from '@rocketmaven/pages/Portfolio/PortfolioList/PaginatedPortfolioDisplay'
 import { Link } from 'react-router-dom'
 import { urls } from '@rocketmaven/data/urls'
-import { Button, Divider } from 'antd'
+import { Button } from 'antd'
 import { FaPlus } from 'react-icons/fa'
 
 type PortfolioListFetchResults = {

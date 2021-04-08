@@ -1,40 +1,27 @@
-import { Fragment, useState, useEffect, useCallback, useContext } from 'react'
-import { Link } from 'react-router-dom'
-import { isEmpty } from 'ramda'
-import { storeContext } from '@rocketmaven/data/app/store'
-
-import { Text, Subtitle } from '@rocketmaven/componentsStyled/Typography'
-import { useFetchMutationWithUserId } from '@rocketmaven/hooks/http'
+import { EyeOutlined, PlusOutlined, SettingOutlined } from '@ant-design/icons'
 import { Card } from '@rocketmaven/componentsStyled/Card'
-import { Row, Col } from '@rocketmaven/componentsStyled/Grid'
-import {
-  PortfolioInfo,
-  PortfolioPagination,
-  PortfolioHolding
-} from '@rocketmaven/pages/Portfolio/types'
-import { useHistory } from 'react-router-dom'
+import { Row } from '@rocketmaven/componentsStyled/Grid'
+import { storeContext } from '@rocketmaven/data/app/store'
 // import { PortfolioWrap } from '@rocketmaven/pages/Portfolio/PortfolioList/PaginatedPortfolioDisplay/styled'
 import { urls } from '@rocketmaven/data/urls'
-import {
-  Tooltip,
-  Button,
-  Divider,
-  Table,
-  message,
-  Typography,
-  PageHeader,
-  Tag,
-  Descriptions,
-  Statistic
-} from 'antd'
-import {
-  EditOutlined,
-  EllipsisOutlined,
-  PlusOutlined,
-  SettingOutlined,
-  EyeOutlined
-} from '@ant-design/icons'
 import { useAccessToken } from '@rocketmaven/hooks/http'
+import { PortfolioInfo, PortfolioPagination } from '@rocketmaven/pages/Portfolio/types'
+import {
+  Button,
+  Descriptions,
+  Divider,
+  message,
+  PageHeader,
+  Statistic,
+  Table,
+  Tag,
+  Tooltip,
+  Typography
+} from 'antd'
+import { isEmpty } from 'ramda'
+import { Fragment, useContext } from 'react'
+import { Link, useHistory } from 'react-router-dom'
+
 const AntText = Typography.Text
 
 type Props = {
@@ -97,7 +84,7 @@ const PaginatedPortfolioDisplay = ({ portfolioPagination, refreshPortfolios }: P
   return (
     <Fragment>
       {portfolios.map((portfolio, index) => {
-        let columns: any = [
+        const columns: any = [
           {
             title: 'Ticker Symbol',
             key: 'asset_id',
@@ -145,7 +132,7 @@ const PaginatedPortfolioDisplay = ({ portfolioPagination, refreshPortfolios }: P
             render: (value: number) => value.toFixed(2)
           },
           {
-            title: 'Avg. Purchase Price',
+            title: 'Purchase Price',
             dataIndex: 'average_price',
             render: (value: number) => value.toFixed(2)
           },
@@ -198,7 +185,7 @@ const PaginatedPortfolioDisplay = ({ portfolioPagination, refreshPortfolios }: P
           'Purchase Cost': [false, portfolio.purchase_value_sum],
           'Unrealised (Market - Purchase)': [
             true,
-            portfolio.current_value_sum - portfolio.purchase_value_sum
+            (portfolio.current_value_sum - portfolio.purchase_value_sum).toFixed(2)
           ],
           'Realised (Sold Value)': [true, portfolio.realised_sum]
         }
@@ -238,7 +225,14 @@ const PaginatedPortfolioDisplay = ({ portfolioPagination, refreshPortfolios }: P
           <div title={portfolio.creation_date}>
             <PageHeader
               style={{ padding: '0px' }}
-              title={portfolio.name}
+              title={
+                <Link
+                  style={{ color: 'inherit', textDecoration: 'underline wavy' }}
+                  to={urls.portfolio + '/' + portfolio.id}
+                >
+                  {portfolio.name}
+                </Link>
+              }
               subTitle={portfolio.description}
               tags={[
                 portfolio.competition_portfolio ? (
@@ -288,7 +282,9 @@ const PaginatedPortfolioDisplay = ({ portfolioPagination, refreshPortfolios }: P
           >
             <Descriptions column={2} size="small" bordered style={{ marginBottom: '1rem' }}>
               {portfolio.competition_portfolio ? (
-                <Descriptions.Item label="Buying Power">{portfolio.buying_power}</Descriptions.Item>
+                <Descriptions.Item label="Buying Power">
+                  {portfolio.buying_power.toFixed(2)}
+                </Descriptions.Item>
               ) : null}
               <Descriptions.Item label="Tax Residency">{portfolio.tax_residency}</Descriptions.Item>
             </Descriptions>
