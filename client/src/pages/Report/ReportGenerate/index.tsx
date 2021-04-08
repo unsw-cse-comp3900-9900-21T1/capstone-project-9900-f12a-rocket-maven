@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from 'react'
+import MainChart from '@rocketmaven/components/MainChart'
+import { Button } from '@rocketmaven/componentsStyled/Button'
+import { Card } from '@rocketmaven/componentsStyled/Card'
+import { useFetchGetWithUserId } from '@rocketmaven/hooks/http'
 // import Page from '@rocketmaven/pages/_Page'
 import { useStore } from '@rocketmaven/hooks/store'
-import { useLocation } from 'react-router-dom'
-import { useFetchGetWithUserId } from '@rocketmaven/hooks/http'
 import { PortfolioPagination } from '@rocketmaven/pages/Portfolio/types'
-import { Card } from '@rocketmaven/componentsStyled/Card'
-import { Button } from '@rocketmaven/componentsStyled/Button'
-import MainChart from '@rocketmaven/components/MainChart'
 // import { Title } from '@rocketmaven/componentsStyled/Typography'
-import { Form, DatePicker, Radio, Select } from 'antd'
+import { DatePicker, Form, Radio, Select } from 'antd'
+import moment from 'moment'
 import { isEmpty } from 'ramda'
+import React, { useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 const { RangePicker } = DatePicker
 const { Option } = Select
 
@@ -32,52 +33,9 @@ const ReportGenerate = () => {
   const [defaultChildren, setDefaultChildren] = React.useState(false)
   const [hideDate, setHideDate] = React.useState(false)
 
-  const [seriesData, setSeriesData] = React.useState([])
-  const [drilldownData, setDrilldownData] = React.useState([])
-
   const [reportMode, setReportMode] = React.useState('')
 
-  // https://www.highcharts.com/demo/pie-drilldown
-  const chartOptions = {
-    chart: {
-      type: 'pie'
-    },
-    title: {
-      text: 'Diversification'
-    },
-    subtitle: {
-      text: 'Portfolios by Industry Diversity'
-    },
-
-    accessibility: {
-      announceNewData: {
-        enabled: true
-      },
-      point: {
-        valueSuffix: '%'
-      }
-    },
-
-    plotOptions: {
-      series: {
-        dataLabels: {
-          enabled: true,
-          format: '{point.name}: {point.y:.1f}%',
-          distance: -30
-        },
-        showInLegend: true
-      }
-    },
-
-    tooltip: {
-      headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-      pointFormat:
-        '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
-    },
-
-    series: seriesData,
-    drilldown: drilldownData
-  }
+  const [chartOptions, setChartOptions] = React.useState({})
 
   const onFinish = async (values: any) => {
     setReportMode(values.report_type)
@@ -94,22 +52,100 @@ const ReportGenerate = () => {
     })
     const data = await response.json()
 
-    if (values.report_type == "Diversification") {
-      setDrilldownData(data['drilldown'])
-      setSeriesData(data['series'])
+    if (values.report_type == 'Diversification') {
+      // https://www.highcharts.com/demo/pie-drilldown
+      setChartOptions({
+        chart: {
+          type: 'pie'
+        },
+        title: {
+          text: 'Diversification'
+        },
+        subtitle: {
+          text: 'Portfolios by Industry Diversity'
+        },
+
+        accessibility: {
+          announceNewData: {
+            enabled: true
+          },
+          point: {
+            valueSuffix: '%'
+          }
+        },
+
+        plotOptions: {
+          series: {
+            dataLabels: {
+              enabled: true,
+              format: '{point.name}: {point.y:.1f}%',
+              distance: -30
+            },
+            showInLegend: true
+          }
+        },
+
+        tooltip: {
+          headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+          pointFormat:
+            '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
+        },
+
+        series: data['series'],
+        drilldown: data['drilldown']
+      })
     }
-    if (!response.ok) {
-      throw Error(`${data.msg}`)
+
+    if (values.report_type == 'Realised') {
+      console.log(data['series'])
+      setChartOptions({
+        chart: {
+          type: 'line'
+        },
+        xAxis: {
+          type: 'datetime'
+        },
+        title: {
+          text: 'Realised'
+        },
+        subtitle: {
+          text: 'Realised Portfolio Values'
+        },
+        series: data['series']
+      })
+    }
+
+    if (values.report_type == 'Tax') {
+      console.log(data['series'])
+      setChartOptions({
+        chart: {
+          type: 'line'
+        },
+        xAxis: {
+          type: 'datetime'
+        },
+        title: {
+          text: 'Tax'
+        },
+        subtitle: {
+          text: 'Tax Values'
+        },
+        series: data['series']
+      })
     }
   }
 
-  let optionsValue = 'Metrics'
+  let initDate: any = []
+
+  let optionsValue = 'Realised'
 
   if (query.get('prefab') == 'all-time') {
   }
   if (query.get('prefab') == 'year') {
+    initDate = [moment().subtract(1, 'year'), moment()]
   }
   if (query.get('prefab') == 'monthly') {
+    initDate = [moment().subtract(1, 'month'), moment()]
   }
   if (query.get('prefab') == 'trades') {
     optionsValue = 'Trade'
@@ -127,9 +163,9 @@ const ReportGenerate = () => {
   }
 
   const options = [
-    { label: 'Metrics', value: 'Metrics' },
+    { label: 'Realised', value: 'Realised' },
     { label: 'Tax', value: 'Tax' },
-    { label: 'Trade', value: 'Trade' },
+    // { label: 'Trade', value: 'Trade' },
     { label: 'Diversification', value: 'Diversification' }
   ]
 
@@ -210,7 +246,7 @@ const ReportGenerate = () => {
           ) : null}
 
           {!hideDate ? (
-            <Form.Item label="Date Range" name="date_range">
+            <Form.Item label="Date Range" name="date_range" initialValue={initDate}>
               <RangePicker />
             </Form.Item>
           ) : null}
@@ -229,10 +265,17 @@ const ReportGenerate = () => {
         </Form>
       </Card>
 
-      {seriesData.length > 0 && 'series' in drilldownData && reportMode == 'Diversification' ? (
+      {chartOptions && reportMode == 'Diversification' ? (
         <Card>
           <div style={{ height: '70vh', width: '100%' }}>
             <MainChart customType="pie" options={chartOptions} />
+          </div>
+        </Card>
+      ) : null}
+      {chartOptions && (reportMode == 'Realised' || reportMode == 'Tax') ? (
+        <Card>
+          <div style={{ height: '70vh', width: '100%' }}>
+            <MainChart options={chartOptions} />
           </div>
         </Card>
       ) : null}
