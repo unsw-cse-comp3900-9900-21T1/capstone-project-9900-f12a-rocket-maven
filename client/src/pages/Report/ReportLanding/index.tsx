@@ -1,7 +1,7 @@
+import { Button } from '@rocketmaven/componentsStyled/Button'
+import { Card } from '@rocketmaven/componentsStyled/Card'
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Card } from '@rocketmaven/componentsStyled/Card'
-import { Button } from '@rocketmaven/componentsStyled/Button'
 
 const ReportLanding = () => {
   return (
@@ -19,10 +19,10 @@ const ReportLanding = () => {
           <Link to="/report/builder?prefab=monthly">Month Portfolio Comparison</Link>
         </Button>
         <br />
-        <Button type="primary">
+        {/* <Button type="primary">
           <Link to="/report/builder?prefab=trades">Trades</Link>
         </Button>
-        <br />
+        <br /> */}
         <Button type="primary">
           <Link to="/report/builder?prefab=diversification">Diversification</Link>
         </Button>
