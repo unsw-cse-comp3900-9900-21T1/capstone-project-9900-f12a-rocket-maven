@@ -11,3 +11,13 @@ Week3
 - Wrote user story part of project proposal document.
 
 Week4
+- Implementing email service in back-end
+
+Week5
+- Implementing password service in back-end
+
+Week7
+- switch to front-end and implement exploring
+
+Week8
+- implementing advanced searching
