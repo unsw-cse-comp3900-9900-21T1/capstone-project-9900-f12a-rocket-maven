@@ -45,51 +45,54 @@ def populate_full_system(db):
         db.session.add(user)
         db.session.commit()
 
-    test_portfolio = (
-        db.session.query(Portfolio).filter_by(name="My First Portfolio!").first()
+    portfolio = Portfolio(
+        tax_residency="AU",
+        name="My First Portfolio!",
+        description="Seeing if I should invest or not",
+        competition_portfolio=False,
+        buying_power=None,
+        investor_id=user.id,
+    )
+    db.session.add(portfolio)
+    db.session.commit()
+
+    portfolio2 = Portfolio(
+        tax_residency="AU",
+        name="My Second Portfolio!",
+        description="Seeing if I should invest or not",
+        competition_portfolio=False,
+        public_portfolio=True,
+        buying_power=None,
+        investor_id=user.id,
+        deleted=True,
+    )
+    db.session.add(portfolio2)
+    db.session.commit()
+
+    asset = Asset(
+        ticker_symbol="VIRT:A",
+        name="Virtual Holding A",
+        industry="Virtual",
+        current_price=100,
+        data_source="VIRTUAL",
+        country="AU",
+        currency="AUD",
     )
 
-    if not test_portfolio:
-        portfolio = Portfolio(
-            tax_residency="AU",
-            name="My First Portfolio!",
-            description="Seeing if I should invest or not",
-            competition_portfolio=False,
-            buying_power=None,
-            investor_id=user.id,
-        )
-        db.session.add(portfolio)
-        db.session.commit()
+    db.session.add(asset)
 
-    test_asset = db.session.query(Asset).filter_by(ticker_symbol="VIRT:A").first()
+    asset = Asset(
+        ticker_symbol="ASX:CBA",
+        name="Commonwealth Bank of Australia",
+        industry="Banking",
+        current_price=86.49,
+        data_source="Yahoo Finance",
+        country="AU",
+        currency="AUD",
+    )
+    db.session.add(asset)
+    db.session.commit()
 
-    if not test_asset:
-
-        asset = Asset(
-            ticker_symbol="VIRT:A",
-            name="Virtual Holding A",
-            industry="Virtual",
-            current_price=100,
-            data_source="VIRTUAL",
-            country="AU",
-            currency="AUD",
-        )
-
-        db.session.add(asset)
-
-        asset = Asset(
-            ticker_symbol="ASX:CBA",
-            name="Commonwealth Bank of Australia",
-            industry="Banking",
-            current_price=86.49,
-            data_source="Yahoo Finance",
-            country="AU",
-            currency="AUD",
-        )
-        db.session.add(asset)
-        db.session.commit()
-
-    
     test_portfolio_event = (
         db.session.query(PortfolioEvent)
         .filter_by(asset_id="VIRT:A", portfolio_id=portfolio.id)
@@ -123,10 +126,6 @@ def populate_full_system(db):
         )
         db.session.add(asset_aapl)
         db.session.commit()
-        
-        
-        
-        
 
         portfolio_event = PortfolioEvent(
             units=10,
@@ -141,6 +140,7 @@ def populate_full_system(db):
 
         db.session.add(portfolio_event)
         db.session.commit()
+
         portfolio_event.update_portfolio_asset_holding()
 
         portfolio_event = PortfolioEvent(
@@ -170,22 +170,6 @@ def populate_full_system(db):
         )
         db.session.add(asset_cba)
         db.session.commit()
-
-
-        create_asset_event_with_current_price(
-            dict(
-                units=100,
-                add_action=True,
-                fees=15,
-                price_per_share=90,
-                note="Good stock",
-                asset_id="VIRT:CBA",
-                portfolio_id=portfolio.id,
-                event_date=datetime.date(2021, 1, 3),
-            ),
-            asset_cba,
-            db,
-        )
 
         create_asset_event_with_current_price(
             dict(
@@ -279,6 +263,176 @@ def populate_full_system(db):
 
     AssetService.load_asset_data(db)
 
+    tmp_asset = db.session.query(Asset).filter_by(ticker_symbol="NASDAQ:TEAM").first()
+
+    create_asset_event_with_current_price(
+        dict(
+            units=20,
+            add_action=True,
+            fees=15,
+            price_per_share=tmp_asset.current_price,
+            note="Competitor to Github/Microsoft",
+            asset_id=tmp_asset.ticker_symbol,
+            portfolio_id=portfolio2.id,
+            event_date=datetime.date(2021, 3, 18),
+        ),
+        tmp_asset,
+        db,
+    )
+    create_asset_event_with_current_price(
+        dict(
+            units=20,
+            add_action=True,
+            fees=15,
+            price_per_share=tmp_asset.current_price,
+            note="Competitor to Github/Microsoft",
+            asset_id=tmp_asset.ticker_symbol,
+            portfolio_id=portfolio2.id,
+            event_date=datetime.date(2021, 3, 30),
+        ),
+        tmp_asset,
+        db,
+    )
+
+    tmp_asset = db.session.query(Asset).filter_by(ticker_symbol="ASX:NAB").first()
+
+    create_asset_event_with_current_price(
+        dict(
+            units=20,
+            add_action=True,
+            fees=15,
+            price_per_share=tmp_asset.current_price,
+            note="Competitor to CBA",
+            asset_id=tmp_asset.ticker_symbol,
+            portfolio_id=portfolio2.id,
+            event_date=datetime.date(2021, 3, 30),
+        ),
+        tmp_asset,
+        db,
+    )
+
+    tmp_asset = db.session.query(Asset).filter_by(ticker_symbol="ASX:NAB").first()
+
+    create_asset_event_with_current_price(
+        dict(
+            units=20,
+            add_action=True,
+            fees=15,
+            price_per_share=tmp_asset.current_price,
+            note="Competitor to CBA",
+            asset_id=tmp_asset.ticker_symbol,
+            portfolio_id=portfolio2.id,
+            event_date=datetime.date(2021, 3, 30),
+        ),
+        tmp_asset,
+        db,
+    )
+    
+
+    tmp_asset = db.session.query(Asset).filter_by(ticker_symbol="ASX:WBC").first()
+
+    create_asset_event_with_current_price(
+        dict(
+            units=20,
+            add_action=True,
+            fees=15,
+            price_per_share=tmp_asset.current_price,
+            note="Competitor to CBA",
+            asset_id=tmp_asset.ticker_symbol,
+            portfolio_id=portfolio2.id,
+            event_date=datetime.date(2021, 3, 30),
+        ),
+        tmp_asset,
+        db,
+    )
+
+    tmp_asset = db.session.query(Asset).filter_by(ticker_symbol="ASX:WBC").first()
+
+    create_asset_event_with_current_price(
+        dict(
+            units=20,
+            add_action=True,
+            fees=15,
+            price_per_share=tmp_asset.current_price,
+            note="Competitor to CBA",
+            asset_id=tmp_asset.ticker_symbol,
+            portfolio_id=portfolio2.id,
+            event_date=datetime.date(2021, 3, 30),
+        ),
+        tmp_asset,
+        db,
+    )
+    
+
+    tmp_asset = db.session.query(Asset).filter_by(ticker_symbol="ASX:ANZ").first()
+
+    create_asset_event_with_current_price(
+        dict(
+            units=20,
+            add_action=True,
+            fees=15,
+            price_per_share=tmp_asset.current_price,
+            note="Competitor to CBA",
+            asset_id=tmp_asset.ticker_symbol,
+            portfolio_id=portfolio2.id,
+            event_date=datetime.date(2021, 3, 30),
+        ),
+        tmp_asset,
+        db,
+    )
+
+    tmp_asset = db.session.query(Asset).filter_by(ticker_symbol="ASX:ANZ").first()
+
+    create_asset_event_with_current_price(
+        dict(
+            units=20,
+            add_action=True,
+            fees=15,
+            price_per_share=tmp_asset.current_price,
+            note="Competitor to CBA",
+            asset_id=tmp_asset.ticker_symbol,
+            portfolio_id=portfolio2.id,
+            event_date=datetime.date(2021, 3, 30),
+        ),
+        tmp_asset,
+        db,
+    )
+    
+    
+    tmp_asset = db.session.query(Asset).filter_by(ticker_symbol="ASX:BHP").first()
+
+    create_asset_event_with_current_price(
+        dict(
+            units=20,
+            add_action=True,
+            fees=15,
+            price_per_share=tmp_asset.current_price,
+            note="Competitor to Rio Tinto",
+            asset_id=tmp_asset.ticker_symbol,
+            portfolio_id=portfolio2.id,
+            event_date=datetime.date(2021, 3, 30),
+        ),
+        tmp_asset,
+        db,
+    )
+    
+    tmp_asset = db.session.query(Asset).filter_by(ticker_symbol="ASX:CSL").first()
+
+    create_asset_event_with_current_price(
+        dict(
+            units=20,
+            add_action=True,
+            fees=15,
+            price_per_share=tmp_asset.current_price,
+            note="",
+            asset_id=tmp_asset.ticker_symbol,
+            portfolio_id=portfolio2.id,
+            event_date=datetime.date(2021, 3, 30),
+        ),
+        tmp_asset,
+        db,
+    )
+
     WatchlistService.add_watchlist(user.id, "NASDAQ:AAPL")
     WatchlistService.add_watchlist(user.id, "ASX:CBA")
     WatchlistService.add_watchlist(user.id, "ASX:ART")
@@ -343,4 +497,3 @@ def populate_full_system(db):
     db.session.commit()
     portfolio_event.update_portfolio_asset_holding()
     db.session.commit()
-

@@ -2,6 +2,7 @@ import Page from '@rocketmaven/pages/_Page'
 import { urls } from '@rocketmaven/data/urls'
 import { useParams, Link, Route, Switch } from 'react-router-dom'
 import { Card } from '@rocketmaven/componentsStyled/Card'
+import MainChart from '@rocketmaven/components/MainChart'
 import { useHistory } from 'react-router'
 import { Row, Col, Statistic, Button, message, Tooltip } from 'antd'
 import { useFetchAPIPublicData } from '@rocketmaven/hooks/http'
@@ -9,36 +10,8 @@ import { isEmpty } from 'ramda'
 import { useEffect, useState } from 'react'
 import { useStore, useUserId, useIsLoggedIn } from '@rocketmaven/hooks/store'
 
-// https://www.npmjs.com/package/highcharts-react-official
-import 'highcharts/css/stocktools/gui.css'
-import 'highcharts/css/annotations/popup.css'
-
-import Highcharts from 'highcharts/highstock'
-import HighchartsReact from 'highcharts-react-official'
-
-import exporting from 'highcharts/modules/exporting'
-import offlineExporting from 'highcharts/modules/offline-exporting'
-import exportData from 'highcharts/modules/export-data'
-import indicatorsAll from 'highcharts/indicators/indicators-all'
-import dragPanes from 'highcharts/modules/drag-panes'
-import annotationsAdvanced from 'highcharts/modules/annotations-advanced'
-import priceIndicator from 'highcharts/modules/price-indicator'
-import fullScreen from 'highcharts/modules/full-screen'
-import stockTools from 'highcharts/modules/stock-tools'
-
-import '@rocketmaven/pages/Asset/AssetView/AdditionalChart.css'
 import { Subtitle } from '@rocketmaven/componentsStyled/Typography'
 import { FaRegStar } from 'react-icons/fa'
-
-exporting(Highcharts)
-offlineExporting(Highcharts)
-exportData(Highcharts)
-indicatorsAll(Highcharts)
-dragPanes(Highcharts)
-annotationsAdvanced(Highcharts)
-priceIndicator(Highcharts)
-fullScreen(Highcharts)
-stockTools(Highcharts)
 
 type Params = {
   ticker_symbol: string
@@ -209,10 +182,6 @@ const AssetView = () => {
           offset: 0
         }
       ],
-      navigation: {
-        iconsURL: process.env.PUBLIC_URL + '/third-party/highcharts/gfx/stock-icons/'
-      },
-
       // https://www.highcharts.com/demo/stock/lazy-loading
       rangeSelector: {
         buttons: seriesIndex,
@@ -266,12 +235,7 @@ const AssetView = () => {
     graph_card = (
       <Card>
         <div style={{ height: '70vh', width: '100%' }}>
-          <HighchartsReact
-            highcharts={Highcharts}
-            constructorType={'stockChart'}
-            containerProps={{ style: { width: '100%', height: '70vh' } }}
-            options={options}
-          />
+          <MainChart customType="stock" constructorType={'stockChart'} options={options} />
         </div>
       </Card>
     )
@@ -283,7 +247,6 @@ const AssetView = () => {
 
   const addToWatchlist = async () => {
     if (isLoggedIn) {
-
       const response = await fetch(`/api/v1/watchlist/${ticker_symbol}`, {
         method: 'POST',
         headers: {
