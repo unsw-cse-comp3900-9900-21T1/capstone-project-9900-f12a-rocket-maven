@@ -1,5 +1,10 @@
+from flask import request
 from flask_restful import Resource
-
+from RocketMaven.api.schemas import AssetSchema
+from RocketMaven.services import AssetService
+from RocketMaven.models import Asset
+from RocketMaven.extensions import db
+from RocketMaven.commons.pagination import paginate
 from RocketMaven.services import ExploreService
 
 class Explore(Resource):
@@ -14,17 +19,22 @@ class Explore(Resource):
         parameters:
           - in: query
             name: country
-            description: country
+            description:
             schema:
               type: string
           - in: query
             name: currency
-            description: currency
+            description:
             schema:
               type: string
           - in: query
             name: industry
-            description: industry
+            description:
+            schema:
+              type: string
+          - in: query
+            name: q
+            description:
             schema:
               type: string
         responses:

@@ -47,8 +47,10 @@ def search_asset():
         try:
             # https://stackoverflow.com/questions/3325467/sqlalchemy-equivalent-to-sql-like-statement
             search = "%{}%".format(q)
+            print(search)
             schema = AssetSchema(many=True)
             query = Asset.query.filter(or_(Asset.ticker_symbol.like(search), Asset.name.like(search))).order_by(Asset.market_cap.desc())
+            print("qqqqqqqqqqqqq", query)
             return paginate(query, schema)
         except Exception as e:
             print(e)
