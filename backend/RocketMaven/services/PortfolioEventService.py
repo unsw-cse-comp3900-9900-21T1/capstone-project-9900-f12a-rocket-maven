@@ -92,7 +92,9 @@ def get_events(portfolio_id):
         500 - if an unexpected exception occurs
     """
     schema = PortfolioEventSchema(many=True)
-    query = PortfolioEvent.query.filter_by(portfolio_id=portfolio_id)
+    query = PortfolioEvent.query.filter_by(portfolio_id=portfolio_id).order_by(
+        PortfolioEvent.event_date.asc()
+    )
     return paginate(query, schema)
 
 
@@ -274,6 +276,7 @@ def create_event(portfolio_id):
             if (
                 portfolio_holdings
                 and portfolio_holdings.available_units - portfolio_event.units < 0
+                and portfolio_event.add_action == False
             ):
                 db.session.rollback()
                 return (

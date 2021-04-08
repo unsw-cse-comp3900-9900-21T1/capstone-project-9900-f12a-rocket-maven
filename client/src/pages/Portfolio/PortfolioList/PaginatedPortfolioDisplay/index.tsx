@@ -225,7 +225,14 @@ const PaginatedPortfolioDisplay = ({ portfolioPagination, refreshPortfolios }: P
           <div title={portfolio.creation_date}>
             <PageHeader
               style={{ padding: '0px' }}
-              title={portfolio.name}
+              title={
+                <Link
+                  style={{ color: 'inherit', textDecoration: 'underline wavy' }}
+                  to={urls.portfolio + '/' + portfolio.id}
+                >
+                  {portfolio.name}
+                </Link>
+              }
               subTitle={portfolio.description}
               tags={[
                 portfolio.competition_portfolio ? (
