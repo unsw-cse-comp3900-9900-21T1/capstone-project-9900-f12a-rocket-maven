@@ -47,3 +47,4 @@ class Explore(Resource):
         security: []
         """
         return ExploreService.advanced_search()
+        
