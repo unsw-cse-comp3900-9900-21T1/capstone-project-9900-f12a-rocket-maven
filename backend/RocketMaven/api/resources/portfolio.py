@@ -1,15 +1,6 @@
-from flask import request
-from flask_restful import Resource
 from flask_jwt_extended import jwt_required
-from RocketMaven.api.schemas import (
-    LeaderboardSchema,
-    PortfolioSchema,
-    PublicPortfolioSchema,
-    AssetSchema,
-)
+from flask_restful import Resource
 from RocketMaven.services import CompetitionService, PortfolioService
-from RocketMaven.models import Portfolio
-from RocketMaven.extensions import db
 
 
 class LeaderboardList(Resource):
@@ -234,7 +225,8 @@ class PortfolioListAll(Resource):
         """List all portfolios
         ---
         summary: Portfolios List All
-        description: List all portfolios belonging to the specified investor without an additional api request and including deleted portfolios
+        description: List all portfolios belonging to the specified investor
+          without an additional api request and including deleted portfolios
         tags:
           - Portfolios
         parameters:

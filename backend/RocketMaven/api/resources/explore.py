@@ -1,11 +1,6 @@
-from flask import request
 from flask_restful import Resource
-from RocketMaven.api.schemas import AssetSchema
-from RocketMaven.services import AssetService
-from RocketMaven.models import Asset
-from RocketMaven.extensions import db
-from RocketMaven.commons.pagination import paginate
 from RocketMaven.services import ExploreService
+
 
 class Explore(Resource):
 

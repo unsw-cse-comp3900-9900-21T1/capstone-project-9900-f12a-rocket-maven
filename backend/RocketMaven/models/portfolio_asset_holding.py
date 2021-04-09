@@ -1,10 +1,9 @@
 from sqlalchemy.ext.hybrid import hybrid_property
 
 # from sqlalchemy.orm import column_property
-from RocketMaven.extensions import db, pwd_context
-from RocketMaven.models.asset import Asset
+from RocketMaven.extensions import db
 from sqlalchemy.ext.associationproxy import association_proxy
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import relationship
 
 
 class PortfolioAssetHolding(db.Model):

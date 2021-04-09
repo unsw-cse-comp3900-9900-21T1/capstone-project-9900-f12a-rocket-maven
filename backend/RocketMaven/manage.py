@@ -12,8 +12,6 @@ def cli():
 def init():
     """Create a new admin user"""
     from RocketMaven.extensions import db
-    from RocketMaven.models import Investor
-    from RocketMaven.models import Portfolio
     from RocketMaven.services import ExampleFullSystemService
 
     db.drop_all()

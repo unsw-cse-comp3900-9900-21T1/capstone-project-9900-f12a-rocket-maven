@@ -1,13 +1,14 @@
-from flask import request
-from RocketMaven.api.schemas import PortfolioSchema, PublicPortfolioSchema, AssetSchema
-from RocketMaven.models import Portfolio, Asset, PortfolioEvent, PortfolioAssetHolding
-from RocketMaven.extensions import db
-from RocketMaven.services.PortfolioEventService import update_asset
-from RocketMaven.commons.pagination import paginate
-from flask_jwt_extended import get_jwt_identity
-from RocketMaven.models import Investor
-import sys
 import collections
+
+from flask import request
+from flask_jwt_extended import get_jwt_identity
+from RocketMaven.api.schemas import (AssetSchema, PortfolioSchema,
+                                     PublicPortfolioSchema)
+from RocketMaven.commons.pagination import paginate
+from RocketMaven.extensions import db
+from RocketMaven.models import (Asset, Portfolio, PortfolioAssetHolding,
+                                PortfolioEvent)
+from RocketMaven.services.PortfolioEventService import update_asset
 from sqlalchemy import and_
 
 
@@ -91,9 +92,8 @@ def get_portfolios(investor_id):
 
 
 def get_report():
-    schema = PortfolioSchema(many=True)
 
-    if not "report_type" in request.json or not "portfolios" in request.json:
+    if "report_type" not in request.json or "portfolios" not in request.json:
         return {"msg": "invalid report parameters!"}, 400
 
     if request.json["report_type"] == "Diversification":
@@ -306,7 +306,7 @@ def get_top_additions():
     # View count of portfolio
     most_viewed_portfolio_result = (
         db.session.query(Portfolio, db.func.max(Portfolio.view_count))
-        .filter(Portfolio.public_portfolio == True)
+        .filter(Portfolio.public_portfolio is True)
         .first()
     )
     portfolio = most_viewed_portfolio_result[0]

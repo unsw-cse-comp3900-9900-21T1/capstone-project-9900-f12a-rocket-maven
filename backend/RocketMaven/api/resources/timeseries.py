@@ -4,9 +4,10 @@ from flask import request
 from flask_restful import Resource
 from RocketMaven.services import TimeSeriesService
 
+
 class TimeSeriesResource(Resource):
 
-  def get(self, ticker_symbol, range):
+    def get(self, ticker_symbol, range):
         """
         ---
         summary: Get stock price time series
@@ -52,6 +53,7 @@ class TimeSeriesResource(Resource):
 
         """
         return TimeSeriesService.get_timeseries_data(ticker_symbol, range)
+
 
 class AdvancedTimeSeriesResource(Resource):
 
@@ -113,26 +115,26 @@ class AdvancedTimeSeriesResource(Resource):
             start_date = datetime.datetime(int(start_date[0:4]), int(start_date[4:6]), int(start_date[6:8]))
             print(start_date)
         except ValueError:
-            return { "msg": "Invalid start date" }, 400
-        
+            return {"msg": "Invalid start date"}, 400
+
         end_date = request.args.get("end", None)
         try:
             end_date = datetime.datetime(int(end_date[0:4]), int(end_date[4:6]), int(end_date[6:8]))
             print(end_date)
         except ValueError:
-            return { "msg": "Invalid end date" }, 400
+            return {"msg": "Invalid end date"}, 400
 
         if start_date > end_date:
-            return { "msg": "Start date cannot be greater than end date" }, 400
+            return {"msg": "Start date cannot be greater than end date"}, 400
 
         interval = request.args.get("interval", "1m")
         try:
             interval = TimeSeriesService.TimeSeriesInterval(interval)
-        except:
-            return { "msg": "Invalid interval"}, 400
-        
+        except Exception:
+            return {"msg": "Invalid interval"}, 400
+
         print(start_date, end_date, interval)
-        
+
         return TimeSeriesService.get_timeseries_data_advanced(ticker_symbol, start_date, end_date, interval)
 
 
@@ -149,7 +151,7 @@ class DailyTimeSeriesResource(Resource):
             name: ticker_symbol
             schema:
               type: string
-          
+
         responses:
           200:
             content:
@@ -179,6 +181,7 @@ class DailyTimeSeriesResource(Resource):
         """
         return TimeSeriesService.get_daily_minute(ticker_symbol)
 
+
 class WeeklyTimeSeriesResource(Resource):
     def get(self, ticker_symbol):
         """
@@ -192,7 +195,7 @@ class WeeklyTimeSeriesResource(Resource):
             name: ticker_symbol
             schema:
               type: string
-          
+
         responses:
           200:
             content:
@@ -222,6 +225,7 @@ class WeeklyTimeSeriesResource(Resource):
         """
         return TimeSeriesService.get_weekly_fiveminute(ticker_symbol)
 
+
 class MonthlyTimeSeriesResource(Resource):
     def get(self, ticker_symbol):
         """
@@ -235,7 +239,7 @@ class MonthlyTimeSeriesResource(Resource):
             name: ticker_symbol
             schema:
               type: string
-          
+
         responses:
           200:
             content:
@@ -265,6 +269,7 @@ class MonthlyTimeSeriesResource(Resource):
         """
         return TimeSeriesService.get_monthly_hourly(ticker_symbol)
 
+
 class YearlyTimeSeriesResource(Resource):
     def get(self, ticker_symbol):
         """
@@ -278,7 +283,7 @@ class YearlyTimeSeriesResource(Resource):
             name: ticker_symbol
             schema:
               type: string
-          
+
         responses:
           200:
             content:

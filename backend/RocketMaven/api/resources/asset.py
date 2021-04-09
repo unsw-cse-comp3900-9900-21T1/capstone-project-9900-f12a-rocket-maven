@@ -1,11 +1,6 @@
-from flask import request
+from flask_jwt_extended import jwt_required
 from flask_restful import Resource
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from RocketMaven.api.schemas import AssetSchema
 from RocketMaven.services import AssetService
-from RocketMaven.models import Asset
-from RocketMaven.extensions import db
-from RocketMaven.commons.pagination import paginate
 
 
 class AssetResource(Resource):
@@ -110,7 +105,9 @@ class PortfolioAssetSearchResource(Resource):
         """
         ---
         summary: Search assets considering an investor's portfolio
-        description: Search assets based on ticker or company name given the context of an investor's portfolio, this adds the units_available field to applicable assets
+        description: Search assets based on ticker or company name given the
+          context of an investor's portfolio, this adds the units_available
+          field to applicable assets
         tags:
           - Asset
         parameters:
