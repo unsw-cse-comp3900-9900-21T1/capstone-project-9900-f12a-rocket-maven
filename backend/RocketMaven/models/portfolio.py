@@ -1,9 +1,9 @@
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy_utils import CountryType
 
-from RocketMaven.extensions import db, pwd_context
+from RocketMaven.extensions import db
 from RocketMaven.models.portfolio_asset_holding import PortfolioAssetHolding
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import relationship
 from sqlalchemy import select, func
 
 
@@ -26,7 +26,6 @@ class Portfolio(db.Model):
     buying_power = db.Column(db.Float(), unique=False, nullable=True, default=10000)
 
     view_count = db.Column(db.Float(), unique=False, nullable=False, default=0)
-
 
     # Portfolio owner, 1 to many (1 side)
     investor = db.relationship("Investor")

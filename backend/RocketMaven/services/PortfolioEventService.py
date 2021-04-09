@@ -1,14 +1,15 @@
-from flask import request
-from RocketMaven.api.schemas import PortfolioEventSchema, PortfolioAssetHoldingSchema
-from RocketMaven.models import PortfolioEvent, PortfolioAssetHolding, Portfolio, Asset
-from RocketMaven.extensions import db
-from RocketMaven.commons.pagination import paginate
-import sqlalchemy.exc
-from sqlalchemy import func
 import csv
-import io
 import datetime
+import io
+
 import requests
+from flask import request
+from RocketMaven.api.schemas import (PortfolioAssetHoldingSchema,
+                                     PortfolioEventSchema)
+from RocketMaven.commons.pagination import paginate
+from RocketMaven.extensions import db
+from RocketMaven.models import (Asset, Portfolio, PortfolioAssetHolding,
+                                PortfolioEvent)
 
 YAHOO_FINANCE_ENDPOINT = "https://query2.finance.yahoo.com/v7/finance/quote?formatted=true&lang=en-AU&region=AU&symbols={ticker}&fields=longName,shortName,regularMarketPrice"
 
@@ -170,7 +171,7 @@ def create_event(portfolio_id):
     if "files[]" not in request.files:
         # Handle direct form asset event input
         try:
-            if query.competition_portfolio == True:
+            if query.competition_portfolio is True:
                 request.json["price_per_share"] = 0
                 request.json["fees"] = 0
 
@@ -209,7 +210,7 @@ def create_event(portfolio_id):
                 500,
             )
 
-        if file_mode == False:
+        if file_mode is False:
             return (
                 {
                     "msg": "no files in form found!",
@@ -217,7 +218,7 @@ def create_event(portfolio_id):
                 400,
             )
 
-    if query.competition_portfolio == True and (len(portfolio_events) > 1 or file_mode):
+    if query.competition_portfolio is True and (len(portfolio_events) > 1 or file_mode):
         return (
             {
                 "msg": "competition portfolio event failed, cannot bulk add to a competition portfolio",
@@ -239,7 +240,7 @@ def create_event(portfolio_id):
                 )
 
             # Competition portfolio ignores any user-set price. So the user should be able to refresh the real-time price that the system provides to make an informed competition entry.
-            if query.competition_portfolio == True:
+            if query.competition_portfolio is True:
                 portfolio_event.event_date = None
                 asset = Asset.query.filter_by(
                     ticker_symbol=portfolio_event.asset_id
@@ -248,7 +249,7 @@ def create_event(portfolio_id):
                 portfolio_event.price_per_share = asset.current_price
 
                 if (
-                    portfolio_event.add_action == True
+                    portfolio_event.add_action is True
                     and portfolio_event.price_per_share * portfolio_event.units
                     > query.buying_power
                 ):
@@ -276,7 +277,7 @@ def create_event(portfolio_id):
             if (
                 portfolio_holdings
                 and portfolio_holdings.available_units - portfolio_event.units < 0
-                and portfolio_event.add_action == False
+                and portfolio_event.add_action is False
             ):
                 db.session.rollback()
                 return (

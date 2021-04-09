@@ -1,13 +1,12 @@
-from flask import jsonify, render_template, Blueprint
-from apispec import APISpec
+import logging
+
+import yaml
+from apispec_webframeworks.flask import FlaskPlugin
+from flask import Blueprint, jsonify, render_template
+
+from apispec import APISpec, yaml_utils
 from apispec.exceptions import APISpecError
 from apispec.ext.marshmallow import MarshmallowPlugin
-from apispec_webframeworks.flask import FlaskPlugin
-import logging
-import yaml
-import apispec
-from apispec import yaml_utils
-from apispec.exceptions import APISpecError
 
 
 # Taken from: apispec_flask_restful
@@ -68,7 +67,7 @@ class FlaskRestfulPlugin(FlaskPlugin):
             resource = kwargs.pop("view")
             parse_operations(resource, operations)
         except Exception as exc:
-            raise
+            raise exc
 
 
 class APISpecExt:
@@ -93,7 +92,7 @@ class APISpecExt:
             version=app.config["APISPEC_VERSION"],
             openapi_version=app.config["OPENAPI_VERSION"],
             # Order is important, as MarshmallowPlugin converts the schema to a json object
-            plugins=[FlaskRestfulPlugin(), MarshmallowPlugin(),],
+            plugins=[FlaskRestfulPlugin(), MarshmallowPlugin(), ],
             # RestfulPlugin()
             **kwargs
         )

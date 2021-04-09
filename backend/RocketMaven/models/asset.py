@@ -1,7 +1,6 @@
-from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy_utils import CountryType, EmailType
+from sqlalchemy_utils import CountryType
 
-from RocketMaven.extensions import db, pwd_context
+from RocketMaven.extensions import db
 
 
 class Asset(db.Model):
@@ -21,7 +20,7 @@ class Asset(db.Model):
 
     country = db.Column(CountryType, unique=False, nullable=True)
     currency = db.Column(db.String(80), unique=False, nullable=True)
-    
+
     asset_additional = db.Column(db.Text, unique=False, nullable=True)
 
     def __repr__(self):

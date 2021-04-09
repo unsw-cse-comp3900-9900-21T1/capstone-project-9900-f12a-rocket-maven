@@ -12,13 +12,12 @@ class InvestorSmallSchema(ma.SQLAlchemyAutoSchema):
         model = Investor
         sqla_session = db.session
         load_instance = True
-        
 
 
 class LeaderboardSchema(ma.SQLAlchemyAutoSchema):
 
     id = ma.Int(dump_only=True)
-    investor = ma.Nested(InvestorSmallSchema, many=False, only = ["id", "username", "first_name", "last_name"])
+    investor = ma.Nested(InvestorSmallSchema, many=False, only=["id", "username", "first_name", "last_name"])
     # password = ma.String(load_only=True, required=True)
 
     class Meta:

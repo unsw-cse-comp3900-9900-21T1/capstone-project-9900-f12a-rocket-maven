@@ -1,11 +1,6 @@
-from flask import request
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required
-from RocketMaven.api.schemas import PortfolioEventSchema, PortfolioAssetHoldingSchema
 from RocketMaven.services import PortfolioEventService
-from RocketMaven.models import PortfolioEvent
-from RocketMaven.extensions import db
-from RocketMaven.commons.pagination import paginate
 
 
 class PortfolioAssetHoldingList(Resource):
@@ -57,23 +52,23 @@ class PortfolioAssetHoldingList(Resource):
         requestBody:
           content:
             application/json:
-	            schema:
-	              type: object
-	              properties:
-	                asset_id:
-	                  type: string
-	                  example: VIRT:CBA
-	                  required: true
+                schema:
+                  type: object
+                  properties:
+                    asset_id:
+                      type: string
+                      example: VIRT:CBA
+                      required: true
         responses:
           200:
             content:
               application/json:
-	            schema:
-	              type: object
-	              properties:
-	                msg:
-	                  type: string
-	                  example: success
+                schema:
+                  type: object
+                  properties:
+                    msg:
+                      type: string
+                      example: success
         """
         return PortfolioEventService.delete_holding(portfolio_id)
 

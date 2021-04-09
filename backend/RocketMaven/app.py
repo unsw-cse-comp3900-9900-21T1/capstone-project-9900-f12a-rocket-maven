@@ -34,7 +34,6 @@ def create_app(testing=False):
     def custom_index():
         return "<a href='swagger-ui'>Swagger UI</a>", 200
 
-
     @app.route("/pw_reset", methods=["GET", "POST"])
     def pw_reset():
         key = request.args.get("key")
@@ -51,8 +50,6 @@ def create_app(testing=False):
         """
 
     return app
-
-
 
 
 def configure_extensions(app):

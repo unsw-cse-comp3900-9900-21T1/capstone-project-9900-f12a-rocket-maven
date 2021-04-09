@@ -1,6 +1,5 @@
 from RocketMaven.api.schemas import LeaderboardSchema
 from RocketMaven.models import Portfolio
-from RocketMaven.commons.pagination import paginate
 
 
 def get_leaderboard():
@@ -17,5 +16,4 @@ def get_leaderboard():
 
     except Exception as e:
         print(e)
-        ra
         return {"msg": "Operation failed!"}
