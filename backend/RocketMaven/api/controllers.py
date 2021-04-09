@@ -1,45 +1,26 @@
 from flask import Blueprint, current_app, jsonify
 from flask_restful import Api
 from marshmallow import ValidationError
-
+from RocketMaven.api.resources import (AdvancedTimeSeriesResource,
+                                       AssetPriceResource, AssetResource,
+                                       AssetSearchResource,
+                                       DailyTimeSeriesResource, Explore,
+                                       Iforgot, InvestorList, InvestorResource,
+                                       LeaderboardList,
+                                       MonthlyTimeSeriesResource,
+                                       PortfolioAssetHoldingList,
+                                       PortfolioAssetSearchResource,
+                                       PortfolioEventList, PortfolioList,
+                                       PortfolioListAll, PortfolioResource,
+                                       PublicPortfolioResource, Pw_reset,
+                                       Report, TimeSeriesResource,
+                                       TopAdditions, WatchAsset, WatchList,
+                                       WeeklyTimeSeriesResource,
+                                       YearlyTimeSeriesResource)
+from RocketMaven.api.schemas import (  # PortfolioAssetHoldingSchema,
+    AssetSchema, InvestorSchema, LeaderboardSchema, PortfolioEventSchema,
+    PortfolioSchema)
 from RocketMaven.extensions import apispec
-from RocketMaven.api.resources import (
-    AssetResource,
-    AssetPriceResource,
-    AssetSearchResource,
-    PortfolioAssetSearchResource,
-    TimeSeriesResource,
-    AdvancedTimeSeriesResource,
-    DailyTimeSeriesResource,
-    WeeklyTimeSeriesResource,
-    MonthlyTimeSeriesResource,
-    YearlyTimeSeriesResource,
-    InvestorResource,
-    InvestorList,
-    PortfolioResource,
-    PublicPortfolioResource,
-    PortfolioList,
-    PortfolioListAll,
-    PortfolioEventList,
-    PortfolioAssetHoldingList,
-    Report,
-    Iforgot,
-    Pw_reset,
-    TopAdditions,
-    LeaderboardList,
-    WatchAsset,
-    WatchList,
-    Explore,
-)
-from RocketMaven.api.schemas import (
-    AssetSchema,
-    InvestorSchema,
-    PortfolioSchema,
-    PortfolioEventSchema,
-    PortfolioAssetHoldingSchema,
-    LeaderboardSchema,
-)
-
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
 api = Api(blueprint)
@@ -161,7 +142,7 @@ api.add_resource(
 def register_controllers():
     apispec.spec.components.schema("AssetSchema", schema=AssetSchema)
 
-    apispec.spec.path(view=Explore, app=current_app,api=api)
+    apispec.spec.path(view=Explore, app=current_app, api=api)
 
     apispec.spec.path(view=AssetResource, app=current_app, api=api)
     apispec.spec.path(view=AssetPriceResource, app=current_app, api=api)

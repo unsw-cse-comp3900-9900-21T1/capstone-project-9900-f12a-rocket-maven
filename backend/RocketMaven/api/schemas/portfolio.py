@@ -1,7 +1,8 @@
-from RocketMaven.models import Portfolio
-from RocketMaven.api.schemas.portfolio_asset_holding import PortfolioAssetHoldingSchema
 from RocketMaven.api.schemas.investor import InvestorSchema
-from RocketMaven.extensions import ma, db
+from RocketMaven.api.schemas.portfolio_asset_holding import \
+    PortfolioAssetHoldingSchema
+from RocketMaven.extensions import db, ma
+from RocketMaven.models import Portfolio
 
 
 class PortfolioSchema(ma.SQLAlchemyAutoSchema):
@@ -26,5 +27,7 @@ class PortfolioSchema(ma.SQLAlchemyAutoSchema):
         data_key="purchase_value_sum", attribute="purchase_value_sum"
     )
 
+
 class PublicPortfolioSchema(PortfolioSchema):
-    investor = ma.Nested(InvestorSchema, many=False, only = ["username"])
+
+    investor = ma.Nested(InvestorSchema, many=False, only=["username"])

@@ -1,12 +1,11 @@
 from flask import request
-import sqlite3
-from RocketMaven.api.schemas import InvestorSchema, InvestorCreateSchema
-from RocketMaven.models import Investor
-from RocketMaven.extensions import db
-from RocketMaven.commons.pagination import paginate
-from RocketMaven.auth import controllers as auth_controllers
 from flask_jwt_extended import get_jwt_identity
 from marshmallow import ValidationError
+from RocketMaven.api.schemas import InvestorCreateSchema, InvestorSchema
+from RocketMaven.auth import controllers as auth_controllers
+from RocketMaven.commons.pagination import paginate
+from RocketMaven.extensions import db
+from RocketMaven.models import Investor
 
 
 def get_investor(investor_id):
@@ -14,7 +13,7 @@ def get_investor(investor_id):
         schema = InvestorSchema()
         data = Investor.query.get_or_404(investor_id)
         return {"investor": schema.dump(data)}
-    except:
+    except Exception:
         return {"msg": "Operation failed!"}
 
 
@@ -39,8 +38,7 @@ def update_investor(investor_id):
         db.session.commit()
 
         return {"msg": "investor updated", "investor": schema.dump(data)}
-
-    except:
+    except Exception:
         return {"msg": "Operation failed!"}
 
 
@@ -55,7 +53,7 @@ def get_investors():
             query = Investor.query
         return paginate(query, schema)
 
-    except:
+    except Exception:
         return {"msg": "Operation failed!"}
 
 
@@ -79,7 +77,7 @@ def create_investor():
 
         return {"msg": "investor created", "investor": schema.dump(investor)}, 201
     except Exception:
-        return {"msg": "Operation failed",}, 422
+        return {"msg": "Operation failed", }, 422
 
 
 def automatically_login_user_after_creation(response_data):
@@ -95,6 +93,6 @@ def automatically_login_user_after_creation(response_data):
             add_to_response_data.update(add_to_response_data_2)
             return add_to_response_data, 201
         raise Exception("account not successfully created")
-    except Exception as e:
+    except Exception:
         add_to_response_data = {"msg_extended": "Cannot automatically login user"}
         return dict(response_data[0], **add_to_response_data), 201

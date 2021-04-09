@@ -3,15 +3,13 @@
 # A script for obtaining latest stock prices from the Yahoo Finance API
 #
 
-import sys
-import json
-import requests
+import io
 import json
 import os.path
+from csv import reader, writer
 from typing import Callable
-from csv import DictReader, DictWriter, reader, writer
-import io
-import zipfile
+
+import requests
 
 # https://query1.finance.yahoo.com/v8/finance/chart/{ticker}?region=US&lang=en-US&includePrePost=false&interval=1d&useYfid=true&range=6mo&corsDomain=finance.yahoo.com&.tsrc=finance
 
@@ -26,7 +24,8 @@ def zip_row_reader(filename: str) -> dict:
         next(rdr)  # Skip header row
         for m in rdr:
             yield m
-                    
+
+
 def batch_endpoint_get(rows: dict, chunks, endpoint_fmt: Callable[[str], str]):
     endpoint = YAHOO_FINANCE_ENDPOINT.format(ticker=(",".join(chunks)).upper())
 

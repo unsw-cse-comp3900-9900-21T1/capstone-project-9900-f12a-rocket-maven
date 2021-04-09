@@ -1,19 +1,18 @@
+import io
 import json
+import re
 from csv import DictReader
+from datetime import datetime
+
 from flask import request
-from RocketMaven.api.schemas import AssetSchema, PortfolioAssetHoldingSchema
-from RocketMaven.services.PortfolioEventService import update_asset
-from RocketMaven.extensions import db, ma
-from RocketMaven.models import Asset, PortfolioAssetHolding
+from flask_jwt_extended import get_jwt_identity
+from RocketMaven.api.schemas import AssetSchema
 from RocketMaven.commons.pagination import paginate
+from RocketMaven.extensions import db
+from RocketMaven.models import Asset, PortfolioAssetHolding
+from RocketMaven.services.PortfolioEventService import update_asset
 from sqlalchemy import or_
 from sqlalchemy.orm import aliased
-from marshmallow import Schema, fields
-from datetime import datetime
-import io
-import re
-import zipfile
-from flask_jwt_extended import get_jwt_identity
 
 
 def zip_dict_reader(filename: str) -> dict:
@@ -36,7 +35,8 @@ def get_asset(ticker_symbol: str):
         schema = AssetSchema()
         data = Asset.query.get_or_404(ticker_symbol)
         return {"asset": schema.dump(data)}, 200
-    except:
+    except Exception as err:
+        print(err)
         return {"msg": "Operation failed!"}, 500
 
 
@@ -184,7 +184,7 @@ def load_asset_data(db):
             db.session.merge(asset)
             # print("Added {}".format(asx_code))
         except Exception as err:
-            if not "marketCap" in str(err):
+            if "marketCap" not in str(err):
                 print("Unable to add {} - {}".format(asx_code, err))
 
     print("Adding NASDAQ")
@@ -221,7 +221,7 @@ def load_asset_data(db):
             db.session.merge(asset)
             # print("Added {}".format(asx_code))
         except Exception as err:
-            if not "marketCap" in str(err):
+            if "marketCap" not in str(err):
                 print("Unable to add {} - {}".format(code, err))
 
     print("Adding NYSE")
@@ -258,7 +258,7 @@ def load_asset_data(db):
             db.session.merge(asset)
             # print("Added {}".format(asx_code))
         except Exception as err:
-            if not "marketCap" in str(err):
+            if "marketCap" not in str(err):
                 print("Unable to add {} - {}".format(code, err))
 
     print("Adding CRYPTO")
@@ -295,7 +295,7 @@ def load_asset_data(db):
             db.session.merge(asset)
             # print("Added {}".format(asx_code))
         except Exception as err:
-            if not "marketCap" in str(err):
+            if "marketCap" not in str(err):
                 print("Unable to add {} - {}".format(code, err))
 
     db.session.commit()

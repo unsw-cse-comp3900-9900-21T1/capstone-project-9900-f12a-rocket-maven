@@ -1,18 +1,18 @@
 import re
 
 from marshmallow import ValidationError
-from RocketMaven.models import Investor, investor_watches
-from RocketMaven.extensions import ma, db
+from RocketMaven.extensions import db, ma
+from RocketMaven.models import Investor
 
 
 def validate_password(password):
-    special_chars = "~`!@#$%^&*()_+-=[]\\{}|:\";\'<>?,./"
+    # special_chars = "~`!@#$%^&*()_+-=[]\\{}|:\";\'<>?,./"
     if not password:
         raise ValidationError("Cannot have an empty password")
 
     if len(password) < 12:
         raise ValidationError("Password cannot be less than 12 characters")
-    
+
     if re.search("[A-Z]", password) is None:
         raise ValidationError("Password must contain at least one capital letter")
 
@@ -44,6 +44,7 @@ class InvestorSchema(ma.SQLAlchemyAutoSchema):
             "admin_account",
             "email_verified_code",
         )
+
 
 class InvestorCreateSchema(InvestorSchema):
 

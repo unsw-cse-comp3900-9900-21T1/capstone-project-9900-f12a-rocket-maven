@@ -3,16 +3,13 @@
 # A script for obtaining latest crypto prices from the Yahoo Finance API
 #
 
-import sys
-import json
-import requests
+import io
 import json
 import os.path
+from csv import writer
 from typing import Callable
-from csv import DictReader, DictWriter, reader, writer
-import json
-import io
 
+import requests
 
 YAHOO_FINANCE_ENDPOINT = "https://query2.finance.yahoo.com/v7/finance/quote?formatted=true&lang=en-AU&region=AU&symbols={ticker}"
 
@@ -25,6 +22,7 @@ def zip_row_reader(filename: str) -> dict:
         for m in rdr:
             if m["quoteCurrency"] == "USD":
                 yield m
+
 
 def batch_endpoint_get(rows: dict, chunks, endpoint_fmt: Callable[[str], str]):
     endpoint = YAHOO_FINANCE_ENDPOINT.format(ticker=(",".join(chunks)).upper())

@@ -1,29 +1,26 @@
-from flask import request
 from flask_restful import Resource
-
 from RocketMaven.services import EmailService
-from RocketMaven.models import Investor
 
 
 class Iforgot(Resource):
 
-	def post(self):
-		"""
+    def post(self):
+        """
         ---
         summary: Password Forgot
         description: password reset page
         tags:
           - Public
         requestBody:
-	        content:
-	          application/json:
-	            schema:
-	              type: object
-	              properties:
-	                email:
-	                  type: string
-	                  example: email
-	                  required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                    example: email
+                    required: true
 
         responses:
           200:
@@ -39,4 +36,4 @@ class Iforgot(Resource):
             description: investor does not exist
         security: []
         """
-		return EmailService.try_reset()
+        return EmailService.try_reset()

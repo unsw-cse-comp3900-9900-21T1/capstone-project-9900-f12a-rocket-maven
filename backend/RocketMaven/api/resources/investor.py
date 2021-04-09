@@ -1,10 +1,6 @@
-from flask import request
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from RocketMaven.api.schemas import InvestorSchema
 from RocketMaven.services import InvestorService, WatchlistService
-from RocketMaven.models import Investor, Asset
-from RocketMaven.extensions import db
 
 
 class InvestorResource(Resource):
@@ -192,6 +188,7 @@ class WatchAsset(Resource):
         current_user = get_jwt_identity()
         return WatchlistService.del_watchlist(current_user, ticker_symbol)
 
+
 class WatchList(Resource):
 
     @jwt_required()
@@ -222,5 +219,3 @@ class WatchList(Resource):
         """
         current_user = get_jwt_identity()
         return WatchlistService.get_watchlist(current_user)
-
-

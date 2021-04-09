@@ -1,10 +1,9 @@
-from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.sql import func
-from RocketMaven.models.portfolio_asset_holding import PortfolioAssetHolding
-from RocketMaven.models.portfolio import Portfolio
-from RocketMaven.models.asset import Asset
-from RocketMaven.extensions import db, pwd_context
 import datetime
+
+from RocketMaven.extensions import db
+from RocketMaven.models.portfolio import Portfolio
+from RocketMaven.models.portfolio_asset_holding import PortfolioAssetHolding
+from sqlalchemy.ext.hybrid import hybrid_property
 
 
 def default_FIFO_units(context):
@@ -67,9 +66,9 @@ class PortfolioEvent(db.Model):
             id=portfolio_event.portfolio_id
         ).first()
 
-        if portfolio_query and portfolio_query.competition_portfolio == True:
+        if portfolio_query and portfolio_query.competition_portfolio is True:
             buying_power_diff = 0
-            if portfolio_event.add_action == True:
+            if portfolio_event.add_action is True:
                 # Buy
                 buying_power_diff = -(
                     portfolio_event.price_per_share * portfolio_event.units
@@ -118,7 +117,7 @@ class PortfolioEvent(db.Model):
         for event in asset_events.all():
             # Loop through all asset events in order of creation (from earliest to latest)
 
-            if event.add_action == False:
+            if event.add_action is False:
                 # Get the sell events, these affect the FIFO calculations
                 remove_event = event
                 remove_total = remove_event.units
@@ -169,7 +168,7 @@ class PortfolioEvent(db.Model):
                 asset_holding.available_units = sum(
                     [x.dynamic_after_FIFO_units for x in past_add_events]
                 )
-            elif event.add_action == True:
+            elif event.add_action is True:
                 add_event = event
                 # Buy
                 # Update the average price only on buy
