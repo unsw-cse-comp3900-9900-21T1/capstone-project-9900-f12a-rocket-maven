@@ -19,17 +19,17 @@ class Explore(Resource):
         parameters:
           - in: query
             name: country
-            description:
+            description: country code split with ',' back-end support string normalization
             schema:
               type: string
           - in: query
             name: currency
-            description:
+            description: split with ',' back-end support string normalization
             schema:
               type: string
           - in: query
             name: industry
-            description:
+            description: split with ',' back-end support string normalization
             schema:
               type: string
           - in: query

@@ -30,6 +30,7 @@ from RocketMaven.api.resources import (
     WatchAsset,
     WatchList,
     Explore,
+    # Recommend,
 )
 from RocketMaven.api.schemas import (
     AssetSchema,
@@ -156,6 +157,10 @@ api.add_resource(
     endpoint="chart_yearly",
 )
 
+# api.add_resource(Recommend,
+#     "",
+#     endpoint=)
+
 
 @blueprint.before_app_first_request
 def register_controllers():
@@ -207,6 +212,8 @@ def register_controllers():
     apispec.spec.path(view=Iforgot, app=current_app, api=api)
 
     apispec.spec.path(view=Pw_reset, app=current_app, api=api)
+
+    # apispec.spec.path(view=Recommend, app=current_app, api=api)
 
 
 @blueprint.errorhandler(ValidationError)
