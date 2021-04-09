@@ -32,23 +32,25 @@ The meeting was also to reaffirm that all group members know their role in draft
 - Got started on adapting the basic back-end system for our project
     - Refactored code in-line with our system architecture
     - Modelled the database in-line with our er diagram
+- Helped Jin with the email functionality by setting up the email account and providing a basic emailing script
 
 # Week 5
 
 - Organised the regular stand-ups that help the team make progress
 - Held a meeting with Tyson to resolve the details of adding/removing an asset from a portfolio
     - Completed the asset-portfolio event history models and implementation
-- Extended Syd's API ingestion to allow for search functionality
-- Worked with Jin to incorporate password resetting
+- Extended Syd's API ingestion to allow for a basic back-end search functionality
+- Worked with Jin to help implement password resetting
 - Worked with the front-end team to better integrate the back-end system with the front-end system
 - Held meetings with Jude to help out with the front-end effort
+- Created the front-end for searching for assets
 - Performed Progressive Demo A and wrote Retrospective A with help from the team
 - Delegated user stories for Sprint 2
 
 # Week 6
 
-- Implemented additional portfolio management features
-- Resolved issues with the system when used from the perspective of a user
+- Implemented additional portfolio management features (i.e. implemented a new method of creating portfolio events)
+- Resolved issues with the system when used from the perspective of a user (such as front-end password validation to complement Syd's back-end password validation)
 - Held meetings and conversations with team members to resolve blocks and any potential conflicts
 
 # Week 7
@@ -63,4 +65,8 @@ The meeting was also to reaffirm that all group members know their role in draft
 
 - Completed the front-end for the watchlist (continuing Syd's back-end contributions)
 - Started and completed the front-end for the asset detail page (continuing Syd's back-end contributions)
-- Started on the front-end for the report generation feature
+    - Added an asset comparison feature that extends Syd's timeseries contributions
+- Resolved out-of-order date event insertion into the portfolio and added basic FIFO tax calculations
+- Started and completed a basic implementation (back-end and front-end) of the report generation feature
+- Refined the portfolio event creation front-end and back-end to protect from "impossible events" (such as preventing removing more units of an asset than the investor is currently holding)
+- Completed the competition portfolio feature on both the front-end and back-end
