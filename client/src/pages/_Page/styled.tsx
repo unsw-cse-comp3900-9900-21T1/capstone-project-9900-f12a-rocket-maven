@@ -63,10 +63,17 @@ export const HeaderWrap = styled(Header)`
 export const BodyWrap = styled(Content)`
   margin-top: ${headerHeight}px;
   min-height: 80vh;
+  @media print {
+    min-height: 50vh;
+  }
 `
 
 export const FooterWrap = styled(Card)`
   background: #fafbfc;
   width: 100%;
   padding-right: 24px;
+
+  @media print {
+    display: none;
+  }
 `

@@ -8,6 +8,10 @@ export const AppWrap = styled.div`
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: #fafbfc;
+
+  @media print {
+    font-family: sans-serif;
+  }
 `
 
 export const ContentWrap = styled.div`
