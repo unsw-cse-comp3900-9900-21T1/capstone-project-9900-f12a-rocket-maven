@@ -16,5 +16,6 @@ export const urls = {
   explore: '/explore',
   leaderboard: '/leaderboard',
   compare: '/compare',
-  topAdditions: '/top-additions'
+  topAdditions: '/top-additions',
+  advancedSearch: '/advanced-search'
 }

@@ -1,10 +1,10 @@
-import { Form, Input, Button, Select } from 'antd'
-import { Card } from '@rocketmaven/componentsStyled/Card'
+import DateOfBirthInput from '@rocketmaven/components/DateOfBirthInput'
 import PasswordInput from '@rocketmaven/components/PasswordInput'
-import Page from '@rocketmaven/pages/_Page'
+import { Card } from '@rocketmaven/componentsStyled/Card'
 import { useAuth } from '@rocketmaven/hooks/http'
 import { useSortedCountryList } from '@rocketmaven/hooks/store'
-import DateOfBirthInput from '@rocketmaven/components/DateOfBirthInput'
+import Page from '@rocketmaven/pages/_Page'
+import { Button, Form, Input, Select } from 'antd'
 
 const layout = {
   labelCol: {
@@ -22,7 +22,7 @@ const tailLayout = {
 }
 
 const SignUp = () => {
-  const setValuesAndFetch = useAuth('REGISTER')
+  const submit = useAuth('REGISTER')
   const countryList = useSortedCountryList()
 
   const onFinish = async (values: any) => {
@@ -37,7 +37,7 @@ const SignUp = () => {
       username: values.username,
       visibility: true
     }
-    setValuesAndFetch(requestBody)
+    submit(requestBody)
   }
 
   return (

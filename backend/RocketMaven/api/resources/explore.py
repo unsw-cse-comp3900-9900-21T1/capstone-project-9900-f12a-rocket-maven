@@ -4,7 +4,7 @@ from RocketMaven.services import ExploreService
 
 class Explore(Resource):
 
-    def post(self):
+    def get(self):
         """
         ---
         summary: Explore

@@ -1,19 +1,15 @@
-import { Form, Button } from 'antd'
+import { InboxOutlined, LoadingOutlined, PlusOutlined } from '@ant-design/icons'
 import { Card } from '@rocketmaven/componentsStyled/Card'
-import { urls } from '@rocketmaven/data/urls'
+import {
+  useAccessToken, useAddPortfolioEvent
+} from '@rocketmaven/hooks/http'
+import { Button, Form, message, Upload } from 'antd'
 import { useState } from 'react'
 import { useHistory } from 'react-router'
-import {
-  useAccessToken,
-  useFetchMutationWithUserId
-} from '@rocketmaven/hooks/http'
-
-import { Upload, message } from 'antd'
-
-import { LoadingOutlined, PlusOutlined, InboxOutlined } from '@ant-design/icons'
 
 type Props = {
-  portfolioId?: string
+  // Check if changing to to a non-optional value broke anything
+  portfolioId: string
 }
 
 const formItemLayout = {
@@ -35,7 +31,7 @@ const PortfolioAssetEditForm = ({ portfolioId }: Props) => {
 
   const urlEnd = `/api/v1/portfolios/${portfolioId}/history`
 
-  const setValuesAndFetch: Function = useFetchMutationWithUserId(urlEnd, 'POST', urls.portfolio)
+  const myFetch: Function = useAddPortfolioEvent(portfolioId)
 
   const onFinish = async (values: any) => {
     const formData = new FormData()
@@ -58,7 +54,7 @@ const PortfolioAssetEditForm = ({ portfolioId }: Props) => {
     routerObject.push('/')
 
     console.log('************** values are ', values)
-    setValuesAndFetch({
+    myFetch({
       ...values
     })
   }

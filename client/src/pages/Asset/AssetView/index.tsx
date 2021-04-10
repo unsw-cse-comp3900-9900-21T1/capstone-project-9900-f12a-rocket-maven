@@ -31,7 +31,9 @@ const AssetView = () => {
   let asset_card = null
   let graph_card = null
 
+  // TODO(Jude): Create single hook for these 2
   const [data, setData] = useState<null | { asset: any }>(null)
+  useFetchAPIPublicData(`/assets/${ticker_symbol}`, setData)
   const [graphData, setGraphData] = useState<null | { results: any }>(null)
 
   const [chartRef, setChartRef] = useState<Highcharts.Chart>()
@@ -72,7 +74,6 @@ const AssetView = () => {
     }
   ]
 
-  useFetchAPIPublicData(`/assets/${ticker_symbol}`, setData)
 
   if (data && !isEmpty(data) && data.asset.asset_additional) {
     const asset_additional = JSON.parse(data.asset.asset_additional)

@@ -1,12 +1,7 @@
 import { urls } from '@rocketmaven/data/urls'
 import Page from '@rocketmaven/pages/_Page'
-import { Button, Col, Form, Row, Select, Spin } from 'antd'
-import { SelectProps } from 'antd/es/select'
-import debounce from 'lodash/debounce'
-import { isEmpty } from 'ramda'
-import { useMemo, useRef, useState } from 'react'
-import { FaBalanceScale, FaHeart, FaTrophy } from 'react-icons/fa'
-import { useHistory } from 'react-router'
+import { Button, Col, Row } from 'antd'
+import { FaBalanceScale, FaHeart, FaSearch, FaTrophy } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
 
 export type AssetSearch = {
@@ -30,163 +25,42 @@ export type AssetSearchPagination = {
   results: [AssetSearch]
 }
 
-// https://ant.design/components/select/#components-select-demo-select-users
-export interface DebounceSelectProps<ValueType = any>
-  extends Omit<SelectProps<ValueType>, 'options' | 'children'> {
-  fetchOptions: (search: string) => Promise<ValueType[]>
-  debounceTimeout?: number
-}
+const Explore = () =>
+  <Page>
+    <Row justify="center" style={{ minHeight: '100vh' }}>
+      <Col style={{ height: '100vh' }}>
+        <h1>Explore Rocket Maven</h1>
+        <Row style={{ marginBottom: '0.5rem' }}>
+          <Button type="primary">
+            <Link to={urls.advancedSearch}>
+              <FaSearch /> Find Assets
+            </Link>
+          </Button>
+        </Row>
+        <Row style={{ marginBottom: '0.5rem' }}>
+          <Button type="primary">
+            <Link to={urls.leaderboard}>
+              <FaTrophy /> Portfolio Competition Leaderboard
+            </Link>
+          </Button>
+        </Row>
+        <Row style={{ marginBottom: '0.5rem' }}>
+          <Button type="primary">
+            <Link to={urls.topAdditions}>
+              <FaHeart /> Top Additions
+            </Link>
+          </Button>
+        </Row>
+        <Row style={{ marginBottom: '0.5rem' }}>
+          <Button type="primary">
+            <Link to={urls.compare}>
+              <FaBalanceScale /> Compare Assets
+            </Link>
+          </Button>
+        </Row>
+      </Col>
+    </Row>
+  </Page>
 
-function DebounceSelect<
-  ValueType extends { key?: string; label: React.ReactNode; value: string | number } = any
->({ fetchOptions, debounceTimeout = 800, ...props }: DebounceSelectProps) {
-  const [fetching, setFetching] = useState(false)
-  const [options, setOptions] = useState<ValueType[]>([])
-  const fetchRef = useRef(0)
-
-  const debounceFetcher = useMemo(() => {
-    const loadOptions = (value: string) => {
-      fetchRef.current += 1
-      const fetchId = fetchRef.current
-      setOptions([])
-      setFetching(true)
-
-      fetchOptions(value).then((newOptions) => {
-        if (fetchId !== fetchRef.current) {
-          // for fetch callback order
-          return
-        }
-
-        setOptions(newOptions)
-        setFetching(false)
-      })
-    }
-
-    return debounce(loadOptions, debounceTimeout)
-  }, [fetchOptions, debounceTimeout])
-
-  return (
-    <Select<ValueType>
-      labelInValue
-      filterOption={false}
-      onSearch={debounceFetcher}
-      notFoundContent={fetching ? <Spin size="small" /> : null}
-      {...props}
-      options={options}
-    />
-  )
-}
-
-// Usage of DebounceSelect
-interface DebounceValue {
-  label: React.ReactNode
-  value: string
-  key: string
-}
-
-async function fetchUserList(query: string): Promise<DebounceValue[]> {
-  return fetch(`/api/v1/assets/search?q=${query}&per_page=10`)
-    .then((response) => response.json())
-    .then((data) => {
-      if (!data || isEmpty(data) || !data.hasOwnProperty('next')) {
-      } else {
-        const histories: [AssetSearch] = (data as AssetSearchPagination).results
-
-        const search_simple = histories.map((item) => {
-          return {
-            key: item.ticker_symbol,
-            value: item.ticker_symbol,
-            label: (
-              <span title={item.current_price.toString()}>
-                {item.ticker_symbol + ' | ' + item.name}
-              </span>
-            )
-          }
-        })
-
-        return search_simple
-      }
-
-      return []
-    })
-}
-
-const Explore = () => {
-  const [addActionValue, setAddActionValue] = useState(true)
-  const [valued, setValued] = useState()
-  const [price, setPrice] = useState()
-  const [form] = Form.useForm()
-  const routerObject = useHistory()
-
-  // const onFinish = (values: any) => {
-  //   values.asset_id = values.asset_id.value
-  //   values.add_action = addActionValue
-  //   console.log("************** values are ", values)
-  //   setValuesAndFetch({
-  //           ...values
-  //   })
-  // }
-
-  return (
-    <Page>
-      <Row justify="center" style={{ minHeight: '100vh' }}>
-        <Col style={{ height: '100vh' }}>
-          <h1>Explore Rocket Maven</h1>
-
-          <Form
-            name="explore"
-            className="explore-form"
-            initialValues={{
-              remember: true
-            }}
-          >
-            <Form.Item
-              name="exploreForm"
-              rules={[
-                {
-                  required: false
-                }
-              ]}
-            >
-              <DebounceSelect
-                showSearch
-                value={valued}
-                placeholder="Search Asset"
-                fetchOptions={fetchUserList}
-                onChange={(newValue) => {
-                  setValued(newValue.key)
-                  // Place holder until/if we incooperate advanced search
-                  routerObject.push(`${urls.asset}/${newValue.key}`)
-                }}
-                style={{ width: '500px' }}
-              />
-            </Form.Item>
-          </Form>
-          <Row style={{ marginBottom: '0.5rem' }}>
-            <Button type="primary">
-              <Link to={urls.leaderboard}>
-                <FaTrophy /> Portfolio Competition Leaderboard
-              </Link>
-            </Button>
-          </Row>
-          <Row style={{ marginBottom: '0.5rem' }}>
-            <Button type="primary">
-              <Link to={urls.topAdditions}>
-                <FaHeart /> Top Additions
-              </Link>
-            </Button>
-          </Row>
-          <Row style={{ marginBottom: '0.5rem' }}>
-            <Button type="primary">
-              <Link to={urls.compare}>
-                <FaBalanceScale /> Compare Assets
-              </Link>
-            </Button>
-          </Row>
-        </Col>
-      </Row>
-    </Page>
-  )
-}
 
 export default Explore

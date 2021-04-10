@@ -1,17 +1,16 @@
+import { LockOutlined, UserOutlined } from '@ant-design/icons'
+import { Card } from '@rocketmaven/componentsStyled/Card'
+import { urls } from '@rocketmaven/data/urls'
+import { useAuth } from '@rocketmaven/hooks/http'
 import Page from '@rocketmaven/pages/_Page'
+import { Button, Form, Input } from 'antd'
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-import { Card } from '@rocketmaven/componentsStyled/Card'
-import { Form, Input, Button } from 'antd'
-import { UserOutlined, LockOutlined } from '@ant-design/icons'
-import { urls } from '@rocketmaven/data/urls'
-import { useAuth } from '@rocketmaven/hooks/http'
-
 const LogIn = () => {
-  const setValuesAndFetch = useAuth('LOGIN')
+  const submit = useAuth('LOGIN')
   const onFinish = (values: any) => {
-    setValuesAndFetch(values)
+    submit(values)
   }
 
   return (
