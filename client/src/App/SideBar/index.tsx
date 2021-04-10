@@ -45,7 +45,7 @@ const Logo = () => {
   return (
     <LogoWrap>
       <a href="/">
-        <img src="/testlogo.svg" width="200px" />
+        <img src="/logo.svg" width="200px" />
       </a>
     </LogoWrap>
   )

@@ -1,5 +1,5 @@
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy_utils import CountryType
+from sqlalchemy_utils import CountryType, CurrencyType
 
 from RocketMaven.extensions import db
 from RocketMaven.models.portfolio_asset_holding import PortfolioAssetHolding
@@ -13,6 +13,7 @@ class Portfolio(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
     tax_residency = db.Column(CountryType, unique=False, nullable=False)
+    currency = db.Column(CurrencyType, unique=False, nullable=False)
 
     public_portfolio = db.Column(db.Boolean, default=False)
     deleted = db.Column(db.Boolean, default=False)

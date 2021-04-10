@@ -27,6 +27,8 @@ class PortfolioEvent(db.Model):
         db.Float(), unique=False, nullable=False, default=default_FIFO_units
     )
 
+    exchange_rate = db.Column(db.Float(), unique=False, nullable=False)
+
     note = db.Column(db.String(1024), unique=False, nullable=True)
 
     tax_full_snapshot = db.Column(db.Float(), unique=False, nullable=True)

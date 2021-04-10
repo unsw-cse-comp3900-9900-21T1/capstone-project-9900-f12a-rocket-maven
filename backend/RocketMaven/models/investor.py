@@ -1,35 +1,10 @@
-
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy_utils import CountryType, EmailType
-
+from RocketMaven.models import Asset
 from RocketMaven.extensions import db, pwd_context
-
+from sqlalchemy.orm import relationship
 
 # https://flask-sqlalchemy.palletsprojects.com/en/2.x/models/
-
-investor_watches = db.Table(
-    "investor_watches",
-    db.Column(
-        "asset_id",
-        db.String(80),
-        db.ForeignKey("asset.ticker_symbol"),
-        primary_key=True,
-    ),
-    db.Column(
-        "PriceHigh",
-        db.Float()  # ? or float
-    ),
-    db.Column(
-        "PriceLow",
-        db.Float()  # ? or float
-    ),
-    db.Column(
-        "investor_id",
-        db.Integer,
-        db.ForeignKey("investor.id"),
-        primary_key=True
-    ),
-)
 
 
 class Investor(db.Model):
@@ -64,14 +39,6 @@ class Investor(db.Model):
     # )
     portfolios = db.relationship("Portfolio", lazy="dynamic", back_populates="investor")
 
-    # Assets watched, many to many
-    watchlist_items = db.relationship(
-        "Asset",
-        secondary=investor_watches,
-        lazy="dynamic",
-        backref=db.backref("investors", lazy="dynamic"),
-    )
-
     @hybrid_property
     def password(self):
         return self._password
@@ -87,3 +54,15 @@ class Investor(db.Model):
     # def validate_email(self, key, email):
     #     assert '@' in email
     #     return email
+
+
+# # Assets watched, many to many
+# # Needs to be a model (although not recommended) to fit Marshmallow
+class Watchlist(db.Model):
+    asset = relationship("Asset", backref="asset_watchlist")
+    asset_id = db.Column(
+        db.String(80), db.ForeignKey("asset.ticker_symbol"), primary_key=True
+    )
+    price_high = db.Column(db.Float())  # ? or float
+    price_low = db.Column(db.Float())  # ? or float
+    investor_id = db.Column(db.Integer, db.ForeignKey("investor.id"), primary_key=True)
