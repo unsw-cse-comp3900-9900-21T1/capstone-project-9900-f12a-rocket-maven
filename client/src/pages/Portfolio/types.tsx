@@ -4,6 +4,7 @@ export type PortfolioEventCreate = {
   fees: number
   note?: string
   price_per_share: number
+  exchange_rate: number
   units: number
 }
 
@@ -35,6 +36,7 @@ export type PortfolioInfoEdit = {
   tax_residency: string
   competition_portfolio: boolean
   id: number
+  currency: string
 }
 
 export type PortfolioHolding = {

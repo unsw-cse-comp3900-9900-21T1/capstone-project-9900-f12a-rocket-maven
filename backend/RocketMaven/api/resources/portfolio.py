@@ -4,6 +4,7 @@ from RocketMaven.services import CompetitionService, PortfolioService
 
 
 class LeaderboardList(Resource):
+    @jwt_required(optional=True)
     def get(self):
         """Leaderboard
         ---

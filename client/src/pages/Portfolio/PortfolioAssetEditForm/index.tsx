@@ -37,7 +37,8 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
     fees: 0,
     note: '',
     price_per_share: 0,
-    units: 0
+    units: 0,
+    exchange_rate: 1
   }
   const urlEnd = `../../../portfolios/${portfolioId}/history`
 
@@ -114,7 +115,6 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
             style={{ width: '100%' }}
           />
         </Form.Item>
-
         {!portfolioInfo.competition_portfolio ? (
           <Form.Item
             name="fees"
@@ -128,7 +128,6 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
             <InputNumber />
           </Form.Item>
         ) : null}
-
         <Form.Item
           name="units"
           label="Units"
@@ -140,7 +139,6 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
         >
           <InputNumber onChange={(e: any) => setUnits(e)} />
         </Form.Item>
-
         {!portfolioInfo.competition_portfolio ? (
           <Form.Item
             name="price_per_share"
@@ -160,7 +158,18 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
             </Form.Item>
           </span>
         )}
-
+        <Form.Item
+          name="exchange_rate"
+          label="Exchange Rate"
+          rules={[
+            {
+              required: true
+            }
+          ]}
+        >
+          <InputNumber />
+        </Form.Item>
+        )
         <Form.Item label="Update Price Per Share">
           <Button
             type="primary"
@@ -174,7 +183,6 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
             Get Live Price
           </Button>
         </Form.Item>
-
         <Form.Item
           name="note"
           label="Note"
@@ -186,7 +194,6 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
         >
           <Input />
         </Form.Item>
-
         {portfolioInfo.competition_portfolio ? (
           <Row gutter={16}>
             <Col span={6}>
@@ -214,7 +221,6 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
             </Col>
           </Row>
         ) : null}
-
         <Row gutter={16}>
           <Col span={6}>
             <Statistic title="Currently Holding" value={holdings} precision={2} />
@@ -234,7 +240,6 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
             />
           </Col>
         </Row>
-
         <Form.Item style={{ textAlign: 'center' }}>
           <Button
             type="primary"
