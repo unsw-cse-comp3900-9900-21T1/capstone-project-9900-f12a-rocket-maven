@@ -1,14 +1,13 @@
 import UserAssetSearchBox from '@rocketmaven/components/UserAssetSearchBox'
 import { Card } from '@rocketmaven/componentsStyled/Card'
-// import { Row } from '@rocketmaven/componentsStyled/Grid'
-import { urls } from '@rocketmaven/data/urls'
-import { useFetchMutationWithUserId } from '@rocketmaven/hooks/http'
+import { useAddPortfolioEvent } from '@rocketmaven/hooks/http'
 import { PortfolioEventCreate, PortfolioInfo } from '@rocketmaven/pages/Portfolio/types'
 import { Button, Col, Form, Input, InputNumber, Row, Statistic } from 'antd'
 import { useState } from 'react'
 
 type Props = {
-  portfolioId?: string
+  // TODO(Jude): Double check if making this compulsory broke anything
+  portfolioId: string
   portfolioInfo: PortfolioInfo
 }
 
@@ -40,14 +39,13 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
     units: 0,
     exchange_rate: 1
   }
-  const urlEnd = `../../../portfolios/${portfolioId}/history`
 
-  const setValuesAndFetch: Function = useFetchMutationWithUserId(urlEnd, 'POST', urls.portfolio)
+  const myFetch: Function = useAddPortfolioEvent(portfolioId)
 
   const onFinish = (values: any) => {
     values.asset_id = values.asset_id.value
     values.add_action = addActionValue
-    setValuesAndFetch({
+    myFetch({
       ...values
     })
   }
@@ -73,7 +71,7 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
         form.setFieldsValue({
           price_per_share: data.price
         })
-      } catch (error) {}
+      } catch (error) { }
     }
     myFetch()
   }

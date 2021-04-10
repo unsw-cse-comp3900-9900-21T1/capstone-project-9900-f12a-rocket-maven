@@ -327,7 +327,8 @@ def get_top_additions():
     # View count of portfolio
     most_viewed_portfolio_result = (
         db.session.query(Portfolio, db.func.max(Portfolio.view_count))
-        # TODO(Jude): Find why this broke all of a sudden - Was working fine before?
+        # TODO(Jude): Find why this broke all of a sudden - It looked like it was working fine before
+        # It seems to me that we would only want to show public portfolios
         # .filter(Portfolio.public_portfolio is True)
         .first()
     )

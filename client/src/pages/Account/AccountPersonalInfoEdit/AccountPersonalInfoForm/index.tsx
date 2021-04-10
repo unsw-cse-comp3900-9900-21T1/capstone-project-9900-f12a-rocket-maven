@@ -1,12 +1,11 @@
-import { Fragment } from 'react'
-import { Subtitle } from '@rocketmaven/componentsStyled/Typography'
-import { useFetchMutationWithUserId } from '@rocketmaven/hooks/http'
-import { Card } from '@rocketmaven/componentsStyled/Card'
-import { Form, Input, Button, Select } from 'antd'
-import { Investor } from '@rocketmaven/pages/Account/types'
-import { useSortedCountryList } from '@rocketmaven/hooks/store'
-import { urls } from '@rocketmaven/data/urls'
 import DateOfBirthInput from '@rocketmaven/components/DateOfBirthInput'
+import { Card } from '@rocketmaven/componentsStyled/Card'
+import { Subtitle } from '@rocketmaven/componentsStyled/Typography'
+import { useUpdateAccountInfo } from '@rocketmaven/hooks/http'
+import { useSortedCountryList } from '@rocketmaven/hooks/store'
+import { Investor } from '@rocketmaven/pages/Account/types'
+import { Button, Form, Input, Select } from 'antd'
+import { Fragment } from 'react'
 
 type Props = {
   investorData: Investor
@@ -14,9 +13,9 @@ type Props = {
 
 const AccountPersonalInfoForm = ({ investorData }: Props) => {
   const countryList = useSortedCountryList()
-  const setValuesAndFetch: Function = useFetchMutationWithUserId('', 'PUT', urls.account)
+  const myFetch: Function = useUpdateAccountInfo()
   const onFinish = (values: any) => {
-    setValuesAndFetch({
+    myFetch({
       ...values
     })
   }

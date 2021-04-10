@@ -1,23 +1,21 @@
-import { Fragment } from 'react'
-import { Subtitle } from '@rocketmaven/componentsStyled/Typography'
 import PasswordInput from '@rocketmaven/components/PasswordInput'
-import { useFetchMutationWithUserId } from '@rocketmaven/hooks/http'
 import { Card } from '@rocketmaven/componentsStyled/Card'
-import { Form, Input, Button, Switch } from 'antd'
+import { Subtitle } from '@rocketmaven/componentsStyled/Typography'
+import { useUpdateAccountInfo } from '@rocketmaven/hooks/http'
 import { Investor } from '@rocketmaven/pages/Account/types'
-import { urls } from '@rocketmaven/data/urls'
+import { Button, Form, Input, Switch } from 'antd'
+import { Fragment } from 'react'
 
 type Props = {
   investorData: Investor
 }
 
 const AccountSecurityInfoForm = ({ investorData }: Props) => {
-  const setValuesAndFetch: Function = useFetchMutationWithUserId('', 'PUT', urls.account)
+  const myFetch: Function = useUpdateAccountInfo()
   const onFinish = (values: any) => {
     console.log('*************** values are ', values)
-    setValuesAndFetch({
+    myFetch({
       ...values,
-      // confirm field removed since it is only to ensule
       confirm: undefined
     })
   }

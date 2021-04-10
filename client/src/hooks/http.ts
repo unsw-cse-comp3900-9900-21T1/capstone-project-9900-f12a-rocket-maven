@@ -6,9 +6,162 @@ import { isExpired } from 'react-jwt'
 import { useHistory } from 'react-router'
 import { urls } from '../data/urls'
 
-//TODO(Jude): Can probably extract and generalise fetchFunctions and reuse in each hook
-// Rushed implementation of authToken refresh
-// Getting a 404 error with the fetch request
+interface AuthToken {
+  exp: number
+  fresh: boolean
+  iat: number
+  jti: string
+  nbf: number
+  sub: number
+  type: string
+}
+type SuccessfullLoginResponse = {
+  access_token: string,
+  refresh_token: string,
+}
+type AuthType = 'LOGIN' | 'REGISTER'
+type HttpMutation = 'POST' | 'PUT'
+type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE'
+type AbstractFetchProps = {
+  url: string,
+  isLoading: boolean,
+  setIsLoading: Function,
+  accessToken?: string
+  revalidateAccessToken: Function,
+  setData?: Function,
+  isLoggedIn?: boolean,
+  values?: JSON,
+  method?: HttpMethod,
+  redirectPath?: string,
+  routerObject?: any,
+}
+
+const abstractFetch = async (fetchInput: AbstractFetchProps) => {
+  const {
+    accessToken,
+    revalidateAccessToken,
+    setData,
+    setIsLoading,
+    url,
+    isLoggedIn,
+    method = 'GET',
+    values,
+    redirectPath,
+    routerObject,
+  } = fetchInput
+  try {
+    setIsLoading(true)
+    if (isLoggedIn && accessToken && isExpired(accessToken)) {
+      await revalidateAccessToken()
+    }
+    const response = await fetch(url, {
+      method,
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: values ? JSON.stringify(values) : undefined
+    })
+    const data = await response.json()
+
+    if (!response.ok) {
+      if (data.msg) {
+        throw Error(data.msg)
+      }
+      throw Error(`Request failed - ${response.statusText}`)
+    }
+    if (setData) {
+      setData(data)
+    }
+    setIsLoading(false)
+    if (redirectPath && routerObject) {
+      routerObject.push(redirectPath)
+    }
+    return data
+  } catch (error) {
+    // TODO(Jude): Handle token is revoked error when still logged in but there was a db reset
+    if (setData) {
+      setData({})
+    }
+    setIsLoading(false)
+    throw (error)
+  }
+}
+
+const useAbstractFetchOnMount = (url: string, refreshFlag?: number) => {
+  const [data, setData] = useState({})
+  const [isLoading, setIsLoading] = useState(true)
+  const { accessToken, revalidateAccessToken } = useAccessToken()
+  const isLoggedIn = useIsLoggedIn()
+  useEffect(() => {
+    try {
+      abstractFetch({
+        accessToken,
+        revalidateAccessToken,
+        setData,
+        isLoading,
+        setIsLoading,
+        isLoggedIn,
+        url,
+      })
+    } catch (error) {
+      message.error(error.message)
+    }
+  }, [refreshFlag])
+  return { data, isLoading }
+}
+
+const useAbstractFetchOnSubmit = (url: string) => {
+  const [data, setData] = useState({})
+  const [isLoading, setIsLoading] = useState(false)
+  const { accessToken, revalidateAccessToken } = useAccessToken()
+  const isLoggedIn = useIsLoggedIn()
+  const myFetch = async (query: string) => {
+    try {
+      abstractFetch({
+        accessToken,
+        revalidateAccessToken,
+        setData,
+        isLoading,
+        setIsLoading,
+        isLoggedIn,
+        url: url + (query ? query : ''),
+      })
+    } catch (error) {
+      message.error(error.message)
+    }
+  }
+  return { data, isLoading, myFetch }
+}
+
+const useAbstractFetchUpdate = (url: string, method: HttpMethod, redirectPath?: string) => {
+  const [isLoading, setIsLoading] = useState(false)
+  const { accessToken, revalidateAccessToken } = useAccessToken()
+  const isLoggedIn = useIsLoggedIn()
+  const routerObject = useHistory()
+  const myFetch = async (values: JSON) => {
+    try {
+      const results = abstractFetch({
+        accessToken,
+        revalidateAccessToken,
+        isLoading,
+        setIsLoading,
+        isLoggedIn,
+        url: url,
+        routerObject,
+        redirectPath,
+        method,
+        values,
+      })
+      return results
+    } catch (error) {
+      message.error(error.message)
+    }
+  }
+  return { isLoading, myFetch }
+}
+
 export const useAccessToken = () => {
   const { accessToken, refreshToken, dispatch } = useStore()
   const routerObject = useHistory()
@@ -35,7 +188,6 @@ export const useAccessToken = () => {
       dispatch({ type: 'REFRESH_TOKEN', payload: { accessToken: data.access_token } })
     } catch (error) {
       message.error(error.message)
-      // Refresh token expired
       dispatch({ type: 'LOGOUT' })
       routerObject.push(urls.root)
       throw Error(error)
@@ -43,90 +195,6 @@ export const useAccessToken = () => {
   }
 
   return { accessToken, revalidateAccessToken }
-}
-
-const abstractFetchLoggedInURL = async (
-  accessToken: any,
-  revalidateAccessToken: any,
-  data: any,
-  setData: any,
-  isLoading: any,
-  setIsLoading: any,
-  url: string
-) => {
-  try {
-    setIsLoading(true)
-    if (isExpired(accessToken) || true) {
-      await revalidateAccessToken()
-    }
-    const response = await fetch(url, {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`
-      }
-    })
-    const data = await response.json()
-
-    if (!response.ok) {
-      if (data.msg) {
-        if (data.msg == 'Token has been revoked' || data.msg == 'Not enough segments') {
-        }
-        throw Error(data.msg)
-      }
-      throw Error(`Request failed - ${response.statusText}`)
-    }
-
-    setData(data)
-    setIsLoading(false)
-  } catch (error) {
-    message.error(error.message)
-    setData({})
-    setIsLoading(false)
-  }
-}
-
-export const useFetchGetPublicPortfolio = (portfolioId: string): any => {
-  const [data, setData] = useState({})
-  const [isLoading, setIsLoading] = useState(true)
-  const { accessToken, revalidateAccessToken } = useAccessToken()
-  const isLoggedIn = useIsLoggedIn()
-
-  useEffect(() => {
-    const myFetch = async () => {
-      try {
-        setIsLoading(true)
-        if (isLoggedIn && isExpired(accessToken)) {
-          await revalidateAccessToken()
-        }
-        const response = await fetch(`/api/v1/public-portfolios/${portfolioId}`, {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessToken}`
-          }
-        })
-        console.log('*********************** status is', response.status)
-        const data = await response.json()
-        if (!response.ok) {
-          if (data.msg) {
-            throw Error(data.msg)
-          }
-          throw Error(`${response.status}`)
-        }
-        setData(data)
-        setIsLoading(false)
-      } catch (error) {
-        message.error(error.message)
-        setData({})
-        setIsLoading(false)
-      }
-    }
-    myFetch()
-    return
-  }, [])
-
-  return { data, isLoading }
 }
 
 export const useFetchAPIPublicOrLoggedInData = (api_part: string, setData: any): any => {
@@ -171,6 +239,7 @@ export const useFetchAPIPublicOrLoggedInData = (api_part: string, setData: any):
   return { isLoading }
 }
 
+// Should be fetch on mount after a good refactor
 export const useFetchAPIPublicData = (api_part: string, setData: any): any => {
   useEffect(() => {
     const myFetch = async () => {
@@ -199,311 +268,93 @@ export const useFetchAPIPublicData = (api_part: string, setData: any): any => {
   }, [])
 }
 
-export const useFetchTopAdditions = (): any => {
-  const [data, setData] = useState({})
-  const [isLoading, setIsLoading] = useState(true)
-  const { accessToken, revalidateAccessToken } = useAccessToken()
-  const isLoggedIn = useIsLoggedIn()
-
-  useEffect(() => {
-    const myFetch = async () => {
-      try {
-        setIsLoading(true)
-        if (isLoggedIn && isExpired(accessToken)) {
-          await revalidateAccessToken()
-        }
-        const response = await fetch(`/api/v1/top_additions`, {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessToken}`
-          }
-        })
-        console.log('*********************** status is', response.status)
-        const data = await response.json()
-        if (!response.ok) {
-          if (data.msg) {
-            throw Error(data.msg)
-          }
-          throw Error(`${response.status}`)
-        }
-        setData(data)
-        setIsLoading(false)
-      } catch (error) {
-        message.error(error.message)
-        setData({})
-        setIsLoading(false)
-      }
-    }
-    myFetch()
-    return
-  }, [])
-
-  return { data, isLoading }
-}
-
 export const useFetchGetWithUserId = (urlEnd: string, refreshFlag?: number): any => {
-  const [data, setData] = useState({})
-  const [isLoading, setIsLoading] = useState(true)
-  const { accessToken, revalidateAccessToken } = useAccessToken()
   const userId = useUserId()
-
-  useEffect(() => {
-    abstractFetchLoggedInURL(
-      accessToken,
-      revalidateAccessToken,
-      data,
-      setData,
-      isLoading,
-      setIsLoading,
-      `/api/v1/investors/${userId}${urlEnd}`
-    )
-  }, [refreshFlag])
-
-  return { data, isLoading }
+  const endPointUrl = `/api/v1/investors/${userId}${urlEnd}`
+  return useAbstractFetchOnMount(endPointUrl, refreshFlag)
 }
 
-type HttpMutation = 'POST' | 'PUT'
-export const useFetchMutationWithUserId = (
-  urlEnd: string,
-  methodInput: HttpMutation,
-  redirectPath?: string
-): Function => {
-  const { accessToken, revalidateAccessToken } = useAccessToken()
-  const userId = useUserId()
-  const routerObject = useHistory()
-  const [values, setValues] = useState()
-
-  // TODO(Jude): Get rid of useEffect and just use return an async fetch that takes in values to submit
-  useEffect(() => {
-    if (!values) {
-      return
-    }
-    const myFetch = async () => {
-      try {
-        if (isExpired(accessToken)) {
-          await revalidateAccessToken()
-        }
-        const response = await fetch(`/api/v1/investors/${userId}${urlEnd}`, {
-          method: methodInput,
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessToken}`
-          },
-          body: JSON.stringify(values)
-        })
-        console.log('*********************** status is', response.status)
-        const data = await response.json()
-
-        if (!response.ok) {
-          if (data.msg) {
-            throw Error(data.msg)
-          }
-          throw Error(`Request failed - ${response.statusText}`)
-        }
-        console.log('********************* data is ', data)
-        if (redirectPath) {
-          routerObject.push(redirectPath)
-        }
-      } catch (error) {
-        message.error(error.message)
-      }
-    }
-    myFetch()
-  }, [values])
-
-  return setValues
+// Get Requests
+export const useFetchGetPublicPortfolio = (portfolioId: string): any => {
+  const endPointUrl = `/api/v1/public-portfolios/${portfolioId}`
+  return useAbstractFetchOnMount(endPointUrl)
 }
 
-interface AuthToken {
-  exp: number
-  fresh: boolean
-  iat: number
-  jti: string
-  nbf: number
-  sub: number
-  type: string
-}
-
-type AuthType = 'LOGIN' | 'REGISTER'
-export const useAuth = (authType: AuthType): Function => {
-  let url = '/auth/login'
-  if (authType === 'REGISTER') {
-    url = '/api/v1/investors'
-  }
-
-  const { dispatch } = useStore()
-  const [values, setValues] = useState()
-  const routerObject = useHistory()
-
-  // TODO(Jude): Get rid of useEffect and just use return an async fetch that takes in values to submit
-  useEffect(() => {
-    if (!values) {
-      return
-    }
-    fetch(url, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(values)
-    })
-      .then((res) => {
-        console.log('*********************** status is', res.status)
-        if (!res.ok) {
-          // TODO(Jude): Better error handling
-          throw Error(
-            `${authType === 'REGISTER' ? 'Failed to Sign up' : 'Failed to Log in'} - ${
-              res.statusText
-            }`
-          )
-        }
-        return res.json()
-      })
-      .then((data) => {
-        console.log('********************* data is ', data)
-        dispatch({
-          type: 'LOGIN',
-          payload: {
-            accessToken: data.access_token,
-            refreshToken: data.refresh_token,
-            userId: jwt_decode<AuthToken>(data.access_token).sub
-          }
-        })
-        routerObject.push('/')
-      })
-      .catch((error) => {
-        // TEMP
-        message.error(error.message)
-      })
-  }, [values])
-
-  return setValues
+export const useFetchTopAdditions = (): any => {
+  const endPointUrl = `/api/v1/top_additions`
+  return useAbstractFetchOnMount(endPointUrl)
 }
 
 export const useGetPortfolioInfo = (portfolioId: string): any => {
-  const { accessToken, revalidateAccessToken } = useAccessToken()
-  const [data, setData] = useState({})
-  const [isLoading, setIsLoading] = useState(true)
+  const endPointUrl = `/api/v1/portfolios/${portfolioId}`
+  return useAbstractFetchOnMount(endPointUrl)
+}
 
-  useEffect(() => {
-    abstractFetchLoggedInURL(
-      accessToken,
-      revalidateAccessToken,
-      data,
-      setData,
-      isLoading,
-      setIsLoading,
-      `/api/v1/portfolios/${portfolioId}`
-    )
-  }, [])
+export const useGetPortfolioHistory = (portfolioId: string): any => {
+  const endPointUrl = `/api/v1/portfolios/${portfolioId}/history`
+  const { data, isLoading } = useAbstractFetchOnMount(endPointUrl)
+  return data
+}
 
-  return { data, isLoading }
+export const useGetWatchlist = (): any => {
+  const endPointUrl = `/api/v1/watchlist`
+  const { data, isLoading } = useAbstractFetchOnMount(endPointUrl)
+  return data
+}
+
+export const useAdvancedSearch = (): any => {
+  const endPointUrl = 'api/v1/explore'
+  const { data, isLoading, myFetch } = useAbstractFetchOnSubmit(endPointUrl)
+  return { data, isLoading, myFetch }
+}
+
+export const useAuth = (authType: AuthType): Function => {
+  let endPointUrl = '/auth/login'
+  if (authType === 'REGISTER') {
+    endPointUrl = '/api/v1/investors'
+  }
+  const { dispatch } = useStore()
+  const { isLoading, myFetch } = useAbstractFetchUpdate(endPointUrl, 'POST')
+  const routerObject = useHistory()
+  const submit = async (values: JSON) => {
+    try {
+      const data: SuccessfullLoginResponse = await myFetch(values)
+      dispatch({
+        type: 'LOGIN',
+        payload: {
+          accessToken: data.access_token,
+          refreshToken: data.refresh_token,
+          userId: jwt_decode<AuthToken>(data.access_token).sub
+        }
+      })
+      routerObject.push('/')
+    } catch (error) {
+      message.error(error.message)
+    }
+  }
+  return submit
+}
+
+export const useUpdateAccountInfo = (): Function => {
+  const userId = useUserId()
+  const { isLoading, myFetch } = useAbstractFetchUpdate(`/api/v1/investors/${userId}`, 'PUT', urls.account)
+  return myFetch
+}
+
+export const useAddPortfolioEvent = (portfolioId: string): Function => {
+  const { isLoading, myFetch } = useAbstractFetchUpdate(`/api/v1/portfolios/${portfolioId}/history`, 'POST', urls.portfolio)
+  return myFetch
 }
 
 export const useUpdatePortfolioInfo = (
   methodInput: HttpMutation,
   portfolioId?: string
 ): Function => {
-  const { accessToken, revalidateAccessToken } = useAccessToken()
-  const routerObject = useHistory()
   const userId = useUserId()
-
-  let url = `/api/v1/investors/${userId}/portfolios`
+  let endPointUrl = `/api/v1/investors/${userId}/portfolios`
   if (methodInput === 'PUT') {
-    url = `/api/v1/portfolios/${portfolioId}`
+    endPointUrl = `/api/v1/portfolios/${portfolioId}`
   }
-
-  // fix type into json
-  const submit = async (values: any) => {
-    try {
-      if (isExpired(accessToken)) {
-        await revalidateAccessToken()
-      }
-      const response = await fetch(url, {
-        method: methodInput,
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`
-        },
-        body: JSON.stringify(values)
-      })
-
-      const data = await response.json()
-      if (!response.ok) {
-        if (data.msg) {
-          throw Error(data.msg)
-        }
-        throw Error(response.statusText)
-      }
-      routerObject.push(urls.portfolio)
-    } catch (error) {
-      message.error(error.message)
-    }
-  }
-
-  return submit
-}
-
-export const useGetPortfolioHistory = (portfolioId: string): any => {
-  const { accessToken, revalidateAccessToken } = useAccessToken()
-  const [data, setData] = useState({})
-  const [isLoading, setIsLoading] = useState(true)
-
-  useEffect(() => {
-    abstractFetchLoggedInURL(
-      accessToken,
-      revalidateAccessToken,
-      data,
-      setData,
-      isLoading,
-      setIsLoading,
-      `/api/v1/portfolios/${portfolioId}/history`
-    )
-  }, [])
-
-  return data
-}
-
-export const useGetWatchlist = (): any => {
-  const { accessToken, revalidateAccessToken } = useAccessToken()
-  const [data, setData] = useState({})
-  const [isLoading, setIsLoading] = useState(true)
-
-  useEffect(() => {
-    abstractFetchLoggedInURL(
-      accessToken,
-      revalidateAccessToken,
-      data,
-      setData,
-      isLoading,
-      setIsLoading,
-      `/api/v1/watchlist`
-    )
-  }, [])
-
-  return data
-}
-
-export const useGetPortfolioHoldings = (portfolioId: string): any => {
-  const { accessToken, revalidateAccessToken } = useAccessToken()
-  const [data, setData] = useState({})
-  const [isLoading, setIsLoading] = useState(true)
-
-  useEffect(() => {
-    abstractFetchLoggedInURL(
-      accessToken,
-      revalidateAccessToken,
-      data,
-      setData,
-      isLoading,
-      setIsLoading,
-      `/api/v1/portfolios/${portfolioId}/holdings`
-    )
-  }, [])
-
-  return data
+  const { isLoading, myFetch } = useAbstractFetchUpdate(endPointUrl, methodInput, urls.portfolio)
+  return myFetch
 }

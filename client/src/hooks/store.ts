@@ -3,11 +3,17 @@ import { countryCodeToName } from '@rocketmaven/data/country-code-to-name'
 import { currencyCodeToName } from '@rocketmaven/data/currency-code-to-name'
 import { useContext } from 'react'
 
-// TODO(Jude): Consider separating into more specific 'use' functions
 export const useStore = () => {
   const { state, dispatch } = useContext(storeContext)
   const { isLoggedIn, accessToken, refreshToken, userId } = state
   return { isLoggedIn, accessToken, refreshToken, userId, dispatch }
+}
+
+export const useAdvancedSearchParams = () => {
+  const { state, dispatch } = useContext(storeContext)
+  const { searchParams } = state
+  const { currentPage, queryParams, cachedData } = searchParams
+  return { currentPage, queryParams, cachedData, dispatch }
 }
 
 export const useUserId = () => {
