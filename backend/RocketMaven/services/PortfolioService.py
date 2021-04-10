@@ -2,12 +2,10 @@ import collections
 
 from flask import request
 from flask_jwt_extended import get_jwt_identity
-from RocketMaven.api.schemas import (AssetSchema, PortfolioSchema,
-                                     PublicPortfolioSchema)
+from RocketMaven.api.schemas import AssetSchema, PortfolioSchema, PublicPortfolioSchema
 from RocketMaven.commons.pagination import paginate
 from RocketMaven.extensions import db
-from RocketMaven.models import (Asset, Portfolio, PortfolioAssetHolding,
-                                PortfolioEvent)
+from RocketMaven.models import Asset, Portfolio, PortfolioAssetHolding, PortfolioEvent
 from RocketMaven.services.PortfolioEventService import update_asset
 from sqlalchemy import and_
 
@@ -292,7 +290,29 @@ def get_report():
 
 def create_portfolio(investor_id):
 
+    if not get_jwt_identity() == investor_id:
+        return {"msg": "Cannot create portfolio for another user!"}, 400
+
     schema = PortfolioSchema()
+
+    if (
+        "competition_portfolio" in request.json
+        and request.json["competition_portfolio"]
+    ):
+        portfolios = (
+            db.session()
+            .query(Portfolio)
+            .filter_by(
+                investor_id=investor_id, competition_portfolio=True, deleted=False
+            )
+            .count()
+        )
+
+        if portfolios > 1:
+            return {
+                "msg": "An investor cannot create more than 2 competition portfolios!"
+            }, 400
+
     portfolio = schema.load(request.json)
     portfolio.investor_id = investor_id
 

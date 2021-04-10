@@ -1,7 +1,7 @@
-import styled from 'styled-components'
-import { Layout, Menu } from 'antd'
 import { ContentWrap } from '@rocketmaven/App/styled'
 import { Card } from '@rocketmaven/componentsStyled/Card'
+import { Layout, Menu } from 'antd'
+import styled from 'styled-components'
 const { Header, Content, Sider } = Layout
 
 const sidebarWidth = 200
@@ -48,7 +48,7 @@ export const HeaderWrap = styled(Header)`
   top: 0;
   right: 0;
   left: 0;
-  z-index: 1030;
+  z-index: 1;
   ${ContentWrap}[data-collapsed="false"] & {
     margin-left: ${sidebarWidth}px;
   }

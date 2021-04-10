@@ -70,3 +70,5 @@ The meeting was also to reaffirm that all group members know their role in draft
 - Started and completed a basic implementation (back-end and front-end) of the report generation feature
 - Refined the portfolio event creation front-end and back-end to protect from "impossible events" (such as preventing removing more units of an asset than the investor is currently holding)
 - Completed the competition portfolio feature on both the front-end and back-end
+- Performed Progressive Demo B and wrote Retrospective B with help from the team
+

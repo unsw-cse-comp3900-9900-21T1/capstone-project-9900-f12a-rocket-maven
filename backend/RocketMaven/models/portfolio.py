@@ -39,6 +39,35 @@ class Portfolio(db.Model):
 
     portfolio_asset_holding = relationship("PortfolioAssetHolding", backref="subject")
 
+    rank = db.Column(db.Integer, nullable=True)
+
+    _competition_score = db.Column(db.Float(), nullable=True)
+
+    # competition_score is the total holding values + total realised value + current buying power
+    @hybrid_property
+    def competition_score(self):
+        return (
+            sum(
+                acc.realised_total + acc.current_value
+                for acc in self.portfolio_asset_holding
+            )
+            + self.buying_power
+        )
+
+    @competition_score.expression
+    def competition_score(cls):
+        return (
+            select(
+                [
+                    func.sum(PortfolioAssetHolding.realised_total)
+                    + func.sum(PortfolioAssetHolding.current_value)
+                ]
+            )
+            .where(PortfolioAssetHolding.investor_id == cls.investor_id)
+            .as_scalar()
+            + cls.buying_power
+        )
+
     # realised_sum is the sum of the realised units of all holdings
     _realised_sum = db.Column(db.Float(), nullable=True)
 

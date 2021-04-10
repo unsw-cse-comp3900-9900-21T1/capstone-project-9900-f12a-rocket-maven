@@ -137,7 +137,15 @@ const PaginatedPortfolioDisplay = ({ portfolioPagination, refreshPortfolios }: P
             render: (value: number) => value.toFixed(2)
           },
           {
-            title: 'Current Market Price',
+            title: (
+              <Tooltip
+                placement="topLeft"
+                title={`Current price of assets based on their market value`}
+                arrowPointAtCenter
+              >
+                <span style={{ textDecoration: 'underline dotted' }}>Current Price</span>
+              </Tooltip>
+            ),
             dataIndex: 'market_price',
             render: (value: number) => value.toFixed(2)
           },
