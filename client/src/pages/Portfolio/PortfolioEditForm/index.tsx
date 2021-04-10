@@ -1,7 +1,7 @@
 import { Card } from '@rocketmaven/componentsStyled/Card'
 // import { MySelect, MyTextInput } from '@rocketmaven/forms'
 import { useUpdatePortfolioInfo } from '@rocketmaven/hooks/http'
-import { useSortedCountryList } from '@rocketmaven/hooks/store'
+import { useSortedCountryList, useSortedCurrencyList } from '@rocketmaven/hooks/store'
 import { PortfolioInfoEdit } from '@rocketmaven/pages/Portfolio/types'
 import { Button, Form, Input, Select, Switch } from 'antd'
 const { Option } = Select
@@ -16,6 +16,8 @@ type Props = {
 
 const PortfolioEditForm = ({ portfolioInfo, portfolioId, action }: Props) => {
   const countryList = useSortedCountryList()
+  const currencyList = useSortedCurrencyList()
+
   let initialValues: PortfolioInfoEdit = {
     competition_portfolio: false,
     description: '',
@@ -24,16 +26,25 @@ const PortfolioEditForm = ({ portfolioInfo, portfolioId, action }: Props) => {
     public_portfolio: true,
     // Bottom 2 not used, just here for typing validation
     creation_date: '',
+    currency: 'AUD',
     id: 0
   }
+
   let countryElement: [string, string] = ['AU', 'Australia']
+  let currencyElement: [string, string] = ['AUD', 'Australian Dollars']
+
   if (portfolioInfo) {
     initialValues = { ...portfolioInfo.portfolio }
     // Get the country code of the name returned
     countryElement = countryList.find(
       (element) => portfolioInfo.portfolio.tax_residency === element[1]
     ) as [string, string]
+
+    currencyElement = currencyList.find(
+      (element) => portfolioInfo.portfolio.currency === element[1]
+    ) as [string, string]
   }
+
   const setValuesAndFetch: Function = useUpdatePortfolioInfo(
     portfolioInfo ? 'PUT' : 'POST',
     portfolioId
@@ -113,6 +124,26 @@ const PortfolioEditForm = ({ portfolioInfo, portfolioId, action }: Props) => {
             })}
           </Select>
         </Form.Item>
+
+        {action == 'Create' ? (
+          <Form.Item
+            label="Currency"
+            name="currency"
+            initialValue={currencyElement[0]}
+            rules={[
+              {
+                required: true,
+                message: 'Please select a currency'
+              }
+            ]}
+          >
+            <Select showSearch>
+              {currencyList.map(([code, name], value) => {
+                return <Select.Option value={code}>{name}</Select.Option>
+              })}
+            </Select>
+          </Form.Item>
+        ) : null}
 
         <Form.Item
           label="Public"

@@ -47,6 +47,7 @@ class PortfolioAssetHolding(db.Model):
 
     @hybrid_property
     def purchase_value(self):
+        # Already in the portfolio's currency
         return self.average_price * self.available_units
 
     _unrealised_units = db.Column(db.Float(), nullable=True)

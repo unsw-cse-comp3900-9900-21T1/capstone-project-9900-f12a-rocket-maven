@@ -29,6 +29,10 @@ class PortfolioEvent(db.Model):
 
     exchange_rate = db.Column(db.Float(), unique=False, nullable=False)
 
+    @hybrid_property
+    def price_per_share_in_portfolio_currency(self):
+        return self.price_per_share * self.exchange_rate
+
     note = db.Column(db.String(1024), unique=False, nullable=True)
 
     tax_full_snapshot = db.Column(db.Float(), unique=False, nullable=True)
@@ -140,7 +144,8 @@ class PortfolioEvent(db.Model):
 
                     remove_total -= removed_difference
                     current_realised = removed_difference * (
-                        remove_event.price_per_share - add_event.price_per_share
+                        remove_event.price_per_share_in_portfolio_currency
+                        - add_event.price_per_share_in_portfolio_currency
                     )
                     if current_realised < 0:
                         # A loss, so can be used for tax offsetting
@@ -185,7 +190,9 @@ class PortfolioEvent(db.Model):
                 previous_update = (
                     asset_holding.available_units * asset_holding.average_price
                 )
-                new_update = add_event.units * add_event.price_per_share
+                new_update = (
+                    add_event.units * add_event.price_per_share_in_portfolio_currency
+                )
 
                 # Recalculate the new average price
                 new_average_price = (previous_update + new_update) / available_units
