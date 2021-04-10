@@ -34,9 +34,9 @@ export const useAccessToken = () => {
       console.log('************************token refresh successfull')
       dispatch({ type: 'REFRESH_TOKEN', payload: { accessToken: data.access_token } })
     } catch (error) {
+      message.error(error.message)
       // Refresh token expired
       dispatch({ type: 'LOGOUT' })
-      message.error(error.message)
       routerObject.push(urls.root)
       throw Error(error)
     }
@@ -107,13 +107,17 @@ export const useFetchGetPublicPortfolio = (portfolioId: string): any => {
           }
         })
         console.log('*********************** status is', response.status)
+        const data = await response.json()
         if (!response.ok) {
+          if (data.msg) {
+            throw Error(data.msg)
+          }
           throw Error(`${response.status}`)
         }
-        const data = await response.json()
         setData(data)
         setIsLoading(false)
       } catch (error) {
+        message.error(error.message)
         setData({})
         setIsLoading(false)
       }
@@ -126,7 +130,6 @@ export const useFetchGetPublicPortfolio = (portfolioId: string): any => {
 }
 
 export const useFetchAPIPublicData = (api_part: string, setData: any): any => {
-
   useEffect(() => {
     const myFetch = async () => {
       try {
@@ -136,12 +139,16 @@ export const useFetchAPIPublicData = (api_part: string, setData: any): any => {
             'Content-Type': 'application/json'
           }
         })
+        const data = await response.json()
         if (!response.ok) {
+          if (data.msg) {
+            throw Error(data.msg)
+          }
           throw Error(`${response.status}`)
         }
-        const data = await response.json()
         setData(data)
       } catch (error) {
+        message.error(error.message)
         setData({})
       }
     }
@@ -171,13 +178,17 @@ export const useFetchTopAdditions = (): any => {
           }
         })
         console.log('*********************** status is', response.status)
+        const data = await response.json()
         if (!response.ok) {
+          if (data.msg) {
+            throw Error(data.msg)
+          }
           throw Error(`${response.status}`)
         }
-        const data = await response.json()
         setData(data)
         setIsLoading(false)
       } catch (error) {
+        message.error(error.message)
         setData({})
         setIsLoading(false)
       }
@@ -323,7 +334,7 @@ export const useAuth = (authType: AuthType): Function => {
       })
       .catch((error) => {
         // TEMP
-        message.error(error.messge)
+        message.error(error.message)
       })
   }, [values])
 
@@ -352,7 +363,7 @@ export const useGetPortfolioInfo = (portfolioId: string): any => {
 
 export const useUpdatePortfolioInfo = (
   methodInput: HttpMutation,
-  portfolioId?: string,
+  portfolioId?: string
 ): Function => {
   const { accessToken, revalidateAccessToken } = useAccessToken()
   const routerObject = useHistory()
@@ -378,13 +389,17 @@ export const useUpdatePortfolioInfo = (
         },
         body: JSON.stringify(values)
       })
-      
+
+      const data = await response.json()
       if (!response.ok) {
-          throw Error(response.statusText)
+        if (data.msg) {
+          throw Error(data.msg)
+        }
+        throw Error(response.statusText)
       }
       routerObject.push(urls.portfolio)
     } catch (error) {
-        message.error(error.messge)
+      message.error(error.message)
     }
   }
 

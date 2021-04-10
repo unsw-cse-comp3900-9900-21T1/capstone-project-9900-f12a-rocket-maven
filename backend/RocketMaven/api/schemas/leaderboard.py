@@ -17,7 +17,11 @@ class InvestorSmallSchema(ma.SQLAlchemyAutoSchema):
 class LeaderboardSchema(ma.SQLAlchemyAutoSchema):
 
     id = ma.Int(dump_only=True)
-    investor = ma.Nested(InvestorSmallSchema, many=False, only=["id", "username", "first_name", "last_name"])
+    investor = ma.Nested(
+        InvestorSmallSchema,
+        many=False,
+        only=["id", "username", "first_name", "last_name"],
+    )
     # password = ma.String(load_only=True, required=True)
 
     class Meta:
@@ -25,6 +29,9 @@ class LeaderboardSchema(ma.SQLAlchemyAutoSchema):
         sqla_session = db.session
         load_instance = True
 
+    _competition_score = ma.auto_field(
+        data_key="competition_score", attribute="competition_score"
+    )
     _realised_sum = ma.auto_field(data_key="realised_sum", attribute="realised_sum")
     _current_value_sum = ma.auto_field(
         data_key="current_value_sum", attribute="current_value_sum"

@@ -29,7 +29,8 @@ class PortfolioEvent(db.Model):
 
     note = db.Column(db.String(1024), unique=False, nullable=True)
 
-    tax_snapshot = db.Column(db.Float(), unique=False, nullable=True)
+    tax_full_snapshot = db.Column(db.Float(), unique=False, nullable=True)
+    tax_discount_snapshot = db.Column(db.Boolean, unique=False, nullable=True)
     available_snapshot = db.Column(db.Float(), unique=False, nullable=True)
     realised_snapshot = db.Column(db.Float(), unique=False, nullable=True)
 
@@ -112,9 +113,10 @@ class PortfolioEvent(db.Model):
 
         past_add_events = []
 
-        event_taxes = 0
         realised_running_local_sum = 0
         for event in asset_events.all():
+            event_taxes = 0
+            event_tax_discount = False
             # Loop through all asset events in order of creation (from earliest to latest)
 
             if event.add_action is False:
@@ -153,12 +155,10 @@ class PortfolioEvent(db.Model):
                                 remove_event.event_date.toordinal()
                             )
                         )
-                        if remove_date - add_date < 365 * 24 * 60 * 60:
-                            # Less than one year, pay full tax
-                            event_taxes += current_realised
-                        else:
+                        event_taxes += current_realised
+                        if remove_date - add_date >= 365 * 24 * 60 * 60:
                             # One year or more, pay half tax
-                            event_taxes += current_realised / 2
+                            event_tax_discount = True
 
                     realised_running_local_sum += current_realised
 
@@ -195,7 +195,8 @@ class PortfolioEvent(db.Model):
 
             # Save a copy of the event's data for the report
             event.available_snapshot = asset_holding.available_units
-            event.tax_snapshot = event_taxes
+            event.tax_full_snapshot = event_taxes
+            event.tax_discount_snapshot = event_tax_discount
             event.realised_snapshot = realised_running_local_sum
 
         asset_holding.realised_total = realised_running_local_sum
