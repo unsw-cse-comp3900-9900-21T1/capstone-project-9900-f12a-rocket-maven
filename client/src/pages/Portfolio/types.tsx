@@ -61,7 +61,9 @@ export type LeaderboardInvestor = {
 export type PortfolioInfo = {
   public_portfolio: boolean
   buying_power: number
+  competition_score: number
   realised_sum: number
+  rank: number
   description: string
   creation_date: string
   id: number

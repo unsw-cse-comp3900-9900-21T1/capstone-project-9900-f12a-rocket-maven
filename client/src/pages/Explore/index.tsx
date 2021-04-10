@@ -1,15 +1,13 @@
-import Page from '@rocketmaven/pages/_Page'
-import { Form, Button, Row, Col } from 'antd'
 import { urls } from '@rocketmaven/data/urls'
-import { Select, Spin } from 'antd'
+import Page from '@rocketmaven/pages/_Page'
+import { Button, Col, Form, Row, Select, Spin } from 'antd'
 import { SelectProps } from 'antd/es/select'
 import debounce from 'lodash/debounce'
-import { useState, useRef, useMemo } from 'react'
 import { isEmpty } from 'ramda'
-import { Link } from 'react-router-dom'
-import { FaBalanceScale, FaTrophy } from 'react-icons/fa'
-import { FaHeart } from 'react-icons/fa'
+import { useMemo, useRef, useState } from 'react'
+import { FaBalanceScale, FaHeart, FaTrophy } from 'react-icons/fa'
 import { useHistory } from 'react-router'
+import { Link } from 'react-router-dom'
 
 export type AssetSearch = {
   ticker_symbol: string
@@ -133,7 +131,7 @@ const Explore = () => {
     <Page>
       <Row justify="center" style={{ minHeight: '100vh' }}>
         <Col style={{ height: '100vh' }}>
-          <h1>Rocket Maven</h1>
+          <h1>Explore Rocket Maven</h1>
 
           <Form
             name="explore"
@@ -164,21 +162,21 @@ const Explore = () => {
               />
             </Form.Item>
           </Form>
-          <Row  style={{ marginBottom: '0.5rem' }}>
+          <Row style={{ marginBottom: '0.5rem' }}>
             <Button type="primary">
               <Link to={urls.leaderboard}>
-                <FaTrophy /> Rocket Maven Portfolio Competition Leaderboard
+                <FaTrophy /> Portfolio Competition Leaderboard
               </Link>
             </Button>
-            </Row>
-          <Row  style={{ marginBottom: '0.5rem' }}>
+          </Row>
+          <Row style={{ marginBottom: '0.5rem' }}>
             <Button type="primary">
               <Link to={urls.topAdditions}>
                 <FaHeart /> Top Additions
               </Link>
             </Button>
           </Row>
-          <Row  style={{ marginBottom: '0.5rem' }}>
+          <Row style={{ marginBottom: '0.5rem' }}>
             <Button type="primary">
               <Link to={urls.compare}>
                 <FaBalanceScale /> Compare Assets

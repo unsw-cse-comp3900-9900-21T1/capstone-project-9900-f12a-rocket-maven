@@ -1,5 +1,7 @@
+import { urls } from '@rocketmaven/data/urls'
+import { useStore } from '@rocketmaven/hooks/store'
+import { LogoWrap, MenuItemWrap, SidebarWrap } from '@rocketmaven/pages/_Page/styled'
 import React from 'react'
-import { Link, useLocation } from 'react-router-dom'
 import {
   FaBriefcase,
   FaFileAlt,
@@ -9,10 +11,7 @@ import {
   FaUser,
   FaUserPlus
 } from 'react-icons/fa'
-import { SidebarWrap, LogoWrap, MenuItemWrap } from '@rocketmaven/pages/_Page/styled'
-import { urls } from '@rocketmaven/data/urls'
-import { useStore } from '@rocketmaven/hooks/store'
-
+import { Link, useLocation } from 'react-router-dom'
 
 const size = {
   width: 30,
@@ -30,13 +29,13 @@ function sideBarItems(isLoggedIn: boolean) {
   const itemsWhenNotLoggedIn: Array<SideBarItem> = [
     { name: 'Explore', to: urls.explore, icon: <FaNetworkWired /> },
     { name: 'Sign Up', to: urls.signup, icon: <FaUserPlus /> },
-    { name: 'Log In', to: urls.login, icon: <FaSignInAlt /> },
+    { name: 'Log In', to: urls.login, icon: <FaSignInAlt /> }
   ]
   const itemsWhenLoggedIn: Array<SideBarItem> = [
     { name: 'Explore', to: urls.explore, icon: <FaNetworkWired /> },
     { name: 'Portfolio', to: urls.portfolio, icon: <FaBriefcase /> },
     { name: 'Account', to: urls.account, icon: <FaUser /> },
-    { name: 'Watchlists', to: urls.watchlists, icon: <FaStar /> },
+    { name: 'Watchlist', to: urls.watchlists, icon: <FaStar /> },
     { name: 'Report', to: urls.report, icon: <FaFileAlt /> }
   ]
   return isLoggedIn ? itemsWhenLoggedIn : itemsWhenNotLoggedIn

@@ -49,7 +49,7 @@ export const PortfolioCard = ({portfolio}: Props) => {
   return (
     <Card
       title={portfolio.name}
-      style={{width: "90%"}}
+      style={{width: "90%", overflowX: "auto"}}
     >
       <Row>
         <Col>
