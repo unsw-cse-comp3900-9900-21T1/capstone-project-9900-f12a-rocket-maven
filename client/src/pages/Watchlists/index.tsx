@@ -1,18 +1,14 @@
-import Page from '@rocketmaven/pages/_Page'
-import { Link } from 'react-router-dom'
-import { Table, Form, Button } from 'antd'
-import React from 'react'
-import { Title } from '@rocketmaven/componentsStyled/Typography'
-import {
-  useGetWatchlist
-} from '@rocketmaven/hooks/http' // use later. at the moment backend is not ready
-import { isEmpty } from 'ramda'
-import { useHistory } from 'react-router-dom'
-import { useAccessToken } from '@rocketmaven/hooks/http'
-import { Card } from '@rocketmaven/componentsStyled/Card'
 import AssetSearchBox from '@rocketmaven/components/AssetSearchBox'
+import { Card } from '@rocketmaven/componentsStyled/Card'
+import { Title } from '@rocketmaven/componentsStyled/Typography'
+import { useAccessToken, useGetWatchlist } from '@rocketmaven/hooks/http' // use later. at the moment backend is not ready
+import Page from '@rocketmaven/pages/_Page'
+import { Button, Form, Table } from 'antd'
+import { isEmpty } from 'ramda'
+import React from 'react'
+import { Link, useHistory } from 'react-router-dom'
 
-type WatchListItem = {
+type AssetInfo = {
   industry: string
   price_last_updated: Date
   asset_additional: string
@@ -23,6 +19,14 @@ type WatchListItem = {
   name: string
   country: string
   data_source: string
+  price_high: number
+  price_low: number
+}
+
+type WatchListItem = {
+  price_high: number
+  price_low: number
+  asset: AssetInfo
 }
 
 type WatchListPagination = {
@@ -63,7 +67,14 @@ const Watchlists = () => {
   if (!watchlist || isEmpty(watchlist)) {
     // do nothing
   } else {
-    const watchlistitems: [WatchListItem] = watchlist.results
+    const watchlistresults: [WatchListItem] = watchlist.results
+    let watchlistitems: AssetInfo[] = []
+
+    watchlistresults.forEach(function (e) {
+      e.asset.price_high = e.price_high
+      e.asset.price_low = e.price_low
+      watchlistitems.push(e.asset)
+    })
 
     const columns = [
       {
@@ -145,6 +156,14 @@ const Watchlists = () => {
           }
           return null
         }
+      },
+      {
+        title: 'Notify High',
+        dataIndex: 'price_high'
+      },
+      {
+        title: 'Notify Low',
+        dataIndex: 'price_low'
       },
       {
         title: 'Delete',

@@ -1,8 +1,8 @@
 import re
-
+from RocketMaven.api.schemas import AssetSchema
 from marshmallow import ValidationError
 from RocketMaven.extensions import db, ma
-from RocketMaven.models import Investor
+from RocketMaven.models import Investor, Watchlist
 
 
 def validate_password(password):
@@ -49,3 +49,15 @@ class InvestorSchema(ma.SQLAlchemyAutoSchema):
 class InvestorCreateSchema(InvestorSchema):
 
     email = ma.Email()
+
+
+class WatchlistSchema(ma.SQLAlchemyAutoSchema):
+
+    price_low = ma.Float()
+    price_high = ma.Float()
+    asset = ma.Nested(AssetSchema, many=False)
+
+    class Meta:
+        model = Watchlist
+        sqla_session = db.session
+        load_instance = True
