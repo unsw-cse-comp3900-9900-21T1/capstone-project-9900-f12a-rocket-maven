@@ -1,11 +1,11 @@
-import Page from '@rocketmaven/pages/_Page'
-import { Link } from 'react-router-dom'
-import React from 'react'
-import { Title, Subtitle, Text } from '@rocketmaven/componentsStyled/Typography'
+import { Subtitle, Text, Title } from '@rocketmaven/componentsStyled/Typography'
+import { urls } from '@rocketmaven/data/urls'
 import { useFetchTopAdditions } from '@rocketmaven/hooks/http'
 import { PortfolioInfo } from '@rocketmaven/pages/Portfolio/types'
-import { urls } from '@rocketmaven/data/urls'
+import Page from '@rocketmaven/pages/_Page'
 import { Table } from 'antd'
+import React from 'react'
+import { Link } from 'react-router-dom'
 
 type Asset = {
   industry: string
@@ -22,7 +22,7 @@ type Asset = {
 
 const TopAdditions = () => {
   const { data, isLoading } = useFetchTopAdditions()
-  
+
   let content = null
 
   if (!isLoading) {
@@ -168,7 +168,7 @@ const TopAdditions = () => {
     ]
 
     const datas: any = []
-    const portfolios: [PortfolioInfo]= [data.portfolio]
+    const portfolios: [PortfolioInfo] = [data.portfolio]
     portfolios.forEach((portfolio, index) => {
       datas.push({
         Investor: portfolio.investor,
@@ -183,15 +183,15 @@ const TopAdditions = () => {
 
     // TODO(Jude)?: adjust query to add top 5 of most viewed public portfolios and holdings
     // TODO(Jude): Double check if the top holding is shown
-    // TODO(Jude): Double check empty cases
-    content = 
+    // TODO(Jude): Add error handling for empty cases ( there shouldn't be any though )
+    content =
       <React.Fragment>
         <Subtitle>
           Top Asset
         </Subtitle>
-        <Table columns={holdingColumns} dataSource={assets} rowKey="id"  pagination={false} style={{ marginBottom: '4rem' }}/>
+        <Table columns={holdingColumns} dataSource={assets} rowKey="id" pagination={false} style={{ marginBottom: '4rem' }} />
         <Subtitle>
-          Most viewed public portfolio
+          Most viewed portfolio
         </Subtitle>
         <Table columns={portfolioColumns} dataSource={datas} rowKey="id" pagination={false} />
       </React.Fragment>
@@ -205,8 +205,8 @@ const TopAdditions = () => {
       </Title>
       {
         isLoading
-        ? null
-        : content
+          ? null
+          : content
       }
     </Page>
   )

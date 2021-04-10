@@ -327,7 +327,8 @@ def get_top_additions():
     # View count of portfolio
     most_viewed_portfolio_result = (
         db.session.query(Portfolio, db.func.max(Portfolio.view_count))
-        .filter(Portfolio.public_portfolio is True)
+        # TODO(Jude): Find why this broke all of a sudden - Was working fine before?
+        # .filter(Portfolio.public_portfolio is True)
         .first()
     )
     portfolio = most_viewed_portfolio_result[0]
