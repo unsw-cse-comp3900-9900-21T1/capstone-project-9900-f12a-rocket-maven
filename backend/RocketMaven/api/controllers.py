@@ -166,7 +166,7 @@ api.add_resource(
 def register_controllers():
     apispec.spec.components.schema("AssetSchema", schema=AssetSchema)
 
-    apispec.spec.path(view=Explore, app=current_app,api=api)
+    apispec.spec.path(view=Explore, app=current_app, api=api)
 
     apispec.spec.path(view=AssetResource, app=current_app, api=api)
     apispec.spec.path(view=AssetPriceResource, app=current_app, api=api)
