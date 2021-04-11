@@ -1,8 +1,10 @@
 import { CrownOutlined } from '@ant-design/icons'
+
 import { Subtitle, Title } from '@rocketmaven/componentsStyled/Typography'
 import { urls } from '@rocketmaven/data/urls'
 import { useFetchAPIPublicOrLoggedInData } from '@rocketmaven/hooks/http'
 import { useUserId } from '@rocketmaven/hooks/store'
+
 import '@rocketmaven/pages/Leaderboard/style.less'
 import { PortfolioInfo, PortfolioPagination } from '@rocketmaven/pages/Portfolio/types'
 import Page from '@rocketmaven/pages/_Page'
@@ -179,6 +181,7 @@ const Leaderboard = () => {
       <Table
         columns={valueColumns}
         dataSource={entries}
+
         rowClassName={(record: any) => {
           switch (true) {
             case record.Rank == 1: {

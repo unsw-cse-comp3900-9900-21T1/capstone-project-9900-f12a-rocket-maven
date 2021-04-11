@@ -29,9 +29,11 @@ class PortfolioEvent(db.Model):
 
     exchange_rate = db.Column(db.Float(), unique=False, nullable=False)
 
+
     @hybrid_property
     def price_per_share_in_portfolio_currency(self):
         return self.price_per_share * self.exchange_rate
+
 
     note = db.Column(db.String(1024), unique=False, nullable=True)
 

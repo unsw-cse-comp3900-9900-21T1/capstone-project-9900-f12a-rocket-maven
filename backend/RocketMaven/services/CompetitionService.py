@@ -6,6 +6,7 @@ from RocketMaven.extensions import db
 from flask_jwt_extended import get_jwt_identity
 
 
+
 def get_leaderboard():
 
     try:
@@ -25,6 +26,7 @@ def get_leaderboard():
             user_leaderboard = query.filter_by(investor_id=get_jwt_identity()).all()
 
         return [schema.dump(user_leaderboard), paginate(query, schema)]
+
 
     except Exception as e:
         print(e)

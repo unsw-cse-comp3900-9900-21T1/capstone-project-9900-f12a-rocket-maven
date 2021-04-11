@@ -1,12 +1,13 @@
-import { useContext } from 'react'
-import { Link } from 'react-router-dom'
-import { FaSignOutAlt } from 'react-icons/fa'
+import AssetSearchBox from '@rocketmaven/components/AssetSearchBox'
 import { storeContext } from '@rocketmaven/data/app/store'
-import { useStore } from '@rocketmaven/hooks/store'
 import { urls } from '@rocketmaven/data/urls'
+import { useStore } from '@rocketmaven/hooks/store'
 import { HeaderWrap } from '@rocketmaven/pages/_Page/styled'
-
 import { Menu, message } from 'antd'
+import { useContext } from 'react'
+import { FaSignOutAlt } from 'react-icons/fa'
+import { Link } from 'react-router-dom'
+
 type Props = {
   children: React.ReactNode
 }
@@ -38,6 +39,8 @@ const NavBar = ({ children }: Props) => {
   return (
     <HeaderWrap>
       {children}
+      <AssetSearchBox showSearch style={{ width: '80%' }} />
+
       <Menu mode="horizontal" defaultSelectedKeys={['2']} style={{ float: 'right' }}>
         <Menu.Item key="1"></Menu.Item>
         {logoutButton}
