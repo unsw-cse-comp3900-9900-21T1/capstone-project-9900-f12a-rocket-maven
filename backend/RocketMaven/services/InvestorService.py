@@ -9,13 +9,11 @@ from RocketMaven.models import Investor
 
 
 def get_investor(investor_id):
-    try:
-        schema = InvestorSchema()
-        data = Investor.query.get_or_404(investor_id)
-        return {"investor": schema.dump(data)}
-    except Exception:
-        return {"msg": "Operation failed!"}
-
+    """ Returns the investor or 404 if not found """
+    schema = InvestorSchema()
+    data = Investor.query.get_or_404(investor_id)
+    return {"investor": schema.dump(data)}
+    
 
 def handle_empty_date_of_birth():
     if "date_of_birth" in request.json and request.json["date_of_birth"]:
@@ -28,29 +26,36 @@ def handle_empty_date_of_birth():
 
 
 def update_investor(investor_id):
+
+    investor = Investor.query.get_or_404(investor_id)
     try:
         schema = InvestorSchema(partial=True)
 
         handle_empty_date_of_birth()
-        investor = Investor.query.get_or_404(investor_id)
         data = schema.load(request.json, instance=investor)
-
+    except ValidationError as err:
+        print(err)
+        return {"msg": "Operation failed!", "errors": e.messages}, 422
+    
+    try:
         db.session.commit()
 
         return {"msg": "investor updated", "investor": schema.dump(data)}
-    except Exception:
-        return {"msg": "Operation failed!"}
+    except Exception as err:
+        print(err)
+        return {"msg": "Operation failed!"}, 400
 
 
 def get_investors():
 
     current_investor = Investor.query.filter_by(id=get_jwt_identity()).first()
-
+    print(current_investor.admin_account)
     try:
         schema = InvestorSchema(many=True)
-        query = Investor.query.filter_by(id=current_investor.id)
         if current_investor.admin_account:
             query = Investor.query
+        else:
+            query = Investor.query.filter_by(id=current_investor.id)
         return paginate(query, schema)
 
     except Exception:
@@ -70,6 +75,7 @@ def create_investor():
         return {"msg": "Operation failed!", "errors": e.messages}, 422
     except Exception as e:
         print(e)
+        return {"msg": "Operation failed!"}, 400
 
     try:
         db.session.add(investor)
