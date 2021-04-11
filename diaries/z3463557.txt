@@ -41,3 +41,8 @@ Week 7
 Week 8
 - Added username to public portfolio details and hooked up top additions end points
 - Created top-additions clientside UI and fixed portfolio bug
+- Mostly completed front end advanced search implementation
+
+Week 9
+- Finished front end advanced search implementation
+- Refactored front end API calls
