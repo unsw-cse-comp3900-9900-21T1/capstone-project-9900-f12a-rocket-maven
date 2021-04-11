@@ -119,6 +119,7 @@ const Leaderboard = () => {
     }
   }
 
+
   useEffect(() => {
     if (data && !isEmpty(data)) {
       const userPortfolios: PortfolioInfo[] = data[0]
@@ -179,6 +180,7 @@ const Leaderboard = () => {
       <Table
         columns={valueColumns}
         dataSource={entries}
+
         rowClassName={(record: any) => {
           switch (true) {
             case record.Rank == 1: {

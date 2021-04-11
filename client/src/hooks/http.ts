@@ -129,10 +129,12 @@ export const useFetchGetPublicPortfolio = (portfolioId: string): any => {
   return { data, isLoading }
 }
 
+
 export const useFetchAPIPublicOrLoggedInData = (api_part: string, setData: any): any => {
   const [isLoading, setIsLoading] = useState(true)
   const { accessToken, revalidateAccessToken } = useAccessToken()
   const isLoggedIn = useIsLoggedIn()
+
 
   useEffect(() => {
     const myFetch = async () => {
@@ -148,7 +150,9 @@ export const useFetchAPIPublicOrLoggedInData = (api_part: string, setData: any):
             Authorization: `Bearer ${accessToken}`
           }
         })
+
         console.log('*********************** status is', response.status)
+
         const data = await response.json()
         if (!response.ok) {
           if (data.msg) {
@@ -188,6 +192,7 @@ export const useFetchAPIPublicData = (api_part: string, setData: any): any => {
           }
           throw Error(`${response.status}`)
         }
+
         setData(data)
       } catch (error) {
         message.error(error.message)
