@@ -25,7 +25,7 @@ export type AssetSearchPagination = {
   results: [AssetSearch]
 }
 
-const Explore = () =>
+const Explore = () => (
   <Page>
     <Row justify="center" style={{ minHeight: '100vh' }}>
       <Col style={{ height: '100vh' }}>
@@ -33,7 +33,7 @@ const Explore = () =>
         <Row style={{ marginBottom: '0.5rem' }}>
           <Button type="primary">
             <Link to={urls.advancedSearch}>
-              <FaSearch /> Find Assets
+              <FaSearch /> Advanced Assets Search
             </Link>
           </Button>
         </Row>
@@ -61,6 +61,6 @@ const Explore = () =>
       </Col>
     </Row>
   </Page>
-
+)
 
 export default Explore

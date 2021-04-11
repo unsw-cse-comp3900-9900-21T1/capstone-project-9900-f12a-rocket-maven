@@ -47,14 +47,14 @@ def populate_full_system(db):
         db.session.add(user)
         db.session.commit()
 
-    test_user = db.session.query(Investor).filter_by(username="admin_portfolio").first()
+    test_user = db.session.query(Investor).filter_by(username="rocket_maven").first()
 
     if not test_user:
         user = Investor(
-            username="admin_portfolio",
-            email="admin_portfolio@admin.com",
+            username="rocket_maven",
+            email="rocket_maven@example.com",
             admin_account=True,
-            password="admin_P4$$w0rd!",
+            password="rocket_maven_P4$$w0rd!",
             country_of_residency="AU",
         )
 
