@@ -35,13 +35,14 @@ def test_put_investor(client, db, investor, admin_headers):
 
     data = {
         "username": "updated",
-        "password": "new_password",
+        "password": "updated_P4$$w0rd!",
         "country_of_residency": "AU",
     }
 
     investor_url = url_for("api.investor_by_id", investor_id=investor.id)
     # test update investor
     rep = client.put(investor_url, json=data, headers=admin_headers)
+    print(rep.get_json())
     assert rep.status_code == 200
 
     data = rep.get_json()["investor"]
@@ -50,7 +51,7 @@ def test_put_investor(client, db, investor, admin_headers):
     assert data["email_verified"] == investor.email_verified
 
     db.session.refresh(investor)
-    assert pwd_context.verify("new_password", investor.password)
+    assert pwd_context.verify("updated_P4$$w0rd!", investor.password)
 
 
 # def test_delete_investor(client, db, investor, admin_headers):
@@ -75,13 +76,13 @@ def test_create_investor(client, db, admin_headers):
     investors_url = url_for("api.investors")
     data = {"username": "created"}
     rep = client.post(investors_url, json=data, headers=admin_headers)
-    assert rep.status_code == 400
+    assert rep.status_code == 422
 
-    data["password"] = "admin"
+    data["password"] = "updated_P4$$w0rd!"
     data["email"] = "create@mail.com"
     data["country_of_residency"] = "AU"
 
-    rep = client.post(investors_url, json=data, headers=admin_headers)
+    rep = client.post(investors_url, json=data) #, headers=admin_headers)
     assert rep.status_code == 201
 
     data = rep.get_json()
@@ -104,3 +105,12 @@ def test_get_all_investor(client, db, investor_factory, admin_headers):
     results = rep.get_json()
     for investor in investors:
         assert any(u["id"] == investor.id for u in results["results"])
+
+
+def test_get_investor(client, db, normal_headers):
+    investors_url = url_for("api.investors")
+    rep = client.get(investors_url, headers=normal_headers)
+    assert rep.status_code == 200
+
+    results = rep.get_json()
+    assert results['results'][0]["id"] == 1
