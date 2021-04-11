@@ -1,4 +1,4 @@
-import AssetSearchBox from '@rocketmaven/components/AssetSearchBox'
+import NavbarSearchBox from '@rocketmaven/components/NavbarSearchBox'
 import { storeContext } from '@rocketmaven/data/app/store'
 import { urls } from '@rocketmaven/data/urls'
 import { useStore } from '@rocketmaven/hooks/store'
@@ -39,7 +39,7 @@ const NavBar = ({ children }: Props) => {
   return (
     <HeaderWrap>
       {children}
-      <AssetSearchBox showSearch style={{ width: '80%' }} />
+      <NavbarSearchBox style={{ width: '50%', marginLeft: '3rem' }} />
 
       <Menu mode="horizontal" defaultSelectedKeys={['2']} style={{ float: 'right' }}>
         <Menu.Item key="1"></Menu.Item>

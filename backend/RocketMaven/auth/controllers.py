@@ -35,11 +35,11 @@ def login():
               properties:
                 username:
                   type: string
-                  example: admin_portfolio
+                  example: rocket_maven
                   required: true
                 password:
                   type: string
-                  example: admin_P4$$w0rd!
+                  example: rocket_maven_P4$$w0rd!
                   required: true
       responses:
         200:
@@ -66,7 +66,9 @@ def login():
     if not username or not password:
         return jsonify({"msg": "Missing username or password"}), 400
 
-    investor = Investor.query.filter(or_(Investor.username == username, Investor.email == username)).first()
+    investor = Investor.query.filter(
+        or_(Investor.username == username, Investor.email == username)
+    ).first()
     if investor is None or not pwd_context.verify(password, investor.password):
         return jsonify({"msg": "Bad credentials"}), 400
 

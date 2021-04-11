@@ -325,12 +325,13 @@ def create_portfolio(investor_id):
 
 def get_top_additions():
     # View count of portfolio
+
+    # https://stackoverflow.com/questions/18998010/flake8-complains-on-boolean-comparison-in-filter-clause
     most_viewed_portfolio_result = (
         db.session.query(Portfolio, db.func.max(Portfolio.view_count))
         # TODO(Jude): Find why this broke all of a sudden - It looked like it was working fine before
         # It seems to me that we would only want to show public portfolios
-        # .filter(Portfolio.public_portfolio is True)
-        .first()
+        .filter(Portfolio.public_portfolio.is_(True)).first()
     )
     portfolio = most_viewed_portfolio_result[0]
 
