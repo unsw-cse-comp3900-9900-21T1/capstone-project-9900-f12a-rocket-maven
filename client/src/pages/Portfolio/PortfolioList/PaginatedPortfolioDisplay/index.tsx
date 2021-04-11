@@ -252,7 +252,8 @@ const PaginatedPortfolioDisplay = ({ portfolioPagination, refreshPortfolios }: P
                   <Tag color="red">Public</Tag>
                 ) : (
                   <Tag color="blue">Private</Tag>
-                )
+                ),
+                <Tag color="blue">{portfolio.currency}</Tag>
               ]}
               extra={[
                 isPortfolioEmpty ? (

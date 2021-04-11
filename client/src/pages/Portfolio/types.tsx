@@ -64,6 +64,7 @@ export type PortfolioInfo = {
   public_portfolio: boolean
   buying_power: number
   competition_score: number
+  currency: number
   realised_sum: number
   rank: number
   description: string

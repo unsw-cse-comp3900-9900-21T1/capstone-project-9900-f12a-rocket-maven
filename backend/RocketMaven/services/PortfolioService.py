@@ -298,6 +298,7 @@ def create_portfolio(investor_id):
     if (
         "competition_portfolio" in request.json
         and request.json["competition_portfolio"]
+        and not request.json["competition_portfolio"] == "0"
     ):
         portfolios = (
             db.session()
