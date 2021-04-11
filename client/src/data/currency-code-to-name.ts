@@ -9,6 +9,7 @@ export const currencyCodeToName = {
     code: 'USD',
     name_plural: 'US dollars'
   },
+  /*
   CAD: {
     symbol: 'CA$',
     name: 'Canadian Dollar',
@@ -72,6 +73,7 @@ export const currencyCodeToName = {
     code: 'ARS',
     name_plural: 'Argentine pesos'
   },
+  */
   AUD: {
     symbol: 'AU$',
     name: 'Australian Dollar',
@@ -80,7 +82,8 @@ export const currencyCodeToName = {
     rounding: 0,
     code: 'AUD',
     name_plural: 'Australian dollars'
-  },
+  }
+  /*
   AZN: {
     symbol: 'man.',
     name: 'Azerbaijani Manat',
@@ -1071,4 +1074,5 @@ export const currencyCodeToName = {
     code: 'ZWL',
     name_plural: 'Zimbabwean Dollar'
   }
+  */
 }

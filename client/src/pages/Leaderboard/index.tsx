@@ -50,8 +50,8 @@ const Leaderboard = () => {
 
   const userId = useUserId()
 
-  const portfolioLinkRenderer = (testVal: string, record: any) => {
-    if (testVal || (record.Investor && record.Investor.id == userId)) {
+  const portfolioLinkRenderer = (testVal: number, record: any) => {
+    if ((testVal || (record.Investor && record.Investor.id == userId)) && testVal != 0) {
       return <Link to={urls.portfolio + '/' + testVal}>View Portfolio</Link>
     }
     return <>Private Portfolio</>

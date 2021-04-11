@@ -221,7 +221,7 @@ class PortfolioListAll(Resource):
 
     # method_decorators = [jwt_required()]
 
-    @jwt_required()
+    @jwt_required(optional=True)
     def get(self, investor_id):
         """List all portfolios
         ---

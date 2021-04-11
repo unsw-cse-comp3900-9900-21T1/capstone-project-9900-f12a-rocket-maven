@@ -2,14 +2,16 @@ import MainChart from '@rocketmaven/components/MainChart'
 import { Card } from '@rocketmaven/componentsStyled/Card'
 import { Subtitle } from '@rocketmaven/componentsStyled/Typography'
 import { urls } from '@rocketmaven/data/urls'
-import { useFetchAPIPublicData } from '@rocketmaven/hooks/http'
+import { useFetchAPIPublicData, useFetchGetWithUserId } from '@rocketmaven/hooks/http'
 import { useIsLoggedIn, useStore } from '@rocketmaven/hooks/store'
-import { Button, Col, message, Row, Statistic, Tooltip } from 'antd'
+import { PortfolioPagination } from '@rocketmaven/pages/Portfolio/types'
+import { Button, Col, Form, message, Popover, Row, Select, Statistic, Tooltip } from 'antd'
 import { isEmpty } from 'ramda'
 import { useEffect, useState } from 'react'
-import { FaRegStar } from 'react-icons/fa'
+import { FaPlus, FaRegStar } from 'react-icons/fa'
 import { useHistory } from 'react-router'
 import { useParams } from 'react-router-dom'
+const { Option } = Select
 
 type Params = {
   ticker_symbol: string
@@ -23,6 +25,11 @@ type ChartTooltipTop = {
 
 const getColorOfValue = (value: number) => {
   return value < 0 ? 'red' : 'green'
+}
+
+type PortfolioListFetchResults = {
+  data: PortfolioPagination
+  isLoading: boolean
 }
 
 const AssetView = () => {
@@ -74,7 +81,6 @@ const AssetView = () => {
     }
   ]
 
-
   if (data && !isEmpty(data) && data.asset.asset_additional) {
     const asset_additional = JSON.parse(data.asset.asset_additional)
     console.log(asset_additional)
@@ -116,12 +122,6 @@ const AssetView = () => {
       </Card>
     )
   }
-
-  console.log(
-    seriesIndex.findIndex(function (seriesSelected: any) {
-      return seriesSelected.type_full == seriesContext
-    })
-  )
 
   const afterSetExtremes = (e: any) => {
     const { chart } = e.target
@@ -262,6 +262,44 @@ const AssetView = () => {
     }
   }
 
+  const [children, setChildren] = useState([])
+
+  const [refreshFlag, setRefreshFlag] = useState(0)
+
+  const { data: fetchPortfolioData }: PortfolioListFetchResults = useFetchGetWithUserId(
+    '/all_portfolios',
+    refreshFlag
+  )
+
+  const addToPortfolio = (e: any) => {
+    console.log(e, ticker_symbol)
+
+    // https://stackoverflow.com/questions/59464337/how-to-send-params-in-usehistory-of-react-router-dom
+    routerObject.push({
+      pathname: `${urls.portfolio}/${e.portfolio}/addremove`,
+      search: `?stock_ticker=${ticker_symbol}`,
+      state: {
+        // location state
+        update: true
+      }
+    })
+  }
+
+  useEffect(() => {
+    if (fetchPortfolioData && !isEmpty(fetchPortfolioData)) {
+      const tmpChildren: any = []
+      const tmpChildren2: any = fetchPortfolioData.results.map(function (e) {
+        tmpChildren.push(e.id)
+        return (
+          <Option key={e.id} value={e.id}>
+            #{e.id} - {e.name}
+          </Option>
+        )
+      })
+      setChildren(tmpChildren2)
+    }
+  }, [fetchPortfolioData])
+
   useEffect(() => {
     const api_part = `/chart/${seriesContext}/${ticker_symbol}`
 
@@ -318,11 +356,46 @@ const AssetView = () => {
       <Subtitle>
         {ticker_symbol}{' '}
         {isLoggedIn ? (
-          <Tooltip placement="topLeft" title="Add to Watchlist" arrowPointAtCenter>
-            <Button onClick={addToWatchlist}>
-              <FaRegStar />
-            </Button>
-          </Tooltip>
+          <>
+            <Tooltip placement="topLeft" title="Add to Watchlist" arrowPointAtCenter>
+              <Button onClick={addToWatchlist} style={{ marginLeft: '0.5rem' }}>
+                <FaRegStar />
+              </Button>
+            </Tooltip>
+
+            <Popover
+              title="Add to Portfolio"
+              trigger="click"
+              placement="bottom"
+              content={
+                <Form onFinish={addToPortfolio}>
+                  <Form.Item label="Portfolio" name="portfolio" rules={[{ required: true }]}>
+                    <Select placeholder="Please select" style={{ width: '100%' }}>
+                      {children}
+                    </Select>
+                  </Form.Item>
+                  <Form.Item>
+                    <Button
+                      type="primary"
+                      style={{
+                        marginLeft: '0.5rem',
+                        marginRight: '0.5rem'
+                      }}
+                      htmlType="submit"
+                    >
+                      Add
+                    </Button>
+                  </Form.Item>
+                </Form>
+              }
+            >
+              <Tooltip placement="topLeft" title="Add to Portfolio" arrowPointAtCenter>
+                <Button style={{ marginLeft: '0.5rem' }}>
+                  <FaPlus />
+                </Button>
+              </Tooltip>
+            </Popover>
+          </>
         ) : null}
       </Subtitle>
       {asset_card}

@@ -1,42 +1,43 @@
-import { Fragment } from 'react'
-import { isEmpty } from 'ramda'
+import PortfolioCard from '@rocketmaven/components/PortfolioCard'
 import { Subtitle } from '@rocketmaven/componentsStyled/Typography'
-import { useParams } from 'react-router-dom'
 import { useFetchGetPublicPortfolio } from '@rocketmaven/hooks/http'
-import { PublicPortfolioInfo } from '@rocketmaven/pages/Portfolio/types'
-import PortfolioCard from '@rocketmaven/pages/Portfolio/PortfolioDetail/PortfolioCard'
+import { PortfolioInfo } from '@rocketmaven/pages/Portfolio/types'
+import { isEmpty } from 'ramda'
+import { Fragment, useState } from 'react'
+import { useParams } from 'react-router-dom'
 
 type Params = {
   id: string
 }
 
-type PortfolioFetchInfo  = {
+type PortfolioFetchInfo = {
   data: {
-    portfolio: PublicPortfolioInfo
+    portfolio: PortfolioInfo
   }
-  isLoading: boolean,
+  isLoading: boolean
 }
 
 const PortfolioDetail = () => {
   const { id } = useParams<Params>()
+  const [refreshFlag, setRefreshFlag] = useState(0)
+  const refreshPortfolios = () => setRefreshFlag(refreshFlag + 1)
 
   const { data, isLoading }: PortfolioFetchInfo = useFetchGetPublicPortfolio(`${id}`)
-  const content = 
-    isEmpty(data)
-      ? 'Portfolio is private or doesn\'t exist'
-      : <PortfolioCard portfolio={data.portfolio} />
+  const content = isEmpty(data) ? (
+    "Portfolio is private or doesn't exist"
+  ) : (
+    <PortfolioCard
+      portfolio={data.portfolio}
+      refreshPortfolios={refreshPortfolios}
+      singleView={true}
+    />
+  )
 
-  return (
-    isLoading
-    ? 
-      null
-    :
-      <Fragment>
-        <Subtitle>
-          Portfolio Detail
-        </Subtitle>
-        {content}
-      </Fragment>
+  return isLoading ? null : (
+    <Fragment>
+      <Subtitle>Portfolio Detail</Subtitle>
+      {content}
+    </Fragment>
   )
 }
 
