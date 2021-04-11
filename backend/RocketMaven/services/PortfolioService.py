@@ -48,6 +48,8 @@ def delete_portfolio(portfolio_id):
 
 
 def get_all_portfolios(investor_id):
+    if not get_jwt_identity() or investor_id == 0:
+        return {"results": []}
     schema = PortfolioSchema(many=True)
 
     query = Portfolio.query.filter_by(investor_id=investor_id)
@@ -313,6 +315,9 @@ def create_portfolio(investor_id):
             return {
                 "msg": "An investor cannot create more than 2 competition portfolios!"
             }, 400
+
+        request.json["currency"] = "USD"
+        request.json["tax_residency"] = "AU"
 
     portfolio = schema.load(request.json)
     portfolio.investor_id = investor_id
