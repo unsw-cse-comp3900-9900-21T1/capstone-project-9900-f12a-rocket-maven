@@ -1,7 +1,6 @@
 from RocketMaven.api.schemas import LeaderboardSchema
 from RocketMaven.models import Portfolio
 from RocketMaven.commons.pagination import paginate
-from sqlalchemy import func
 from RocketMaven.extensions import db
 from flask_jwt_extended import get_jwt_identity
 

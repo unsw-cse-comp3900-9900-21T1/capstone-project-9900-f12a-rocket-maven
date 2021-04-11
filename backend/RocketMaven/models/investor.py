@@ -1,6 +1,5 @@
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy_utils import CountryType, EmailType
-from RocketMaven.models import Asset
 from RocketMaven.extensions import db, pwd_context
 from sqlalchemy.orm import relationship
 

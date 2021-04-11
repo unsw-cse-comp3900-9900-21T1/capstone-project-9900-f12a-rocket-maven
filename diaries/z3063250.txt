@@ -21,3 +21,15 @@ Wk 5
 Worked on the backend, developed caching of Y! Finance API responses and preloading system database with stocks.
 General backend enhancements, formatting, documentation, tidying up.
 
+Wk 6 (Flexibility week)
+
+Start backend watchlist implementation
+
+Wk 7
+
+Backend stock charts (timeseries) implementation with memoization (caching) of results
+
+Wk 8
+
+Continue backend stock charts implementation and general code tidy up (flake8/linting)
+
