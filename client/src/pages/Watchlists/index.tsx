@@ -3,7 +3,7 @@ import { Card } from '@rocketmaven/componentsStyled/Card'
 import { Title } from '@rocketmaven/componentsStyled/Typography'
 import { useAccessToken, useGetWatchlist } from '@rocketmaven/hooks/http' // use later. at the moment backend is not ready
 import Page from '@rocketmaven/pages/_Page'
-import { Button, Form, Table } from 'antd'
+import { Button, Form, InputNumber, Space, Table } from 'antd'
 import { isEmpty } from 'ramda'
 import React from 'react'
 import { Link, useHistory } from 'react-router-dom'
@@ -159,11 +159,41 @@ const Watchlists = () => {
       },
       {
         title: 'Notify High',
-        dataIndex: 'price_high'
+        dataIndex: 'price_high',
+        render: (value: string) => {
+          return (
+            <Space>
+              <InputNumber value={value} />
+              <Button
+                type="primary"
+                onClick={() => {
+                  // setValue(99);
+                }}
+              >
+                Set
+              </Button>
+            </Space>
+          );
+        }
       },
       {
         title: 'Notify Low',
-        dataIndex: 'price_low'
+        dataIndex: 'price_low',
+        render: (value: string) => {
+          return (
+            <Space>
+              <InputNumber value={value} />
+              <Button
+                type="primary"
+                onClick={() => {
+                  // setValue(99);
+                }}
+              >
+                Set
+              </Button>
+            </Space>
+          );
+        }
       },
       {
         title: 'Delete',
