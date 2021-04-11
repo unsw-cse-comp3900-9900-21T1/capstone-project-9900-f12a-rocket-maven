@@ -119,7 +119,7 @@ const useAbstractFetchOnSubmit = (url: string) => {
   const isLoggedIn = useIsLoggedIn()
   const myFetch = async (query: string) => {
     try {
-      abstractFetch({
+      const results = abstractFetch({
         accessToken,
         revalidateAccessToken,
         setData,
@@ -128,6 +128,7 @@ const useAbstractFetchOnSubmit = (url: string) => {
         isLoggedIn,
         url: url + (query ? query : ''),
       })
+      return results
     } catch (error) {
       message.error(error.message)
     }
