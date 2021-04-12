@@ -16,24 +16,24 @@ interface AuthToken {
   type: string
 }
 type SuccessfullLoginResponse = {
-  access_token: string,
-  refresh_token: string,
+  access_token: string
+  refresh_token: string
 }
 type AuthType = 'LOGIN' | 'REGISTER'
 type HttpMutation = 'POST' | 'PUT'
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE'
 type AbstractFetchProps = {
-  url: string,
-  isLoading: boolean,
-  setIsLoading: Function,
+  url: string
+  isLoading: boolean
+  setIsLoading: Function
   accessToken?: string
-  revalidateAccessToken: Function,
-  setData?: Function,
-  isLoggedIn?: boolean,
-  values?: JSON,
-  method?: HttpMethod,
-  redirectPath?: string,
-  routerObject?: any,
+  revalidateAccessToken: Function
+  setData?: Function
+  isLoggedIn?: boolean
+  values?: JSON
+  method?: HttpMethod
+  redirectPath?: string
+  routerObject?: any
 }
 
 const abstractFetch = async (fetchInput: AbstractFetchProps) => {
@@ -47,7 +47,7 @@ const abstractFetch = async (fetchInput: AbstractFetchProps) => {
     method = 'GET',
     values,
     redirectPath,
-    routerObject,
+    routerObject
   } = fetchInput
   try {
     setIsLoading(true)
@@ -59,7 +59,7 @@ const abstractFetch = async (fetchInput: AbstractFetchProps) => {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${accessToken}`
       },
       body: values ? JSON.stringify(values) : undefined
     })
@@ -85,7 +85,7 @@ const abstractFetch = async (fetchInput: AbstractFetchProps) => {
       setData({})
     }
     setIsLoading(false)
-    throw (error)
+    throw error
   }
 }
 
@@ -103,7 +103,7 @@ const useAbstractFetchOnMount = (url: string, refreshFlag?: number) => {
         isLoading,
         setIsLoading,
         isLoggedIn,
-        url,
+        url
       })
     } catch (error) {
       message.error(error.message)
@@ -126,7 +126,7 @@ const useAbstractFetchOnSubmit = (url: string) => {
         isLoading,
         setIsLoading,
         isLoggedIn,
-        url: url + (query ? query : ''),
+        url: url + (query ? query : '')
       })
       return results
     } catch (error) {
@@ -153,7 +153,7 @@ const useAbstractFetchUpdate = (url: string, method: HttpMethod, redirectPath?: 
         routerObject,
         redirectPath,
         method,
-        values,
+        values
       })
       return results
     } catch (error) {
@@ -270,7 +270,10 @@ export const useFetchAPIPublicData = (api_part: string, setData: any): any => {
 }
 
 export const useFetchGetWithUserId = (urlEnd: string, refreshFlag?: number): any => {
-  const userId = useUserId()
+  let userId = useUserId()
+  if (!userId) {
+    userId = 0
+  }
   const endPointUrl = `/api/v1/investors/${userId}${urlEnd}`
   return useAbstractFetchOnMount(endPointUrl, refreshFlag)
 }
@@ -338,12 +341,20 @@ export const useAuth = (authType: AuthType): Function => {
 
 export const useUpdateAccountInfo = (): Function => {
   const userId = useUserId()
-  const { isLoading, myFetch } = useAbstractFetchUpdate(`/api/v1/investors/${userId}`, 'PUT', urls.account)
+  const { isLoading, myFetch } = useAbstractFetchUpdate(
+    `/api/v1/investors/${userId}`,
+    'PUT',
+    urls.account
+  )
   return myFetch
 }
 
 export const useAddPortfolioEvent = (portfolioId: string): Function => {
-  const { isLoading, myFetch } = useAbstractFetchUpdate(`/api/v1/portfolios/${portfolioId}/history`, 'POST', urls.portfolio)
+  const { isLoading, myFetch } = useAbstractFetchUpdate(
+    `/api/v1/portfolios/${portfolioId}/history`,
+    'POST',
+    urls.portfolio
+  )
   return myFetch
 }
 

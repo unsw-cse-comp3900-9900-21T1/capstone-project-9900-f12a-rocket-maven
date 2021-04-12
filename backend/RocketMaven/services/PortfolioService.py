@@ -50,6 +50,8 @@ def delete_portfolio(portfolio_id):
 
 
 def get_all_portfolios(investor_id):
+    if not get_jwt_identity() or investor_id == 0:
+        return {"results": []}
     schema = PortfolioSchema(many=True)
 
     query = Portfolio.query.filter_by(investor_id=investor_id)
@@ -316,6 +318,9 @@ def create_portfolio(investor_id):
                 "msg": "An investor cannot create more than 2 competition portfolios!"
             }, 400
 
+        request.json["currency"] = "USD"
+        request.json["tax_residency"] = "AU"
+
     portfolio = schema.load(request.json)
     portfolio.investor_id = investor_id
 
@@ -327,12 +332,13 @@ def create_portfolio(investor_id):
 
 def get_top_additions():
     # View count of portfolio
+
+    # https://stackoverflow.com/questions/18998010/flake8-complains-on-boolean-comparison-in-filter-clause
     most_viewed_portfolio_result = (
         db.session.query(Portfolio, db.func.max(Portfolio.view_count))
         # TODO(Jude): Find why this broke all of a sudden - It looked like it was working fine before
         # It seems to me that we would only want to show public portfolios
-        # .filter(Portfolio.public_portfolio is True)
-        .first()
+        .filter(Portfolio.public_portfolio.is_(True)).first()
     )
     portfolio = most_viewed_portfolio_result[0]
 

@@ -3,13 +3,15 @@ import { Card } from '@rocketmaven/componentsStyled/Card'
 import { useAddPortfolioEvent } from '@rocketmaven/hooks/http'
 import { PortfolioEventCreate, PortfolioInfo } from '@rocketmaven/pages/Portfolio/types'
 import { Button, Col, Form, Input, InputNumber, Row, Statistic } from 'antd'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { RouteComponentProps, useLocation, withRouter } from 'react-router-dom'
 
-type Props = {
-  // TODO(Jude): Double check if making this compulsory broke anything
+interface PropsInterface extends RouteComponentProps {
   portfolioId: string
   portfolioInfo: PortfolioInfo
 }
+
+type Props = PropsInterface
 
 const formItemLayout = {
   labelCol: {
@@ -22,13 +24,19 @@ const formItemLayout = {
   }
 }
 
+// https://reactrouter.com/web/example/query-parameters
+function useQuery() {
+  return new URLSearchParams(useLocation().search)
+}
+
 const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
   const [addActionValue, setAddActionValue] = useState(true)
   const [holdings, setHoldings] = useState(0)
   const [pricePerShare, setPricePerShare] = useState(0)
-  const [currentTicker, setCurrentTicker] = useState(0)
+  const [currentTicker, setCurrentTicker] = useState('')
   const [units, setUnits] = useState(0)
   const [form] = Form.useForm()
+  const query = useQuery()
 
   const initialValues: PortfolioEventCreate = {
     add_action: addActionValue,
@@ -41,6 +49,18 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
   }
 
   const myFetch: Function = useAddPortfolioEvent(portfolioId)
+
+  useEffect(() => {
+    console.log(query.get('stock_ticker'), form.getFieldValue('asset_id'))
+    if (query.get('stock_ticker')) {
+      if (query.get('stock_ticker') !== form.getFieldValue('asset_id')) {
+        form.setFieldsValue({
+          asset_id: { key: query.get('stock_ticker')!, value: query.get('stock_ticker')! }
+        })
+        setCurrentTicker(query.get('stock_ticker')!)
+      }
+    }
+  }, [query])
 
   const onFinish = (values: any) => {
     values.asset_id = values.asset_id.value
@@ -71,7 +91,7 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
         form.setFieldsValue({
           price_per_share: data.price
         })
-      } catch (error) { }
+      } catch (error) {}
     }
     myFetch()
   }
@@ -83,7 +103,8 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
         className="assetadd-form"
         form={form}
         initialValues={{
-          remember: true
+          remember: true,
+          ...initialValues
         }}
         {...formItemLayout}
         onFinish={onFinish}
@@ -167,7 +188,7 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
         >
           <InputNumber />
         </Form.Item>
-        )
+
         <Form.Item label="Update Price Per Share">
           <Button
             type="primary"
@@ -274,4 +295,4 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
   )
 }
 
-export default PortfolioAssetEditForm
+export default withRouter(PortfolioAssetEditForm)

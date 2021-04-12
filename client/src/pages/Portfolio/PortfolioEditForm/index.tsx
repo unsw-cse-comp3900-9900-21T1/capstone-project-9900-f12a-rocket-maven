@@ -4,6 +4,7 @@ import { useUpdatePortfolioInfo } from '@rocketmaven/hooks/http'
 import { useSortedCountryList, useSortedCurrencyList } from '@rocketmaven/hooks/store'
 import { PortfolioInfoEdit } from '@rocketmaven/pages/Portfolio/types'
 import { Button, Form, Input, Select, Switch } from 'antd'
+import { useState } from 'react'
 const { Option } = Select
 
 type Props = {
@@ -17,6 +18,7 @@ type Props = {
 const PortfolioEditForm = ({ portfolioInfo, portfolioId, action }: Props) => {
   const countryList = useSortedCountryList()
   const currencyList = useSortedCurrencyList()
+  const [hideCurrency, setHideCurrency] = useState(false)
 
   let initialValues: PortfolioInfoEdit = {
     competition_portfolio: false,
@@ -58,6 +60,14 @@ const PortfolioEditForm = ({ portfolioInfo, portfolioId, action }: Props) => {
     })
   }
 
+  const actAccordingly = (e: any) => {
+    if (e == '0') {
+      setHideCurrency(false)
+    } else {
+      setHideCurrency(true)
+    }
+  }
+
   return (
     <Card>
       <Form
@@ -80,20 +90,18 @@ const PortfolioEditForm = ({ portfolioInfo, portfolioId, action }: Props) => {
         >
           <Input placeholder="Name" />
         </Form.Item>
-
         {action == 'Create' ? (
           <Form.Item
             name="competition_portfolio"
             label="Portfolio Type"
             rules={[{ required: true }]}
           >
-            <Select>
+            <Select onChange={actAccordingly}>
               <Option value="0">Regular Portfolio</Option>
               <Option value="1">Competition Portfolio</Option>
             </Select>
           </Form.Item>
         ) : null}
-
         <Form.Item
           name="description"
           initialValue={initialValues.description}
@@ -106,45 +114,46 @@ const PortfolioEditForm = ({ portfolioInfo, portfolioId, action }: Props) => {
         >
           <Input placeholder="Description" />
         </Form.Item>
-
-        <Form.Item
-          label="Tax Residency"
-          name="tax_residency"
-          initialValue={countryElement[0]}
-          rules={[
-            {
-              required: true,
-              message: 'Please select a country'
-            }
-          ]}
-        >
-          <Select showSearch>
-            {countryList.map(([code, name], value) => {
-              return <Select.Option value={code}>{name}</Select.Option>
-            })}
-          </Select>
-        </Form.Item>
-
-        {action == 'Create' ? (
-          <Form.Item
-            label="Currency"
-            name="currency"
-            initialValue={currencyElement[0]}
-            rules={[
-              {
-                required: true,
-                message: 'Please select a currency'
-              }
-            ]}
-          >
-            <Select showSearch>
-              {currencyList.map(([code, name], value) => {
-                return <Select.Option value={code}>{name}</Select.Option>
-              })}
-            </Select>
-          </Form.Item>
+        {!hideCurrency && (!portfolioInfo || !portfolioInfo.portfolio.competition_portfolio) ? (
+          <>
+            <Form.Item
+              label="Tax Residency"
+              name="tax_residency"
+              initialValue={countryElement[0]}
+              rules={[
+                {
+                  required: true,
+                  message: 'Please select a country'
+                }
+              ]}
+            >
+              <Select showSearch>
+                {countryList.map(([code, name], value) => {
+                  return <Select.Option value={code}>{name}</Select.Option>
+                })}
+              </Select>
+            </Form.Item>
+            {action == 'Create' ? (
+              <Form.Item
+                label="Currency"
+                name="currency"
+                initialValue={currencyElement[0]}
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please select a currency'
+                  }
+                ]}
+              >
+                <Select showSearch>
+                  {currencyList.map(([code, name], value) => {
+                    return <Select.Option value={code}>{name}</Select.Option>
+                  })}
+                </Select>
+              </Form.Item>
+            ) : null}
+          </>
         ) : null}
-
         <Form.Item
           label="Public"
           name="public_portfolio"
@@ -152,7 +161,6 @@ const PortfolioEditForm = ({ portfolioInfo, portfolioId, action }: Props) => {
         >
           <Switch defaultChecked={initialValues.public_portfolio ? true : false} />
         </Form.Item>
-
         <Form.Item>
           <Button
             type="primary"

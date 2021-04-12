@@ -77,7 +77,7 @@ export type PortfolioInfo = {
   tax_residency: string
   username: string
   portfolio_asset_holding: [PortfolioHolding]
-  investor: [LeaderboardInvestor]
+  investor: LeaderboardInvestor
 }
 
 export type PublicPortfolioInfo = {

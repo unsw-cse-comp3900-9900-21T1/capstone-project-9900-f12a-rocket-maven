@@ -8,9 +8,7 @@ from RocketMaven.models import Investor
 
 from .factories import InvestorFactory
 
-# from dotenv import load_dotenv
 
-#from RocketMaven.services import ExampleFullSystemService
 
 register(InvestorFactory)
 
