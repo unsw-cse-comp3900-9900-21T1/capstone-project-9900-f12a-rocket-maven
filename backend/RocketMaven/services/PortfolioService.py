@@ -2,10 +2,12 @@ import collections
 
 from flask import request
 from flask_jwt_extended import get_jwt_identity
-from RocketMaven.api.schemas import AssetSchema, PortfolioSchema, PublicPortfolioSchema
+from RocketMaven.api.schemas import (AssetSchema, PortfolioSchema,
+                                     PublicPortfolioSchema)
 from RocketMaven.commons.pagination import paginate
 from RocketMaven.extensions import db
-from RocketMaven.models import Asset, Portfolio, PortfolioAssetHolding, PortfolioEvent
+from RocketMaven.models import (Asset, Portfolio, PortfolioAssetHolding,
+                                PortfolioEvent)
 from RocketMaven.services.PortfolioEventService import update_asset
 from sqlalchemy import and_
 
