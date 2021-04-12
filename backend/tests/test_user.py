@@ -1,5 +1,4 @@
 from flask import url_for
-
 from RocketMaven.extensions import pwd_context
 from RocketMaven.models import Investor
 
@@ -92,7 +91,7 @@ def test_create_investor(client, db, admin_headers):
     assert investor.email == "create@mail.com"
 
 
-def test_get_all_investor(client, db, investor_factory, admin_headers):
+def test_get_all_investor_admin(client, db, investor_factory, admin_headers):
     investors_url = url_for("api.investors")
     investors = investor_factory.create_batch(30)
 
@@ -107,7 +106,7 @@ def test_get_all_investor(client, db, investor_factory, admin_headers):
         assert any(u["id"] == investor.id for u in results["results"])
 
 
-def test_get_investor(client, db, normal_headers):
+def test_get_all_investor(client, db, normal_headers):
     investors_url = url_for("api.investors")
     rep = client.get(investors_url, headers=normal_headers)
     assert rep.status_code == 200
