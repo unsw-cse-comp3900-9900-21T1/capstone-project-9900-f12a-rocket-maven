@@ -3,7 +3,7 @@ import { Card } from '@rocketmaven/componentsStyled/Card'
 import { Title } from '@rocketmaven/componentsStyled/Typography'
 import { useAccessToken, useGetWatchlist } from '@rocketmaven/hooks/http' // use later. at the moment backend is not ready
 import Page from '@rocketmaven/pages/_Page'
-import { Button, Form, InputNumber, Space, Table } from 'antd'
+import { Button, Form, Input, InputNumber, notification, Popover, Table } from 'antd'
 import { isEmpty } from 'ramda'
 import React from 'react'
 import { Link, useHistory } from 'react-router-dom'
@@ -21,6 +21,7 @@ type AssetInfo = {
   data_source: string
   price_high: number
   price_low: number
+  price_high_low: [number, number]
 }
 
 type WatchListItem = {
@@ -63,6 +64,61 @@ const Watchlists = () => {
     routerObject.go(0)
   }
 
+  async function useUpdatePrice(e: any) {
+    let openMessage = false
+    if (e.context == 'high') {
+      if (e.price < e.current_price) {
+        openMessage = true
+      }
+    }
+    if (e.context == 'low') {
+      if (e.price > e.current_price) {
+        openMessage = true
+      }
+    }
+    if (openMessage) {
+      notification.open({
+        message: `${e.asset_id} ${e.context} alert!`,
+        description: `Value is currently ${e.current_price}.`
+      })
+    }
+    const response = await fetch(`/api/v1/watchlist/${e.asset_id}/${e.context}`, {
+      method: 'PUT',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: JSON.stringify({ price: e.price })
+    })
+    const data = await response.json()
+    routerObject.go(0)
+  }
+
+  function notifyContent(asset_id: string, context: string, price: number, current_price: number) {
+    return (
+      <Form onFinish={useUpdatePrice}>
+        <Form.Item name="context" initialValue={context} noStyle>
+          <Input value={context} type="hidden" />
+        </Form.Item>
+        <Form.Item name="asset_id" initialValue={asset_id} noStyle>
+          <Input value={asset_id} type="hidden" />
+        </Form.Item>
+        <Form.Item name="current_price" initialValue={current_price} noStyle>
+          <Input value={current_price} type="hidden" />
+        </Form.Item>
+        <Form.Item name="price">
+          <InputNumber value="{price}" />
+        </Form.Item>
+        <Form.Item>
+          <Button type="primary" htmlType="submit">
+            Set Notification
+          </Button>
+        </Form.Item>
+      </Form>
+    )
+  }
+
   let watchlistable = null
   if (!watchlist || isEmpty(watchlist)) {
     // do nothing
@@ -73,6 +129,7 @@ const Watchlists = () => {
     watchlistresults.forEach(function (e) {
       e.asset.price_high = e.price_high
       e.asset.price_low = e.price_low
+      e.asset.price_high_low = [e.price_low, e.price_high]
       watchlistitems.push(e.asset)
     })
 
@@ -158,41 +215,35 @@ const Watchlists = () => {
         }
       },
       {
-        title: 'Notify High',
-        dataIndex: 'price_high',
-        render: (value: string) => {
+        title: 'Notify Low / High',
+        dataIndex: 'price_high_low',
+        render: (value: [number, number], record: any) => {
           return (
-            <Space>
-              <InputNumber value={value} />
-              <Button
-                type="primary"
-                onClick={() => {
-                  // setValue(99);
-                }}
+            <>
+              High:{' '}
+              <Popover
+                content={notifyContent(
+                  record.ticker_symbol,
+                  'high',
+                  value[0],
+                  record.current_price
+                )}
+                title="Set High"
+                placement="bottom"
               >
-                Set
-              </Button>
-            </Space>
-          );
-        }
-      },
-      {
-        title: 'Notify Low',
-        dataIndex: 'price_low',
-        render: (value: string) => {
-          return (
-            <Space>
-              <InputNumber value={value} />
-              <Button
-                type="primary"
-                onClick={() => {
-                  // setValue(99);
-                }}
+                <Button type="link">{value[0] ? value[0] : 'Change me!'}</Button>
+              </Popover>
+              <br />
+              Low:{' '}
+              <Popover
+                content={notifyContent(record.ticker_symbol, 'low', value[1], record.current_price)}
+                title="Set Low"
+                placement="bottom"
               >
-                Set
-              </Button>
-            </Space>
-          );
+                <Button type="link">{value[1] ? value[1] : 'Change me!'}</Button>
+              </Popover>
+            </>
+          )
         }
       },
       {
