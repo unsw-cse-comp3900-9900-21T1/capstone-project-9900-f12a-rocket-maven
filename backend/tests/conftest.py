@@ -1,14 +1,16 @@
 import json
+
 import pytest
+from pytest_factoryboy import register
+from RocketMaven.app import create_app
+from RocketMaven.extensions import db as _db
+from RocketMaven.models import Investor
+from RocketMaven.services import ExampleFullSystemService
+
+from .factories import InvestorFactory
 
 # from dotenv import load_dotenv
 
-from RocketMaven.models import Investor
-from RocketMaven.app import create_app
-from RocketMaven.extensions import db as _db
-from pytest_factoryboy import register
-from tests.factories import InvestorFactory
-from RocketMaven.services import ExampleFullSystemService
 
 register(InvestorFactory)
 
