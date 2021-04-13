@@ -20,7 +20,6 @@ const AccountPersonalInfoForm = ({ investorData }: Props) => {
     })
   }
 
-  // Get the country code of the name returned
   const countryElement = countryList.find(
     (element) => investorData.investor.country_of_residency === element[1]
   )

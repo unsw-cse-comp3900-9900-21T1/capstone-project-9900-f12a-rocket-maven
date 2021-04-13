@@ -91,7 +91,7 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
         form.setFieldsValue({
           price_per_share: data.price
         })
-      } catch (error) {}
+      } catch (error) { }
     }
     myFetch()
   }

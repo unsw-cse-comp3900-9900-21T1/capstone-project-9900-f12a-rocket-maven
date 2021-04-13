@@ -26,9 +26,7 @@ export const useIsLoggedIn = () => {
   return state.isLoggedIn
 }
 
-// Not exactly the right place..
 export const useSortedCountryList = () => {
-  // TODO(Jude): Get a proper list of countries instead of processing
   const countryList = Object.entries(countryCodeToName).sort((a, b) => {
     if (a[1] > b[1]) return 1
     if (a[1] < b[1]) return -1
@@ -37,9 +35,7 @@ export const useSortedCountryList = () => {
   return countryList
 }
 
-// Not exactly the right place.. (as well?)
 export const useSortedCurrencyList = () => {
-  // TODO(Jude): Get a proper list of countries instead of processing
   const currencyList = Object.entries(currencyCodeToName)
     .map((e: any) => [e[0], e[1].name_plural])
     .sort((a, b) => {

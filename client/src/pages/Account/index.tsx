@@ -1,18 +1,15 @@
-import Page from '@rocketmaven/pages/_Page'
 import { Title } from '@rocketmaven/componentsStyled/Typography'
-import AccountDetail from '@rocketmaven/pages/Account/AccountDetail'
-import { Switch, Route } from 'react-router-dom'
 import { urls } from '@rocketmaven/data/urls'
+import AccountDetail from '@rocketmaven/pages/Account/AccountDetail'
 import AccountPersonalInfoEdit from '@rocketmaven/pages/Account/AccountPersonalInfoEdit'
 import AccountSecurityInfoEdit from '@rocketmaven/pages/Account/AccountSecurityInfoEdit'
+import Page from '@rocketmaven/pages/_Page'
+import { Route, Switch } from 'react-router-dom'
 
 const Account = () => {
-
   return (
     <Page>
-      <Title>
-        Account
-      </Title>
+      <Title>Account</Title>
       <Switch>
         <Route exact path={urls.account} component={AccountDetail} />
         <Route path={urls.account + '/personal'} component={AccountPersonalInfoEdit} />

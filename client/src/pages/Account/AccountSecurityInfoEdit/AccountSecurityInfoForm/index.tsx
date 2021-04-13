@@ -13,7 +13,6 @@ type Props = {
 const AccountSecurityInfoForm = ({ investorData }: Props) => {
   const myFetch: Function = useUpdateAccountInfo()
   const onFinish = (values: any) => {
-    console.log('*************** values are ', values)
     myFetch({
       ...values,
       confirm: undefined
@@ -30,22 +29,7 @@ const AccountSecurityInfoForm = ({ investorData }: Props) => {
           initialValues={{ ...investorData.investor }}
           onFinish={onFinish}
         >
-          {/*
-          <Form.Item
-            name="email"
-            label="Email"
-            rules={[
-              {
-                required: true
-              }
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          */}
-
           <PasswordInput label="New Password" />
-
           <Form.Item
             name="confirm"
             label="Confirm New Password"
@@ -71,13 +55,6 @@ const AccountSecurityInfoForm = ({ investorData }: Props) => {
           >
             <Input.Password />
           </Form.Item>
-
-          {/*
-          <Form.Item label="Public" name="visibility">
-            <Switch defaultChecked={investorData.investor.visibility} />
-          </Form.Item>
-          */}
-
           <Form.Item style={{ textAlign: 'center' }}>
             <Button
               type="primary"

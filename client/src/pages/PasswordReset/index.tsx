@@ -1,9 +1,9 @@
-import Page from '@rocketmaven/pages/_Page'
-import { useHistory } from 'react-router-dom'
-import { Card } from '@rocketmaven/componentsStyled/Card'
-import { Form, Input, Button, message } from 'antd'
-import { Title } from '@rocketmaven/componentsStyled/Typography'
 import PasswordInput from '@rocketmaven/components/PasswordInput'
+import { Card } from '@rocketmaven/componentsStyled/Card'
+import { Title } from '@rocketmaven/componentsStyled/Typography'
+import { usePasswordReset } from '@rocketmaven/hooks/http'
+import Page from '@rocketmaven/pages/_Page'
+import { Button, Form, Input } from 'antd'
 
 const layout = {
   labelCol: {
@@ -21,30 +21,12 @@ const tailLayout = {
 }
 
 const PasswordReset = () => {
-  const routerObject = useHistory()
+  const myFetch = usePasswordReset()
+
   const onFinish = async (values: any) => {
-    // Double check that the password reset works in the browser we're going to demo it in
-    // Briefly read that URLSearchParams may not have extensive support
     const urlParams = new URLSearchParams(window.location.search)
     values.evc = urlParams.get('key')
-    try {
-      const response = await fetch('/api/v1/pw_reset', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(values)
-      })
-      const data = await response.json()
-      if (!response.ok) {
-        throw Error(`${data.msg}`)
-      }
-      routerObject.push('/')
-      message.success(`${data.msg}`);
-    } catch (error) {
-      message.error(error);
-    }
+    myFetch(values)
   }
 
   return (

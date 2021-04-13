@@ -9,27 +9,22 @@ type Params = {
   id?: string
 }
 
-type PortfolioFetchInfo  = {
+type PortfolioFetchInfo = {
   data: {
     portfolio: PortfolioInfoEdit
   }
-  isLoading: boolean,
+  isLoading: boolean
 }
 
 const PortfolioEdit = () => {
   const { id } = useParams<Params>()
   const { data, isLoading }: PortfolioFetchInfo = useGetPortfolioInfo(`${id}`)
 
-  return (
-    isLoading 
-    ? null
-    :
-      <Fragment>
-        <Subtitle>
-          Portfolio Edit
-        </Subtitle>
-        <PortfolioEditForm  portfolioInfo={data} portfolioId={id}/>
-      </Fragment>
+  return isLoading ? null : (
+    <Fragment>
+      <Subtitle>Portfolio Edit</Subtitle>
+      <PortfolioEditForm portfolioInfo={data} portfolioId={id} />
+    </Fragment>
   )
 }
 

@@ -299,7 +299,7 @@ export const useGetPortfolioInfo = (portfolioId: string): any => {
 export const useGetPortfolioHistory = (portfolioId: string): any => {
   const endPointUrl = `/api/v1/portfolios/${portfolioId}/history`
   const { data, isLoading } = useAbstractFetchOnMount(endPointUrl)
-  return data
+  return { data, isLoading }
 }
 
 export const useGetWatchlist = (): any => {
@@ -314,6 +314,7 @@ export const useAdvancedSearch = (): any => {
   return { data, isLoading, myFetch }
 }
 
+// Updates requests
 export const useAuth = (authType: AuthType): Function => {
   let endPointUrl = '/auth/login'
   if (authType === 'REGISTER') {
@@ -370,5 +371,22 @@ export const useUpdatePortfolioInfo = (
     endPointUrl = `/api/v1/portfolios/${portfolioId}`
   }
   const { isLoading, myFetch } = useAbstractFetchUpdate(endPointUrl, methodInput, urls.portfolio)
+  return myFetch
+}
+
+export const useIForgot = () => {
+  const { isLoading, myFetch } = useAbstractFetchUpdate(
+    '/api/v1/iforgot',
+    'POST',
+  )
+  return { isLoading, myFetch }
+}
+
+export const usePasswordReset = () => {
+  const { isLoading, myFetch } = useAbstractFetchUpdate(
+    '/api/v1/pw_reset',
+    'POST',
+    '/'
+  )
   return myFetch
 }
