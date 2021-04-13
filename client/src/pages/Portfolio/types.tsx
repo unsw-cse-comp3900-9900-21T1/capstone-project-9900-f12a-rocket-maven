@@ -78,6 +78,7 @@ export type PortfolioInfo = {
   username: string
   portfolio_asset_holding: [PortfolioHolding]
   investor: LeaderboardInvestor
+  recommended: [string, string]
 }
 
 export type PublicPortfolioInfo = {

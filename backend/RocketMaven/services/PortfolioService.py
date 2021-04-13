@@ -88,7 +88,15 @@ def get_portfolios(investor_id):
 
     query = Portfolio.query.filter_by(investor_id=investor_id).filter_by(deleted=False)
 
-    return paginate(query, schema)
+    result_return = paginate(query, schema)
+    for portfolio in result_return["results"]:
+        portfolio["recommended"] = [
+            ["NADSAQ:AAPL", "Apple"],
+            ["NADSAQ:TEAM", "Atlassian"],
+        ]
+    print(result_return)
+
+    return result_return
 
 
 def get_report():
