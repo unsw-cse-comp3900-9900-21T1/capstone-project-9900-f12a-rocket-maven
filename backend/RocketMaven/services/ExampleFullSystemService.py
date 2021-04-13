@@ -542,6 +542,7 @@ def populate_full_system(db):
         public_portfolio=True,
         buying_power=10000,
         investor_id=competition_user_2.id,
+        view_count=10,
     )
     db.session.add(competition_portfolio_2)
     db.session.commit()
@@ -556,6 +557,20 @@ def populate_full_system(db):
         asset_id="CRYPTO:DOGE",
         portfolio_id=competition_portfolio_2.id,
         event_date=datetime.date(2021, 2, 8),
+    )
+    portfolio_event.update_portfolio_asset_holding()
+    db.session.commit()
+
+    portfolio_event = PortfolioEvent(
+        units=10,
+        add_action=True,
+        fees=0,
+        price_per_share=378.85,
+        exchange_rate=1.0,
+        note="",
+        asset_id="NYSE:GME",
+        portfolio_id=competition_portfolio_2.id,
+        event_date=datetime.date(2021, 1, 27),
     )
     portfolio_event.update_portfolio_asset_holding()
     db.session.commit()

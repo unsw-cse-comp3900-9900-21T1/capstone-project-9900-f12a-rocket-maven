@@ -1,10 +1,10 @@
-import { Fragment } from 'react'
-import { isEmpty } from 'ramda'
 import { Subtitle } from '@rocketmaven/componentsStyled/Typography'
-import { useParams, Link } from 'react-router-dom'
 import { useGetPortfolioHistory } from '@rocketmaven/hooks/http'
-import { PortfolioEvent, PortfolioEventPagination } from '@rocketmaven/pages/Portfolio/types'
+import { PortfolioEvent } from '@rocketmaven/pages/Portfolio/types'
 import { Table } from 'antd'
+import { isEmpty } from 'ramda'
+import { Fragment } from 'react'
+import { Link, useParams } from 'react-router-dom'
 
 type Params = {
   id: string
@@ -16,13 +16,10 @@ const PortfolioHistory = () => {
 
   console.log({ id, hid })
 
-  // Might have to just make a PortfolioCreate component
-  const portfolioHistory: PortfolioEventPagination = useGetPortfolioHistory(id)
+  const { isLoading, data } = useGetPortfolioHistory(id)
   let historyTable = null
-  if (!portfolioHistory || isEmpty(portfolioHistory)) {
-    // do nothing
-  } else {
-    const histories: [PortfolioEvent] = portfolioHistory.results
+  if (data && !isEmpty(data)) {
+    const histories: [PortfolioEvent] = data.results
 
     const assetHistories = histories.filter((item) => item.asset_id === hid)
     const columns = [
@@ -64,15 +61,17 @@ const PortfolioHistory = () => {
     historyTable = <Table columns={columns} dataSource={assetHistories} rowKey="id" />
   }
 
-  // TODO(Jude)
-  return !isEmpty(portfolioHistory) ? (
-    <Fragment>
-      <Subtitle>
-        Holding History for <Link to={`/asset/${hid}`}>{hid}</Link>
-      </Subtitle>
-      {historyTable}
-    </Fragment>
-  ) : null
+  return (
+    isLoading
+      ? null
+      :
+      <Fragment>
+        <Subtitle>
+          Holding History for <Link to={`/asset/${hid}`}>{hid}</Link>
+        </Subtitle>
+        {historyTable}
+      </Fragment>
+  )
 }
 
 export default PortfolioHistory

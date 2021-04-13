@@ -3,14 +3,11 @@ import MainChart from '@rocketmaven/components/MainChart'
 import { Button } from '@rocketmaven/componentsStyled/Button'
 import { Card } from '@rocketmaven/componentsStyled/Card'
 import { Title } from '@rocketmaven/componentsStyled/Typography'
-import { useIsLoggedIn, useStore } from '@rocketmaven/hooks/store'
 import { PortfolioPagination } from '@rocketmaven/pages/Portfolio/types'
 import Page from '@rocketmaven/pages/_Page'
-// import { Title } from '@rocketmaven/componentsStyled/Typography'
 import { DatePicker, Form, message, Select } from 'antd'
 import { isEmpty } from 'ramda'
 import React, { ReactElement, useEffect, useState } from 'react'
-import { useHistory } from 'react-router'
 
 const { RangePicker } = DatePicker
 const { Option } = Select
@@ -239,10 +236,6 @@ const Compare = () => {
       )
     }
   }, [graphData, tickers])
-
-  const isLoggedIn = useIsLoggedIn()
-  const routerObject = useHistory()
-  const { accessToken, refreshToken, dispatch } = useStore()
 
   useEffect(() => {
     let newGraphData: any = []

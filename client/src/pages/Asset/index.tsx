@@ -7,7 +7,7 @@ import AssetView from '@rocketmaven/pages/Asset/AssetView'
 const Asset = () => {
   return (
     <Page>
-    <Title>Asset</Title>
+      <Title>Asset</Title>
       <Switch>
         <Route path={urls.asset + '/:ticker_symbol/'} component={AssetView} />
       </Switch>

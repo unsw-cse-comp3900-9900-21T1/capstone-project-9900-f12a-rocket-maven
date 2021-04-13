@@ -6,7 +6,6 @@ import Asset from '@rocketmaven/pages/Asset'
 import Compare from '@rocketmaven/pages/Compare'
 import Explore from '@rocketmaven/pages/Explore'
 import Forgot from '@rocketmaven/pages/Forgot'
-import HomeStub from '@rocketmaven/pages/HomeStub'
 import Leaderboard from '@rocketmaven/pages/Leaderboard'
 import LogIn from '@rocketmaven/pages/LogIn'
 import PasswordReset from '@rocketmaven/pages/PasswordReset'
@@ -34,7 +33,6 @@ const Routes = () => {
       <Route exact path={urls.explore} component={Explore} />
       <Route exact path={urls.leaderboard} component={Leaderboard} />
       <Route exact path={urls.compare} component={Compare} />
-      <Route exact path={urls.homeStub} component={HomeStub} />
       <Route exact path={urls.login} component={LogIn} />
       <Route exact path={urls.forgot} component={Forgot} />
       <Route exact path={urls.passwordReset} component={PasswordReset} />

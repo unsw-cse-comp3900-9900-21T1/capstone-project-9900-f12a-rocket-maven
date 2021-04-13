@@ -6,10 +6,10 @@ function ValidationError(message: string) {
 
 const special_chars = '~`!@#$%^&*()_+-=[]\\{}|:";\'<>?,./'.split('')
 
-const PasswordInput = () => {
+const PasswordInput = (props: any) => {
   return (
     <Form.Item
-      label="Password"
+      label={props.label ? props.label : 'Password'}
       name="password"
       rules={[
         {

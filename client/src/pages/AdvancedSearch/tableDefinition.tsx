@@ -1,4 +1,3 @@
-
 import { Link } from 'react-router-dom'
 export const assetColumns = [
   {
@@ -15,7 +14,7 @@ export const assetColumns = [
         {value}
       </Link>
     ),
-    width: "10%"
+    width: '10%'
   },
   {
     title: 'Name',
@@ -29,19 +28,13 @@ export const assetColumns = [
       }
       return null
     },
-    width: "20%"
+    width: '20%'
   },
   {
     title: 'Price',
     dataIndex: 'current_price',
-    width: "5%"
+    width: '5%'
   },
-  // TODO(Jude)?
-  // {
-  //   title: 'Currency',
-  //   dataIndex: 'currency',
-  //   width: "5%"
-  // },
   {
     title: 'Change',
     dataIndex: 'asset_additional',
@@ -54,7 +47,7 @@ export const assetColumns = [
       }
       return null
     },
-    width: "5%"
+    width: '5%'
   },
   {
     title: 'Market Cap',
@@ -68,7 +61,7 @@ export const assetColumns = [
       }
       return null
     },
-    width: "10%"
+    width: '10%'
   },
   {
     title: '52-Week High',
@@ -82,7 +75,7 @@ export const assetColumns = [
       }
       return null
     },
-    width: "10%"
+    width: '10%'
   },
   {
     title: '52-Week Low',
@@ -96,15 +89,15 @@ export const assetColumns = [
       }
       return null
     },
-    width: "10%"
+    width: '10%'
   },
   {
     title: 'Country',
     dataIndex: 'country',
-    width: "10%"
+    width: '10%'
   },
   {
     title: 'Industry',
-    dataIndex: 'industry',
-  },
+    dataIndex: 'industry'
+  }
 ]

@@ -64,6 +64,3 @@ def test_get_asset_price(client, asset):
     url = url_for("api.asset_price_by_ticker", ticker_symbol=asset.ticker_symbol)
     resp = client.get(url)
     assert resp.status_code == 200
-    
-
-

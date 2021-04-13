@@ -20,14 +20,15 @@ const PortfolioList = () => {
     '/portfolios',
     refreshFlag
   )
-  console.log('********************** portfoliodata is ', data)
 
   return data ? (
     <Fragment>
       <Subtitle>
         Portfolio List
         <Button type="primary" style={{ marginLeft: '20px' }}>
-          <Link to={urls.portfolio + '/create'}><FaPlus /> New Portfolio</Link>
+          <Link to={urls.portfolio + '/create'}>
+            <FaPlus /> New Portfolio
+          </Link>
         </Button>
       </Subtitle>
       <PaginatedPortfolioDisplay portfolioPagination={data} refreshPortfolios={refreshPortfolios} />

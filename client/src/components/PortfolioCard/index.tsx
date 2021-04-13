@@ -320,6 +320,17 @@ const PortfolioCard = ({ portfolio, refreshPortfolios, singleView = false }: Pro
         })}
       </Row>
 
+      {portfolio.recommended ? <Divider>Recommended</Divider> : null}
+      {portfolio.recommended
+        ? portfolio.recommended.map(function (e) {
+            return (
+              <Link to={urls.asset + '/' + e[0]}>
+                <Tag color="red">{e[1]}</Tag>
+              </Link>
+            )
+          })
+        : null}
+
       <Divider>Holdings</Divider>
 
       <Table

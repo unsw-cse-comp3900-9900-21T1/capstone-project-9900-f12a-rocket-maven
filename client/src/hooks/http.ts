@@ -80,7 +80,6 @@ const abstractFetch = async (fetchInput: AbstractFetchProps) => {
     }
     return data
   } catch (error) {
-    // TODO(Jude): Handle token is revoked error when still logged in but there was a db reset
     if (setData) {
       setData({})
     }
@@ -95,19 +94,22 @@ const useAbstractFetchOnMount = (url: string, refreshFlag?: number) => {
   const { accessToken, revalidateAccessToken } = useAccessToken()
   const isLoggedIn = useIsLoggedIn()
   useEffect(() => {
-    try {
-      abstractFetch({
-        accessToken,
-        revalidateAccessToken,
-        setData,
-        isLoading,
-        setIsLoading,
-        isLoggedIn,
-        url
-      })
-    } catch (error) {
-      message.error(error.message)
+    const myFetch = async () => {
+      try {
+        await abstractFetch({
+          accessToken,
+          revalidateAccessToken,
+          setData,
+          isLoading,
+          setIsLoading,
+          isLoggedIn,
+          url
+        })
+      } catch (error) {
+        message.error(error.message)
+      }
     }
+    myFetch()
   }, [refreshFlag])
   return { data, isLoading }
 }
@@ -297,7 +299,7 @@ export const useGetPortfolioInfo = (portfolioId: string): any => {
 export const useGetPortfolioHistory = (portfolioId: string): any => {
   const endPointUrl = `/api/v1/portfolios/${portfolioId}/history`
   const { data, isLoading } = useAbstractFetchOnMount(endPointUrl)
-  return data
+  return { data, isLoading }
 }
 
 export const useGetWatchlist = (): any => {
@@ -312,6 +314,7 @@ export const useAdvancedSearch = (): any => {
   return { data, isLoading, myFetch }
 }
 
+// Updates requests
 export const useAuth = (authType: AuthType): Function => {
   let endPointUrl = '/auth/login'
   if (authType === 'REGISTER') {
@@ -368,5 +371,22 @@ export const useUpdatePortfolioInfo = (
     endPointUrl = `/api/v1/portfolios/${portfolioId}`
   }
   const { isLoading, myFetch } = useAbstractFetchUpdate(endPointUrl, methodInput, urls.portfolio)
+  return myFetch
+}
+
+export const useIForgot = () => {
+  const { isLoading, myFetch } = useAbstractFetchUpdate(
+    '/api/v1/iforgot',
+    'POST',
+  )
+  return { isLoading, myFetch }
+}
+
+export const usePasswordReset = () => {
+  const { isLoading, myFetch } = useAbstractFetchUpdate(
+    '/api/v1/pw_reset',
+    'POST',
+    '/'
+  )
   return myFetch
 }

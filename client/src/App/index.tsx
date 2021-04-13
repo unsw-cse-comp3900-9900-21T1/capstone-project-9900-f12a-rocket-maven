@@ -1,17 +1,14 @@
-import { BrowserRouter } from 'react-router-dom'
-import { AppWrap, ContentWrap } from '@rocketmaven/App/styled'
-import { SiderWrap } from '@rocketmaven/pages/_Page/styled'
+import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons'
 import Routes from '@rocketmaven/App/Routes'
 import SideBar from '@rocketmaven/App/SideBar'
-import { Store } from '@rocketmaven/data/app/store'
-import 'antd/dist/antd.less'
+import { AppWrap, ContentWrap } from '@rocketmaven/App/styled'
 import NavBar from '@rocketmaven/components/NavBar'
+import { Store } from '@rocketmaven/data/app/store'
+import { SiderWrap } from '@rocketmaven/pages/_Page/styled'
 import { Layout } from 'antd'
+import 'antd/dist/antd.less'
 import React, { useState } from 'react'
-import {
-  MenuUnfoldOutlined,
-  MenuFoldOutlined
-} from '@ant-design/icons'
+import { BrowserRouter } from 'react-router-dom'
 const { Header, Content, Sider } = Layout
 
 const App = () => {
