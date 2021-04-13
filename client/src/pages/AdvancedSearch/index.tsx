@@ -2,7 +2,7 @@ import { Card } from '@rocketmaven/componentsStyled/Card'
 import { useAdvancedSearch } from '@rocketmaven/hooks/http'
 import { useAdvancedSearchParams } from '@rocketmaven/hooks/store'
 import Page from '@rocketmaven/pages/_Page'
-import { Button, Col, Form, Input, Select, Table } from 'antd'
+import { Button, Col, Form, Input, Radio, Select, Table } from 'antd'
 import { isEmpty } from 'ramda'
 import { useEffect } from 'react'
 import { useHistory, useLocation, withRouter } from 'react-router-dom'
@@ -68,6 +68,12 @@ const AdvancedSearch = () => {
     if (values.exchangeInput) {
       queryParams += `&exchange=${values.exchangeInput.join(',')}`
     }
+    if (values.order) {
+      queryParams += `&order=${values.order}`
+    }
+    if (values.order_direction) {
+      queryParams += `&order_direction=${values.order_direction}`
+    }
     const results = await myFetch(queryPrefix + queryParams)
     dispatch({
       type: 'ADV_SEARCH/UPDATE',
@@ -91,6 +97,21 @@ const AdvancedSearch = () => {
       }
     })
   }
+
+  const orderOptions = [
+    { label: 'Market Cap.', value: 'market_cap' },
+    { label: 'Name', value: 'name' },
+    { label: 'Ticker', value: 'ticker' }
+  ]
+
+  const orderValue = 'market_cap'
+
+  const orderDirectionOptions = [
+    { label: 'Ascending [A-Z, 0-9]', value: 'asc' },
+    { label: 'Descending [Z-A, 9-0]', value: 'desc' }
+  ]
+
+  const orderDirection = 'desc'
 
   return (
     <Page>
@@ -130,6 +151,27 @@ const AdvancedSearch = () => {
           <Form.Item name="industryInput">
             <Input placeholder="Industry Name (Optional)" />
           </Form.Item>
+
+          <Form.Item label="Order By" name="order" initialValue={orderValue}>
+            <Radio.Group
+              options={orderOptions}
+              defaultValue={orderValue}
+              value={orderValue}
+              optionType="button"
+              buttonStyle="solid"
+            />
+          </Form.Item>
+
+          <Form.Item label="Order Direction" name="order_direction" initialValue={orderDirection}>
+            <Radio.Group
+              options={orderDirectionOptions}
+              defaultValue={orderDirection}
+              value={orderDirection}
+              optionType="button"
+              buttonStyle="solid"
+            />
+          </Form.Item>
+
           <Form.Item>
             <Button type="primary" htmlType="submit">
               Search
