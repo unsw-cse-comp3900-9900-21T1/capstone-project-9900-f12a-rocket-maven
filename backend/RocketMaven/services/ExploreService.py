@@ -1,7 +1,7 @@
 from flask import request
 from RocketMaven.api.schemas import AssetSchema
-from RocketMaven.models import Asset
 from RocketMaven.commons.pagination import paginate
+from RocketMaven.models import Asset
 from sqlalchemy import or_
 
 
@@ -15,6 +15,9 @@ def advanced_search():
     q = request.args.get("q")
     print("q:", q)
 
+    if country is None and currency is None and industry is None and exchange is None and q is None:
+        return {"msg": "Missing search query"}, 400
+        
     order_object = Asset.market_cap.desc()
 
     order = request.args.get("order")

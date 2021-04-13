@@ -42,8 +42,6 @@ class Explore(Resource):
                     asset: AssetSchema
           400:
             description: Missing search query
-          404:
-            description: No assets found
         security: []
         """
         return ExploreService.advanced_search()
