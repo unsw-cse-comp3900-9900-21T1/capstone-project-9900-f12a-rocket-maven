@@ -80,7 +80,6 @@ const abstractFetch = async (fetchInput: AbstractFetchProps) => {
     }
     return data
   } catch (error) {
-    // TODO(Jude): Handle token is revoked error when still logged in but there was a db reset
     if (setData) {
       setData({})
     }
@@ -95,19 +94,22 @@ const useAbstractFetchOnMount = (url: string, refreshFlag?: number) => {
   const { accessToken, revalidateAccessToken } = useAccessToken()
   const isLoggedIn = useIsLoggedIn()
   useEffect(() => {
-    try {
-      abstractFetch({
-        accessToken,
-        revalidateAccessToken,
-        setData,
-        isLoading,
-        setIsLoading,
-        isLoggedIn,
-        url
-      })
-    } catch (error) {
-      message.error(error.message)
+    const myFetch = async () => {
+      try {
+        await abstractFetch({
+          accessToken,
+          revalidateAccessToken,
+          setData,
+          isLoading,
+          setIsLoading,
+          isLoggedIn,
+          url
+        })
+      } catch (error) {
+        message.error(error.message)
+      }
     }
+    myFetch()
   }, [refreshFlag])
   return { data, isLoading }
 }
