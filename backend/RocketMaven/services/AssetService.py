@@ -31,9 +31,9 @@ def get_asset(ticker_symbol: str):
     """
     if ticker_symbol is None:
         return {"msg": "Missing ticker symbol"}, 400
+    data = Asset.query.get_or_404(ticker_symbol)
     try:
         schema = AssetSchema()
-        data = Asset.query.get_or_404(ticker_symbol)
         return {"asset": schema.dump(data)}, 200
     except Exception as err:
         print(err)
@@ -59,7 +59,7 @@ def get_asset_price(ticker_symbol: str):
                 db.session.query(Asset).filter_by(ticker_symbol=ticker_symbol).first()
             )
             return {"price": data.current_price}, 200
-        return {"msg": "Ticker does not exist"}, 400
+        return {"msg": "Ticker does not exist"}, 404
     except Exception as e:
         print(e)
         return {"msg": "Operation failed!"}, 500
@@ -72,7 +72,7 @@ def search_asset():
     500 - if an unexpected exception is raised
     """
     q = request.args.get("q", None)
-
+    
     if q:
         try:
             # https://stackoverflow.com/questions/3325467/sqlalchemy-equivalent-to-sql-like-statement
@@ -88,7 +88,7 @@ def search_asset():
             print(e)
             return {"msg": "Asset search failed"}, 500
     else:
-        {"msg": "Missing search query"}, 400
+        return {"msg": "Missing search query"}, 400
 
 
 def search_user_asset(portfolio_id):
@@ -141,7 +141,7 @@ def search_user_asset(portfolio_id):
             print(e)
             return {"msg": "Asset search failed"}, 500
     else:
-        {"msg": "Missing search query"}, 400
+        return {"msg": "Missing search query"}, 400
 
 
 def load_asset_data(db):
@@ -158,7 +158,7 @@ def load_asset_data(db):
     # * GICs industry group
     # * Yahoo Finance response
 
-    for row in zip_dict_reader("./data/ASX.csv"):
+    for row in zip_dict_reader("./data/ASX.zip"):
 
         asx_code = row["ASX code"]
         company_name = row["Company name"]
@@ -194,7 +194,7 @@ def load_asset_data(db):
     # * Name
     # * ...
     # * Industry
-    for row in zip_dict_reader("./data/NASDAQ.csv"):
+    for row in zip_dict_reader("./data/NASDAQ.zip"):
 
         code = row["Symbol"]
         company_name = row["Name"]
@@ -231,7 +231,7 @@ def load_asset_data(db):
     # * Name
     # * ...
     # * Industry
-    for row in zip_dict_reader("./data/NYSE.csv"):
+    for row in zip_dict_reader("./data/NYSE.zip"):
 
         code = row["Symbol"]
         company_name = row["Name"]
@@ -266,15 +266,13 @@ def load_asset_data(db):
     # * Symbol
     # * Name
     # * ...
-    for row in zip_dict_reader("./data/CRYPTO.csv"):
+    for row in zip_dict_reader("./data/CRYPTO.zip"):
 
         code = row["Symbol"]
         # print(row["Yahoo"])
         data = json.loads(row["Yahoo"])
 
         company_name = re.sub(" USD$", "", data["shortName"])
-        data["name"] = company_name
-        data["longName"] = company_name
         industry = "Non-Fiat"
 
         ticker_symbol = "CRYPTO:{}".format(code)
@@ -286,10 +284,10 @@ def load_asset_data(db):
                 industry=industry,
                 current_price=data["regularMarketPrice"]["raw"],
                 market_cap=data["marketCap"]["raw"],
-                asset_additional=json.dumps(data),
+                asset_additional=row["Yahoo"],
                 data_source="Yahoo",
                 country="ZZ",
-                currency="USD",
+                currency="US",
                 price_last_updated=datetime.strptime(
                     "2021-01-01", "%Y-%m-%d"
                 ),  # datetime.date.fromisoformat("2021-01-01"),
