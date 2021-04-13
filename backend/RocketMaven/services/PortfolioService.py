@@ -35,7 +35,7 @@ def update_portfolio(portfolio_id):
 
     db.session.commit()
 
-    return {"msg": "portfolio updated", "portfolio": schema.dump(data)}
+    return {"msg": "Portfolio Updated", "portfolio": schema.dump(data)}
 
 
 def delete_portfolio(portfolio_id):
@@ -44,7 +44,7 @@ def delete_portfolio(portfolio_id):
 
     db.session.commit()
 
-    return {"msg": "portfolio deleted"}
+    return {"msg": "Portfolio Deleted"}
 
 
 def get_all_portfolios(investor_id):
@@ -336,7 +336,9 @@ def get_top_additions():
         db.session.query(Portfolio, db.func.max(Portfolio.view_count))
         # TODO(Jude): Find why this broke all of a sudden - It looked like it was working fine before
         # It seems to me that we would only want to show public portfolios
-        .filter(Portfolio.public_portfolio.is_(True)).first()
+        .filter(
+            Portfolio.public_portfolio.is_(True), Portfolio.deleted.is_(False)
+        ).first()
     )
     portfolio = most_viewed_portfolio_result[0]
 

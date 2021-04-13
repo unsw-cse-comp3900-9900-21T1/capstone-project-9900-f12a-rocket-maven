@@ -158,7 +158,7 @@ def load_asset_data(db):
     # * GICs industry group
     # * Yahoo Finance response
 
-    for row in zip_dict_reader("./data/ASX.zip"):
+    for row in zip_dict_reader("./data/ASX.csv"):
 
         asx_code = row["ASX code"]
         company_name = row["Company name"]
@@ -194,7 +194,7 @@ def load_asset_data(db):
     # * Name
     # * ...
     # * Industry
-    for row in zip_dict_reader("./data/NASDAQ.zip"):
+    for row in zip_dict_reader("./data/NASDAQ.csv"):
 
         code = row["Symbol"]
         company_name = row["Name"]
@@ -231,7 +231,7 @@ def load_asset_data(db):
     # * Name
     # * ...
     # * Industry
-    for row in zip_dict_reader("./data/NYSE.zip"):
+    for row in zip_dict_reader("./data/NYSE.csv"):
 
         code = row["Symbol"]
         company_name = row["Name"]
@@ -266,13 +266,15 @@ def load_asset_data(db):
     # * Symbol
     # * Name
     # * ...
-    for row in zip_dict_reader("./data/CRYPTO.zip"):
+    for row in zip_dict_reader("./data/CRYPTO.csv"):
 
         code = row["Symbol"]
         # print(row["Yahoo"])
         data = json.loads(row["Yahoo"])
 
         company_name = re.sub(" USD$", "", data["shortName"])
+        data["name"] = company_name
+        data["longName"] = company_name
         industry = "Non-Fiat"
 
         ticker_symbol = "CRYPTO:{}".format(code)
@@ -284,10 +286,10 @@ def load_asset_data(db):
                 industry=industry,
                 current_price=data["regularMarketPrice"]["raw"],
                 market_cap=data["marketCap"]["raw"],
-                asset_additional=row["Yahoo"],
+                asset_additional=json.dumps(data),
                 data_source="Yahoo",
                 country="ZZ",
-                currency="US",
+                currency="USD",
                 price_last_updated=datetime.strptime(
                     "2021-01-01", "%Y-%m-%d"
                 ),  # datetime.date.fromisoformat("2021-01-01"),

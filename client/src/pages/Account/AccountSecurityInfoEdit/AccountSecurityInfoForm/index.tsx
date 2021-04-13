@@ -3,7 +3,7 @@ import { Card } from '@rocketmaven/componentsStyled/Card'
 import { Subtitle } from '@rocketmaven/componentsStyled/Typography'
 import { useUpdateAccountInfo } from '@rocketmaven/hooks/http'
 import { Investor } from '@rocketmaven/pages/Account/types'
-import { Button, Form, Input, Switch } from 'antd'
+import { Button, Form, Input } from 'antd'
 import { Fragment } from 'react'
 
 type Props = {
@@ -23,7 +23,7 @@ const AccountSecurityInfoForm = ({ investorData }: Props) => {
   return (
     <Fragment>
       <Subtitle>Security Edit</Subtitle>
-      <Card>
+      <Card title="Change Password">
         <Form
           name="account_security_info"
           className="account-security-info"
@@ -44,7 +44,7 @@ const AccountSecurityInfoForm = ({ investorData }: Props) => {
           </Form.Item>
           */}
 
-          <PasswordInput />
+          <PasswordInput label="New Password" />
 
           <Form.Item
             name="confirm"
@@ -71,9 +71,12 @@ const AccountSecurityInfoForm = ({ investorData }: Props) => {
           >
             <Input.Password />
           </Form.Item>
+
+          {/*
           <Form.Item label="Public" name="visibility">
             <Switch defaultChecked={investorData.investor.visibility} />
           </Form.Item>
+          */}
 
           <Form.Item style={{ textAlign: 'center' }}>
             <Button
