@@ -13,7 +13,7 @@ def get_investor(investor_id):
     schema = InvestorSchema()
     data = Investor.query.get_or_404(investor_id)
     return {"investor": schema.dump(data)}
-    
+
 
 def handle_empty_date_of_birth():
     if "date_of_birth" in request.json and request.json["date_of_birth"]:
@@ -35,7 +35,7 @@ def update_investor(investor_id):
         data = schema.load(request.json, instance=investor)
     except ValidationError as err:
         print(err)
-        return {"msg": "Operation failed!", "errors": e.messages}, 422
+        return {"msg": "Operation failed!", "errors": err.messages}, 422
     
     try:
         db.session.commit()

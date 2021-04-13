@@ -85,6 +85,8 @@ class PortfolioResource(Resource):
                   type: object
                   properties:
                     portfolio: PortfolioSchema
+          401:
+            description: unauthorised portfolio read
           404:
             description: portfolio does not exist
         """
@@ -118,6 +120,8 @@ class PortfolioResource(Resource):
                       type: string
                       example: portfolio updated
                     portfolio: PortfolioSchema
+          401:
+            description: unauthorised portfolio update
           404:
             description: portfolio does not exists
         """
@@ -145,6 +149,8 @@ class PortfolioResource(Resource):
                     msg:
                       type: string
                       example: portfolio deleted
+          401:
+            description: unauthorised portfolio delete
           404:
             description: portfolio does not exists
         """
@@ -152,8 +158,6 @@ class PortfolioResource(Resource):
 
 
 class PortfolioList(Resource):
-
-    # method_decorators = [jwt_required()]
 
     @jwt_required()
     def get(self, investor_id):
@@ -181,6 +185,8 @@ class PortfolioList(Resource):
                           type: array
                           items:
                             $ref: '#/components/schemas/PortfolioSchema'
+          401:
+            description: unauthorised portfolio list get
         """
         return PortfolioService.get_portfolios(investor_id)
 
