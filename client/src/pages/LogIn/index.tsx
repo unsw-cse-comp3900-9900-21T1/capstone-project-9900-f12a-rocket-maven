@@ -4,7 +4,6 @@ import { urls } from '@rocketmaven/data/urls'
 import { useAuth } from '@rocketmaven/hooks/http'
 import Page from '@rocketmaven/pages/_Page'
 import { Button, Form, Input } from 'antd'
-import React from 'react'
 import { Link } from 'react-router-dom'
 
 const LogIn = () => {
@@ -69,7 +68,8 @@ const LogIn = () => {
             >
               Log in
             </Button>
-            Or <Link to={urls.signup}>register now!</Link>
+            Or
+            <Link to={urls.signup}>register now!</Link>
           </Form.Item>
         </Form>
       </Card>

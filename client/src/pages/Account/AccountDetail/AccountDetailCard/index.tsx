@@ -1,10 +1,10 @@
-import { Fragment } from 'react'
 import { Card } from '@rocketmaven/componentsStyled/Card'
-import { Link } from 'react-router-dom'
 import { urls } from '@rocketmaven/data/urls'
 import { Investor } from '@rocketmaven/pages/Account/types'
-import { Button, Divider, Descriptions } from 'antd'
+import { Button, Descriptions, Divider } from 'antd'
+import { Fragment } from 'react'
 import { FaCogs, FaEdit } from 'react-icons/fa'
+import { Link } from 'react-router-dom'
 
 const AccountDetailCard = ({ investor }: Investor) => {
   return (
@@ -45,10 +45,14 @@ const AccountDetailCard = ({ investor }: Investor) => {
         </Descriptions>
         <Divider>Edit</Divider>
         <Button type="primary" danger style={{ marginRight: '8px', marginBottom: '12px' }}>
-          <Link to={urls.account + '/personal'}><FaEdit /> Edit Personal Details</Link>
+          <Link to={urls.account + '/personal'}>
+            <FaEdit /> Edit Personal Details
+          </Link>
         </Button>
         <Button type="primary" danger style={{ marginRight: '8px', marginBottom: '12px' }}>
-          <Link to={urls.account + '/security'}><FaCogs /> Edit Security</Link>
+          <Link to={urls.account + '/security'}>
+            <FaCogs /> Edit Security
+          </Link>
         </Button>
       </Card>
     </Fragment>

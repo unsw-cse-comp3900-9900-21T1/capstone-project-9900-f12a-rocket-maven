@@ -4,21 +4,15 @@ import { urls } from '@rocketmaven/data/urls'
 import { useFetchAPIPublicOrLoggedInData } from '@rocketmaven/hooks/http'
 import { useUserId } from '@rocketmaven/hooks/store'
 import '@rocketmaven/pages/Leaderboard/style.less'
-import { PortfolioInfo, PortfolioPagination } from '@rocketmaven/pages/Portfolio/types'
+import { PortfolioInfo } from '@rocketmaven/pages/Portfolio/types'
 import Page from '@rocketmaven/pages/_Page'
 import { message, Table, Tooltip } from 'antd'
 import { isEmpty } from 'ramda'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-
-type PortfolioListFetchResults = {
-  data: PortfolioPagination
-  isLoading: boolean
-}
 
 const Leaderboard = () => {
   const [data, setData] = useState<null | [any, { results: any }]>(null)
-  const [historyTable, setHistoryTable] = useState<React.ReactNode | null>(null)
   const [entries, setEntries] = useState<any>(null)
   const [userEntries, setUserEntries] = useState<any>(null)
 
@@ -51,7 +45,7 @@ const Leaderboard = () => {
   const userId = useUserId()
 
   const portfolioLinkRenderer = (testVal: number, record: any) => {
-    if ((testVal || (record.Investor && record.Investor.id == userId)) && testVal != 0) {
+    if ((testVal || (record.Investor && record.Investor.id === userId)) && testVal != 0) {
       return <Link to={urls.portfolio + '/' + testVal}>View Portfolio</Link>
     }
     return <>Private Portfolio</>
@@ -63,7 +57,7 @@ const Leaderboard = () => {
       dataIndex: 'Rank',
       render: (value: number) => {
         let brag_icon = null
-        if (value == 1) {
+        if (value === 1) {
           brag_icon = <CrownOutlined />
         }
         return (
@@ -130,15 +124,12 @@ const Leaderboard = () => {
       if (!portfolios || isEmpty(portfolios)) {
         message.error('Leaderboard is empty!')
       } else {
-        {
-          userPortfolios.map((portfolio, index) => {
-            tmpUserEntries.push(tableData(portfolio))
-          })
-          portfolios.map((portfolio, index) => {
-            tmpEntries.push(tableData(portfolio))
-          })
-        }
-
+        userPortfolios.forEach((portfolio) => {
+          tmpUserEntries.push(tableData(portfolio))
+        })
+        portfolios.forEach((portfolio) => {
+          tmpEntries.push(tableData(portfolio))
+        })
         setEntries(tmpEntries)
         setUserEntries(tmpUserEntries)
 
@@ -162,7 +153,7 @@ const Leaderboard = () => {
             dataSource={userEntries}
             rowClassName={(record: any) => {
               switch (true) {
-                case record.Rank == 1: {
+                case record.Rank === 1: {
                   return 'rmv-comp-leaderboard-first'
                 }
                 default: {
@@ -181,7 +172,7 @@ const Leaderboard = () => {
         dataSource={entries}
         rowClassName={(record: any) => {
           switch (true) {
-            case record.Rank == 1: {
+            case record.Rank === 1: {
               return 'rmv-comp-leaderboard-first'
             }
             /* Can extend this for more ranks
