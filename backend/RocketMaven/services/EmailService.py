@@ -76,6 +76,8 @@ def change_password():
     # password = request.json.get("password")
     # confirmation = request.json.get("confirmation")
     # eva = request.json.get("challenge_code")
+    if request.json is None:
+        return {"msg": "Malformed request"}, 400
 
     evc = request.json.get("evc")
     if evc is None:
