@@ -58,6 +58,7 @@ def normal_user(db):
         email="normal@normal.com",
         password="normal",
         country_of_residency="AU",
+        email_verified_code="123",
     )
 
     db.session.add(user)
