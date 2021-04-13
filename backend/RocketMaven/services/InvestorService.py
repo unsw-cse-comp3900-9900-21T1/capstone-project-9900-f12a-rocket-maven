@@ -37,6 +37,7 @@ def update_investor(investor_id):
         print(err)
         return {"msg": "Operation failed!", "errors": err.messages}, 422
 
+
     try:
         db.session.commit()
 
