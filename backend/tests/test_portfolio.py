@@ -78,7 +78,7 @@ def test_delete_portfolio(portfolio, client, normal_user, normal_headers):
     portfolio_url = url_for("api.portfolio_by_id", portfolio_id=portfolio.id)
     resp = client.delete(portfolio_url, headers=normal_headers)
     assert resp.status_code == 200
-    assert resp.get_json()["msg"] == "portfolio deleted"
+    assert resp.get_json()["msg"] == "Portfolio Deleted"
 
 
 def test_get_portfolios(client, normal_user, normal_headers):
