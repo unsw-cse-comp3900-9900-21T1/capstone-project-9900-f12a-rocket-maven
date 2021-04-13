@@ -20,7 +20,6 @@ const PortfolioList = () => {
     '/portfolios',
     refreshFlag
   )
-  console.log('********************** portfoliodata is ', data)
 
   return data ? (
     <Fragment>
