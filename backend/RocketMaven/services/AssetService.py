@@ -31,9 +31,9 @@ def get_asset(ticker_symbol: str):
     """
     if ticker_symbol is None:
         return {"msg": "Missing ticker symbol"}, 400
+    data = Asset.query.get_or_404(ticker_symbol)
     try:
         schema = AssetSchema()
-        data = Asset.query.get_or_404(ticker_symbol)
         return {"asset": schema.dump(data)}, 200
     except Exception as err:
         print(err)
@@ -59,7 +59,7 @@ def get_asset_price(ticker_symbol: str):
                 db.session.query(Asset).filter_by(ticker_symbol=ticker_symbol).first()
             )
             return {"price": data.current_price}, 200
-        return {"msg": "Ticker does not exist"}, 400
+        return {"msg": "Ticker does not exist"}, 404
     except Exception as e:
         print(e)
         return {"msg": "Operation failed!"}, 500
@@ -72,7 +72,7 @@ def search_asset():
     500 - if an unexpected exception is raised
     """
     q = request.args.get("q", None)
-
+    
     if q:
         try:
             # https://stackoverflow.com/questions/3325467/sqlalchemy-equivalent-to-sql-like-statement
@@ -88,7 +88,7 @@ def search_asset():
             print(e)
             return {"msg": "Asset search failed"}, 500
     else:
-        {"msg": "Missing search query"}, 400
+        return {"msg": "Missing search query"}, 400
 
 
 def search_user_asset(portfolio_id):
@@ -141,7 +141,7 @@ def search_user_asset(portfolio_id):
             print(e)
             return {"msg": "Asset search failed"}, 500
     else:
-        {"msg": "Missing search query"}, 400
+        return {"msg": "Missing search query"}, 400
 
 
 def load_asset_data(db):

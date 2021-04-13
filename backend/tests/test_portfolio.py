@@ -5,38 +5,6 @@ from flask import url_for
 from RocketMaven.models import Portfolio
 
 
-@pytest.fixture
-def portfolio(db, normal_user):
-    portfolio = Portfolio(
-        currency="AUD",
-        tax_residency="AU",
-        name="My First Portfolio!",
-        description="Seeing if I should invest or not",
-        competition_portfolio=False,
-        buying_power=None,
-        investor_id=normal_user.id,
-    )
-    db.session.add(portfolio)
-    db.session.commit()
-
-    return portfolio
-
-@pytest.fixture
-def public_portfolio(db, normal_user):
-    pub_portfolio = Portfolio(
-        currency="AUD",
-        tax_residency="AU",
-        name="My Public Portfolio!",
-        description="For all to see",
-        competition_portfolio=False,
-        buying_power=None,
-        investor_id=normal_user.id,
-        public_portfolio=True
-    )
-    db.session.add(pub_portfolio)
-    db.session.commit()
-    return pub_portfolio
-
 def test_get_portfolio(portfolio, client, normal_user, normal_headers):
     # test 401
     portfolio_url = url_for("api.portfolio_by_id", portfolio_id=normal_user.id)

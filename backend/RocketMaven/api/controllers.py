@@ -26,11 +26,11 @@ api.add_resource(
 )
 api.add_resource(InvestorList, "/investors", endpoint="investors")
 
-api.add_resource(AssetSearchResource, "/assets/search", endpoint="assert_search")
+api.add_resource(AssetSearchResource, "/assets/search", endpoint="asset_search")
 api.add_resource(
     PortfolioAssetSearchResource,
     "/assets/search/<int:portfolio_id>",
-    endpoint="user_assert_search",
+    endpoint="user_asset_search",
 )
 
 api.add_resource(

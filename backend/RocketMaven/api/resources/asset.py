@@ -131,7 +131,5 @@ class PortfolioAssetSearchResource(Resource):
             description: Success
           400:
             description: Missing search query
-          404:
-            description: No assets found
         """
         return AssetService.search_user_asset(portfolio_id)
