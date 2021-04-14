@@ -363,7 +363,7 @@ def get_top_additions():
     )
     if most_frequent_holding_result is None:
         return {"msg": "No most frequent holding result"}, 404
-        
+
     holding = most_frequent_holding_result[0]
     asset = Asset.query.get_or_404(holding.asset_id)
     asset_schema = AssetSchema()

@@ -11,7 +11,7 @@ from RocketMaven.extensions import db
 from RocketMaven.models import (Asset, Portfolio, PortfolioAssetHolding,
                                 PortfolioEvent)
 
-YAHOO_FINANCE_ENDPOINT = "https://query2.finance.yahoo.com/v7/finance/quote?formatted=true&lang=en-AU&region=AU&symbols={ticker}&fields=longName,shortName,regularMarketPrice"
+YAHOO_FINANCE_ENDPOINT = "https://query2.finance.yahoo.com/v7/finance/quote?formatted=true&lang=en-AU&region=AU&symbols={ticker}&fields=longName,shortName,regularMarketPrice"  # noqa: E501
 
 
 def update_asset(asset) -> (bool, str):
@@ -83,7 +83,7 @@ def delete_holding(portfolio_id):
     ).first()
     if query is None:
         return {"msg": "Asset Holding not found"}, 404
-    
+
     query.available_units = 0
 
     db.session.commit()
@@ -244,7 +244,8 @@ def create_event(portfolio_id):
                     400,
                 )
 
-            # Competition portfolio ignores any user-set price. So the user should be able to refresh the real-time price that the system provides to make an informed competition entry.
+            # Competition portfolio ignores any user-set price. So the user should be able to refresh the real-time
+            # price that the system provides to make an informed competition entry.
             if query.competition_portfolio is True:
                 portfolio_event.event_date = None
                 asset = Asset.query.filter_by(
