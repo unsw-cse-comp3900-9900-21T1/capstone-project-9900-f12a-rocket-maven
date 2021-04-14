@@ -1,10 +1,11 @@
+import datetime
 import json
 
 import pytest
 from pytest_factoryboy import register
 from RocketMaven.app import create_app
 from RocketMaven.extensions import db as _db
-from RocketMaven.models import Asset, Investor, Portfolio
+from RocketMaven.models import Asset, Investor, Portfolio, PortfolioEvent
 from RocketMaven.services import ExampleFullSystemService
 
 from .factories import InvestorFactory
@@ -174,4 +175,23 @@ def asset(db):
     )
 
     db.session.add(asset)
+    db.session.commit()
     return asset
+
+@pytest.fixture
+def portfolio_event(db, portfolio, asset):
+    portfolio_event = PortfolioEvent(
+            units=10,
+            add_action=True,
+            fees=15,
+            price_per_share=143,
+            exchange_rate=1.0,
+            note="",
+            asset_id=asset.ticker_symbol,
+            portfolio_id=portfolio.id,
+            event_date=datetime.date.today(),
+        )
+    portfolio_event.update_portfolio_asset_holding()
+    db.session.add(portfolio_event)
+    db.session.commit()
+    return portfolio_event

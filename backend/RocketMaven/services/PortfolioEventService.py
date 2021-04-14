@@ -73,12 +73,17 @@ def delete_holding(portfolio_id):
     query = PortfolioEvent.query.filter_by(
         portfolio_id=portfolio_id, asset_id=asset_id
     ).all()
+    if query is None or len(query) == 0:
+        return {"msg": "Asset not found"}, 404
     for m in query:
         m.dynamic_after_FIFO_units = 0
 
     query = PortfolioAssetHolding.query.filter_by(
         portfolio_id=portfolio_id, asset_id=asset_id
     ).first()
+    if query is None:
+        return {"msg": "Asset Holding not found"}, 404
+    
     query.available_units = 0
 
     db.session.commit()
