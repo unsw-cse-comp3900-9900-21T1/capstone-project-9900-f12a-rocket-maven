@@ -17,6 +17,8 @@ from RocketMaven.api.resources.investor import (
     InvestorList,
     WatchList,
     WatchAsset,
+    NotificationLow,
+    NotificationHigh,
 )
 from RocketMaven.api.resources.portfolio import (
     PortfolioResource,
@@ -65,4 +67,6 @@ __all__ = [
     "WatchList",
     "Explore",
     "Recommend",
+    "NotificationLow",
+    "NotificationHigh"
 ]

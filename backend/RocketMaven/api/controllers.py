@@ -9,7 +9,7 @@ from RocketMaven.api.resources import (  # Recommend,
     PortfolioEventList, PortfolioList, PortfolioListAll, PortfolioResource,
     PublicPortfolioResource, Pw_reset, Report, TimeSeriesResource,
     TopAdditions, WatchAsset, WatchList, WeeklyTimeSeriesResource,
-    YearlyTimeSeriesResource)
+    YearlyTimeSeriesResource, NotificationLow, NotificationHigh)
 from RocketMaven.api.schemas import (AssetSchema, InvestorSchema,
                                      LeaderboardSchema,
                                      PortfolioAssetHoldingSchema,
@@ -94,6 +94,10 @@ api.add_resource(WatchList, "/watchlist", endpoint="watchlist")
 api.add_resource(
     WatchAsset, "/watchlist/<string:ticker_symbol>", endpoint="watchlist_update"
 )
+
+api.add_resource(NotificationLow, "/watchlist/<string:ticker_symbol>/low", endpoint="low")
+api.add_resource(NotificationHigh, "/watchlist/<string:ticker_symbol>/high", endpoint="high")
+
 
 api.add_resource(Report, "/report", endpoint="report")
 
@@ -186,6 +190,9 @@ def register_controllers():
     apispec.spec.path(view=Iforgot, app=current_app, api=api)
 
     apispec.spec.path(view=Pw_reset, app=current_app, api=api)
+
+    apispec.spec.path(view=NotificationLow, app=current_app, api=api)
+    apispec.spec.path(view=NotificationHigh, app=current_app, api=api)
 
     # apispec.spec.path(view=Recommend, app=current_app, api=api)
 
