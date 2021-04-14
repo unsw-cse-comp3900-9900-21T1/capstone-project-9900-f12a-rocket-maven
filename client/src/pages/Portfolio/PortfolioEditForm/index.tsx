@@ -1,5 +1,4 @@
 import { Card } from '@rocketmaven/componentsStyled/Card'
-// import { MySelect, MyTextInput } from '@rocketmaven/forms'
 import { useUpdatePortfolioInfo } from '@rocketmaven/hooks/http'
 import { useSortedCountryList, useSortedCurrencyList } from '@rocketmaven/hooks/store'
 import { PortfolioInfoEdit } from '@rocketmaven/pages/Portfolio/types'
@@ -26,7 +25,6 @@ const PortfolioEditForm = ({ portfolioInfo, portfolioId, action }: Props) => {
     name: '',
     tax_residency: '',
     public_portfolio: true,
-    // Bottom 2 not used, just here for typing validation
     creation_date: '',
     currency: 'AUD',
     id: 0
@@ -129,7 +127,7 @@ const PortfolioEditForm = ({ portfolioInfo, portfolioId, action }: Props) => {
             >
               <Select showSearch>
                 {countryList.map(([code, name], value) => {
-                  return <Select.Option value={code}>{name}</Select.Option>
+                  return <Option value={code}>{name}</Option>
                 })}
               </Select>
             </Form.Item>
@@ -147,7 +145,7 @@ const PortfolioEditForm = ({ portfolioInfo, portfolioId, action }: Props) => {
               >
                 <Select showSearch>
                   {currencyList.map(([code, name], value) => {
-                    return <Select.Option value={code}>{name}</Select.Option>
+                    return <Option value={code}>{name}</Option>
                   })}
                 </Select>
               </Form.Item>

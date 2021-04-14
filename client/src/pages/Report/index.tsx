@@ -1,10 +1,9 @@
-import React from 'react'
+import { Title } from '@rocketmaven/componentsStyled/Typography'
 import { urls } from '@rocketmaven/data/urls'
+import ReportGenerate from '@rocketmaven/pages/Report/ReportGenerate'
+import ReportLanding from '@rocketmaven/pages/Report/ReportLanding'
 import Page from '@rocketmaven/pages/_Page'
 import { Route, Switch } from 'react-router-dom'
-import { Title } from '@rocketmaven/componentsStyled/Typography'
-import ReportLanding from '@rocketmaven/pages/Report/ReportLanding'
-import ReportGenerate from '@rocketmaven/pages/Report/ReportGenerate'
 
 const Report = () => {
   return (
