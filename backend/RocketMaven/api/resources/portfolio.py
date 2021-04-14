@@ -314,3 +314,10 @@ class TopAdditions(Resource):
             description: error finding resources
         """
         return PortfolioService.get_top_additions()
+
+
+class Recommend(Resource):
+
+  @jwt_required()
+  def post(self):
+    PortfolioService.recommend_portfolio()

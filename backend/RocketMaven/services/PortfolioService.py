@@ -372,3 +372,25 @@ def get_top_additions():
         "portfolio": portfolio_schema.dump(portfolio),
         "asset": asset_schema.dump(asset),
     }, 200
+
+def recommend_portfolio():
+    # query = Asset.query.filter_by(
+    #     currency=currency, industry=industry
+    # )
+
+
+    # for i in query.all():
+    #     asset_additional = json.loads(i.asset_additional)
+
+    #     result = []
+
+    #     price = i.current_price
+
+    #     fiftyDayAverageChange = float(asset_additional['fiftyDayAverageChange']['raw'])
+    #     twoHundredDayAverageChange = float(asset_additional['twoHundredDayAverageChange']['raw'])
+
+    #     diff = fiftyDayAverageChange - twoHundredDayAverageChange 
+
+    #     if diff > 0 and price > diff:
+    #         result.add(i)
+    # return result
