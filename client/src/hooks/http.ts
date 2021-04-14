@@ -302,9 +302,9 @@ export const useGetPortfolioHistory = (portfolioId: string): any => {
   return { data, isLoading }
 }
 
-export const useGetWatchlist = (refreshFlag?: number): any => {
+export const useGetWatchlist = (): any => {
   const endPointUrl = `/api/v1/watchlist`
-  const { data } = useAbstractFetchOnMount(endPointUrl, refreshFlag)
+  const { data } = useAbstractFetchOnMount(endPointUrl)
   return data
 }
 
@@ -414,6 +414,27 @@ export const useUpdateWatchListItem = () => {
         url: `/api/v1/watchlist/${asset_id}/${context}`,
         method: 'PUT',
         values: { price: price }
+      })
+      return results
+    } catch (error) {
+      message.error(error.message)
+    }
+  }
+  return myFetch
+}
+
+export const useAddWatchListItem = () => {
+  const [isLoading, setIsLoading] = useState(false)
+  const { accessToken, revalidateAccessToken } = useAccessToken()
+  const myFetch = async (tickerSymbol: string) => {
+    try {
+      const results = abstractFetch({
+        accessToken,
+        revalidateAccessToken,
+        isLoading,
+        setIsLoading,
+        url: `/api/v1/watchlist/${tickerSymbol}`,
+        method: 'POST',
       })
       return results
     } catch (error) {
