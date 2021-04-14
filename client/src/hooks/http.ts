@@ -30,7 +30,7 @@ type AbstractFetchProps = {
   revalidateAccessToken: Function
   setData?: Function
   isLoggedIn?: boolean
-  values?: JSON
+  values?: any
   method?: HttpMethod
   redirectPath?: string
   routerObject?: any
@@ -304,7 +304,7 @@ export const useGetPortfolioHistory = (portfolioId: string): any => {
 
 export const useGetWatchlist = (): any => {
   const endPointUrl = `/api/v1/watchlist`
-  const { data, isLoading } = useAbstractFetchOnMount(endPointUrl)
+  const { data } = useAbstractFetchOnMount(endPointUrl)
   return data
 }
 
@@ -321,7 +321,7 @@ export const useAuth = (authType: AuthType): Function => {
     endPointUrl = '/api/v1/investors'
   }
   const { dispatch } = useStore()
-  const { isLoading, myFetch } = useAbstractFetchUpdate(endPointUrl, 'POST')
+  const { myFetch } = useAbstractFetchUpdate(endPointUrl, 'POST')
   const routerObject = useHistory()
   const submit = async (values: JSON) => {
     try {
@@ -344,7 +344,7 @@ export const useAuth = (authType: AuthType): Function => {
 
 export const useUpdateAccountInfo = (): Function => {
   const userId = useUserId()
-  const { isLoading, myFetch } = useAbstractFetchUpdate(
+  const { myFetch } = useAbstractFetchUpdate(
     `/api/v1/investors/${userId}`,
     'PUT',
     urls.account
@@ -353,7 +353,7 @@ export const useUpdateAccountInfo = (): Function => {
 }
 
 export const useAddPortfolioEvent = (portfolioId: string): Function => {
-  const { isLoading, myFetch } = useAbstractFetchUpdate(
+  const { myFetch } = useAbstractFetchUpdate(
     `/api/v1/portfolios/${portfolioId}/history`,
     'POST',
     urls.portfolio
@@ -370,7 +370,7 @@ export const useUpdatePortfolioInfo = (
   if (methodInput === 'PUT') {
     endPointUrl = `/api/v1/portfolios/${portfolioId}`
   }
-  const { isLoading, myFetch } = useAbstractFetchUpdate(endPointUrl, methodInput, urls.portfolio)
+  const { myFetch } = useAbstractFetchUpdate(endPointUrl, methodInput, urls.portfolio)
   return myFetch
 }
 
@@ -383,10 +383,53 @@ export const useIForgot = () => {
 }
 
 export const usePasswordReset = () => {
-  const { isLoading, myFetch } = useAbstractFetchUpdate(
+  const { myFetch } = useAbstractFetchUpdate(
     '/api/v1/pw_reset',
     'POST',
     '/'
   )
+  return myFetch
+}
+
+export const useDeleteWatchListItem = () => {
+  const [isLoading, setIsLoading] = useState(false)
+  const { accessToken, revalidateAccessToken } = useAccessToken()
+  const myFetch = async (assetId: string) => {
+    try {
+      const results = abstractFetch({
+        accessToken,
+        revalidateAccessToken,
+        isLoading,
+        setIsLoading,
+        url: `/api/v1/watchlist/${assetId}`,
+        method: 'DELETE',
+      })
+      return results
+    } catch (error) {
+      message.error(error.message)
+    }
+  }
+  return myFetch
+}
+
+export const useUpdateWatchListItem = () => {
+  const [isLoading, setIsLoading] = useState(false)
+  const { accessToken, revalidateAccessToken } = useAccessToken()
+  const myFetch = async (asset_id: string, context: string, price: number) => {
+    try {
+      const results = abstractFetch({
+        accessToken,
+        revalidateAccessToken,
+        isLoading,
+        setIsLoading,
+        url: `/api/v1/watchlist/${asset_id}/${context}`,
+        method: 'PUT',
+        values: { price: price }
+      })
+      return results
+    } catch (error) {
+      message.error(error.message)
+    }
+  }
   return myFetch
 }

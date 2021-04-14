@@ -21,7 +21,9 @@ const PortfolioList = () => {
     refreshFlag
   )
 
-  return data ? (
+  return isLoading
+    ? null
+    :
     <Fragment>
       <Subtitle>
         Portfolio List
@@ -33,7 +35,6 @@ const PortfolioList = () => {
       </Subtitle>
       <PaginatedPortfolioDisplay portfolioPagination={data} refreshPortfolios={refreshPortfolios} />
     </Fragment>
-  ) : null
 }
 
 export default PortfolioList

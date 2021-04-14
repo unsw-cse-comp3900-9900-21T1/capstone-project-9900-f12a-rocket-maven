@@ -2,80 +2,18 @@ import { Card } from '@rocketmaven/componentsStyled/Card'
 import { Col, Row } from '@rocketmaven/componentsStyled/Grid'
 import { PublicPortfolioInfo } from '@rocketmaven/pages/Portfolio/types'
 import { Divider, Table } from 'antd'
+import { columns, valueColumns } from './tableDefinitions'
 
 type Props = {
   portfolio: PublicPortfolioInfo
 }
 
+// Fix(Jude): Add the portfolio card here
 export const PortfolioCard = ({ portfolio }: Props) => {
   if (!portfolio) {
     return null
   }
-  const numberChangeRenderer = (testVal: string, record: any) => {
-    const text = parseFloat(testVal).toFixed(2)
-    return {
-      props: {
-        style: { color: parseFloat(testVal) < 0 ? 'red' : 'green' }
-      },
-      children: <span>{text}</span>
-    }
-  }
 
-  const columns = [
-    { title: 'Ticker Symbol', dataIndex: 'asset_id' },
-    {
-      title: 'Available Units',
-      dataIndex: 'available_units',
-      render: (value: number) => value.toFixed(2)
-    },
-    {
-      title: 'Avg. Purchase Price',
-      dataIndex: 'average_price',
-      render: (value: number) => value.toFixed(2)
-    },
-    {
-      title: 'Current Market Price',
-      dataIndex: 'market_price',
-      render: (value: number) => value.toFixed(2)
-    },
-    {
-      title: 'Current Value',
-      dataIndex: 'current_value',
-      render: (value: number) => value.toFixed(2)
-    },
-    {
-      title: 'Realised Total',
-      dataIndex: 'realised_total',
-      render: (value: number) => value.toFixed(2)
-    },
-    {
-      title: 'Purchase Value',
-      dataIndex: 'purchase_value',
-      render: (value: number) => value.toFixed(2)
-    },
-    {
-      title: 'Unrealised Profit/Loss',
-      dataIndex: 'unrealised_units',
-      render: numberChangeRenderer
-    },
-    { title: 'Last Updated', dataIndex: 'last_updated' },
-    { title: 'Latest Note', dataIndex: 'latest_note' } /* https://ant.design/components/table/ */
-  ]
-
-  const valueColumns = [
-    { title: 'Purchase Cost', dataIndex: 'Purchase Cost' },
-    { title: 'Current Market', dataIndex: 'Current Market' },
-    {
-      title: 'Unrealised (Market - Purchase)',
-      dataIndex: 'Unrealised',
-      render: numberChangeRenderer
-    },
-    {
-      title: 'Realised (Sold Value)',
-      dataIndex: 'Realised (Sold Value)',
-      render: numberChangeRenderer
-    }
-  ]
   const value = [
     {
       'Current Market': portfolio.current_value_sum.toFixed(2),

@@ -1,12 +1,11 @@
-import { Subtitle, Text, Title } from '@rocketmaven/componentsStyled/Typography'
+import { Subtitle, Title } from '@rocketmaven/componentsStyled/Typography'
 import { assetColumns } from '@rocketmaven/data/tableDefinitions/assets'
-import { urls } from '@rocketmaven/data/urls'
 import { useFetchTopAdditions } from '@rocketmaven/hooks/http'
 import { PortfolioInfo } from '@rocketmaven/pages/Portfolio/types'
 import Page from '@rocketmaven/pages/_Page'
 import { Table } from 'antd'
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { portfolioColumns } from './tableDefinitions'
 
 type Asset = {
   industry: string
@@ -28,62 +27,6 @@ const TopAdditions = () => {
 
   if (!isLoading) {
     const assets: [Asset] = [data.asset]
-    const investorRenderer = (testVal: any, record: any) => {
-      console.log(testVal)
-      let username = testVal.username
-      if (testVal.first_name) {
-        username = testVal.first_name
-        if (testVal.last_name) {
-          username += ' ' + testVal.last_name
-        }
-      }
-      return {
-        children: <span>{username}</span>
-      }
-    }
-
-    const numberChangeRenderer = (testVal: string, record: any) => {
-      const text = parseFloat(testVal).toFixed(2)
-      return {
-        props: {
-          style: { color: parseFloat(testVal) < 0 ? 'red' : 'green' }
-        },
-        children: <span>{text}</span>
-      }
-    }
-
-    const portfolioLinkRenderer = (testVal: string, record: any) => {
-      if (testVal) {
-        return <Link to={urls.portfolio + '/' + testVal}>View Portfolio</Link>
-      }
-      return <Text>Private Portfolio</Text>
-    }
-
-    const portfolioColumns = [
-      {
-        title: 'Investor',
-        dataIndex: 'Investor',
-        render: investorRenderer
-      },
-      { title: 'Buying Power', dataIndex: 'Buying Power' },
-      { title: 'Purchase Cost', dataIndex: 'Purchase Cost' },
-      { title: 'Current Market', dataIndex: 'Current Market' },
-      {
-        title: 'Unrealised (Market - Purchase)',
-        dataIndex: 'Unrealised',
-        render: numberChangeRenderer
-      },
-      {
-        title: 'Realised (Sold Value)',
-        dataIndex: 'Realised (Sold Value)',
-        render: numberChangeRenderer
-      },
-      {
-        title: 'Explore',
-        dataIndex: 'View Portfolio',
-        render: portfolioLinkRenderer
-      }
-    ]
 
     const datas: any = []
     const portfolios: [PortfolioInfo] = [data.portfolio]
@@ -99,9 +42,6 @@ const TopAdditions = () => {
       })
     })
 
-    // TODO(Jude)?: adjust query to add top 5 of most viewed public portfolios and holdings
-    // TODO(Jude): Double check if the top holding is shown
-    // TODO(Jude): Add error handling for empty cases ( there shouldn't be any though )
     content =
       <React.Fragment>
         <Subtitle>
