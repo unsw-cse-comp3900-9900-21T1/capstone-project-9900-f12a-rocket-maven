@@ -2,7 +2,7 @@ from RocketMaven.api.schemas import WatchlistSchema
 from RocketMaven.commons.pagination import paginate
 from RocketMaven.extensions import db
 from RocketMaven.models import Asset, Investor, Watchlist
-
+from flask import request
 
 def add_watchlist(investor_id: int, ticker_symbol: str):
     """Adds the ticker symbol to the investor's watchlist
@@ -77,3 +77,28 @@ def del_watchlist(investor_id: int, ticker_symbol: str):
     except Exception as err:
         print(err)
         return {"msg": "error deleting asset from watchlist"}, 400
+
+
+def set_nofication(flag:str, investor_id:int, ticker_symbol:str):
+
+    price = request.json.get('price')
+    if not price:
+        return {"msg": "price not found"}, 404
+    try:
+        watching = Watchlist.query.filter_by(investor_id=investor_id, asset_id=ticker_symbol).first()
+        if not watching:
+            return {"msg": "watching not found in system"}, 404
+        if flag == "low":
+            watching.price_low = price
+            db.session.commit()
+            return {"msg": "low price notification set"}, 200
+        else:
+            watching.price_high = price
+            db.session.commit()
+            return {"msg": "high price notification set"}, 200
+
+
+
+    except Exception as err:
+        print(err)
+        return {"msg": "error adding price notification"}, 400
