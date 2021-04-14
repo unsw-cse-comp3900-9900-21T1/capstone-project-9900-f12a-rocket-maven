@@ -220,7 +220,7 @@ const Watchlists = () => {
         render: (value: [number, number], record: any) => {
           return (
             <>
-              High:{' '}
+              Notify me if price higher than:{' '}
               <Popover
                 content={notifyContent(
                   record.ticker_symbol,
@@ -234,7 +234,7 @@ const Watchlists = () => {
                 <Button type="link">{value[0] ? value[0] : 'Change me!'}</Button>
               </Popover>
               <br />
-              Low:{' '}
+              Notify me if price lower than:{' '}
               <Popover
                 content={notifyContent(record.ticker_symbol, 'low', value[1], record.current_price)}
                 title="Set Low"

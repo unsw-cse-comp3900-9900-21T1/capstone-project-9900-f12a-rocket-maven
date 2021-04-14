@@ -78,7 +78,7 @@ class PortfolioEventList(Resource):
     # method_decorators = [jwt_required()]
 
     @jwt_required()
-    def put(self, portfolio_id):
+    def get(self, portfolio_id):
         """
         ---
         summary: Asset Events in a Portfolio

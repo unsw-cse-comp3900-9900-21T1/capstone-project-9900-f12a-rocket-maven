@@ -1,7 +1,8 @@
 from flask import Blueprint, current_app, jsonify
 from flask_restful import Api
 from marshmallow import ValidationError
-from RocketMaven.api.resources import (  # Recommend,
+from RocketMaven.api.resources import (
+    Recommend,
     AdvancedTimeSeriesResource, AssetPriceResource, AssetResource,
     AssetSearchResource, DailyTimeSeriesResource, Explore, Iforgot,
     InvestorList, InvestorResource, LeaderboardList, MonthlyTimeSeriesResource,
@@ -135,9 +136,7 @@ api.add_resource(
     endpoint="chart_yearly",
 )
 
-# api.add_resource(Recommend,
-#     "",
-#     endpoint=)
+api.add_resource(Recommend,"portfolios/recommend",endpoint="recommend")
 
 
 @blueprint.before_app_first_request
@@ -194,7 +193,7 @@ def register_controllers():
     apispec.spec.path(view=NotificationLow, app=current_app, api=api)
     apispec.spec.path(view=NotificationHigh, app=current_app, api=api)
 
-    # apispec.spec.path(view=Recommend, app=current_app, api=api)
+    apispec.spec.path(view=Recommend, app=current_app, api=api)
 
 
 @blueprint.errorhandler(ValidationError)
