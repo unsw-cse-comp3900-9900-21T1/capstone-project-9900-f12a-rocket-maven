@@ -72,7 +72,7 @@ def search_asset():
     500 - if an unexpected exception is raised
     """
     q = request.args.get("q", None)
-    
+
     if q:
         try:
             # https://stackoverflow.com/questions/3325467/sqlalchemy-equivalent-to-sql-like-statement

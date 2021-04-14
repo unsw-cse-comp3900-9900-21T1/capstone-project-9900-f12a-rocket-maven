@@ -4,9 +4,9 @@ import enum
 import requests
 from cachetools import TTLCache, cached
 
-YAHOO_TIMESERIES_API = "https://query1.finance.yahoo.com/v8/finance/chart/{ticker_symbol}?symbol={ticker_symbol}&period1={start}&period2={end}&useYfid=true&interval={interval}&includePrePost=true&events=div%7Csplit%7Cearn&lang=en-US&region=US&corsDomain=finance.yahoo.com"
+YAHOO_TIMESERIES_API = "https://query1.finance.yahoo.com/v8/finance/chart/{ticker_symbol}?symbol={ticker_symbol}&period1={start}&period2={end}&useYfid=true&interval={interval}&includePrePost=true&events=div%7Csplit%7Cearn&lang=en-US&region=US&corsDomain=finance.yahoo.com"  # noqa: E501
 
-YAHOO_CHART_API = "https://query1.finance.yahoo.com/v8/finance/chart/{ticker_symbol}?region=US&lang=en-US&includePrePost=false&interval={interval}&useYfid=true&range={range}&corsDomain=finance.yahoo.com&.tsrc=finance"
+YAHOO_CHART_API = "https://query1.finance.yahoo.com/v8/finance/chart/{ticker_symbol}?region=US&lang=en-US&includePrePost=false&interval={interval}&useYfid=true&range={range}&corsDomain=finance.yahoo.com&.tsrc=finance"  # noqa: E501
 
 
 class TimeSeriesInterval(enum.Enum):

@@ -36,7 +36,7 @@ def update_investor(investor_id):
     except ValidationError as err:
         print(err)
         return {"msg": "Operation failed!", "errors": err.messages}, 422
-    
+
     try:
         db.session.commit()
 

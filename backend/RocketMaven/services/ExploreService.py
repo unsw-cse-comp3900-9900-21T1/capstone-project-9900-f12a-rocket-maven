@@ -17,7 +17,7 @@ def advanced_search():
 
     if country is None and currency is None and industry is None and exchange is None and q is None:
         return {"msg": "Missing search query"}, 400
-        
+
     order_object = Asset.market_cap.desc()
 
     order = request.args.get("order")
@@ -54,7 +54,7 @@ def advanced_search():
         print("industry", industry)
 
         schema = AssetSchema(many=True)
-        # query = Asset.query.filter((Asset.country.in_(country)) & (Asset.currency.in_(currency)) & (Asset.industry.in_(industry)))\
+        # query = Asset.query.filter((Asset.country.in_(country)) & (Asset.currency.in_(currency)) & (Asset.industry.in_(industry)))\  # noqa: E501
 
         query = (
             Asset.query.filter(
