@@ -54,8 +54,6 @@ class PublicPortfolioResource(Resource):
                     portfolio: PublicPortfolioSchema
           404:
             description: portfolio does not exist
-          401:
-            description: unauthorised portfolio read
         security: []
         """
         return PortfolioService.get_public_portfolio(portfolio_id)

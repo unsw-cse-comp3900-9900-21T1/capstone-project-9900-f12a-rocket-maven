@@ -2,10 +2,12 @@ import collections
 
 from flask import request
 from flask_jwt_extended import get_jwt_identity
-from RocketMaven.api.schemas import AssetSchema, PortfolioSchema, PublicPortfolioSchema
+from RocketMaven.api.schemas import (AssetSchema, PortfolioSchema,
+                                     PublicPortfolioSchema)
 from RocketMaven.commons.pagination import paginate
 from RocketMaven.extensions import db
-from RocketMaven.models import Asset, Portfolio, PortfolioAssetHolding, PortfolioEvent
+from RocketMaven.models import (Asset, Portfolio, PortfolioAssetHolding,
+                                PortfolioEvent)
 from RocketMaven.services.PortfolioEventService import update_asset
 from sqlalchemy import and_
 
@@ -359,6 +361,9 @@ def get_top_additions():
         .order_by(db.func.max(PortfolioAssetHolding.asset_id).asc())
         .first()
     )
+    if most_frequent_holding_result is None:
+        return {"msg": "No most frequent holding result"}, 404
+        
     holding = most_frequent_holding_result[0]
     asset = Asset.query.get_or_404(holding.asset_id)
     asset_schema = AssetSchema()
