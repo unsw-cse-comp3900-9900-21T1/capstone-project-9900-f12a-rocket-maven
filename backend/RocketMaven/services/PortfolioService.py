@@ -10,6 +10,7 @@ from RocketMaven.models import (Asset, Portfolio, PortfolioAssetHolding,
                                 PortfolioEvent)
 from RocketMaven.services.PortfolioEventService import update_asset
 from sqlalchemy import and_
+import json
 
 
 def get_portfolio(portfolio_id):
@@ -92,10 +93,8 @@ def get_portfolios(investor_id):
 
     result_return = paginate(query, schema)
     for portfolio in result_return["results"]:
-        portfolio["recommended"] = [
-            ["NADSAQ:AAPL", "Apple"],
-            ["NADSAQ:TEAM", "Atlassian"],
-        ]
+        portfolio["recommended"] = recommend_portfolio(portfolio["portfolio_asset_holding"])
+
     print(result_return)
 
     return result_return
@@ -373,24 +372,32 @@ def get_top_additions():
         "asset": asset_schema.dump(asset),
     }, 200
 
-def recommend_portfolio():
-    # query = Asset.query.filter_by(
-    #     currency=currency, industry=industry
-    # )
+def recommend_portfolio(asset_holdings):
+    recommended = []
+    for each in asset_holdings:
+        portfolio_asset_industry = Asset.query.filter_by(ticker_symbol=each['asset_id']).first().industry
+        for asset in Asset.query.filter_by(industry = portfolio_asset_industry).order_by(Asset.market_cap.desc()):
+            if not asset.asset_additional:
+                continue
+            else:
+                price = asset.current_price
+                asset_additional = json.loads(asset.asset_additional)
+                fiftyDayAverageChange = float(asset_additional['fiftyDayAverageChange']['raw'])
+                twoHundredDayAverageChange = float(asset_additional['twoHundredDayAverageChange']['raw'])
 
+                diff = fiftyDayAverageChange - twoHundredDayAverageChange 
 
-    # for i in query.all():
-    #     asset_additional = json.loads(i.asset_additional)
+                if diff > 0 and price > diff:
+                    recommended.append([asset.ticker_symbol, asset.name])
+                    break
 
-    #     result = []
+        if len(recommended) >= 3:
+            return recommended
 
-    #     price = i.current_price
+    # if no asset_holding 
+    if not recommended:
+        asset = Asset.query.order_by(Asset.market_cap.desc()).first()
+        recommended.append([asset.ticker_symbol, asset.name])
+        return recommended
+    return recommended
 
-    #     fiftyDayAverageChange = float(asset_additional['fiftyDayAverageChange']['raw'])
-    #     twoHundredDayAverageChange = float(asset_additional['twoHundredDayAverageChange']['raw'])
-
-    #     diff = fiftyDayAverageChange - twoHundredDayAverageChange 
-
-    #     if diff > 0 and price > diff:
-    #         result.add(i)
-    # return result
