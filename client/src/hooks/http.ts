@@ -314,6 +314,27 @@ export const useAdvancedSearch = (): any => {
   return { data, isLoading, myFetch }
 }
 
+export const useGetChartData = () => {
+  const [isLoading, setIsLoading] = useState(false)
+  const { accessToken, revalidateAccessToken } = useAccessToken()
+  const myFetch = async (chartDataUrl: string) => {
+    try {
+      const results = abstractFetch({
+        accessToken,
+        revalidateAccessToken,
+        isLoading,
+        setIsLoading,
+        url: `/api/v1/${chartDataUrl}`,
+      })
+      return results
+    } catch (error) {
+      message.error(error.message)
+      return null
+    }
+  }
+  return myFetch
+}
+
 // Updates requests
 export const useAuth = (authType: AuthType): Function => {
   let endPointUrl = '/auth/login'
