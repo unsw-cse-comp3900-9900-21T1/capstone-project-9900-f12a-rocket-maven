@@ -302,9 +302,9 @@ export const useGetPortfolioHistory = (portfolioId: string): any => {
   return { data, isLoading }
 }
 
-export const useGetWatchlist = (): any => {
+export const useGetWatchlist = (refreshFlag?: number): any => {
   const endPointUrl = `/api/v1/watchlist`
-  const { data } = useAbstractFetchOnMount(endPointUrl)
+  const { data } = useAbstractFetchOnMount(endPointUrl, refreshFlag)
   return data
 }
 
@@ -344,11 +344,7 @@ export const useAuth = (authType: AuthType): Function => {
 
 export const useUpdateAccountInfo = (): Function => {
   const userId = useUserId()
-  const { myFetch } = useAbstractFetchUpdate(
-    `/api/v1/investors/${userId}`,
-    'PUT',
-    urls.account
-  )
+  const { myFetch } = useAbstractFetchUpdate(`/api/v1/investors/${userId}`, 'PUT', urls.account)
   return myFetch
 }
 
@@ -375,19 +371,12 @@ export const useUpdatePortfolioInfo = (
 }
 
 export const useIForgot = () => {
-  const { isLoading, myFetch } = useAbstractFetchUpdate(
-    '/api/v1/iforgot',
-    'POST',
-  )
+  const { isLoading, myFetch } = useAbstractFetchUpdate('/api/v1/iforgot', 'POST')
   return { isLoading, myFetch }
 }
 
 export const usePasswordReset = () => {
-  const { myFetch } = useAbstractFetchUpdate(
-    '/api/v1/pw_reset',
-    'POST',
-    '/'
-  )
+  const { myFetch } = useAbstractFetchUpdate('/api/v1/pw_reset', 'POST', '/')
   return myFetch
 }
 
@@ -402,7 +391,7 @@ export const useDeleteWatchListItem = () => {
         isLoading,
         setIsLoading,
         url: `/api/v1/watchlist/${assetId}`,
-        method: 'DELETE',
+        method: 'DELETE'
       })
       return results
     } catch (error) {

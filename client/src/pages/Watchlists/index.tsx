@@ -5,7 +5,7 @@ import { useAccessToken, useGetWatchlist } from '@rocketmaven/hooks/http' // use
 import Page from '@rocketmaven/pages/_Page'
 import { Button, Form, Input, InputNumber, notification, Popover, Table } from 'antd'
 import { isEmpty } from 'ramda'
-import React from 'react'
+import React, { useState } from 'react'
 import { Link, useHistory } from 'react-router-dom'
 
 type AssetInfo = {
@@ -40,11 +40,12 @@ type WatchListPagination = {
 
 const Watchlists = () => {
   // Avoid call when isCreate is true
-  const watchlist: WatchListPagination = useGetWatchlist()
+  const [refreshAfterNotificationSet, setRefreshAfterNotificationSet] = useState(1)
+
+  const watchlist: WatchListPagination = useGetWatchlist(refreshAfterNotificationSet)
 
   const routerObject = useHistory()
   const { accessToken, revalidateAccessToken } = useAccessToken()
-
   async function useDeleteWatchlist(e: any) {
     const asset_id = e.target.getAttribute('title')
 
@@ -61,7 +62,7 @@ const Watchlists = () => {
     if (!response.ok) {
       throw Error(`${data.msg}`)
     }
-    routerObject.go(0)
+    setRefreshAfterNotificationSet(refreshAfterNotificationSet + 1)
   }
 
   async function useUpdatePrice(e: any) {
@@ -76,12 +77,6 @@ const Watchlists = () => {
         openMessage = true
       }
     }
-    if (openMessage) {
-      notification.open({
-        message: `${e.asset_id} ${e.context} alert!`,
-        description: `Value is currently ${e.current_price}.`
-      })
-    }
     const response = await fetch(`/api/v1/watchlist/${e.asset_id}/${e.context}`, {
       method: 'PUT',
       headers: {
@@ -91,8 +86,13 @@ const Watchlists = () => {
       },
       body: JSON.stringify({ price: e.price })
     })
-    const data = await response.json()
-    routerObject.go(0)
+    setRefreshAfterNotificationSet(refreshAfterNotificationSet + 1)
+    if (openMessage) {
+      notification.info({
+        message: `${e.asset_id} ${e.context} alert!`,
+        description: `Value is currently ${e.current_price}.`
+      })
+    }
   }
 
   function notifyContent(asset_id: string, context: string, price: number, current_price: number) {
@@ -107,8 +107,8 @@ const Watchlists = () => {
         <Form.Item name="current_price" initialValue={current_price} noStyle>
           <Input value={current_price} type="hidden" />
         </Form.Item>
-        <Form.Item name="price">
-          <InputNumber value="{price}" />
+        <Form.Item name="price" initialValue={price}>
+          <InputNumber value={price} />
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit">
@@ -129,7 +129,7 @@ const Watchlists = () => {
     watchlistresults.forEach(function (e) {
       e.asset.price_high = e.price_high
       e.asset.price_low = e.price_low
-      e.asset.price_high_low = [e.price_low, e.price_high]
+      e.asset.price_high_low = [e.price_high, e.price_low]
       watchlistitems.push(e.asset)
     })
 
@@ -153,7 +153,6 @@ const Watchlists = () => {
         title: 'Name',
         dataIndex: 'asset_additional',
         render: (value: string) => {
-          console.log(JSON.parse(value))
           const asset_additional = JSON.parse(value)
           const focus = asset_additional.longName
           if (focus) {
@@ -220,7 +219,7 @@ const Watchlists = () => {
         render: (value: [number, number], record: any) => {
           return (
             <>
-              Notify me if price higher than:{' '}
+              Above High:{' '}
               <Popover
                 content={notifyContent(
                   record.ticker_symbol,
@@ -234,7 +233,7 @@ const Watchlists = () => {
                 <Button type="link">{value[0] ? value[0] : 'Change me!'}</Button>
               </Popover>
               <br />
-              Notify me if price lower than:{' '}
+              Below Low:{' '}
               <Popover
                 content={notifyContent(record.ticker_symbol, 'low', value[1], record.current_price)}
                 title="Set Low"
@@ -272,11 +271,11 @@ const Watchlists = () => {
     if (!response.ok) {
       throw Error(`${data.msg}`)
     }
-    routerObject.go(0)
+    setRefreshAfterNotificationSet(refreshAfterNotificationSet + 1)
   }
 
   return !isEmpty(watchlistable) ? (
-    <Page>
+    <Page key={'watchlist-table-' + refreshAfterNotificationSet}>
       <Title>Watchlist</Title>
 
       <Card title="Add to Watchlist">
