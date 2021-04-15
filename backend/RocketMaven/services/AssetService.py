@@ -16,18 +16,18 @@ from sqlalchemy.orm import aliased
 
 
 def zip_dict_reader(filename: str) -> dict:
-    """Generates dictionary rows from a zipped CSV file"""
+    """ Generates dictionary rows from a zipped CSV file """
     with open(filename.replace(".zip", ".csv"), "rb") as file:
         for m in DictReader(io.TextIOWrapper(file, encoding="utf-8")):
             yield m
 
 
 def get_asset(ticker_symbol: str):
-    """Returns
-    200 - the associated Asset for the given ticker symbol
-    400 - ticker symbol is None
-    404 - if the ticker symbol doesn't exist
-    500 - if an unexpected exception is raised
+    """ Returns
+        200 - the associated Asset for the given ticker symbol
+        400 - ticker symbol is None
+        404 - if the ticker symbol doesn't exist
+        500 - if an unexpected exception is raised
     """
     if ticker_symbol is None:
         return {"msg": "Missing ticker symbol"}, 400
@@ -41,11 +41,11 @@ def get_asset(ticker_symbol: str):
 
 
 def get_asset_price(ticker_symbol: str):
-    """Returns
-    200 - the associated price for the given ticker symbol
-    400 - ticker symbol is None
-    404 - if the ticker symbol doesn't exist
-    500 - if an unexpected exception is raised
+    """ Returns
+        200 - the associated price for the given ticker symbol
+        400 - ticker symbol is None
+        404 - if the ticker symbol doesn't exist
+        500 - if an unexpected exception is raised
     """
     if ticker_symbol is None:
         return {"msg": "Missing ticker symbol"}, 400
@@ -66,10 +66,10 @@ def get_asset_price(ticker_symbol: str):
 
 
 def search_asset():
-    """Returns
-    200 - a paginated list of Assets that match the given user query in the request
-    400 - missing search query
-    500 - if an unexpected exception is raised
+    """ Returns
+        200 - a paginated list of Assets that match the given user query in the request
+        400 - missing search query
+        500 - if an unexpected exception is raised
     """
     q = request.args.get("q", None)
 
@@ -92,10 +92,10 @@ def search_asset():
 
 
 def search_user_asset(portfolio_id):
-    """Returns
-    200 - a paginated list of Assets that match the given user query in the request
-    400 - missing search query
-    500 - if an unexpected exception is raised
+    """ Returns
+        200 - a paginated list of Assets that match the given user query in the request
+        400 - missing search query
+        500 - if an unexpected exception is raised
     """
     q = request.args.get("q", None)
     current_user = get_jwt_identity()
@@ -145,8 +145,8 @@ def search_user_asset(portfolio_id):
 
 
 def load_asset_data(db):
-    """Bootstrap process to load pre-cached stock values (from Yahoo Finance responses)
-    into the system database
+    """ Bootstrap process to load pre-cached stock values (from Yahoo Finance responses)
+        into the system database
     """
 
     print("Adding ASX")

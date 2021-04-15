@@ -93,9 +93,9 @@ def delete_holding(portfolio_id):
 
 def get_events(portfolio_id):
     """Get the list of (asset) events in a portfolio
-    Returns
-        200 - a paginated list of Portfolio events
-        500 - if an unexpected exception occurs
+        Returns:
+            200 - a paginated list of Portfolio events
+            500 - if an unexpected exception occurs
     """
     schema = PortfolioEventSchema(many=True)
     query = PortfolioEvent.query.filter_by(portfolio_id=portfolio_id).order_by(
@@ -106,9 +106,9 @@ def get_events(portfolio_id):
 
 def get_holdings(portfolio_id):
     """Get the list of asset holdings in a portfolio
-    Returns
-        200 - a paginated list of asset holdings
-        500 - if an unexpected exception occurs
+        Returns
+            200 - a paginated list of asset holdings
+            500 - if an unexpected exception occurs
     """
     schema = PortfolioAssetHoldingSchema(many=True)
     query = PortfolioAssetHolding.query.filter_by(portfolio_id=portfolio_id)
@@ -116,7 +116,7 @@ def get_holdings(portfolio_id):
 
 
 def handle_broker_csv_row(csv_input_row: dict) -> dict:
-    """Maps a csv column to a PortfolioEvent-compatible structure"""
+    """ Maps a csv column to a PortfolioEvent-compatible structure """
     output_map = {
         "add_action": False,
         "asset_id": None,
@@ -152,11 +152,11 @@ def handle_broker_csv_row(csv_input_row: dict) -> dict:
 
 
 def create_event(portfolio_id):
-    """Create a new asset for the given portfolio in the database
-    Returns
-        201 - on successful asset creation
-        400 - Foreign key error (unknown portfolio or asset id)
-        500 - unexpected error
+    """ Create a new asset for the given portfolio in the database
+        Returns
+            201 - on successful asset creation
+            400 - Foreign key error (unknown portfolio or asset id)
+            500 - unexpected error
     """
 
     schema = PortfolioEventSchema()

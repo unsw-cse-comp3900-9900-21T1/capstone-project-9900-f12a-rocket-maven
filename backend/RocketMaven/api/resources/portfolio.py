@@ -318,6 +318,6 @@ class TopAdditions(Resource):
 
 class Recommend(Resource):
 
-  @jwt_required()
-  def post(self):
-    PortfolioService.recommend_portfolio()
+    @jwt_required()
+    def post(self):
+        PortfolioService.recommend_portfolio()
