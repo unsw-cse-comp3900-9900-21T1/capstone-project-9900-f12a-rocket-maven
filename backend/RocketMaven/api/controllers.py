@@ -2,19 +2,43 @@ from flask import Blueprint, current_app, jsonify
 from flask_restful import Api
 from marshmallow import ValidationError
 from RocketMaven.api.resources import (
-    Recommend,
-    AdvancedTimeSeriesResource, AssetPriceResource, AssetResource,
-    AssetSearchResource, DailyTimeSeriesResource, Explore, Iforgot,
-    InvestorList, InvestorResource, LeaderboardList, MonthlyTimeSeriesResource,
-    PortfolioAssetHoldingList, PortfolioAssetSearchResource,
-    PortfolioEventList, PortfolioList, PortfolioListAll, PortfolioResource,
-    PublicPortfolioResource, Pw_reset, Report, TimeSeriesResource,
-    TopAdditions, WatchAsset, WatchList, WeeklyTimeSeriesResource,
-    YearlyTimeSeriesResource, NotificationLow, NotificationHigh)
-from RocketMaven.api.schemas import (AssetSchema, InvestorSchema,
-                                     LeaderboardSchema,
-                                     PortfolioAssetHoldingSchema,
-                                     PortfolioEventSchema, PortfolioSchema)
+    AdvancedTimeSeriesResource,
+    AssetPriceResource,
+    AssetResource,
+    AssetSearchResource,
+    DailyTimeSeriesResource,
+    Explore,
+    Iforgot,
+    InvestorList,
+    InvestorResource,
+    LeaderboardList,
+    MonthlyTimeSeriesResource,
+    PortfolioAssetHoldingList,
+    PortfolioAssetSearchResource,
+    PortfolioEventList,
+    PortfolioList,
+    PortfolioListAll,
+    PortfolioResource,
+    PublicPortfolioResource,
+    Pw_reset,
+    Report,
+    TimeSeriesResource,
+    TopAdditions,
+    WatchAsset,
+    WatchList,
+    WeeklyTimeSeriesResource,
+    YearlyTimeSeriesResource,
+    NotificationLow,
+    NotificationHigh,
+)
+from RocketMaven.api.schemas import (
+    AssetSchema,
+    InvestorSchema,
+    LeaderboardSchema,
+    PortfolioAssetHoldingSchema,
+    PortfolioEventSchema,
+    PortfolioSchema,
+)
 from RocketMaven.extensions import apispec
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
@@ -96,8 +120,12 @@ api.add_resource(
     WatchAsset, "/watchlist/<string:ticker_symbol>", endpoint="watchlist_update"
 )
 
-api.add_resource(NotificationLow, "/watchlist/<string:ticker_symbol>/low", endpoint="low")
-api.add_resource(NotificationHigh, "/watchlist/<string:ticker_symbol>/high", endpoint="high")
+api.add_resource(
+    NotificationLow, "/watchlist/<string:ticker_symbol>/low", endpoint="low"
+)
+api.add_resource(
+    NotificationHigh, "/watchlist/<string:ticker_symbol>/high", endpoint="high"
+)
 
 
 api.add_resource(Report, "/report", endpoint="report")
@@ -135,8 +163,6 @@ api.add_resource(
     "/chart/yearly/<string:ticker_symbol>",
     endpoint="chart_yearly",
 )
-
-api.add_resource(Recommend, "portfolios/recommend", endpoint="recommend")
 
 
 @blueprint.before_app_first_request
@@ -192,8 +218,6 @@ def register_controllers():
 
     apispec.spec.path(view=NotificationLow, app=current_app, api=api)
     apispec.spec.path(view=NotificationHigh, app=current_app, api=api)
-
-    apispec.spec.path(view=Recommend, app=current_app, api=api)
 
 
 @blueprint.errorhandler(ValidationError)
