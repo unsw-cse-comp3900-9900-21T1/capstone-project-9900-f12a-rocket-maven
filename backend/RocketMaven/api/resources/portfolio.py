@@ -315,9 +315,3 @@ class TopAdditions(Resource):
         """
         return PortfolioService.get_top_additions()
 
-
-class Recommend(Resource):
-
-  @jwt_required()
-  def post(self):
-    PortfolioService.recommend_portfolio()

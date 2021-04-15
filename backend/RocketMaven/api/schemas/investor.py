@@ -5,7 +5,10 @@ from RocketMaven.extensions import db, ma
 from RocketMaven.models import Investor, Watchlist
 
 
-def validate_password(password):
+def validate_password(password: str):
+    """ Checks password meets requirements as per system design.
+        Raises a ValidationError if it fails
+    """
     # special_chars = "~`!@#$%^&*()_+-=[]\\{}|:\";\'<>?,./"
     if not password:
         raise ValidationError("Cannot have an empty password")
@@ -27,12 +30,21 @@ def validate_password(password):
 
 
 class InvestorSchema(ma.SQLAlchemyAutoSchema):
+    """ A schema for the Investor model """
 
+    # The id is a unique identifier, automatically generated
     id = ma.Int(dump_only=True)
+
+    # The date the investor joined, automatically generated
     join_date = ma.Date(dump_only=True)
+
+    # A flag to indicate whether the investor's email has been validated as active and owned
     email_verified = ma.Bool(dump_only=True)
+
+    # The investor's email
     email = ma.Email(dump_only=True)
 
+    # The user's plaintext password
     password = ma.String(load_only=True, required=True, validate=validate_password)
 
     class Meta:
@@ -47,14 +59,22 @@ class InvestorSchema(ma.SQLAlchemyAutoSchema):
 
 
 class InvestorCreateSchema(InvestorSchema):
+    """ A schema for when an Investor is created """
 
+    """ The investor's email """
     email = ma.Email()
 
 
 class WatchlistSchema(ma.SQLAlchemyAutoSchema):
+    """ A schema for an investor's watchlist """
 
+    """ The user's specificied low price """
     price_low = ma.Float()
+
+    """ The user's specified high price """
     price_high = ma.Float()
+
+    """ The asset to be watched """
     asset = ma.Nested(AssetSchema, many=False)
 
     class Meta:

@@ -192,6 +192,7 @@ def register_controllers():
     apispec.spec.path(view=NotificationHigh, app=current_app, api=api)
 
 
+
 @blueprint.errorhandler(ValidationError)
 def handle_marshmallow_error(e):
     """Return json error for marshmallow validation errors.

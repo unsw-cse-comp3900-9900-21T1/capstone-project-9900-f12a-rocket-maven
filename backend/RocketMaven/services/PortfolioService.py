@@ -14,12 +14,23 @@ import json
 
 
 def get_portfolio(portfolio_id):
+    """ Get the portfolio matching the given portfolio id
+        Returns:
+            200 - portfolio
+            404 - portfolio not found
+    """
     schema = PortfolioSchema()
     data = Portfolio.query.get_or_404(portfolio_id)
     return {"portfolio": schema.dump(data)}
 
 
 def get_public_portfolio(portfolio_id):
+    """ Get the public portfolio matching the given portfolio id
+        Returns:
+            200 - portfolio
+            401 - portfolio is not private
+            404 - portfolio not found
+    """
     schema = PublicPortfolioSchema()
     data = Portfolio.query.get_or_404(portfolio_id)
     if data.public_portfolio or data.investor_id == get_jwt_identity():
@@ -31,6 +42,11 @@ def get_public_portfolio(portfolio_id):
 
 
 def update_portfolio(portfolio_id):
+    """ Update the portfolio matching the given portfolio id
+        Returns:
+            200 - portfolio updated
+            404 - portfolio not found
+    """
     schema = PortfolioSchema(partial=True)
 
     portfolio = Portfolio.query.get_or_404(portfolio_id)
@@ -42,6 +58,11 @@ def update_portfolio(portfolio_id):
 
 
 def delete_portfolio(portfolio_id):
+    """ Delete the given portfolio from the system
+        Returns:
+            200 - portfolio deleted (marked as deleted only)
+            404 - portfolio not found
+    """
     portfolio = Portfolio.query.get_or_404(portfolio_id)
     portfolio.deleted = True
 
@@ -51,6 +72,10 @@ def delete_portfolio(portfolio_id):
 
 
 def get_all_portfolios(investor_id):
+    """ Get all investor's portfolios (including deleted)
+        Returns:
+            200 - paginated list of portfolios
+    """
     if not get_jwt_identity() or investor_id == 0:
         return {"results": []}
     schema = PortfolioSchema(many=True)
@@ -61,6 +86,12 @@ def get_all_portfolios(investor_id):
 
 
 def get_portfolios(investor_id):
+    """ Get an investor's active portfolios.
+        Triggers a price update on assets within the portfolios
+        Returns:
+            200 - paginated list of portoflios
+            500 - error updating asset price
+    """
     schema = PortfolioSchema(many=True)
 
     # Get the assets that are part of this portfolio
@@ -101,6 +132,12 @@ def get_portfolios(investor_id):
 
 
 def get_report():
+    """ Get report data
+        Returns:
+            200 - report data ok
+            400 - invalid report parameters
+            500 - error generating report data
+    """
 
     if "report_type" not in request.json or "portfolios" not in request.json:
         return {"msg": "invalid report parameters!"}, 400
@@ -300,7 +337,11 @@ def get_report():
 
 
 def create_portfolio(investor_id):
-
+    """ Create a new portfolio for the investor
+        Returns:
+            200 - portfolio created
+            400 - cannot create portfolio for another user
+    """
     if not get_jwt_identity() == investor_id:
         return {"msg": "Cannot create portfolio for another user!"}, 400
 
@@ -371,6 +412,7 @@ def get_top_additions():
         "portfolio": portfolio_schema.dump(portfolio),
         "asset": asset_schema.dump(asset),
     }, 200
+
 
 def recommend_portfolio(asset_holdings):
     recommended = []

@@ -129,7 +129,7 @@ const AdvancedSearch = () => {
         >
           <Form.Item name="textInput">
             <Input
-              placeholder="Asset or ticker name (Optional)"
+              placeholder="Asset or ticker name"
               onChange={() => {
                 if (query.has('q')) {
                   query.delete('q')
@@ -141,7 +141,7 @@ const AdvancedSearch = () => {
             />
           </Form.Item>
           <Form.Item name="exchangeInput">
-            <Select mode={'multiple'} placeholder="Exchange (Optional)">
+            <Select mode={'multiple'} placeholder="Exchange">
               <Select.Option value={'ASX'}>ASX</Select.Option>
               <Select.Option value={'CRYPTO'}>CRYPTO</Select.Option>
               <Select.Option value={'NASDAQ'}>NASDAQ</Select.Option>
@@ -149,7 +149,7 @@ const AdvancedSearch = () => {
             </Select>
           </Form.Item>
           <Form.Item name="industryInput">
-            <Input placeholder="Industry Name (Optional)" />
+            <Input placeholder="Industry Name" />
           </Form.Item>
 
           <Form.Item label="Order By" name="order" initialValue={orderValue}>

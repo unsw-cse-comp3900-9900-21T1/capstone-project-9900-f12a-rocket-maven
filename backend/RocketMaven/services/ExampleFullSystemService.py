@@ -511,7 +511,7 @@ def populate_full_system(db):
     db.session.add(competition_user_1)
     db.session.commit()
     competition_portfolio_1 = Portfolio(
-        currency="AUD",
+        currency="USD",
         tax_residency="AU",
         name="Safe stocks",
         description="",
@@ -534,7 +534,7 @@ def populate_full_system(db):
     db.session.add(competition_user_2)
     db.session.commit()
     competition_portfolio_2 = Portfolio(
-        currency="AUD",
+        currency="USD",
         tax_residency="AU",
         name="HODL!!",
         description="",

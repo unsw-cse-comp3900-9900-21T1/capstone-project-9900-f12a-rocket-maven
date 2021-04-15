@@ -6,6 +6,15 @@ from sqlalchemy import or_
 
 
 def advanced_search():
+    """ Perform an advanced search of assets in Rocket Maven.
+        Search parameters should exist in the request query arguments string:
+        * country
+        * currency
+        * industry
+        * exchange
+        * order
+        * order_direction
+    """
     print("advanced_search**&****")
 
     country = request.args.get("country")
@@ -36,6 +45,7 @@ def advanced_search():
             order_object = order_object.desc()
 
     try:
+        # convert query parameters into a sqlalchemy like query
         # https://stackoverflow.com/questions/3325467/sqlalchemy-equivalent-to-sql-like-statement
         search = "%{}%".format(q) if q else "%"
         exchange = exchange.split(",") if exchange else "%"

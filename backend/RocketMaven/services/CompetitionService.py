@@ -6,7 +6,7 @@ from flask_jwt_extended import get_jwt_identity
 
 
 def get_leaderboard():
-
+    """ Returns the Rocket Maven leaderboard (top competition portfolios) """
     try:
         schema = LeaderboardSchema(many=True)
 
@@ -27,4 +27,4 @@ def get_leaderboard():
 
     except Exception as e:
         print(e)
-        return {"msg": "Operation failed!"}
+        return {"msg": "Operation failed!"}, 400
