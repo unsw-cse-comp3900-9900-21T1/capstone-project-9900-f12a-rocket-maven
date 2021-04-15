@@ -220,72 +220,72 @@ class WatchList(Resource):
         current_user = get_jwt_identity()
         return WatchlistService.get_watchlist(current_user)
 
+
 class NotificationLow(Resource):
 
-  @jwt_required()
-  def put(self, ticker_symbol):
-    """
-      ---
-      summary: put notification
-      tags:
-        - WatchList
-      requestBody:
+    @jwt_required()
+    def put(self, ticker_symbol):
+        """
+        ---
+        summary: put notification
+        tags:
+          - WatchList
+        requestBody:
+              content:
+                application/json:
+                  schema:
+                    type: object
+        parameters:
+            - in: path
+              name: ticker_symbol
+              schema:
+                type: string
+        responses:
+          200:
+            description: set notification
             content:
               application/json:
                 schema:
-                  type: object
-      parameters:
-          - in: path
-            name: ticker_symbol
-            schema:
-              type: string
-      responses:
-        200:
-          description: set notification
-          content:
-            application/json:
-              schema:
-                type: string
-        400:
-          description: Malformed request
-        404:
-          description: investor does not exist
-    """
-    current_user = get_jwt_identity()
-    return WatchlistService.set_nofication("low", current_user, ticker_symbol)
-
+                  type: string
+          400:
+            description: Malformed request
+          404:
+            description: investor does not exist
+        """
+        current_user = get_jwt_identity()
+        return WatchlistService.set_nofication("low", current_user, ticker_symbol)
 
 
 class NotificationHigh(Resource):
 
-  @jwt_required()
-  def put(self, ticker_symbol):
-    """
-      ---
-      summary: put notification
-      tags:
-        - WatchList
-      requestBody:
-            content:
-              application/json:
+    @jwt_required()
+    def put(self, ticker_symbol):
+        """
+          ---
+          summary: put notification
+          tags:
+            - WatchList
+          requestBody:
+                content:
+                  application/json:
+                    schema:
+                      type: object
+          parameters:
+              - in: path
+                name: ticker_symbol
                 schema:
-                  type: object
-      parameters:
-          - in: path
-            name: ticker_symbol
-            schema:
-              type: string
-      responses:
-        200:
-          description: set notification
-          content:
-            application/json:
-              schema:
-                type: string
-        400:
-          description: Malformed request
-        404:
-          description: investor does not exist
-    """
-    current_user = get_jwt_identity()
-    return WatchlistService.set_nofication("high", current_user, ticker_symbol)
+                  type: string
+          responses:
+            200:
+              description: set notification
+              content:
+                application/json:
+                  schema:
+                    type: string
+            400:
+              description: Malformed request
+            404:
+              description: investor does not exist
+        """
+        current_user = get_jwt_identity()
+        return WatchlistService.set_nofication("high", current_user, ticker_symbol)

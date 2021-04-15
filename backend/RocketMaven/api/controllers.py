@@ -136,7 +136,7 @@ api.add_resource(
     endpoint="chart_yearly",
 )
 
-api.add_resource(Recommend,"portfolios/recommend",endpoint="recommend")
+api.add_resource(Recommend, "portfolios/recommend", endpoint="recommend")
 
 
 @blueprint.before_app_first_request
