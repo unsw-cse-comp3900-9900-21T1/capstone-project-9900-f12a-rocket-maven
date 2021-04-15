@@ -302,9 +302,9 @@ export const useGetPortfolioHistory = (portfolioId: string): any => {
   return { data, isLoading }
 }
 
-export const useGetWatchlist = (): any => {
+export const useGetWatchlist = (refreshFlag?: number): any => {
   const endPointUrl = `/api/v1/watchlist`
-  const { data } = useAbstractFetchOnMount(endPointUrl)
+  const { data } = useAbstractFetchOnMount(endPointUrl, refreshFlag)
   return data
 }
 
@@ -324,7 +324,7 @@ export const useGetChartData = () => {
         revalidateAccessToken,
         isLoading,
         setIsLoading,
-        url: `/api/v1/${chartDataUrl}`,
+        url: `/api/v1/${chartDataUrl}`
       })
       return results
     } catch (error) {
@@ -455,7 +455,7 @@ export const useAddWatchListItem = () => {
         isLoading,
         setIsLoading,
         url: `/api/v1/watchlist/${tickerSymbol}`,
-        method: 'POST',
+        method: 'POST'
       })
       return results
     } catch (error) {
