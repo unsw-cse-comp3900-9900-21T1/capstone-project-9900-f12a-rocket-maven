@@ -374,6 +374,7 @@ def get_top_additions():
     }, 200
 
 def recommend_portfolio():
+    pass
     # query = Asset.query.filter_by(
     #     currency=currency, industry=industry
     # )
