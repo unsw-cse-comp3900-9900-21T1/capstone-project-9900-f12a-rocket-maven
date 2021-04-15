@@ -121,7 +121,7 @@ const useAbstractFetchOnSubmit = (url: string) => {
   const isLoggedIn = useIsLoggedIn()
   const myFetch = async (query: string) => {
     try {
-      const results = abstractFetch({
+      const results = await abstractFetch({
         accessToken,
         revalidateAccessToken,
         setData,
@@ -145,7 +145,7 @@ const useAbstractFetchUpdate = (url: string, method: HttpMethod, redirectPath?: 
   const routerObject = useHistory()
   const myFetch = async (values: JSON) => {
     try {
-      const results = abstractFetch({
+      const results = await abstractFetch({
         accessToken,
         revalidateAccessToken,
         isLoading,
