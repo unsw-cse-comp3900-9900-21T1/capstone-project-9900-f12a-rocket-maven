@@ -1,6 +1,11 @@
 import { notification } from 'antd'
 
-export const validatePriceInput = (context: string, price: number, currentPrice: number, assetId: string) => {
+export const validatePriceInput = (
+  context: string,
+  price: number,
+  currentPrice: number,
+  assetId: string
+) => {
   let openMessage = false
   if (context === 'high') {
     if (price < currentPrice) {
@@ -13,11 +18,11 @@ export const validatePriceInput = (context: string, price: number, currentPrice:
     }
   }
   if (openMessage) {
-    notification.open({
+    notification.info({
       message: `${assetId} ${context} alert!`,
       description: `Value is currently ${currentPrice}.`
     })
-    return false
+    return true
   }
   return true
 }

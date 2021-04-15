@@ -1,28 +1,34 @@
 import AssetSearchBox from '@rocketmaven/components/AssetSearchBox'
 import { Card } from '@rocketmaven/componentsStyled/Card'
 import { Title } from '@rocketmaven/componentsStyled/Typography'
-import { useAddWatchListItem, useDeleteWatchListItem, useGetWatchlist } from '@rocketmaven/hooks/http'
+import {
+  useAddWatchListItem,
+  useDeleteWatchListItem,
+  useGetWatchlist
+} from '@rocketmaven/hooks/http'
 import Page from '@rocketmaven/pages/_Page'
 import { Button, Form, Table } from 'antd'
 import { isEmpty } from 'ramda'
+import { useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { createWatchListColumns } from './tableDefinitions'
 import { AssetInfo, WatchListItem, WatchListPagination } from './types'
 
 const Watchlists = () => {
-  const watchlist: WatchListPagination = useGetWatchlist()
+  const [refreshAfterNotificationSet, setRefreshAfterNotificationSet] = useState(1)
+  const watchlist: WatchListPagination = useGetWatchlist(refreshAfterNotificationSet)
   const routerObject = useHistory()
   const deleteAssetId = useDeleteWatchListItem()
   const addWatchListItem = useAddWatchListItem()
   const deleteWatchListItem = async (e: any) => {
     const asset_id = e.target.getAttribute('title')
-    deleteAssetId(asset_id)
-    routerObject.go(0)
+    await deleteAssetId(asset_id)
+    setRefreshAfterNotificationSet(refreshAfterNotificationSet + 1)
   }
 
   const onFinish = async (values: any) => {
-    addWatchListItem(values.asset_id.value)
-    routerObject.go(0)
+    await addWatchListItem(values.asset_id.value)
+    setRefreshAfterNotificationSet(refreshAfterNotificationSet + 1)
   }
 
   let watchlistable = null
@@ -36,12 +42,16 @@ const Watchlists = () => {
       e.asset.price_high_low = [e.price_high, e.price_low]
       watchlistitems.push(e.asset)
     })
-    const columns = createWatchListColumns(deleteWatchListItem)
+    const columns = createWatchListColumns(
+      deleteWatchListItem,
+      refreshAfterNotificationSet,
+      setRefreshAfterNotificationSet
+    )
     watchlistable = <Table columns={columns} dataSource={watchlistitems} rowKey="id" />
   }
 
   return !isEmpty(watchlistable) ? (
-    <Page>
+    <Page key={'watchlist-table-' + refreshAfterNotificationSet}>
       <Title>Watchlist</Title>
 
       <Card title="Add to Watchlist">

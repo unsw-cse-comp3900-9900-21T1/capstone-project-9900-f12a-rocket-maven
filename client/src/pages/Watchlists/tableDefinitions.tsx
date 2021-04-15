@@ -2,7 +2,11 @@ import { Button, Popover } from 'antd'
 import { Link } from 'react-router-dom'
 import NotifyContent from './NotifyContent'
 
-export const createWatchListColumns = (deleteWatchListItem: any) => {
+export const createWatchListColumns = (
+  deleteWatchListItem: any,
+  refreshAfterNotificationSet: number,
+  setRefreshAfterNotificationSet: React.Dispatch<React.SetStateAction<number>>
+) => {
   return [
     {
       title: 'Ticker',
@@ -90,27 +94,66 @@ export const createWatchListColumns = (deleteWatchListItem: any) => {
       render: (value: [number, number], record: any) => {
         return (
           <>
-            Notify me if price higher than:{' '}
+            Above High:{' '}
             <Popover
               content={NotifyContent(
                 record.ticker_symbol,
                 'high',
                 value[0],
-                record.current_price
+                record.current_price,
+                refreshAfterNotificationSet,
+                setRefreshAfterNotificationSet
               )}
               title="Set High"
               placement="bottom"
+              trigger="hover"
             >
-              <Button type="link">{value[0] ? value[0] : 'Change me!'}</Button>
+              <Popover
+                content={NotifyContent(
+                  record.ticker_symbol,
+                  'high',
+                  value[0],
+                  record.current_price,
+                  refreshAfterNotificationSet,
+                  setRefreshAfterNotificationSet
+                )}
+                title="Set High"
+                placement="bottom"
+                trigger="click"
+              >
+                <Button type="link">{value[0] ? value[0] : 'Change me!'}</Button>
+              </Popover>
             </Popover>
             <br />
-                Notify me if price lower than:{' '}
+            Below Low:{' '}
             <Popover
-              content={NotifyContent(record.ticker_symbol, 'low', value[1], record.current_price)}
+              content={NotifyContent(
+                record.ticker_symbol,
+                'low',
+                value[1],
+                record.current_price,
+                refreshAfterNotificationSet,
+                setRefreshAfterNotificationSet
+              )}
               title="Set Low"
               placement="bottom"
+              trigger="hover"
             >
-              <Button type="link">{value[1] ? value[1] : 'Change me!'}</Button>
+              <Popover
+                content={NotifyContent(
+                  record.ticker_symbol,
+                  'low',
+                  value[1],
+                  record.current_price,
+                  refreshAfterNotificationSet,
+                  setRefreshAfterNotificationSet
+                )}
+                title="Set Low"
+                placement="bottom"
+                trigger="click"
+              >
+                <Button type="link">{value[1] ? value[1] : 'Change me!'}</Button>
+              </Popover>
             </Popover>
           </>
         )
