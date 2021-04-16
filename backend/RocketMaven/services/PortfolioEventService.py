@@ -2,62 +2,12 @@ import csv
 import datetime
 import io
 
-import requests
 from flask import request
+from RocketMaven.services.AssetService import update_asset
 from RocketMaven.api.schemas import PortfolioAssetHoldingSchema, PortfolioEventSchema
 from RocketMaven.commons.pagination import paginate
 from RocketMaven.extensions import db
 from RocketMaven.models import Asset, Portfolio, PortfolioAssetHolding, PortfolioEvent
-
-YAHOO_FINANCE_ENDPOINT = "https://query2.finance.yahoo.com/v7/finance/quote?formatted=true&lang=en-AU&region=AU&symbols={ticker}&fields=longName,shortName,regularMarketPrice"  # noqa: E501
-
-
-def update_asset(asset) -> (bool, str):
-    """Updates the asset current price from the Yahoo Finance API
-    Returns True (and an empty string) if there were no issues
-        False and an error message if an error was encountered.
-    """
-    exchange, stock = asset.ticker_symbol.split(":")
-
-    if datetime.datetime.now() - asset.price_last_updated < datetime.timedelta(
-        minutes=10
-    ):
-        return True, "Asset Price not updated"
-
-    if exchange != "VIRT":
-        # For finance yahoo, the ticker needs to be formatted according to its exchange
-        if exchange == "CRYPTO":
-            # For CRYPTO, the price is the current USD value (similar to how forex works)
-            endpoint = YAHOO_FINANCE_ENDPOINT.format(ticker="-".join([stock, "USD"]))
-        elif exchange == "ASX":
-            # For the ASX, the ticker is a combination of the asset code and ".AX"
-            endpoint = YAHOO_FINANCE_ENDPOINT.format(ticker=".".join([stock, "AX"]))
-        else:
-            # For american? stocks it is just the plain asset code
-            endpoint = YAHOO_FINANCE_ENDPOINT.format(ticker=stock)
-
-        try:
-            print(endpoint)
-            response = requests.get(endpoint)
-            print(response)
-            if response.status_code == 200:
-                data = response.json()
-                print(data)
-                try:
-                    err = data["quoteResponse"]["error"]
-                    print(err)
-                    if err is not None:
-                        return False, "Error with API response {}".format(err)
-                    asset.current_price = data["quoteResponse"]["result"][0][
-                        "regularMarketPrice"
-                    ]["raw"]
-                    asset.price_last_updated = datetime.datetime.now()
-                    db.session.commit()
-                except IndexError:
-                    return False, "Malformed API response"
-        except Exception as err:
-            return False, "Error updating current price - {}".format(err)
-    return True, ""
 
 
 def delete_holding(portfolio_id):
