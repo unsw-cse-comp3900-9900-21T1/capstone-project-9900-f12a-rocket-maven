@@ -3,8 +3,10 @@ from sqlalchemy_utils import CountryType, CurrencyType
 
 from RocketMaven.extensions import db
 from RocketMaven.models.portfolio_asset_holding import PortfolioAssetHolding
+from RocketMaven.models.asset import Asset
 from sqlalchemy.orm import relationship
 from sqlalchemy import select, func
+from sqlalchemy.sql.functions import coalesce
 
 
 class Portfolio(db.Model):
@@ -58,14 +60,13 @@ class Portfolio(db.Model):
     @competition_score.expression
     def competition_score(cls):
         return (
-            select(
-                [
-                    func.sum(PortfolioAssetHolding.realised_total)
-                    + func.sum(PortfolioAssetHolding.current_value)
-                ]
+            coalesce(func.sum(PortfolioAssetHolding.realised_total), 0)
+            + coalesce(
+                func.sum(
+                    PortfolioAssetHolding.available_units * Asset.current_price,
+                ),
+                0,
             )
-            .where(PortfolioAssetHolding.investor_id == cls.investor_id)
-            .as_scalar()
             + cls.buying_power
         )
 
@@ -80,7 +81,7 @@ class Portfolio(db.Model):
     def realised_sum(cls):
         return (
             select([func.sum(PortfolioAssetHolding.realised_total)])
-            .where(PortfolioAssetHolding.investor_id == cls.investor_id)
+            .where(PortfolioAssetHolding.portfolio_id == cls.id)
             .label("realised_total")
         )
 
@@ -95,7 +96,7 @@ class Portfolio(db.Model):
     def purchase_value_sum(cls):
         return (
             select([func.sum(PortfolioAssetHolding.purchase_value)])
-            .where(PortfolioAssetHolding.investor_id == cls.investor_id)
+            .where(PortfolioAssetHolding.portfolio_id == cls.id)
             .label("purchase_value")
         )
 
@@ -110,6 +111,6 @@ class Portfolio(db.Model):
     def current_value_sum(cls):
         return (
             select([func.sum(PortfolioAssetHolding.current_value)])
-            .where(PortfolioAssetHolding.investor_id == cls.investor_id)
+            .where(PortfolioAssetHolding.portfolio_id == cls.id)
             .label("current_value")
         )

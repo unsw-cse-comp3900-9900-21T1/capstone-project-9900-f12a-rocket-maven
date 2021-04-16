@@ -6,7 +6,7 @@ from RocketMaven.api.schemas import AssetSchema, PortfolioSchema, PublicPortfoli
 from RocketMaven.commons.pagination import paginate
 from RocketMaven.extensions import db
 from RocketMaven.models import Asset, Portfolio, PortfolioAssetHolding, PortfolioEvent
-from RocketMaven.services.PortfolioEventService import update_asset
+from RocketMaven.services.AssetService import update_assets_price
 from sqlalchemy import and_
 import json
 import heapq
@@ -105,19 +105,10 @@ def get_portfolios(investor_id):
         .all()
     )
 
-    # Set to False when debugging to reduce Yahoo API calls
-    if True:
-        for asset in assets:
-            ok, msg = update_asset(asset)
-            if not ok:
-                return (
-                    {
-                        "msg": "Unable to update asset {} - {}".format(
-                            asset.ticker_symbol, msg
-                        )
-                    },
-                    500,
-                )
+    update_status = update_assets_price(assets)
+    if update_status[1] == 500:
+        # Error updating an asset
+        return update_status
 
     query = Portfolio.query.filter_by(investor_id=investor_id).filter_by(deleted=False)
 
@@ -414,6 +405,7 @@ def get_top_additions():
 
 def recommend_portfolio(asset_holdings):
     if False:
+        # Jin's original algorithm
         recommended = []
         for each in asset_holdings:
             portfolio_asset_industry = (
@@ -451,14 +443,20 @@ def recommend_portfolio(asset_holdings):
         return recommended
 
     if True:
+        assets_to_display = 10
+
+        # Maintain a maxheap
         recommended = []
         existing_assets = []
         total_value = 0
         for each in asset_holdings:
             existing_assets.append(each["asset_id"])
-            total_value += each["average_price"] * each["unrealised_units"]
+            total_value += each["average_price"] * each["available_units"]
 
         for each in asset_holdings:
+            # Loop through assets in portfolio
+
+            recommended_local = []
 
             if each["asset"]["market_cap"]:
                 portfolio_asset_industry = (
@@ -466,20 +464,36 @@ def recommend_portfolio(asset_holdings):
                     .first()
                     .industry
                 )
-                current_asset_portion = (
-                    each["average_price"] * each["unrealised_units"] / total_value
-                )
+
                 for asset in Asset.query.filter_by(industry=portfolio_asset_industry):
+                    # Assets in the same industry as the portfolio asset
                     if not asset.ticker_symbol in existing_assets:
+                        # That has not already been added to the portfolio
+                        # e.g. don't recommend ASX:CBA from ASX:NAB when ASX:CBA has already been added
+
+                        # Lowest market cap difference becomes largest value due to negation
                         diff = (
-                            -abs(each["asset"]["market_cap"] - asset.market_cap)
-                            * (current_asset_portion),
+                            -abs(each["asset"]["market_cap"] - asset.market_cap),
                             asset.ticker_symbol,
                         )
 
-                        if len(recommended) < 8:
-                            heapq.heappush(recommended, diff)
+                        if len(recommended_local) < assets_to_display:
+                            heapq.heappush(recommended_local, diff)
                         else:
-                            heapq.heappushpop(recommended, diff)
+                            heapq.heappushpop(recommended_local, diff)
+
+            # Weigh listed recommendations based on the asset's share of the portfolio
+            current_asset_portion = (
+                each["average_price"] * each["available_units"] / total_value
+            )
+            recommended_local.reverse()
+            recommended.extend(
+                recommended_local[
+                    : max(
+                        int(assets_to_display * current_asset_portion),
+                        1,
+                    )
+                ]
+            )
 
         return [[x[1], x[1]] for x in recommended]

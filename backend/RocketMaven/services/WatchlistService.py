@@ -2,6 +2,7 @@ from RocketMaven.api.schemas import WatchlistSchema
 from RocketMaven.commons.pagination import paginate
 from RocketMaven.extensions import db
 from RocketMaven.models import Asset, Investor, Watchlist
+from RocketMaven.services.AssetService import update_assets_price
 from flask import request
 
 
@@ -47,6 +48,12 @@ def get_watchlist(investor_id: int):
         if not investor:
             return {"msg": "investor id not found in system"}, 404
         watchlist = Watchlist.query.filter_by(investor_id=investor_id)
+
+        assets = (
+            db.session().query(Asset).join(Watchlist).filter_by(investor_id=investor_id)
+        )
+        update_assets_price(assets)
+
         return paginate(watchlist, schema)
     except Exception as err:
         print(err)
@@ -81,17 +88,19 @@ def del_watchlist(investor_id: int, ticker_symbol: str):
 
 
 def set_nofication(flag: str, investor_id: int, ticker_symbol: str):
-    """ Set the price notification values for the given asset in the user's watchlist
-        Returns:
-            200 - notification price updated
-            400 - error adding the price notification
-            404 - asset not found or not in watchlist
+    """Set the price notification values for the given asset in the user's watchlist
+    Returns:
+        200 - notification price updated
+        400 - error adding the price notification
+        404 - asset not found or not in watchlist
     """
-    price = request.json.get('price')
+    price = request.json.get("price")
     if not price:
         return {"msg": "price not found"}, 404
     try:
-        watching = Watchlist.query.filter_by(investor_id=investor_id, asset_id=ticker_symbol).first()
+        watching = Watchlist.query.filter_by(
+            investor_id=investor_id, asset_id=ticker_symbol
+        ).first()
         if not watching:
             return {"msg": "watching not found in system"}, 404
         if flag == "low":

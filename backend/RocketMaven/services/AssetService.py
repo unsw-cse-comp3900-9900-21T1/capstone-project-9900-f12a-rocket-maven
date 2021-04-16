@@ -2,17 +2,75 @@ import io
 import json
 import re
 from csv import DictReader
-from datetime import datetime
+import datetime
 
+import requests
 from flask import request
 from flask_jwt_extended import get_jwt_identity
 from RocketMaven.api.schemas import AssetSchema
 from RocketMaven.commons.pagination import paginate
 from RocketMaven.extensions import db
 from RocketMaven.models import Asset, PortfolioAssetHolding
-from RocketMaven.services.PortfolioEventService import update_asset
 from sqlalchemy import or_
 from sqlalchemy.orm import aliased
+
+# https://stackoverflow.com/questions/312443/how-do-you-split-a-list-into-evenly-sized-chunks/312464#312464
+def chunks(lst, n):
+    """Yield successive n-sized chunks from lst."""
+    for i in range(0, len(lst), n):
+        yield lst[i : i + n]
+
+
+YAHOO_FINANCE_ENDPOINT = "https://query2.finance.yahoo.com/v7/finance/quote?formatted=true&lang=en-AU&region=AU&symbols={ticker}&fields=longName,shortName,regularMarketPrice"  # noqa: E501
+
+yahoo_ticker_converters = {
+    # For CRYPTO, the price is the current USD value (similar to how forex works)
+    "CRYPTO": lambda stock: "-".join([stock, "USD"]),
+    # For the ASX, the ticker is a combination of the asset code and ".AX"
+    "ASX": lambda stock: ".".join([stock, "AX"]),
+}
+
+
+def update_asset(asset) -> (bool, str):
+    """Updates the asset current price from the Yahoo Finance API
+    Returns True (and an empty string) if there were no issues
+        False and an error message if an error was encountered.
+    """
+    exchange, stock = asset.ticker_symbol.split(":")
+
+    if datetime.datetime.now() - asset.price_last_updated < datetime.timedelta(
+        minutes=10
+    ):
+        return True, "Asset Price not updated"
+
+    if exchange != "VIRT":
+        # For finance yahoo, the ticker needs to be formatted according to its exchange
+        if exchange in yahoo_ticker_converters:
+            endpoint = YAHOO_FINANCE_ENDPOINT.format(
+                ticker=yahoo_ticker_converters[exchange](stock)
+            )
+        else:
+            # For american? stocks it is just the plain asset code
+            endpoint = YAHOO_FINANCE_ENDPOINT.format(ticker=stock)
+
+        try:
+            response = requests.get(endpoint)
+            if response.status_code == 200:
+                data = response.json()
+                try:
+                    err = data["quoteResponse"]["error"]
+                    if err is not None:
+                        return False, "Error with API response {}".format(err)
+                    asset.current_price = data["quoteResponse"]["result"][0][
+                        "regularMarketPrice"
+                    ]["raw"]
+                    asset.price_last_updated = datetime.datetime.now()
+                    db.session.commit()
+                except IndexError:
+                    return False, "Malformed API response"
+        except Exception as err:
+            return False, "Error updating current price - {}".format(err)
+    return True, ""
 
 
 def zip_dict_reader(filename: str) -> dict:
@@ -23,11 +81,11 @@ def zip_dict_reader(filename: str) -> dict:
 
 
 def get_asset(ticker_symbol: str):
-    """ Returns
-        200 - the associated Asset for the given ticker symbol
-        400 - ticker symbol is None
-        404 - if the ticker symbol doesn't exist
-        500 - if an unexpected exception is raised
+    """Returns
+    200 - the associated Asset for the given ticker symbol
+    400 - ticker symbol is None
+    404 - if the ticker symbol doesn't exist
+    500 - if an unexpected exception is raised
     """
     if ticker_symbol is None:
         return {"msg": "Missing ticker symbol"}, 400
@@ -41,11 +99,11 @@ def get_asset(ticker_symbol: str):
 
 
 def get_asset_price(ticker_symbol: str):
-    """ Returns
-        200 - the associated price for the given ticker symbol
-        400 - ticker symbol is None
-        404 - if the ticker symbol doesn't exist
-        500 - if an unexpected exception is raised
+    """Returns
+    200 - the associated price for the given ticker symbol
+    400 - ticker symbol is None
+    404 - if the ticker symbol doesn't exist
+    500 - if an unexpected exception is raised
     """
     if ticker_symbol is None:
         return {"msg": "Missing ticker symbol"}, 400
@@ -66,10 +124,10 @@ def get_asset_price(ticker_symbol: str):
 
 
 def search_asset():
-    """ Returns
-        200 - a paginated list of Assets that match the given user query in the request
-        400 - missing search query
-        500 - if an unexpected exception is raised
+    """Returns
+    200 - a paginated list of Assets that match the given user query in the request
+    400 - missing search query
+    500 - if an unexpected exception is raised
     """
     q = request.args.get("q", None)
 
@@ -77,7 +135,6 @@ def search_asset():
         try:
             # https://stackoverflow.com/questions/3325467/sqlalchemy-equivalent-to-sql-like-statement
             search = "%{}%".format(q)
-            print(search)
             schema = AssetSchema(many=True)
 
             query = Asset.query.filter(
@@ -85,17 +142,16 @@ def search_asset():
             ).order_by(Asset.market_cap.desc())
             return paginate(query, schema)
         except Exception as e:
-            print(e)
             return {"msg": "Asset search failed"}, 500
     else:
         return {"msg": "Missing search query"}, 400
 
 
 def search_user_asset(portfolio_id):
-    """ Returns
-        200 - a paginated list of Assets that match the given user query in the request
-        400 - missing search query
-        500 - if an unexpected exception is raised
+    """Returns
+    200 - a paginated list of Assets that match the given user query in the request
+    400 - missing search query
+    500 - if an unexpected exception is raised
     """
     q = request.args.get("q", None)
     current_user = get_jwt_identity()
@@ -144,9 +200,64 @@ def search_user_asset(portfolio_id):
         return {"msg": "Missing search query"}, 400
 
 
+def update_assets_price(asset_query):
+    """Bulk updates the data of queried assets
+    Returns
+    200 - if all assets are updated successfully
+    500 - if an unexpected exception is raised
+    """
+
+    assets_to_update = []
+    tick_to_db = {}
+    for asset in asset_query:
+
+        if not (
+            datetime.datetime.now() - asset.price_last_updated
+            < datetime.timedelta(minutes=10)
+        ):
+
+            exchange, stock = asset.ticker_symbol.split(":")
+            if exchange != "VIRT":
+                # For finance yahoo, the ticker needs to be formatted according to its exchange
+                if exchange in yahoo_ticker_converters:
+                    endpoint = yahoo_ticker_converters[exchange](stock)
+                else:
+                    # For american? stocks it is just the plain asset code
+                    endpoint = stock
+                assets_to_update.append(endpoint)
+                tick_to_db[endpoint] = asset
+
+    # Call the APi in batches, helps improve processing times
+    for m in chunks(assets_to_update, 20):
+        try:
+            response = requests.get(YAHOO_FINANCE_ENDPOINT.format(ticker=",".join(m)))
+            if response.status_code == 200:
+                data = response.json()
+                err = data["quoteResponse"]["error"]
+                if err is not None:
+                    return (
+                        {"msg": "Error with API response {}".format(err)},
+                        500,
+                    )
+
+                for result in data["quoteResponse"]["result"]:
+                    asset = tick_to_db[result["symbol"]]
+                    asset.current_price = result["regularMarketPrice"]["raw"]
+                    asset.price_last_updated = datetime.datetime.now()
+                    print(f"Updated price of: {asset.ticker_symbol}")
+                db.session.commit()
+        except Exception as err:
+            print(f"Error updating price: {err}")
+
+    return (
+        {"msg": "Asset update success!"},
+        200,
+    )
+
+
 def load_asset_data(db):
-    """ Bootstrap process to load pre-cached stock values (from Yahoo Finance responses)
-        into the system database
+    """Bootstrap process to load pre-cached stock values (from Yahoo Finance responses)
+    into the system database
     """
 
     print("Adding ASX")
@@ -177,9 +288,7 @@ def load_asset_data(db):
                 data_source="Yahoo",
                 country=data["region"],
                 currency="AUD",
-                price_last_updated=datetime.strptime(
-                    "2021-01-01", "%Y-%m-%d"
-                ),  # datetime.date.fromisoformat("2021-01-01"),
+                price_last_updated=datetime.datetime.strptime("2021-01-01", "%Y-%m-%d"),
             )
             db.session.merge(asset)
             # print("Added {}".format(asx_code))
@@ -214,9 +323,7 @@ def load_asset_data(db):
                 data_source="Yahoo",
                 country="US",
                 currency="USD",
-                price_last_updated=datetime.strptime(
-                    "2021-01-01", "%Y-%m-%d"
-                ),  # datetime.date.fromisoformat("2021-01-01"),
+                price_last_updated=datetime.datetime.strptime("2021-01-01", "%Y-%m-%d"),
             )
             db.session.merge(asset)
             # print("Added {}".format(asx_code))
@@ -251,9 +358,7 @@ def load_asset_data(db):
                 data_source="Yahoo",
                 country="US",
                 currency="US",
-                price_last_updated=datetime.strptime(
-                    "2021-01-01", "%Y-%m-%d"
-                ),  # datetime.date.fromisoformat("2021-01-01"),
+                price_last_updated=datetime.datetime.strptime("2021-01-01", "%Y-%m-%d"),
             )
             db.session.merge(asset)
             # print("Added {}".format(asx_code))
@@ -288,9 +393,7 @@ def load_asset_data(db):
                 data_source="Yahoo",
                 country="ZZ",
                 currency="US",
-                price_last_updated=datetime.strptime(
-                    "2021-01-01", "%Y-%m-%d"
-                ),  # datetime.date.fromisoformat("2021-01-01"),
+                price_last_updated=datetime.datetime.strptime("2021-01-01", "%Y-%m-%d"),
             )
             db.session.merge(asset)
             # print("Added {}".format(asx_code))
