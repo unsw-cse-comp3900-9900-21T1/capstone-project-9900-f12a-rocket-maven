@@ -1,11 +1,10 @@
 import { Subtitle, Title } from '@rocketmaven/componentsStyled/Typography'
-import { assetColumns } from '@rocketmaven/data/tableDefinitions/assets'
 import { useFetchTopAdditions } from '@rocketmaven/hooks/http'
 import { PortfolioInfo } from '@rocketmaven/pages/Portfolio/types'
 import Page from '@rocketmaven/pages/_Page'
 import { Table } from 'antd'
 import React from 'react'
-import { portfolioColumns } from './tableDefinitions'
+import { assetColumns, portfolioColumns } from './tableDefinitions'
 
 type Asset = {
   industry: string
