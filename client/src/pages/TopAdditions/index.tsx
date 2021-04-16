@@ -42,30 +42,26 @@ const TopAdditions = () => {
       })
     })
 
-    content =
+    content = (
       <React.Fragment>
-        <Subtitle>
-          Top Asset
-        </Subtitle>
-        <Table columns={assetColumns} dataSource={assets} rowKey="id" pagination={false} style={{ marginBottom: '4rem' }} />
-        <Subtitle>
-          Most viewed portfolio
-        </Subtitle>
+        <Subtitle>Top Asset</Subtitle>
+        <Table
+          columns={assetColumns}
+          dataSource={assets}
+          rowKey="id"
+          pagination={false}
+          style={{ marginBottom: '4rem' }}
+        />
+        <Subtitle>Most Viewed Portfolio</Subtitle>
         <Table columns={portfolioColumns} dataSource={datas} rowKey="id" pagination={false} />
       </React.Fragment>
-
+    )
   }
 
   return (
     <Page>
-      <Title>
-        Top Additions
-      </Title>
-      {
-        isLoading
-          ? null
-          : content
-      }
+      <Title>Top Additions</Title>
+      {isLoading ? null : content}
     </Page>
   )
 }

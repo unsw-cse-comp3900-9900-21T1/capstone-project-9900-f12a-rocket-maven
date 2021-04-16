@@ -57,7 +57,7 @@ class PortfolioAssetHoldingList(Resource):
                   properties:
                     asset_id:
                       type: string
-                      example: VIRT:CBA
+                      example: ASX:CBA
                       required: true
         responses:
           200:
