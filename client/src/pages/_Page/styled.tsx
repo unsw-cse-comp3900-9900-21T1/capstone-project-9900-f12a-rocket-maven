@@ -48,7 +48,7 @@ export const HeaderWrap = styled(Header)`
   top: 0;
   right: 0;
   left: 0;
-  z-index: 1;
+  z-index: 999;
   ${ContentWrap}[data-collapsed="false"] & {
     margin-left: ${sidebarWidth}px;
   }
