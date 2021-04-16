@@ -46,3 +46,5 @@ Week 8
 Week 9
 - Finished front end advanced search implementation
 - Refactored front end API calls
+- Refactored pages
+- Started on report sections: User manual and implementation challenges 
