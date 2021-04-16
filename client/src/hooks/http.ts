@@ -1,20 +1,10 @@
 import { useIsLoggedIn, useStore, useUserId } from '@rocketmaven/hooks/store'
 import { message } from 'antd'
-import jwt_decode from 'jwt-decode'
 import { useEffect, useState } from 'react'
-import { isExpired } from 'react-jwt'
+import { decodeToken, isExpired } from 'react-jwt'
 import { useHistory } from 'react-router'
 import { urls } from '../data/urls'
 
-interface AuthToken {
-  exp: number
-  fresh: boolean
-  iat: number
-  jti: string
-  nbf: number
-  sub: number
-  type: string
-}
 type SuccessfullLoginResponse = {
   access_token: string
   refresh_token: string
@@ -367,7 +357,7 @@ export const useAuth = (authType: AuthType): Function => {
         payload: {
           accessToken: data.access_token,
           refreshToken: data.refresh_token,
-          userId: jwt_decode<AuthToken>(data.access_token).sub
+          userId: decodeToken(data.access_token).sub
         }
       })
       routerObject.push('/')
