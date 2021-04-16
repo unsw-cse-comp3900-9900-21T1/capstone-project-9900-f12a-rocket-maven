@@ -393,6 +393,8 @@ def get_top_additions():
         db.session.query(
             PortfolioAssetHolding, db.func.count(PortfolioAssetHolding.asset_id)
         )
+        .join(Portfolio)
+        .filter(Portfolio.public_portfolio.is_(True), Portfolio.deleted.is_(False))
         .group_by(PortfolioAssetHolding.asset_id)
         .order_by(db.func.max(PortfolioAssetHolding.asset_id).asc())
         .first()

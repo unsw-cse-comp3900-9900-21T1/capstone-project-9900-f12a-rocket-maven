@@ -21,7 +21,7 @@ def create_asset_event_with_current_price(
     db.session.commit()
 
     cba_details = PortfolioAssetHolding.query.filter_by(
-        portfolio_id=portfolio_event.portfolio_id, asset_id="VIRT:CBA"
+        portfolio_id=portfolio_event.portfolio_id, asset_id="ASX:CBA"
     ).first()
 
     if expected_test:
@@ -31,6 +31,7 @@ def create_asset_event_with_current_price(
         assert expected_test[3] == cba_details.average_price
 
 
+# Example system that is to be demoed. Also serves as test data.
 def populate_full_system(db):
 
     test_user = db.session.query(Investor).filter_by(username="temp_admin").first()
@@ -87,50 +88,26 @@ def populate_full_system(db):
     db.session.add(portfolio2)
     db.session.commit()
 
-    asset = Asset(
-        ticker_symbol="VIRT:A",
-        name="Virtual Holding A",
-        industry="Virtual",
+    # AMP
+    asset_amp = Asset(
+        ticker_symbol="ASX:AMP",
+        name="AMP Limited",
+        industry="Finance",
         current_price=100,
-        data_source="VIRTUAL",
+        data_source="Yahoo",
         country="AU",
         currency="AUD",
     )
-
-    db.session.add(asset)
-
-    asset = Asset(
-        ticker_symbol="ASX:CBA",
-        name="Commonwealth Bank of Australia",
-        industry="Banking",
-        current_price=86.49,
-        data_source="Yahoo Finance",
-        country="AU",
-        currency="AUD",
-    )
-    db.session.add(asset)
+    db.session.add(asset_amp)
     db.session.commit()
 
     test_portfolio_event = (
         db.session.query(PortfolioEvent)
-        .filter_by(asset_id="VIRT:A", portfolio_id=portfolio.id)
+        .filter_by(asset_id="ASX:AMP", portfolio_id=portfolio.id)
         .first()
     )
 
     if not test_portfolio_event:
-
-        # AMP
-        asset_amp = Asset(
-            ticker_symbol="ASX:AMP",
-            name="AMP Limited",
-            industry="Finance",
-            current_price=100,
-            data_source="Yahoo",
-            country="AU",
-            currency="AUD",
-        )
-        db.session.add(asset_amp)
-        db.session.commit()
 
         # AAPL
         asset_aapl = Asset(
@@ -178,11 +155,14 @@ def populate_full_system(db):
         if True:
             # Test case from Tyson's spreadsheet
             asset_cba = Asset(
-                ticker_symbol="VIRT:CBA",
-                name="Virtual Holding CBA",
-                industry="Virtual",
+                ticker_symbol="ASX:CBA",
+                # name="Virtual Holding CBA",
+                # industry="Virtual",
+                name="Commonwealth Bank of Australia",
+                industry="Banking",
                 current_price=100,
-                data_source="VIRTUAL",
+                # data_source="VIRTUAL",
+                data_source="Yahoo Finance",
                 country="AU",
                 currency="AUD",
             )
@@ -197,7 +177,7 @@ def populate_full_system(db):
                     price_per_share=80,
                     exchange_rate=1.0,
                     note="I think this stock has growth potential",
-                    asset_id="VIRT:CBA",
+                    asset_id="ASX:CBA",
                     portfolio_id=portfolio.id,
                     event_date=datetime.date(2021, 1, 1),
                 ),
@@ -215,7 +195,7 @@ def populate_full_system(db):
                     price_per_share=90,
                     exchange_rate=1.0,
                     note="Good stock",
-                    asset_id="VIRT:CBA",
+                    asset_id="ASX:CBA",
                     portfolio_id=portfolio.id,
                     event_date=datetime.date(2021, 1, 3),
                 ),
@@ -232,7 +212,7 @@ def populate_full_system(db):
                     price_per_share=100,
                     exchange_rate=1.0,
                     note="Good stock",
-                    asset_id="VIRT:CBA",
+                    asset_id="ASX:CBA",
                     portfolio_id=portfolio.id,
                     event_date=datetime.date(2021, 1, 5),
                 ),
@@ -250,7 +230,7 @@ def populate_full_system(db):
                     price_per_share=120,
                     exchange_rate=1.0,
                     note="I should not have sold",
-                    asset_id="VIRT:CBA",
+                    asset_id="ASX:CBA",
                     portfolio_id=portfolio.id,
                     event_date=datetime.date(2021, 1, 11),
                 ),
@@ -268,7 +248,7 @@ def populate_full_system(db):
                     price_per_share=105,
                     exchange_rate=1.0,
                     note="Taking profits, I think I should sell more later",
-                    asset_id="VIRT:CBA",
+                    asset_id="ASX:CBA",
                     portfolio_id=portfolio.id,
                     event_date=datetime.date(2021, 1, 7),
                 ),
@@ -286,7 +266,7 @@ def populate_full_system(db):
                     price_per_share=110,
                     exchange_rate=1.0,
                     note="Taking more profits",
-                    asset_id="VIRT:CBA",
+                    asset_id="ASX:CBA",
                     portfolio_id=portfolio.id,
                     event_date=datetime.date(2021, 1, 9),
                 ),
@@ -306,7 +286,7 @@ def populate_full_system(db):
                     price_per_share=70,
                     exchange_rate=1.0,
                     note="It's a test asset ticker!",
-                    asset_id="VIRT:CBA",
+                    asset_id="ASX:CBA",
                     portfolio_id=portfolio.id,
                     event_date=datetime.date(2021, 1, 13),
                 ),
@@ -314,6 +294,8 @@ def populate_full_system(db):
                 db,
                 [-2800.0, -4714.285714285716, 8400.0, 109.28571428571429],
             )
+
+            asset_cba = False
 
     AssetService.load_asset_data(db)
 
