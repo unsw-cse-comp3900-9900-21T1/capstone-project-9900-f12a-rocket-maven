@@ -9,6 +9,7 @@ from RocketMaven.models import Asset, Portfolio, PortfolioAssetHolding, Portfoli
 from RocketMaven.services.PortfolioEventService import update_asset
 from sqlalchemy import and_
 import json
+import heapq
 
 
 def get_portfolio(portfolio_id):
@@ -125,8 +126,6 @@ def get_portfolios(investor_id):
         portfolio["recommended"] = recommend_portfolio(
             portfolio["portfolio_asset_holding"]
         )
-
-    print(result_return)
 
     return result_return
 
@@ -384,11 +383,8 @@ def get_top_additions():
     # https://stackoverflow.com/questions/18998010/flake8-complains-on-boolean-comparison-in-filter-clause
     most_viewed_portfolio_result = (
         db.session.query(Portfolio, db.func.max(Portfolio.view_count))
-        # TODO(Jude): Find why this broke all of a sudden - It looked like it was working fine before
-        # It seems to me that we would only want to show public portfolios
-        .filter(
-            Portfolio.public_portfolio.is_(True), Portfolio.deleted.is_(False)
-        ).first()
+        .filter(Portfolio.public_portfolio.is_(True), Portfolio.deleted.is_(False))
+        .first()
     )
     portfolio = most_viewed_portfolio_result[0]
 
@@ -415,38 +411,72 @@ def get_top_additions():
 
 
 def recommend_portfolio(asset_holdings):
-    recommended = []
-    for each in asset_holdings:
-        portfolio_asset_industry = (
-            Asset.query.filter_by(ticker_symbol=each["asset_id"]).first().industry
-        )
-        for asset in Asset.query.filter_by(industry=portfolio_asset_industry).order_by(
-            Asset.market_cap.desc()
-        ):
-            if not asset.asset_additional:
-                continue
-            else:
-                price = asset.current_price
-                asset_additional = json.loads(asset.asset_additional)
-                fiftyDayAverageChange = float(
-                    asset_additional["fiftyDayAverageChange"]["raw"]
-                )
-                twoHundredDayAverageChange = float(
-                    asset_additional["twoHundredDayAverageChange"]["raw"]
-                )
+    if False:
+        recommended = []
+        for each in asset_holdings:
+            portfolio_asset_industry = (
+                Asset.query.filter_by(ticker_symbol=each["asset_id"]).first().industry
+            )
+            for asset in Asset.query.filter_by(
+                industry=portfolio_asset_industry
+            ).order_by(Asset.market_cap.desc()):
+                if not asset.asset_additional:
+                    continue
+                else:
+                    price = asset.current_price
+                    asset_additional = json.loads(asset.asset_additional)
+                    fiftyDayAverageChange = float(
+                        asset_additional["fiftyDayAverageChange"]["raw"]
+                    )
+                    twoHundredDayAverageChange = float(
+                        asset_additional["twoHundredDayAverageChange"]["raw"]
+                    )
 
-                diff = fiftyDayAverageChange - twoHundredDayAverageChange
+                    diff = fiftyDayAverageChange - twoHundredDayAverageChange
 
-                if diff > 0 and price > diff:
-                    recommended.append([asset.ticker_symbol, asset.name])
-                    break
+                    if diff > 0 and price > diff:
+                        recommended.append([asset.ticker_symbol, asset.name])
+                        break
 
-        if len(recommended) >= 3:
+            if len(recommended) >= 3:
+                return recommended
+
+        # if no asset_holding
+        if not recommended:
+            asset = Asset.query.order_by(Asset.market_cap.desc()).first()
+            recommended.append([asset.ticker_symbol, asset.name])
             return recommended
-
-    # if no asset_holding
-    if not recommended:
-        asset = Asset.query.order_by(Asset.market_cap.desc()).first()
-        recommended.append([asset.ticker_symbol, asset.name])
         return recommended
-    return recommended
+
+    if True:
+        recommended = []
+        existing_assets = []
+        total_value = 0
+        for each in asset_holdings:
+            existing_assets.append(each["asset_id"])
+            total_value += each["average_price"] * each["unrealised_units"]
+
+        for each in asset_holdings:
+
+            recommended_local = []
+            if each["asset"]["market_cap"]:
+                portfolio_asset_industry = (
+                    Asset.query.filter_by(ticker_symbol=each["asset_id"])
+                    .first()
+                    .industry
+                )
+                for asset in Asset.query.filter_by(industry=portfolio_asset_industry):
+                    if not asset.ticker_symbol in existing_assets:
+                        diff = (
+                            -abs(each["asset"]["market_cap"] - asset.market_cap),
+                            asset.ticker_symbol,
+                        )
+
+                        if len(recommended_local) < 3:
+                            heapq.heappush(recommended_local, diff)
+                        else:
+                            heapq.heappushpop(recommended_local, diff)
+
+                recommended.extend([[x[1], x[1]] for x in recommended_local])
+
+        return recommended

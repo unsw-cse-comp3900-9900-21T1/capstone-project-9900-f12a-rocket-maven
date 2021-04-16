@@ -1,6 +1,5 @@
 from RocketMaven.api.schemas.investor import InvestorSchema
-from RocketMaven.api.schemas.portfolio_asset_holding import \
-    PortfolioAssetHoldingSchema
+from RocketMaven.api.schemas.portfolio_asset_holding import PortfolioAssetHoldingSchema
 from RocketMaven.extensions import db, ma
 from RocketMaven.models import Portfolio
 
@@ -27,8 +26,12 @@ class PortfolioSchema(ma.SQLAlchemyAutoSchema):
         # exclude = ("id",)
 
     _realised_sum = ma.auto_field(data_key="realised_sum", attribute="realised_sum")
-    _current_value_sum = ma.auto_field(data_key="current_value_sum", attribute="current_value_sum")
-    _purchase_value_sum = ma.auto_field(data_key="purchase_value_sum", attribute="purchase_value_sum")
+    _current_value_sum = ma.auto_field(
+        data_key="current_value_sum", attribute="current_value_sum"
+    )
+    _purchase_value_sum = ma.auto_field(
+        data_key="purchase_value_sum", attribute="purchase_value_sum"
+    )
 
 
 class PublicPortfolioSchema(PortfolioSchema):
