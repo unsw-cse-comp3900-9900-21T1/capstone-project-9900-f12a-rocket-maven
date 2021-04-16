@@ -68,8 +68,7 @@ const LogIn = () => {
             >
               Log in
             </Button>
-            Or
-            <Link to={urls.signup}>register now!</Link>
+            Or <Link to={urls.signup}>register now!</Link>
           </Form.Item>
         </Form>
       </Card>

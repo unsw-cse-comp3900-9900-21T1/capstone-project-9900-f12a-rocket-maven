@@ -460,25 +460,26 @@ def recommend_portfolio(asset_holdings):
 
         for each in asset_holdings:
 
-            recommended_local = []
             if each["asset"]["market_cap"]:
                 portfolio_asset_industry = (
                     Asset.query.filter_by(ticker_symbol=each["asset_id"])
                     .first()
                     .industry
                 )
+                current_asset_portion = (
+                    each["average_price"] * each["unrealised_units"] / total_value
+                )
                 for asset in Asset.query.filter_by(industry=portfolio_asset_industry):
                     if not asset.ticker_symbol in existing_assets:
                         diff = (
-                            -abs(each["asset"]["market_cap"] - asset.market_cap),
+                            -abs(each["asset"]["market_cap"] - asset.market_cap)
+                            * (current_asset_portion),
                             asset.ticker_symbol,
                         )
 
-                        if len(recommended_local) < 3:
-                            heapq.heappush(recommended_local, diff)
+                        if len(recommended) < 8:
+                            heapq.heappush(recommended, diff)
                         else:
-                            heapq.heappushpop(recommended_local, diff)
+                            heapq.heappushpop(recommended, diff)
 
-                recommended.extend([[x[1], x[1]] for x in recommended_local])
-
-        return recommended
+        return [[x[1], x[1]] for x in recommended]
