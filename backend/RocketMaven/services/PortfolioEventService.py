@@ -4,12 +4,10 @@ import io
 
 import requests
 from flask import request
-from RocketMaven.api.schemas import (PortfolioAssetHoldingSchema,
-                                     PortfolioEventSchema)
+from RocketMaven.api.schemas import PortfolioAssetHoldingSchema, PortfolioEventSchema
 from RocketMaven.commons.pagination import paginate
 from RocketMaven.extensions import db
-from RocketMaven.models import (Asset, Portfolio, PortfolioAssetHolding,
-                                PortfolioEvent)
+from RocketMaven.models import Asset, Portfolio, PortfolioAssetHolding, PortfolioEvent
 
 YAHOO_FINANCE_ENDPOINT = "https://query2.finance.yahoo.com/v7/finance/quote?formatted=true&lang=en-AU&region=AU&symbols={ticker}&fields=longName,shortName,regularMarketPrice"  # noqa: E501
 
@@ -93,9 +91,9 @@ def delete_holding(portfolio_id):
 
 def get_events(portfolio_id):
     """Get the list of (asset) events in a portfolio
-        Returns:
-            200 - a paginated list of Portfolio events
-            500 - if an unexpected exception occurs
+    Returns:
+        200 - a paginated list of Portfolio events
+        500 - if an unexpected exception occurs
     """
     schema = PortfolioEventSchema(many=True)
     query = PortfolioEvent.query.filter_by(portfolio_id=portfolio_id).order_by(
@@ -106,9 +104,9 @@ def get_events(portfolio_id):
 
 def get_holdings(portfolio_id):
     """Get the list of asset holdings in a portfolio
-        Returns
-            200 - a paginated list of asset holdings
-            500 - if an unexpected exception occurs
+    Returns
+        200 - a paginated list of asset holdings
+        500 - if an unexpected exception occurs
     """
     schema = PortfolioAssetHoldingSchema(many=True)
     query = PortfolioAssetHolding.query.filter_by(portfolio_id=portfolio_id)
@@ -152,11 +150,11 @@ def handle_broker_csv_row(csv_input_row: dict) -> dict:
 
 
 def create_event(portfolio_id):
-    """ Create a new asset for the given portfolio in the database
-        Returns
-            201 - on successful asset creation
-            400 - Foreign key error (unknown portfolio or asset id)
-            500 - unexpected error
+    """Create a new asset for the given portfolio in the database
+    Returns
+        201 - on successful asset creation
+        400 - Foreign key error (unknown portfolio or asset id)
+        500 - unexpected error
     """
 
     schema = PortfolioEventSchema()
@@ -166,7 +164,7 @@ def create_event(portfolio_id):
     if not query:
         return (
             {
-                "msg": "portfolio does not exist!",
+                "msg": "Portfolio does not exist!",
             },
             400,
         )
@@ -187,7 +185,7 @@ def create_event(portfolio_id):
             print(e)
             return (
                 {
-                    "msg": "error encountered in input asset creation json!",
+                    "msg": "Error encountered in processing the CSV file!",
                 },
                 500,
             )
@@ -210,7 +208,7 @@ def create_event(portfolio_id):
             file_mode = False
             return (
                 {
-                    "msg": f"issue processing csv file! {e}",
+                    "msg": f"Issue processing csv file! {e}",
                 },
                 500,
             )
@@ -218,7 +216,7 @@ def create_event(portfolio_id):
         if file_mode is False:
             return (
                 {
-                    "msg": "no files in form found!",
+                    "msg": "No files in form found!",
                 },
                 400,
             )
@@ -226,7 +224,7 @@ def create_event(portfolio_id):
     if query.competition_portfolio is True and (len(portfolio_events) > 1 or file_mode):
         return (
             {
-                "msg": "competition portfolio event failed, cannot bulk add to a competition portfolio",
+                "msg": "Competition portfolio event failed, cannot bulk add to a competition portfolio",
             },
             400,
         )
@@ -239,7 +237,7 @@ def create_event(portfolio_id):
                 db.session.rollback()
                 return (
                     {
-                        "msg": "event failed, units cannot be negative or zero",
+                        "msg": "Units cannot be negative or zero",
                     },
                     400,
                 )
@@ -262,7 +260,7 @@ def create_event(portfolio_id):
                     db.session.rollback()
                     return (
                         {
-                            "msg": "competition portfolio event failed, insufficient buying power",
+                            "msg": "Competition portfolio event failed, insufficient buying power",
                         },
                         400,
                     )
@@ -271,7 +269,7 @@ def create_event(portfolio_id):
                 db.session.rollback()
                 return (
                     {
-                        "msg": "event failed, price per share cannot be negative or zero",
+                        "msg": "Price per share cannot be negative or zero",
                     },
                     400,
                 )
@@ -288,7 +286,7 @@ def create_event(portfolio_id):
                 db.session.rollback()
                 return (
                     {
-                        "msg": "event failed, cannot remove more units then available",
+                        "msg": "Cannot remove more units then available",
                     },
                     400,
                 )
@@ -299,7 +297,7 @@ def create_event(portfolio_id):
         db.session.commit()
         return (
             {
-                "msg": "portfolio events created",
+                "msg": "Portfolio Event(s) Created",
                 "portfolio event": [schema.dump(x) for x in output_events],
             },
             201,
@@ -310,7 +308,7 @@ def create_event(portfolio_id):
 
         return (
             {
-                "msg": "an unknown error has occured creating the portfolio event",
+                "msg": "An unknown error has occured creating the portfolio event",
             },
             500,
         )

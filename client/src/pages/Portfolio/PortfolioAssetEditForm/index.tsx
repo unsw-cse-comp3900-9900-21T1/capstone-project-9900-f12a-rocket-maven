@@ -4,7 +4,7 @@ import { useAddPortfolioEvent } from '@rocketmaven/hooks/http'
 import { PortfolioEventCreate, PortfolioInfo } from '@rocketmaven/pages/Portfolio/types'
 import { Button, Col, Form, Input, InputNumber, Row, Statistic } from 'antd'
 import { useEffect, useState } from 'react'
-import { RouteComponentProps, useLocation, withRouter } from 'react-router-dom'
+import { RouteComponentProps, useHistory, useLocation, withRouter } from 'react-router-dom'
 
 interface PropsInterface extends RouteComponentProps {
   portfolioId: string
@@ -34,9 +34,10 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
   const [holdings, setHoldings] = useState(0)
   const [pricePerShare, setPricePerShare] = useState(0)
   const [currentTicker, setCurrentTicker] = useState('')
-  const [units, setUnits] = useState(0)
+  const [units, setUnits] = useState(1)
   const [form] = Form.useForm()
   const query = useQuery()
+  const routerObject = useHistory()
 
   const initialValues: PortfolioEventCreate = {
     add_action: addActionValue,
@@ -44,20 +45,28 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
     fees: 0,
     note: '',
     price_per_share: 0,
-    units: 0,
+    units: 1,
     exchange_rate: 1
   }
 
   const myFetch: Function = useAddPortfolioEvent(portfolioId)
 
   useEffect(() => {
-    console.log(query.get('stock_ticker'), form.getFieldValue('asset_id'))
     if (query.get('stock_ticker')) {
       if (query.get('stock_ticker') !== form.getFieldValue('asset_id')) {
         form.setFieldsValue({
           asset_id: { key: query.get('stock_ticker')!, value: query.get('stock_ticker')! }
         })
         setCurrentTicker(query.get('stock_ticker')!)
+        if (query.get('current_price')) {
+          form.setFieldsValue({
+            price_per_share: parseFloat(query.get('current_price')!)
+          })
+          setPricePerShare(parseFloat(query.get('current_price')!))
+        }
+        if (query.get('holdings')) {
+          setHoldings(parseFloat(query.get('holdings')!))
+        }
       }
     }
   }, [query])
@@ -91,7 +100,7 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
         form.setFieldsValue({
           price_per_share: data.price
         })
-      } catch (error) { }
+      } catch (error) {}
     }
     myFetch()
   }
@@ -156,7 +165,7 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
             }
           ]}
         >
-          <InputNumber onChange={(e: any) => setUnits(e)} />
+          <InputNumber min={1} onChange={(e: any) => setUnits(e)} />
         </Form.Item>
         {!portfolioInfo.competition_portfolio ? (
           <Form.Item
@@ -168,7 +177,24 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
               }
             ]}
           >
-            <InputNumber />
+            <InputNumber
+              onChange={(price: number) => {
+                if (query.has('current_price')) {
+                  query.delete('current_price')
+                }
+                if (query.has('stock_ticker')) {
+                  query.delete('stock_ticker')
+                }
+                if (query.has('holdings')) {
+                  query.delete('holdings')
+                }
+
+                routerObject.replace({
+                  search: query.toString()
+                })
+                setPricePerShare(price)
+              }}
+            />
           </Form.Item>
         ) : (
           <span>

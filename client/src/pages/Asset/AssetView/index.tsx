@@ -102,7 +102,7 @@ const AssetView = () => {
     })
 
     asset_card = (
-      <Card>
+      <Card title={data.asset.name}>
         <Row gutter={16}>
           {value.map(function (e: any[]) {
             return (
@@ -277,7 +277,7 @@ const AssetView = () => {
     // https://stackoverflow.com/questions/59464337/how-to-send-params-in-usehistory-of-react-router-dom
     routerObject.push({
       pathname: `${urls.portfolio}/${e.portfolio}/addremove`,
-      search: `?stock_ticker=${ticker_symbol}`,
+      search: `?stock_ticker=${ticker_symbol}&current_price=${data?.asset.current_price}&holdings=1000000`,
       state: {
         // location state
         update: true

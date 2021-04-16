@@ -87,7 +87,7 @@ const PortfolioAssetEditForm = ({ portfolioId }: Props) => {
   }
 
   return (
-    <Card>
+    <Card title="CSV Upload">
       <Form
         style={{ textAlign: 'center' }}
         name="csv_upload"
