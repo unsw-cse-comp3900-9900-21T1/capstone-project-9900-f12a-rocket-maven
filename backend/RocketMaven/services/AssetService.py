@@ -10,9 +10,10 @@ from flask_jwt_extended import get_jwt_identity
 from RocketMaven.api.schemas import AssetSchema
 from RocketMaven.commons.pagination import paginate
 from RocketMaven.extensions import db
-from RocketMaven.models import Asset, PortfolioAssetHolding
+from RocketMaven.models import Asset, Currency, PortfolioAssetHolding
 from sqlalchemy import or_
 from sqlalchemy.orm import aliased
+import zipfile
 
 # https://stackoverflow.com/questions/312443/how-do-you-split-a-list-into-evenly-sized-chunks/312464#312464
 def chunks(lst, n):
@@ -73,11 +74,14 @@ def update_asset(asset) -> (bool, str):
     return True, ""
 
 
+# https://stackoverflow.com/questions/43269278/python-how-to-convert-a-large-zipped-csv-file-to-a-dictionary
 def zip_dict_reader(filename: str) -> dict:
     """ Generates dictionary rows from a zipped CSV file """
-    with open(filename.replace(".zip", ".csv"), "rb") as file:
-        for m in DictReader(io.TextIOWrapper(file, encoding="utf-8")):
-            yield m
+    with zipfile.ZipFile(filename) as zipFile:
+        for fname in zipFile.infolist():
+            with zipFile.open(fname) as file:
+                for m in DictReader(io.TextIOWrapper(file, encoding="utf-8")):
+                    yield m
 
 
 def get_asset(ticker_symbol: str):
@@ -259,6 +263,7 @@ def load_asset_data(db):
     """Bootstrap process to load pre-cached stock values (from Yahoo Finance responses)
     into the system database
     """
+    print("Adding Exchange Rates")
 
     print("Adding ASX")
     # Load ASX tickers from ASX.csv which is an enriched version ASX_Listed_Companies_13-03-2021_07-59-39_AEDT.csv

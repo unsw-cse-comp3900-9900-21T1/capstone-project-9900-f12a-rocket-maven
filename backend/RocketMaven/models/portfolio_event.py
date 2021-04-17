@@ -68,7 +68,7 @@ class PortfolioEvent(db.Model):
         portfolio_event = self
 
         # Affect the competition portfolio buying power more globally
-        # Competition portfolio does not allow out-of-sequence (by date) events, so this is safe
+        # Competition portfolios do not allow out-of-sequence (by date) events, so this is safe
         portfolio_query = Portfolio.query.filter_by(
             id=portfolio_event.portfolio_id
         ).first()

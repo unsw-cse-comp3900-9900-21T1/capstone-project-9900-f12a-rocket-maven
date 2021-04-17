@@ -57,7 +57,7 @@ export const HeaderWrap = styled(Header)`
   }
   background: white;
   height: ${headerHeight}px;
-  line-height: ${headerHeight}px !important;
+  line-height: ${headerHeight - 2}px !important;
 `
 
 export const BodyWrap = styled(Content)`

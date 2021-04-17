@@ -49,25 +49,6 @@ def create_app(testing=False):
     # def custom_index():
     #     return "<a href='swagger-ui'>Swagger UI</a>", 200
 
-    @app.route("/pw_reset", methods=["GET", "POST"])
-    def pw_reset():
-        key = request.args.get("key")
-        print(key)
-        return (
-            """
-            <form action="/api/v1/pw_reset" method="post">
-              <label>Enter new password:</label>
-              <input type="text" id="password" name="password"><br><br>
-              <label>Repeat your password:</label>
-              <input type="text" id="confirmation" name="confirmation"><br><br>
-              <input type="submit" value="Submit">
-              <input type="hidden" id="evc" name="evc" value="""
-            + key
-            + """>
-            </form>
-        """
-        )
-
     return app
 
 

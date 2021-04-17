@@ -8,7 +8,7 @@ from RocketMaven.api.resources import (
     AssetSearchResource,
     DailyTimeSeriesResource,
     Explore,
-    Iforgot,
+    PasswordForgot,
     InvestorList,
     InvestorResource,
     LeaderboardList,
@@ -20,7 +20,7 @@ from RocketMaven.api.resources import (
     PortfolioListAll,
     PortfolioResource,
     PublicPortfolioResource,
-    Pw_reset,
+    PasswordReset,
     Report,
     TimeSeriesResource,
     TopAdditions,
@@ -131,9 +131,9 @@ api.add_resource(
 api.add_resource(Report, "/report", endpoint="report")
 
 
-api.add_resource(Iforgot, "/iforgot", endpoint="iforgot")
+api.add_resource(PasswordForgot, "/iforgot", endpoint="iforgot")
 
-api.add_resource(Pw_reset, "/pw_reset", endpoint="pw_reset")
+api.add_resource(PasswordReset, "/pw_reset", endpoint="pw_reset")
 
 api.add_resource(
     TimeSeriesResource, "/chart/<string:ticker_symbol>/<string:range>", endpoint="chart"
@@ -212,9 +212,9 @@ def register_controllers():
 
     apispec.spec.path(view=WatchList, app=current_app, api=api)
     apispec.spec.path(view=WatchAsset, app=current_app, api=api)
-    apispec.spec.path(view=Iforgot, app=current_app, api=api)
+    apispec.spec.path(view=PasswordForgot, app=current_app, api=api)
 
-    apispec.spec.path(view=Pw_reset, app=current_app, api=api)
+    apispec.spec.path(view=PasswordReset, app=current_app, api=api)
 
     apispec.spec.path(view=NotificationLow, app=current_app, api=api)
     apispec.spec.path(view=NotificationHigh, app=current_app, api=api)

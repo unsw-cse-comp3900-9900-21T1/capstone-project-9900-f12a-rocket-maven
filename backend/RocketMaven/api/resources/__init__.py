@@ -19,6 +19,8 @@ from RocketMaven.api.resources.investor import (
     WatchAsset,
     NotificationLow,
     NotificationHigh,
+    PasswordReset,
+    PasswordForgot,
 )
 from RocketMaven.api.resources.portfolio import (
     PortfolioResource,
@@ -32,8 +34,6 @@ from RocketMaven.api.resources.portfolio_event import (
     PortfolioEventList,
     PortfolioAssetHoldingList,
 )
-from RocketMaven.api.resources.iforgot import Iforgot
-from RocketMaven.api.resources.pw_reset import Pw_reset
 from RocketMaven.api.resources.portfolio import LeaderboardList
 from RocketMaven.api.resources.explore import Explore
 
@@ -58,13 +58,13 @@ __all__ = [
     "PortfolioEventList",
     "PortfolioAssetHoldingList",
     "Report",
-    "Iforgot",
-    "Pw_reset",
+    "PasswordReset",
+    "PasswordForgot",
     "LeaderboardList",
     "TopAdditions",
     "WatchAsset",
     "WatchList",
     "Explore",
     "NotificationLow",
-    "NotificationHigh"
+    "NotificationHigh",
 ]

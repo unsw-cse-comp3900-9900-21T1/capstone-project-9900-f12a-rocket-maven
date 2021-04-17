@@ -143,7 +143,11 @@ const Leaderboard = () => {
   return (
     <Page>
       <Title>Competition Leaderboard</Title>
-
+      Compete with other Rocket Maven users to get the top of the leaderboard! Only 2 competition
+      portfolios allowed per account.
+      <br />
+      Score is determined by the buying power + unrealised profit + realised profits.
+      <br />
       {userEntries && !isEmpty(userEntries) ? (
         <>
           <Subtitle>Your Rankings</Subtitle>

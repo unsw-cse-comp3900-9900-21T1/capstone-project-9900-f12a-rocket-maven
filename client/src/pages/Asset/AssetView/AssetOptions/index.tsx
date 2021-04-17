@@ -17,7 +17,7 @@ const AssetOptions = ({ tickerSymbol, currentPrice }: any) => {
   const routerObject = useHistory()
   const [children, setChildren] = useState([])
   const { data: fetchPortfolioData }: PortfolioListFetchResults = useFetchGetWithUserId(
-    '/all_portfolios',
+    '/all_portfolios?deleted=false'
   )
   const addAsset = useAddWatchListItem()
   const addToWatchlist = async () => {
@@ -27,12 +27,12 @@ const AssetOptions = ({ tickerSymbol, currentPrice }: any) => {
     }
   }
   const addToPortfolio = (e: any) => {
-    console.log(e, tickerSymbol)
+    console.log(e, tickerSymbol, currentPrice)
 
     // https://stackoverflow.com/questions/59464337/how-to-send-params-in-usehistory-of-react-router-dom
     routerObject.push({
       pathname: `${urls.portfolio}/${e.portfolio}/addremove`,
-      search: `?stock_ticker=${tickerSymbol}&current_price=${currentPrice}&holdings=1000000`,
+      search: `?stock_ticker=${tickerSymbol}&current_price=${currentPrice}&holdings=?`,
       state: {
         // location state
         update: true
@@ -43,7 +43,7 @@ const AssetOptions = ({ tickerSymbol, currentPrice }: any) => {
   useEffect(() => {
     if (fetchPortfolioData && !isEmpty(fetchPortfolioData)) {
       const tmpChildren: any = []
-      const tmpChildren2: any = fetchPortfolioData.results.map(e => {
+      const tmpChildren2: any = fetchPortfolioData.results.map((e) => {
         tmpChildren.push(e.id)
         return (
           <Option key={e.id} value={e.id}>
@@ -84,7 +84,7 @@ const AssetOptions = ({ tickerSymbol, currentPrice }: any) => {
                 htmlType="submit"
               >
                 Add
-                    </Button>
+              </Button>
             </Form.Item>
           </Form>
         }

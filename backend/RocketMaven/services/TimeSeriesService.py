@@ -77,12 +77,12 @@ def get_timeseries_data(ticker_symbol, data_range):
                 data = response.json()
                 if "timestamp" not in data["chart"]["result"][0]:
                     return {"msg": "No data"}, 400
-                print(data["chart"]["result"][0]["timestamp"])
-                print(data["chart"]["result"][0]["indicators"]["quote"][0]["high"])
-                print(data["chart"]["result"][0]["indicators"]["quote"][0]["volume"])
-                print(data["chart"]["result"][0]["indicators"]["quote"][0]["close"])
-                print(data["chart"]["result"][0]["indicators"]["quote"][0]["open"])
-                print(data["chart"]["result"][0]["indicators"]["quote"][0]["low"])
+                # print(data["chart"]["result"][0]["timestamp"])
+                # print(data["chart"]["result"][0]["indicators"]["quote"][0]["high"])
+                # print(data["chart"]["result"][0]["indicators"]["quote"][0]["volume"])
+                # print(data["chart"]["result"][0]["indicators"]["quote"][0]["close"])
+                # print(data["chart"]["result"][0]["indicators"]["quote"][0]["open"])
+                # print(data["chart"]["result"][0]["indicators"]["quote"][0]["low"])
                 try:
                     err = data["chart"]["error"]
                     results = []
@@ -148,12 +148,12 @@ def get_timeseries_data_advanced(ticker_symbol: str, start: datetime.datetime,
                 data = response.json()
                 if "timestamp" not in data["chart"]["result"][0]:
                     return {"msg": "No data"}, 400
-                print(data["chart"]["result"][0]["timestamp"])
-                print(data["chart"]["result"][0]["indicators"]["quote"][0]["high"])
-                print(data["chart"]["result"][0]["indicators"]["quote"][0]["volume"])
-                print(data["chart"]["result"][0]["indicators"]["quote"][0]["close"])
-                print(data["chart"]["result"][0]["indicators"]["quote"][0]["open"])
-                print(data["chart"]["result"][0]["indicators"]["quote"][0]["low"])
+                # print(data["chart"]["result"][0]["timestamp"])
+                # print(data["chart"]["result"][0]["indicators"]["quote"][0]["high"])
+                # print(data["chart"]["result"][0]["indicators"]["quote"][0]["volume"])
+                # print(data["chart"]["result"][0]["indicators"]["quote"][0]["close"])
+                # print(data["chart"]["result"][0]["indicators"]["quote"][0]["open"])
+                # print(data["chart"]["result"][0]["indicators"]["quote"][0]["low"])
                 try:
                     err = data["chart"]["error"]
                     results = []

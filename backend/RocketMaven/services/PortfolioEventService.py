@@ -232,7 +232,7 @@ def create_event(portfolio_id):
                 portfolio_holdings
                 and portfolio_holdings.available_units - portfolio_event.units < 0
                 and portfolio_event.add_action is False
-            ):
+            ) or (not portfolio_holdings and portfolio_event.add_action is False):
                 db.session.rollback()
                 return (
                     {
