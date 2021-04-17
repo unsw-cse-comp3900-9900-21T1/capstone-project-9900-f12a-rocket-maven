@@ -10,6 +10,7 @@ from RocketMaven.extensions import db
 from RocketMaven.models import Investor
 import string
 import random
+import datetime
 
 
 def try_reset():
@@ -25,18 +26,28 @@ def try_reset():
 
     user = Investor.query.filter_by(email=email).first()
     if user:
-        try:
-            # https://stackoverflow.com/questions/2511222/efficiently-generate-a-16-character-alphanumeric-string
-            email_verified_code = "".join(
-                random.choices(string.ascii_letters + string.digits, k=64)
-            )
-            user.email_verified_code = email_verified_code
-            db.session.commit()
-            send(email, email_verified_code)
-            return {"msg": "Password reset email has been sent"}, 200
-        except Exception as err:
-            print(err)
-            return {"msg": "Error with password reset"}, 500
+        if not user.email_last_reset_attempt or (
+            datetime.datetime.now() - user.email_last_reset_attempt
+            > datetime.timedelta(minutes=2)
+        ):
+            try:
+                # https://stackoverflow.com/questions/2511222/efficiently-generate-a-16-character-alphanumeric-string
+                email_verified_code = "".join(
+                    random.choices(string.ascii_letters + string.digits, k=64)
+                )
+                user.email_last_reset_attempt = datetime.datetime.now()
+                user.email_verified_code = email_verified_code
+                db.session.commit()
+                send(email, email_verified_code)
+                return {"msg": "Password reset email has been sent"}, 200
+            except Exception as err:
+                print(err)
+                return {"msg": "Error with password reset"}, 500
+        else:
+            return {
+                "msg": "Password reset email already sent, please try again later"
+            }, 400
+
     else:
         return {"msg": "No such email in records"}, 404
 
