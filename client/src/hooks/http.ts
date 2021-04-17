@@ -246,7 +246,7 @@ export const useFetchAPIPublicOrLoggedInData = (api_part: string, setData: any):
   return { isLoading }
 }
 
-export const useFetchAPIPublicData = (tickerSymbol: string): any => {
+export const useFetchAssetData = (tickerSymbol: string): any => {
   const endPointUrl = `/api/v1/assets/${tickerSymbol}`
   return useAbstractFetchOnMount(endPointUrl)
 }
@@ -289,13 +289,13 @@ export const useGetWatchlist = (refreshFlag?: number): any => {
 }
 
 export const useAdvancedSearch = (): any => {
-  const endPointUrl = 'api/v1/explore'
+  const endPointUrl = '/api/v1/explore'
   const { data, isLoading, myFetch } = useAbstractFetchOnSubmit(endPointUrl)
   return { data, isLoading, myFetch }
 }
 
 export const useGetChartData = (): any => {
-  const { myFetch } = useAbstractFetchOnSubmit('api/v1/')
+  const { myFetch } = useAbstractFetchOnSubmit('/api/v1')
   return myFetch
 }
 
