@@ -1,3 +1,4 @@
+import { RealisedValue, UnrealisedValue } from '@rocketmaven/components/TableTooltips'
 import { Text } from '@rocketmaven/componentsStyled/Typography'
 import { urls } from '@rocketmaven/data/urls'
 import { Link } from 'react-router-dom'
@@ -42,13 +43,13 @@ export const portfolioColumns = [
   { title: 'Purchase Cost', dataIndex: 'Purchase Cost' },
   { title: 'Current Market', dataIndex: 'Current Market' },
   {
-    title: 'Unrealised (Market - Purchase)',
+    title: UnrealisedValue,
     dataIndex: 'Unrealised',
     render: numberChangeRenderer
   },
   {
-    title: 'Realised (Sold Value)',
-    dataIndex: 'Realised (Sold Value)',
+    title: RealisedValue,
+    dataIndex: 'Realised',
     render: numberChangeRenderer
   },
   {
@@ -138,5 +139,5 @@ export const assetColumns = [
       }
       return null
     }
-  },
+  }
 ]

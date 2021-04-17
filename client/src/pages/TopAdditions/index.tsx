@@ -49,7 +49,7 @@ const TopAdditions = () => {
           Unrealised:
             currencyPrefix +
             (portfolio.current_value_sum - portfolio.purchase_value_sum).toString(),
-          'Realised (Sold Value)': (currencyPrefix + portfolio.realised_sum).toString(),
+          Realised: (currencyPrefix + portfolio.realised_sum).toString(),
           'View Portfolio': portfolio.public_portfolio ? portfolio.id : 0
         })
       }
