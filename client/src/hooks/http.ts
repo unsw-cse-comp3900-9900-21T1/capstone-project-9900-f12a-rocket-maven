@@ -113,13 +113,13 @@ const useAbstractFetchOnMount = (url: string, refreshFlag?: number) => {
   return { data, isLoading }
 }
 
-const useAbstractFetchOnSubmit = (url: string) => {
+const useAbstractFetchOnSubmit = (url: string, method?: HttpMethod) => {
   const [data, setData] = useState({})
   const [isLoading, setIsLoading] = useState(false)
   const { accessToken, revalidateAccessToken, dispatch } = useAccessToken()
   const isLoggedIn = useIsLoggedIn()
   const routerObject = useHistory()
-  const myFetch = async (query: string) => {
+  const myFetch = async (apiPath: string) => {
     try {
       const results = await abstractFetch({
         accessToken,
@@ -128,9 +128,10 @@ const useAbstractFetchOnSubmit = (url: string) => {
         isLoading,
         setIsLoading,
         isLoggedIn,
-        url: url + (query ? query : ''),
+        url: url + (apiPath ? apiPath : ''),
         dispatch,
         routerObject,
+        method,
       })
       return results
     } catch (error) {
@@ -245,32 +246,9 @@ export const useFetchAPIPublicOrLoggedInData = (api_part: string, setData: any):
   return { isLoading }
 }
 
-export const useFetchAPIPublicData = (api_part: string, setData: any): any => {
-  useEffect(() => {
-    const myFetch = async () => {
-      try {
-        const response = await fetch(`/api/v1${api_part}`, {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json'
-          }
-        })
-        const data = await response.json()
-        if (!response.ok) {
-          if (data.msg) {
-            throw Error(data.msg)
-          }
-          throw Error(`${response.status}`)
-        }
-        setData(data)
-      } catch (error) {
-        message.error(error.message)
-        setData({})
-      }
-    }
-    myFetch()
-    return
-  }, [])
+export const useFetchAPIPublicData = (tickerSymbol: string): any => {
+  const endPointUrl = `/api/v1/assets/${tickerSymbol}`
+  return useAbstractFetchOnMount(endPointUrl)
 }
 
 export const useFetchGetWithUserId = (urlEnd: string, refreshFlag?: number): any => {
@@ -316,27 +294,8 @@ export const useAdvancedSearch = (): any => {
   return { data, isLoading, myFetch }
 }
 
-export const useGetChartData = () => {
-  const [isLoading, setIsLoading] = useState(false)
-  const { accessToken, revalidateAccessToken, dispatch } = useAccessToken()
-  const routerObject = useHistory()
-  const myFetch = async (chartDataUrl: string) => {
-    try {
-      const results = abstractFetch({
-        accessToken,
-        revalidateAccessToken,
-        isLoading,
-        setIsLoading,
-        url: `/api/v1/${chartDataUrl}`,
-        dispatch,
-        routerObject,
-      })
-      return results
-    } catch (error) {
-      message.error(error.message)
-      return null
-    }
-  }
+export const useGetChartData = (): any => {
+  const { myFetch } = useAbstractFetchOnSubmit('api/v1/')
   return myFetch
 }
 
@@ -407,26 +366,8 @@ export const usePasswordReset = () => {
 }
 
 export const useDeleteWatchListItem = () => {
-  const [isLoading, setIsLoading] = useState(false)
-  const { accessToken, revalidateAccessToken, dispatch } = useAccessToken()
-  const routerObject = useHistory()
-  const myFetch = async (assetId: string) => {
-    try {
-      const results = abstractFetch({
-        accessToken,
-        revalidateAccessToken,
-        isLoading,
-        setIsLoading,
-        url: `/api/v1/watchlist/${assetId}`,
-        method: 'DELETE',
-        dispatch,
-        routerObject,
-      })
-      return results
-    } catch (error) {
-      message.error(error.message)
-    }
-  }
+  const urlPrefix = '/api/v1/watchlist/'
+  const { myFetch } = useAbstractFetchOnSubmit(urlPrefix, 'DELETE')
   return myFetch
 }
 
@@ -456,25 +397,7 @@ export const useUpdateWatchListItem = () => {
 }
 
 export const useAddWatchListItem = () => {
-  const [isLoading, setIsLoading] = useState(false)
-  const { accessToken, revalidateAccessToken, dispatch } = useAccessToken()
-  const routerObject = useHistory()
-  const myFetch = async (tickerSymbol: string) => {
-    try {
-      const results = abstractFetch({
-        accessToken,
-        revalidateAccessToken,
-        isLoading,
-        setIsLoading,
-        url: `/api/v1/watchlist/${tickerSymbol}`,
-        method: 'POST',
-        dispatch,
-        routerObject,
-      })
-      return results
-    } catch (error) {
-      message.error(error.message)
-    }
-  }
+  const urlPrefix = '/api/v1/watchlist/'
+  const { myFetch } = useAbstractFetchOnSubmit(urlPrefix, 'POST')
   return myFetch
 }
