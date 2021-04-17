@@ -131,7 +131,7 @@ const PortfolioCard = ({ portfolio, refreshPortfolios, singleView = false }: Pro
     {
       title: 'Purchase Price',
       dataIndex: 'average_price',
-      render: (value: number) => currencyPrefix + ' ' + +value.toFixed(2)
+      render: (value: number) => currencyPrefix + '\u200b' + +value.toFixed(2)
     },
     {
       title: (
@@ -144,7 +144,7 @@ const PortfolioCard = ({ portfolio, refreshPortfolios, singleView = false }: Pro
         </Tooltip>
       ),
       dataIndex: 'market_price',
-      render: (value: number) => currencyPrefix + ' ' + value.toFixed(2)
+      render: (value: number) => currencyPrefix + '\u200b' + value.toFixed(2)
     },
 
     ...(singleView
@@ -152,7 +152,7 @@ const PortfolioCard = ({ portfolio, refreshPortfolios, singleView = false }: Pro
           {
             title: 'Purchase Value',
             dataIndex: 'purchase_value',
-            render: (value: number) => currencyPrefix + ' ' + +value.toFixed(2)
+            render: (value: number) => currencyPrefix + '\u200b' + +value.toFixed(2)
           }
         ]
       : []),
@@ -160,7 +160,7 @@ const PortfolioCard = ({ portfolio, refreshPortfolios, singleView = false }: Pro
     {
       title: 'Current Value',
       dataIndex: 'current_value',
-      render: (value: number) => currencyPrefix + ' ' + +value.toFixed(2)
+      render: (value: number) => currencyPrefix + '\u200b' + +value.toFixed(2)
     },
 
     {
@@ -175,8 +175,8 @@ const PortfolioCard = ({ portfolio, refreshPortfolios, singleView = false }: Pro
             title: 'Realised Total',
             dataIndex: 'realised_total',
             render: (value: number) => value.toFixed(2)
-          },
-          { title: 'Last Updated', dataIndex: 'last_updated' }
+          }
+          /* { title: 'Last Updated', dataIndex: 'last_updated' } */
         ]
       : []),
 
