@@ -6,8 +6,8 @@ import { useGetChartData } from '@rocketmaven/hooks/http'
 import Page from '@rocketmaven/pages/_Page'
 import { Form, message } from 'antd'
 import React, { useEffect, useState } from 'react'
-import GraphCard from './GraphCard'
-import { afterSetExtremesPrototype } from './GraphCard/graphDefinitions'
+import MultiAssetGraphCard from './MultiAssetGraphCard'
+import { afterSetExtremesPrototype } from './MultiAssetGraphCard/graphDefinitions'
 
 const Compare = () => {
   const [graphData, setGraphData] = useState<any[]>([])
@@ -93,7 +93,7 @@ const Compare = () => {
           </Form.Item>
         </Form>
       </Card>
-      <GraphCard
+      <MultiAssetGraphCard
         graphData={graphData}
         tickers={tickers}
         afterSetExtremes={afterSetExtremes}

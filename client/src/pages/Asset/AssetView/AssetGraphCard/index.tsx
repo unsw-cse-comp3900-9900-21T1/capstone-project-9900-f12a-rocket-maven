@@ -1,25 +1,26 @@
+
 import MainChart from '@rocketmaven/components/MainChart'
 import { Card } from '@rocketmaven/componentsStyled/Card'
 import { isEmpty } from 'ramda'
 import { createGraphOptions } from './graphDefinitions'
 import { convertGraphDataToSeries } from './helper'
 
-const GraphCard = ({
+const AssetGraphCard = ({
   graphData,
-  tickers,
+  tickerSymbol,
   afterSetExtremes,
   seriesContext,
 }: any) => {
-  if (!graphData || isEmpty(graphData) || graphData.length !== tickers.length) {
+  if (!graphData || isEmpty(graphData)) {
     return null
   }
-  const tmpSeriesData = convertGraphDataToSeries(graphData)
+  const seriesData = convertGraphDataToSeries(graphData, tickerSymbol)
   const options = createGraphOptions({
     seriesContext,
-    tmpSeriesData,
+    seriesData,
     afterSetExtremes,
+    tickerSymbol,
   })
-
   return (
     <Card>
       <div style={{ height: '70vh', width: '100%' }}>
@@ -29,4 +30,4 @@ const GraphCard = ({
   )
 }
 
-export default GraphCard
+export default AssetGraphCard
