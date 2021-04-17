@@ -19,7 +19,7 @@ export const PortfolioCard = ({ portfolio }: Props) => {
       'Current Market': portfolio.current_value_sum.toFixed(2),
       'Purchase Cost': portfolio.purchase_value_sum.toFixed(2),
       Unrealised: (portfolio.current_value_sum - portfolio.purchase_value_sum).toFixed(2),
-      'Realised (Sold Value)': portfolio.realised_sum.toFixed(2)
+      Realised: portfolio.realised_sum.toFixed(2)
     }
   ]
   return (

@@ -1,3 +1,4 @@
+import { RealisedValue, UnrealisedValue } from '@rocketmaven/components/TableTooltips'
 
 const numberChangeRenderer = (testVal: string, record: any) => {
   const text = parseFloat(testVal).toFixed(2)
@@ -54,13 +55,13 @@ export const valueColumns = [
   { title: 'Purchase Cost', dataIndex: 'Purchase Cost' },
   { title: 'Current Market', dataIndex: 'Current Market' },
   {
-    title: 'Unrealised (Market - Purchase)',
+    title: UnrealisedValue,
     dataIndex: 'Unrealised',
     render: numberChangeRenderer
   },
   {
-    title: 'Realised (Sold Value)',
-    dataIndex: 'Realised (Sold Value)',
+    title: RealisedValue,
+    dataIndex: 'Realised',
     render: numberChangeRenderer
   }
 ]

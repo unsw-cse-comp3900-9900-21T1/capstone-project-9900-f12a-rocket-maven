@@ -1,4 +1,5 @@
 import { EyeOutlined, PlusOutlined, SettingOutlined, ShareAltOutlined } from '@ant-design/icons'
+import { RealisedValue, UnrealisedValue } from '@rocketmaven/components/TableTooltips'
 import { Card } from '@rocketmaven/componentsStyled/Card'
 import { Row } from '@rocketmaven/componentsStyled/Grid'
 import { storeContext } from '@rocketmaven/data/app/store'
@@ -206,16 +207,15 @@ const PortfolioCard = ({ portfolio, refreshPortfolios, singleView = false }: Pro
       }
     })
   }
-
-  const value = {
-    'Current Market': [false, portfolio.current_value_sum],
-    'Purchase Cost': [false, portfolio.purchase_value_sum],
-    'Unrealised (Market - Purchase)': [
-      true,
-      (portfolio.current_value_sum - portfolio.purchase_value_sum).toFixed(2)
+  const value = [
+    ['Current Market', [false, portfolio.current_value_sum]],
+    ['Purchase Cost', [false, portfolio.purchase_value_sum]],
+    [
+      UnrealisedValue,
+      [true, (portfolio.current_value_sum - portfolio.purchase_value_sum).toFixed(2)]
     ],
-    'Realised (Sold Value)': [true, portfolio.realised_sum]
-  }
+    [RealisedValue, [true, portfolio.realised_sum]]
+  ]
 
   let isPortfolioEmpty = true
 
@@ -356,7 +356,7 @@ const PortfolioCard = ({ portfolio, refreshPortfolios, singleView = false }: Pro
       </Descriptions>
 
       <Row>
-        {Object.entries(value).map(function (e) {
+        {value.map(function (e) {
           return (
             <Statistic
               title={e[0]}
@@ -373,8 +373,10 @@ const PortfolioCard = ({ portfolio, refreshPortfolios, singleView = false }: Pro
         })}
       </Row>
 
-      {portfolio.recommended ? <Divider>Recommended</Divider> : null}
-      {portfolio.recommended
+      {portfolio.recommended && portfolio.recommended.length > 0 ? (
+        <Divider>Recommended</Divider>
+      ) : null}
+      {portfolio.recommended && portfolio.recommended.length > 0
         ? portfolio.recommended.map(function (e) {
             return (
               <Link to={urls.asset + '/' + e[0]}>

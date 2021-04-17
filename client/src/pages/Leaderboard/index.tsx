@@ -1,4 +1,5 @@
 import { CrownOutlined } from '@ant-design/icons'
+import { RealisedValue, UnrealisedValue } from '@rocketmaven/components/TableTooltips'
 import { Subtitle, Title } from '@rocketmaven/componentsStyled/Typography'
 import { urls } from '@rocketmaven/data/urls'
 import { useFetchAPIPublicOrLoggedInData } from '@rocketmaven/hooks/http'
@@ -6,7 +7,7 @@ import { useUserId } from '@rocketmaven/hooks/store'
 import '@rocketmaven/pages/Leaderboard/style.less'
 import { PortfolioInfo } from '@rocketmaven/pages/Portfolio/types'
 import Page from '@rocketmaven/pages/_Page'
-import { message, Table, Tooltip } from 'antd'
+import { message, Table } from 'antd'
 import { isEmpty } from 'ramda'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
@@ -75,21 +76,13 @@ const Leaderboard = () => {
     { title: 'Score', dataIndex: 'Score' },
     { title: 'Purchase Cost', dataIndex: 'Purchase Cost' },
     {
-      title: (
-        <Tooltip placement="topLeft" title={`Market - Purchase`} arrowPointAtCenter>
-          <span style={{ textDecoration: 'underline dotted' }}>Unrealised</span>
-        </Tooltip>
-      ),
+      title: UnrealisedValue,
       dataIndex: 'Unrealised',
       render: numberChangeRenderer
     },
     {
-      title: (
-        <Tooltip placement="topLeft" title={`Sold Value`} arrowPointAtCenter>
-          <span style={{ textDecoration: 'underline dotted' }}>Realised</span>
-        </Tooltip>
-      ),
-      dataIndex: 'Realised (Sold Value)',
+      title: RealisedValue,
+      dataIndex: 'Realised',
       render: numberChangeRenderer
     },
     {
@@ -108,7 +101,7 @@ const Leaderboard = () => {
       'Current Market': portfolio.current_value_sum.toFixed(2),
       'Purchase Cost': portfolio.purchase_value_sum.toFixed(2),
       Unrealised: portfolio.current_value_sum - portfolio.purchase_value_sum,
-      'Realised (Sold Value)': portfolio.realised_sum,
+      Realised: portfolio.realised_sum,
       'View Portfolio': portfolio.public_portfolio ? portfolio.id : 0
     }
   }
