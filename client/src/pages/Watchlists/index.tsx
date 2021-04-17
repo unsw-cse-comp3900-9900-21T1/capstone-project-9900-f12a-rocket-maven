@@ -3,6 +3,7 @@ import { Card } from '@rocketmaven/componentsStyled/Card'
 import { Title } from '@rocketmaven/componentsStyled/Typography'
 import {
   useAddWatchListItem,
+
   useDeleteWatchListItem,
   useGetWatchlist
 } from '@rocketmaven/hooks/http'
@@ -10,14 +11,12 @@ import Page from '@rocketmaven/pages/_Page'
 import { Button, Form, Table } from 'antd'
 import { isEmpty } from 'ramda'
 import { useState } from 'react'
-import { useHistory } from 'react-router-dom'
 import { createWatchListColumns } from './tableDefinitions'
 import { AssetInfo, WatchListItem, WatchListPagination } from './types'
 
 const Watchlists = () => {
   const [refreshAfterNotificationSet, setRefreshAfterNotificationSet] = useState(1)
   const watchlist: WatchListPagination = useGetWatchlist(refreshAfterNotificationSet)
-  const routerObject = useHistory()
   const deleteAssetId = useDeleteWatchListItem()
   const addWatchListItem = useAddWatchListItem()
   const deleteWatchListItem = async (e: any) => {

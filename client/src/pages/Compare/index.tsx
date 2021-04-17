@@ -16,7 +16,7 @@ const Compare = () => {
   const [seriesContext, setSeriesContext] = useState<string>('monthly')
   const getChartData = useGetChartData()
 
-  // Curry up references to functions/objections needed to be passed into graph
+  // Curry up references to functions/objects needed to be passed into graph
   const afterSetExtremes = afterSetExtremesPrototype(setChartRef, seriesContext, setSeriesContext)
 
   const onFinish = async (values: any) => {
