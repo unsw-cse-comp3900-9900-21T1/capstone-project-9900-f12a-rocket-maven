@@ -1,6 +1,6 @@
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from RocketMaven.services import InvestorService, WatchlistService
+from RocketMaven.services import EmailService, InvestorService, WatchlistService
 
 
 class InvestorResource(Resource):
@@ -139,7 +139,6 @@ class InvestorList(Resource):
 
 
 class WatchAsset(Resource):
-
     @jwt_required()
     def post(self, ticker_symbol):
         """
@@ -190,7 +189,6 @@ class WatchAsset(Resource):
 
 
 class WatchList(Resource):
-
     @jwt_required()
     def get(self):
         """
@@ -222,7 +220,6 @@ class WatchList(Resource):
 
 
 class NotificationLow(Resource):
-
     @jwt_required()
     def put(self, ticker_symbol):
         """
@@ -257,35 +254,105 @@ class NotificationLow(Resource):
 
 
 class NotificationHigh(Resource):
-
     @jwt_required()
     def put(self, ticker_symbol):
         """
-          ---
-          summary: put notification
-          tags:
-            - WatchList
-          requestBody:
-                content:
-                  application/json:
-                    schema:
-                      type: object
-          parameters:
-              - in: path
-                name: ticker_symbol
-                schema:
-                  type: string
-          responses:
-            200:
-              description: set notification
+        ---
+        summary: put notification
+        tags:
+          - WatchList
+        requestBody:
               content:
                 application/json:
                   schema:
-                    type: string
-            400:
-              description: Malformed request
-            404:
-              description: investor does not exist
+                    type: object
+        parameters:
+            - in: path
+              name: ticker_symbol
+              schema:
+                type: string
+        responses:
+          200:
+            description: set notification
+            content:
+              application/json:
+                schema:
+                  type: string
+          400:
+            description: Malformed request
+          404:
+            description: investor does not exist
         """
         current_user = get_jwt_identity()
         return WatchlistService.set_nofication("high", current_user, ticker_symbol)
+
+
+class PasswordForgot(Resource):
+    def post(self):
+        """
+        ---
+        summary: Password Forgot
+        description: password reset page
+        tags:
+          - Public
+        requestBody:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                    example: email
+                    required: true
+
+        responses:
+          200:
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    investor: InvestorSchema
+          400:
+            description: Malformed request
+          404:
+            description: investor does not exist
+        security: []
+        """
+        return EmailService.try_reset()
+
+
+class PasswordReset(Resource):
+    def post(self):
+        """
+        ---
+        summary: Password Reset
+        description: password reset page
+        tags:
+          - Investors
+        requestBody:
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    email:
+                      type: string
+                      example: email
+                      required: true
+
+        responses:
+          200:
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    investor: InvestorSchema
+          400:
+            description: Malformed request
+          404:
+            description: investor does not exist
+        """
+        return EmailService.change_password()

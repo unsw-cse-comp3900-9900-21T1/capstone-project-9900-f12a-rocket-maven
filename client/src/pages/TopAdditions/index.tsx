@@ -1,4 +1,5 @@
 import { Subtitle, Title } from '@rocketmaven/componentsStyled/Typography'
+import { currencyCodeToName } from '@rocketmaven/data/currency-code-to-name'
 import { useFetchTopAdditions } from '@rocketmaven/hooks/http'
 import { PortfolioInfo } from '@rocketmaven/pages/Portfolio/types'
 import Page from '@rocketmaven/pages/_Page'
@@ -30,15 +31,28 @@ const TopAdditions = () => {
     const datas: any = []
     const portfolios: [PortfolioInfo] = [data.portfolio]
     portfolios.forEach((portfolio, index) => {
-      datas.push({
-        Investor: portfolio.investor,
-        'Buying Power': portfolio.buying_power.toFixed(2),
-        'Current Market': portfolio.current_value_sum.toFixed(2),
-        'Purchase Cost': portfolio.purchase_value_sum.toFixed(2),
-        Unrealised: portfolio.current_value_sum - portfolio.purchase_value_sum,
-        'Realised (Sold Value)': portfolio.realised_sum,
-        'View Portfolio': portfolio.public_portfolio ? portfolio.id : 0
-      })
+      if (portfolio) {
+        let currencyPrefix = ''
+        if (portfolio.currency && portfolio.currency in currencyCodeToName) {
+          Object.entries(currencyCodeToName).forEach((keyVal) => {
+            if (keyVal[0] == portfolio.currency) {
+              currencyPrefix = keyVal[1]['symbol']
+            }
+          })
+        }
+
+        datas.push({
+          Investor: portfolio.investor,
+          'Buying Power': currencyPrefix + portfolio.buying_power.toFixed(2),
+          'Current Market': currencyPrefix + portfolio.current_value_sum.toFixed(2),
+          'Purchase Cost': currencyPrefix + portfolio.purchase_value_sum.toFixed(2),
+          Unrealised:
+            currencyPrefix +
+            (portfolio.current_value_sum - portfolio.purchase_value_sum).toString(),
+          'Realised (Sold Value)': (currencyPrefix + portfolio.realised_sum).toString(),
+          'View Portfolio': portfolio.public_portfolio ? portfolio.id : 0
+        })
+      }
     })
 
     content = (

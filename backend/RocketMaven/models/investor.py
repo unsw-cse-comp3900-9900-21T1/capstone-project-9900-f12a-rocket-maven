@@ -14,13 +14,14 @@ class Investor(db.Model):
 
     username = db.Column(db.String(80), unique=True, nullable=False)
     _password = db.Column("password", db.String(255), nullable=False)
+
+    # Not used (would slow down the demo a bit too much)
     email_verified = db.Column(db.Boolean, default=False)
 
+    # Not used
     admin_account = db.Column(db.Boolean, default=False)
 
     visibility = db.Column(db.Boolean, default=False)
-
-    # TODO: validate the Country Type and return a 401? error
 
     country_of_residency = db.Column(CountryType, unique=False, nullable=False)
 
@@ -33,9 +34,6 @@ class Investor(db.Model):
     email_verified_code = db.Column(db.String(64), unique=True, nullable=True)
 
     # Portfolios owned, 1 to many (many side)
-    # portfolios = db.relationship(
-    #     "Portfolio", backref="investor", lazy=True, uselist=True
-    # )
     portfolios = db.relationship("Portfolio", lazy="dynamic", back_populates="investor")
 
     @hybrid_property
@@ -55,13 +53,13 @@ class Investor(db.Model):
     #     return email
 
 
-# # Assets watched, many to many
-# # Needs to be a model (although not recommended) to fit Marshmallow
+# Assets watched, many to many
+# Needs to be a model (although not recommended) to fit Marshmallow
 class Watchlist(db.Model):
     asset = relationship("Asset", backref="asset_watchlist")
     asset_id = db.Column(
         db.String(80), db.ForeignKey("asset.ticker_symbol"), primary_key=True
     )
-    price_high = db.Column(db.Float())  # ? or float
-    price_low = db.Column(db.Float())  # ? or float
+    price_high = db.Column(db.Float())
+    price_low = db.Column(db.Float())
     investor_id = db.Column(db.Integer, db.ForeignKey("investor.id"), primary_key=True)

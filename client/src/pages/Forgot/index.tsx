@@ -37,7 +37,7 @@ const Forgot = () => {
               disabled={isLoading}
               loading={isLoading}
             >
-              Reset Password
+              Request Password Reset
             </Button>
           </Form.Item>
         </Form>

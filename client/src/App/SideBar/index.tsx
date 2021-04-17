@@ -12,6 +12,7 @@ import {
   FaUserPlus
 } from 'react-icons/fa'
 import { Link, useLocation } from 'react-router-dom'
+import { ReactComponent as LogoImage } from './logo.svg'
 
 const size = {
   width: 30,
@@ -44,8 +45,8 @@ function sideBarItems(isLoggedIn: boolean) {
 const Logo = () => {
   return (
     <LogoWrap>
-      <a href="/">
-        <img src="/logo.svg" width="200px" />
+      <a href="/" style={{ width: '200px' }}>
+        <LogoImage width="200px" />
       </a>
     </LogoWrap>
   )

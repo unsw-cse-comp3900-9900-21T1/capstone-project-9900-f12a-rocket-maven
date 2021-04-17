@@ -1,7 +1,8 @@
-import { EyeOutlined, PlusOutlined, SettingOutlined } from '@ant-design/icons'
+import { EyeOutlined, PlusOutlined, SettingOutlined, ShareAltOutlined } from '@ant-design/icons'
 import { Card } from '@rocketmaven/componentsStyled/Card'
 import { Row } from '@rocketmaven/componentsStyled/Grid'
 import { storeContext } from '@rocketmaven/data/app/store'
+import { currencyCodeToName } from '@rocketmaven/data/currency-code-to-name'
 import { urls } from '@rocketmaven/data/urls'
 // import { PortfolioWrap } from '@rocketmaven/pages/Portfolio/PortfolioList/PaginatedPortfolioDisplay/styled'
 import { useAccessToken } from '@rocketmaven/hooks/http'
@@ -10,14 +11,16 @@ import {
   Button,
   Descriptions,
   Divider,
+  Input,
   message,
+  Modal,
   PageHeader,
   Statistic,
   Table,
   Tag,
   Tooltip
 } from 'antd'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { Link, useHistory } from 'react-router-dom'
 
 type Props = {
@@ -32,6 +35,20 @@ const PortfolioCard = ({ portfolio, refreshPortfolios, singleView = false }: Pro
 
   const routerObject = useHistory()
   const { accessToken, revalidateAccessToken } = useAccessToken()
+  const [isShareModalVisible, setIsShareModalVisible] = useState(false)
+  const [modalShareURL, setModalShareURL] = useState('')
+
+  const showModalForShare = () => {
+    setIsShareModalVisible(true)
+  }
+
+  const handleOkForShare = () => {
+    setIsShareModalVisible(false)
+  }
+
+  const handleCancelForShare = () => {
+    setIsShareModalVisible(false)
+  }
 
   /* (portfolio_id: string, asset_id: string) */
   async function useDeleteAssetPortfolioHolding(e: any) {
@@ -113,7 +130,7 @@ const PortfolioCard = ({ portfolio, refreshPortfolios, singleView = false }: Pro
     {
       title: 'Purchase Price',
       dataIndex: 'average_price',
-      render: (value: number) => value.toFixed(2)
+      render: (value: number) => currencyPrefix + ' ' + +value.toFixed(2)
     },
     {
       title: (
@@ -126,7 +143,7 @@ const PortfolioCard = ({ portfolio, refreshPortfolios, singleView = false }: Pro
         </Tooltip>
       ),
       dataIndex: 'market_price',
-      render: (value: number) => value.toFixed(2)
+      render: (value: number) => currencyPrefix + ' ' + value.toFixed(2)
     },
 
     ...(singleView
@@ -134,7 +151,7 @@ const PortfolioCard = ({ portfolio, refreshPortfolios, singleView = false }: Pro
           {
             title: 'Purchase Value',
             dataIndex: 'purchase_value',
-            render: (value: number) => value.toFixed(2)
+            render: (value: number) => currencyPrefix + ' ' + +value.toFixed(2)
           }
         ]
       : []),
@@ -142,7 +159,7 @@ const PortfolioCard = ({ portfolio, refreshPortfolios, singleView = false }: Pro
     {
       title: 'Current Value',
       dataIndex: 'current_value',
-      render: (value: number) => value.toFixed(2)
+      render: (value: number) => currencyPrefix + ' ' + +value.toFixed(2)
     },
 
     {
@@ -178,6 +195,15 @@ const PortfolioCard = ({ portfolio, refreshPortfolios, singleView = false }: Pro
           Delete
         </a>
       )
+    })
+  }
+
+  let currencyPrefix = ''
+  if (portfolio.currency && portfolio.currency in currencyCodeToName) {
+    Object.entries(currencyCodeToName).forEach((keyVal) => {
+      if (keyVal[0] == portfolio.currency) {
+        currencyPrefix = keyVal[1]['symbol']
+      }
     })
   }
 
@@ -286,11 +312,37 @@ const PortfolioCard = ({ portfolio, refreshPortfolios, singleView = false }: Pro
                 <Link to={urls.portfolio + `/${portfolio.id}/history`}>
                   <EyeOutlined key="ellipsis" />
                 </Link>
-              </Tooltip>
+              </Tooltip>,
+              ...(portfolio.public_portfolio
+                ? [
+                    <Tooltip placement="topLeft" title="Share" arrowPointAtCenter>
+                      <ShareAltOutlined
+                        key="share"
+                        onClick={() => {
+                          setModalShareURL(
+                            new URL(window.location.href).origin +
+                              urls.portfolio +
+                              '/' +
+                              portfolio.id
+                          )
+                          showModalForShare()
+                        }}
+                      />
+                    </Tooltip>
+                  ]
+                : [])
             ]
           : []
       }
     >
+      <Modal
+        title="Share Portfolio"
+        visible={isShareModalVisible}
+        onOk={handleOkForShare}
+        onCancel={handleCancelForShare}
+      >
+        <Input value={modalShareURL} />
+      </Modal>
       <Descriptions column={2} size="small" bordered style={{ marginBottom: '1rem' }}>
         {singleView ? (
           <Descriptions.Item label="Owner">{portfolio.investor.username}</Descriptions.Item>
@@ -315,6 +367,7 @@ const PortfolioCard = ({ portfolio, refreshPortfolios, singleView = false }: Pro
                   ? getColorOfValue((e[1] as [boolean, number])[1])
                   : 'initial'
               }}
+              prefix={currencyPrefix}
             />
           )
         })}

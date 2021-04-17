@@ -9,6 +9,7 @@ from flask import request
 from RocketMaven.extensions import db
 from RocketMaven.models import Investor
 import string
+import random
 
 
 def try_reset():
@@ -32,11 +33,12 @@ def try_reset():
             user.email_verified_code = email_verified_code
             db.session.commit()
             send(email, email_verified_code)
-            return {"msg": "password reset email has been sent"}, 200
+            return {"msg": "Password reset email has been sent"}, 200
         except Exception as err:
+            print(err)
             return {"msg": "Error with password reset"}, 500
     else:
-        return {"msg": "no such email in records"}, 404
+        return {"msg": "No such email in records"}, 404
 
 
 def send(email_to: str, email_verified_code: str):
@@ -102,9 +104,9 @@ def change_password():
                 user.password = password
                 user.email_verified_code = None
                 db.session.commit()
-                return {"msg": "Password change successfull"}, 200
+                return {"msg": "Password change successful"}, 200
             else:
-                return {"msg": "Password change unsuccessfull"}, 404
+                return {"msg": "Password change unsuccessful"}, 404
         except Exception as err:
             print(err)
             return {"msg": "Unexpected error"}, 500

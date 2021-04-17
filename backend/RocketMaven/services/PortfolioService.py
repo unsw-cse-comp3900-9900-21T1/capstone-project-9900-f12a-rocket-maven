@@ -77,9 +77,13 @@ def get_all_portfolios(investor_id):
     """
     if not get_jwt_identity() or investor_id == 0:
         return {"results": []}
+
     schema = PortfolioSchema(many=True)
 
-    query = Portfolio.query.filter_by(investor_id=investor_id)
+    if request.args.get("deleted", "true") == "false":
+        query = Portfolio.query.filter_by(investor_id=investor_id, deleted=False)
+    else:
+        query = Portfolio.query.filter_by(investor_id=investor_id)
 
     return paginate(query, schema)
 
@@ -307,7 +311,7 @@ def get_report():
             series[portfolio_event.portfolio_id].append(
                 [
                     int(portfolio_event.event_date.timestamp()) * 1000,
-                    portfolio_event.tax_snapshot,
+                    portfolio_event.tax_full_snapshot,
                 ]
             )
 
@@ -453,47 +457,49 @@ def recommend_portfolio(asset_holdings):
             existing_assets.append(each["asset_id"])
             total_value += each["average_price"] * each["available_units"]
 
-        for each in asset_holdings:
-            # Loop through assets in portfolio
+        if total_value > 0:
 
-            recommended_local = []
+            for each in asset_holdings:
+                # Loop through assets in portfolio
 
-            if each["asset"]["market_cap"]:
-                portfolio_asset_industry = (
-                    Asset.query.filter_by(ticker_symbol=each["asset_id"])
-                    .first()
-                    .industry
-                )
+                recommended_local = []
 
-                for asset in Asset.query.filter_by(industry=portfolio_asset_industry):
-                    # Assets in the same industry as the portfolio asset
-                    if not asset.ticker_symbol in existing_assets:
-                        # That has not already been added to the portfolio
-                        # e.g. don't recommend ASX:CBA from ASX:NAB when ASX:CBA has already been added
-
-                        # Lowest market cap difference becomes largest value due to negation
-                        diff = (
-                            -abs(each["asset"]["market_cap"] - asset.market_cap),
-                            asset.ticker_symbol,
-                        )
-
-                        if len(recommended_local) < assets_to_display:
-                            heapq.heappush(recommended_local, diff)
-                        else:
-                            heapq.heappushpop(recommended_local, diff)
-
-            # Weigh listed recommendations based on the asset's share of the portfolio
-            current_asset_portion = (
-                each["average_price"] * each["available_units"] / total_value
-            )
-            recommended_local.reverse()
-            recommended.extend(
-                recommended_local[
-                    : max(
-                        int(assets_to_display * current_asset_portion),
-                        1,
+                if each["asset"]["market_cap"]:
+                    portfolio_asset_industry = (
+                        Asset.query.filter_by(ticker_symbol=each["asset_id"])
+                        .first()
+                        .industry
                     )
-                ]
-            )
+
+                    for asset in Asset.query.filter_by(industry=portfolio_asset_industry):
+                        # Assets in the same industry as the portfolio asset
+                        if not asset.ticker_symbol in existing_assets:
+                            # That has not already been added to the portfolio
+                            # e.g. don't recommend ASX:CBA from ASX:NAB when ASX:CBA has already been added
+
+                            # Lowest market cap difference becomes largest value due to negation
+                            diff = (
+                                -abs(each["asset"]["market_cap"] - asset.market_cap),
+                                asset.ticker_symbol,
+                            )
+
+                            if len(recommended_local) < assets_to_display:
+                                heapq.heappush(recommended_local, diff)
+                            else:
+                                heapq.heappushpop(recommended_local, diff)
+
+                # Weigh listed recommendations based on the asset's share of the portfolio
+                current_asset_portion = (
+                    each["average_price"] * each["available_units"] / total_value
+                )
+                recommended_local.reverse()
+                recommended.extend(
+                    recommended_local[
+                        : max(
+                            int(assets_to_display * current_asset_portion),
+                            1,
+                        )
+                    ]
+                )
 
         return [[x[1], x[1]] for x in recommended]

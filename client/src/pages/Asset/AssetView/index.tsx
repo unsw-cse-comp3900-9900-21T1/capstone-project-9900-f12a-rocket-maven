@@ -7,7 +7,7 @@ import { useParams } from 'react-router-dom'
 import AssetGraphCard from './AssetGraphCard'
 import { afterSetExtremesPrototype } from './AssetGraphCard/graphDefinitions'
 import AssetOptions from './AssetOptions'
-import AssetTableCard from "./AssetTableCard"
+import AssetTableCard from './AssetTableCard'
 
 type Params = {
   ticker_symbol: string
@@ -40,20 +40,15 @@ const AssetView = () => {
   return (
     <div>
       <Row>
-        <Subtitle>
-          {ticker_symbol}{' '}
-        </Subtitle>
-        {isLoggedIn ?
+        <Subtitle>{ticker_symbol} </Subtitle>
+        {isLoggedIn ? (
           <AssetOptions
             tickerSymbol={ticker_symbol}
-            currentPrice={assetData.current_price}
+            currentPrice={assetData?.asset ? assetData?.asset.current_price : 0}
           />
-          : null
-        }
+        ) : null}
       </Row>
-      <AssetTableCard
-        data={assetData}
-      />
+      <AssetTableCard data={assetData} />
       <AssetGraphCard
         graphData={graphData}
         tickerSymbol={ticker_symbol}
