@@ -32,6 +32,7 @@ class Investor(db.Model):
     date_of_birth = db.Column(db.Date, unique=False, nullable=True)
     gender = db.Column(db.String(80), unique=False, nullable=True)
     email_verified_code = db.Column(db.String(64), unique=True, nullable=True)
+    email_last_reset_attempt = db.Column(db.DateTime, nullable=True)
 
     # Portfolios owned, 1 to many (many side)
     portfolios = db.relationship("Portfolio", lazy="dynamic", back_populates="investor")
