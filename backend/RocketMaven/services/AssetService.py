@@ -259,11 +259,58 @@ def update_assets_price(asset_query):
     )
 
 
+def load_asset_single(data, asset_merge_list, **asset_data):
+    """Add a single bootstrapped asset to the database"""
+    try:
+        asset = Asset(
+            **asset_data,
+            current_price=data["regularMarketPrice"]["raw"],
+            market_cap=data["marketCap"]["raw"],
+        )
+        if asset_data["ticker_symbol"] in asset_merge_list:
+            db.session.merge(asset)
+        else:
+            db.session.add(asset)
+        # print("Added {}".format(asx_code))
+    except Exception as err:
+        if "marketCap" not in str(err):
+            print("Unable to add {} - {}".format(asset_data["ticker_symbol"], err))
+
+
 def load_asset_data(db):
     """Bootstrap process to load pre-cached stock values (from Yahoo Finance responses)
     into the system database
     """
     print("Adding Exchange Rates")
+    with open("./data/AUDUSD=x.csv") as fb:
+        for m in DictReader(fb):
+            invert_close = None
+            if m["Close"] == "null":
+                m["Close"] = None
+            if m["Close"]:
+                m["Close"] = float(m["Close"])
+                invert_close = 1 / float(m["Close"])
+            entry_date = datetime.datetime.strptime(m["Date"], "%Y-%m-%d")
+            new_entry = Currency(
+                currency_from="AUD",
+                currency_to="USD",
+                date=entry_date,
+                value=m["Close"],
+            )
+            db.session.add(new_entry)
+            new_entry = Currency(
+                currency_from="USD",
+                currency_to="AUD",
+                date=entry_date,
+                value=invert_close,
+            )
+            db.session.add(new_entry)
+
+    # Perform an add operation instead of an expensive merge operation whenever possible
+    # This is a pretty high speed-up
+    asset_merge_list = []
+    for m in Asset.query.all():
+        asset_merge_list.append(m.ticker_symbol)
 
     print("Adding ASX")
     # Load ASX tickers from ASX.csv which is an enriched version ASX_Listed_Companies_13-03-2021_07-59-39_AEDT.csv
@@ -282,24 +329,18 @@ def load_asset_data(db):
         data = json.loads(row["Yahoo"])
         ticker_symbol = "ASX:{}".format(asx_code)
 
-        try:
-            asset = Asset(
-                ticker_symbol=ticker_symbol,
-                name=company_name,
-                industry=industry,
-                current_price=data["regularMarketPrice"]["raw"],
-                market_cap=data["marketCap"]["raw"],
-                asset_additional=row["Yahoo"],
-                data_source="Yahoo",
-                country=data["region"],
-                currency="AUD",
-                price_last_updated=datetime.datetime.strptime("2021-01-01", "%Y-%m-%d"),
-            )
-            db.session.merge(asset)
-            # print("Added {}".format(asx_code))
-        except Exception as err:
-            if "marketCap" not in str(err):
-                print("Unable to add {} - {}".format(asx_code, err))
+        load_asset_single(
+            data,
+            asset_merge_list,
+            ticker_symbol=ticker_symbol,
+            name=company_name,
+            industry=industry,
+            asset_additional=row["Yahoo"],
+            data_source="Yahoo",
+            country=data["region"],
+            currency="AUD",
+            price_last_updated=datetime.datetime.strptime("2021-01-01", "%Y-%m-%d"),
+        )
 
     print("Adding NASDAQ")
     # Load NASDAQ tickers from NASDAQ.csv which is an enriched version of nasdaq_screener_1615582712192-NASDAQ.csv
@@ -317,24 +358,18 @@ def load_asset_data(db):
         data = json.loads(row["Yahoo"])
         ticker_symbol = "NASDAQ:{}".format(code)
 
-        try:
-            asset = Asset(
-                ticker_symbol=ticker_symbol,
-                name=company_name,
-                industry=industry,
-                current_price=data["regularMarketPrice"]["raw"],
-                market_cap=data["marketCap"]["raw"],
-                asset_additional=row["Yahoo"],
-                data_source="Yahoo",
-                country="US",
-                currency="USD",
-                price_last_updated=datetime.datetime.strptime("2021-01-01", "%Y-%m-%d"),
-            )
-            db.session.merge(asset)
-            # print("Added {}".format(asx_code))
-        except Exception as err:
-            if "marketCap" not in str(err):
-                print("Unable to add {} - {}".format(code, err))
+        load_asset_single(
+            data,
+            asset_merge_list,
+            ticker_symbol=ticker_symbol,
+            name=company_name,
+            industry=industry,
+            asset_additional=row["Yahoo"],
+            data_source="Yahoo",
+            country="US",
+            currency="USD",
+            price_last_updated=datetime.datetime.strptime("2021-01-01", "%Y-%m-%d"),
+        )
 
     print("Adding NYSE")
     # Load NYSE tickers from NYSE.csv which is an enriched version of nasdaq_screener_1615582729240-NYSE.csv
@@ -352,24 +387,18 @@ def load_asset_data(db):
         data = json.loads(row["Yahoo"])
         ticker_symbol = "NYSE:{}".format(code)
 
-        try:
-            asset = Asset(
-                ticker_symbol=ticker_symbol,
-                name=company_name,
-                industry=industry,
-                current_price=data["regularMarketPrice"]["raw"],
-                market_cap=data["marketCap"]["raw"],
-                asset_additional=row["Yahoo"],
-                data_source="Yahoo",
-                country="US",
-                currency="US",
-                price_last_updated=datetime.datetime.strptime("2021-01-01", "%Y-%m-%d"),
-            )
-            db.session.merge(asset)
-            # print("Added {}".format(asx_code))
-        except Exception as err:
-            if "marketCap" not in str(err):
-                print("Unable to add {} - {}".format(code, err))
+        load_asset_single(
+            data,
+            asset_merge_list,
+            ticker_symbol=ticker_symbol,
+            name=company_name,
+            industry=industry,
+            asset_additional=row["Yahoo"],
+            data_source="Yahoo",
+            country="US",
+            currency="US",
+            price_last_updated=datetime.datetime.strptime("2021-01-01", "%Y-%m-%d"),
+        )
 
     print("Adding CRYPTO")
     # The format of the columns are:
@@ -387,23 +416,17 @@ def load_asset_data(db):
 
         ticker_symbol = "CRYPTO:{}".format(code)
 
-        try:
-            asset = Asset(
-                ticker_symbol=ticker_symbol,
-                name=company_name,
-                industry=industry,
-                current_price=data["regularMarketPrice"]["raw"],
-                market_cap=data["marketCap"]["raw"],
-                asset_additional=row["Yahoo"],
-                data_source="Yahoo",
-                country="ZZ",
-                currency="US",
-                price_last_updated=datetime.datetime.strptime("2021-01-01", "%Y-%m-%d"),
-            )
-            db.session.merge(asset)
-            # print("Added {}".format(asx_code))
-        except Exception as err:
-            if "marketCap" not in str(err):
-                print("Unable to add {} - {}".format(code, err))
+        load_asset_single(
+            data,
+            asset_merge_list,
+            ticker_symbol=ticker_symbol,
+            name=company_name,
+            industry=industry,
+            asset_additional=row["Yahoo"],
+            data_source="Yahoo",
+            country="ZZ",
+            currency="US",
+            price_last_updated=datetime.datetime.strptime("2021-01-01", "%Y-%m-%d"),
+        )
 
     db.session.commit()
