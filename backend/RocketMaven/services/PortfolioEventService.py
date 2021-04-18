@@ -80,6 +80,11 @@ def handle_broker_csv_row(csv_input_row: dict) -> dict:
         )
         print(output_map["event_date"])
 
+    if "Exchange Rate" in csv_input_row:
+        output_map["exchange"] = (
+            csv_input_row["Exchange Rate"]
+        )
+
     if "Exchange" in csv_input_row and "Symbol" in csv_input_row:
         output_map["asset_id"] = (
             csv_input_row["Exchange"] + ":" + csv_input_row["Symbol"]

@@ -10,7 +10,8 @@ from flask_jwt_extended import get_jwt_identity
 from RocketMaven.api.schemas import AssetSchema
 from RocketMaven.commons.pagination import paginate
 from RocketMaven.extensions import db
-from RocketMaven.models import Asset, Currency, PortfolioAssetHolding
+from RocketMaven.models import Asset, Currency, CurrencyUpdate, PortfolioAssetHolding
+from RocketMaven.services import TimeSeriesService
 from sqlalchemy import or_
 from sqlalchemy.orm import aliased
 import zipfile
@@ -259,6 +260,43 @@ def update_assets_price(asset_query):
     )
 
 
+def get_current_exchange(currency_from: str, currency_to: str) -> float:
+    """Handle currency conversion using up-to-date currency data
+    Returns
+        Exchange rate of input current pairs
+        (currently supports AUD and USD)"""
+    if currency_from == currency_to:
+        # Same currency have an exchange rate of 1:1
+        return 1
+
+    # Determine if update needed
+    currency_track = CurrencyUpdate.query.filter_by(
+        currency_from=currency_from, currency_to=currency_to
+    ).first()
+    if not currency_track:
+        currency_track = CurrencyUpdate.query.filter_by(
+            currency_to=currency_to, currency_from=currency_from
+        ).first()
+    if currency_track:
+        #     if not currency_track.last_updated or (datetime.datetime.now() - currency_track.last_updated < datetime.timedelta(
+        #     minutes=120
+        # )):
+        #         TimeSeriesService.get_timeseries_data_advanced(f"{currency_from}{currency_to}=x", start_date, end_date, interval)
+
+        return (
+            Currency.query.filter_by(
+                currency_from=currency_from, currency_to=currency_to
+            )
+            .order_by(Currency.date.desc())
+            .first()
+            .value
+        )
+
+    else:
+        # No currency support, so default at a 1:1 exchange
+        return 1
+
+
 def load_asset_single(data, asset_merge_list, **asset_data):
     """Add a single bootstrapped asset to the database"""
     try:
@@ -282,29 +320,16 @@ def load_asset_data(db):
     into the system database
     """
     print("Adding Exchange Rates")
+
+    new_entry = CurrencyUpdate(currency_from="AUD", currency_to="USD")
+    db.session.add(new_entry)
+
+    new_entry = CurrencyUpdate(currency_from="USD", currency_to="AUD")
+    db.session.add(new_entry)
+
     with open("./data/AUDUSD=x.csv") as fb:
         for m in DictReader(fb):
-            invert_close = None
-            if m["Close"] == "null":
-                m["Close"] = None
-            if m["Close"]:
-                m["Close"] = float(m["Close"])
-                invert_close = 1 / float(m["Close"])
-            entry_date = datetime.datetime.strptime(m["Date"], "%Y-%m-%d")
-            new_entry = Currency(
-                currency_from="AUD",
-                currency_to="USD",
-                date=entry_date,
-                value=m["Close"],
-            )
-            db.session.add(new_entry)
-            new_entry = Currency(
-                currency_from="USD",
-                currency_to="AUD",
-                date=entry_date,
-                value=invert_close,
-            )
-            db.session.add(new_entry)
+            Currency.add_from_dict(m, "AUD", "USD")
 
     # Perform an add operation instead of an expensive merge operation whenever possible
     # This is a pretty high speed-up
@@ -396,7 +421,7 @@ def load_asset_data(db):
             asset_additional=row["Yahoo"],
             data_source="Yahoo",
             country="US",
-            currency="US",
+            currency="USD",
             price_last_updated=datetime.datetime.strptime("2021-01-01", "%Y-%m-%d"),
         )
 
@@ -425,7 +450,7 @@ def load_asset_data(db):
             asset_additional=row["Yahoo"],
             data_source="Yahoo",
             country="ZZ",
-            currency="US",
+            currency="USD",
             price_last_updated=datetime.datetime.strptime("2021-01-01", "%Y-%m-%d"),
         )
 

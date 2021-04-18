@@ -4,6 +4,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from RocketMaven.extensions import db
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.orm import relationship
+from RocketMaven.services import AssetService
 
 
 class PortfolioAssetHolding(db.Model):
@@ -16,6 +17,8 @@ class PortfolioAssetHolding(db.Model):
         nullable=False,
     )
     portfolio = relationship("Portfolio", backref="portfolio")
+    investor_id = association_proxy("portfolio", "investor_id")
+    new_currency = association_proxy("portfolio", "currency")
 
     portfolio_id = db.Column(
         db.Integer, db.ForeignKey("portfolio.id"), primary_key=True, nullable=False
@@ -33,9 +36,16 @@ class PortfolioAssetHolding(db.Model):
         return "<PortfolioAssetHolding %s, %s>" % (self.asset_id, self.portfolio_id)
 
     asset = relationship("Asset", backref="asset")
-    market_price = association_proxy("asset", "current_price")
+    market_price_orig_currency = association_proxy("asset", "current_price")
+    orig_currency = association_proxy("asset", "currency")
 
-    investor_id = association_proxy("portfolio", "investor_id")
+    _market_price = db.Column(db.Float(), nullable=True)
+
+    @hybrid_property
+    def market_price(self):
+        return self.market_price_orig_currency * AssetService.get_current_exchange(
+            self.orig_currency, self.new_currency
+        )
 
     _current_value = db.Column(db.Float(), nullable=True)
 

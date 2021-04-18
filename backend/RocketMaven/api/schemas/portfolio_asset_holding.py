@@ -13,6 +13,7 @@ class PortfolioAssetHoldingSchema(ma.SQLAlchemyAutoSchema):
         sqla_session = db.session
         load_instance = True
 
+    _market_price = ma.auto_field(data_key="market_price", attribute="market_price")
     _unrealised_units = ma.auto_field(
         data_key="unrealised_units", attribute="unrealised_units"
     )
@@ -20,7 +21,5 @@ class PortfolioAssetHoldingSchema(ma.SQLAlchemyAutoSchema):
     _purchase_value = ma.auto_field(
         data_key="purchase_value", attribute="purchase_value"
     )
-
     asset_id = ma.auto_field()
     portfolio_id = ma.auto_field()
-    market_price = ma.auto_field()
