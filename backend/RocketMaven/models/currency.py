@@ -32,14 +32,14 @@ class Currency(db.Model):
             date=entry_date,
             value=m["Close"],
         )
-        db.session.add(new_entry)
+        db.session.merge(new_entry)
         new_entry = Currency(
             currency_from=currency_to,
             currency_to=currency_from,
             date=entry_date,
             value=invert_close,
         )
-        db.session.add(new_entry)
+        db.session.merge(new_entry)
 
 
 class CurrencyUpdate(db.Model):
@@ -48,4 +48,4 @@ class CurrencyUpdate(db.Model):
     currency_from = db.Column(CurrencyType, primary_key=True)
     currency_to = db.Column(CurrencyType, primary_key=True)
 
-    last_updated = db.Column(db.DateTime, default=db.func.current_timestamp())
+    last_updated = db.Column(db.DateTime)

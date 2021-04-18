@@ -100,7 +100,7 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
         form.setFieldsValue({
           price_per_share: data.price
         })
-      } catch (error) { }
+      } catch (error) {}
     }
     myFetch()
   }
@@ -202,17 +202,26 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
             </Form.Item>
           </span>
         )}
-        <Form.Item
-          name="exchange_rate"
-          label="Exchange Rate"
-          rules={[
-            {
-              required: true
-            }
-          ]}
-        >
-          <InputNumber />
-        </Form.Item>
+
+        {!portfolioInfo.competition_portfolio ? (
+          <Form.Item
+            name="exchange_rate"
+            label="Exchange Rate"
+            rules={[
+              {
+                required: true
+              }
+            ]}
+          >
+            <InputNumber />
+          </Form.Item>
+        ) : (
+          <span>
+            <Form.Item name="exchange_rate" label="Exchange Rate">
+              <Input disabled />
+            </Form.Item>
+          </span>
+        )}
 
         <Form.Item label="Update Price Per Share">
           <Button

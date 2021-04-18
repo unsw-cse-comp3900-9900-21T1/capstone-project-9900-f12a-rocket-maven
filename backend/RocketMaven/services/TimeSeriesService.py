@@ -3,6 +3,7 @@ import enum
 
 import requests
 from cachetools import TTLCache, cached
+from RocketMaven.services import AssetService
 
 YAHOO_TIMESERIES_API = "https://query1.finance.yahoo.com/v8/finance/chart/{ticker_symbol}?symbol={ticker_symbol}&period1={start}&period2={end}&useYfid=true&interval={interval}&includePrePost=true&events=div%7Csplit%7Cearn&lang=en-US&region=US&corsDomain=finance.yahoo.com"  # noqa: E501
 
@@ -56,12 +57,8 @@ def get_timeseries_data(ticker_symbol, data_range):
 
     if exchange != "VIRT":
         # For finance yahoo, the ticker needs to be formatted according to its exchange
-        if exchange == "CRYPTO":
-            # For CRYPTO, the price is the current USD value (similar to how forex works)
-            ticker = "-".join([stock, "USD"])
-        elif exchange == "ASX":
-            # For the ASX, the ticker is a combination of the asset code and ".AX"
-            ticker = ".".join([stock, "AX"])
+        if exchange in AssetService.yahoo_ticker_converters:
+            ticker = AssetService.yahoo_ticker_converters[exchange](stock)
         else:
             # For american? stocks it is just the plain asset code
             ticker = stock
@@ -125,12 +122,8 @@ def get_timeseries_data_advanced(ticker_symbol: str, start: datetime.datetime,
 
     if exchange != "VIRT":
         # For finance yahoo, the ticker needs to be formatted according to its exchange
-        if exchange == "CRYPTO":
-            # For CRYPTO, the price is the current USD value (similar to how forex works)
-            ticker = "-".join([stock, "USD"])
-        elif exchange == "ASX":
-            # For the ASX, the ticker is a combination of the asset code and ".AX"
-            ticker = ".".join([stock, "AX"])
+        if exchange in AssetService.yahoo_ticker_converters:
+            ticker = AssetService.yahoo_ticker_converters[exchange](stock)
         else:
             # For american? stocks it is just the plain asset code
             ticker = stock
