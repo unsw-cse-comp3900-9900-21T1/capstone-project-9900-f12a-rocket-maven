@@ -1,4 +1,4 @@
-from sqlalchemy_utils import CountryType
+from sqlalchemy_utils import CountryType, CurrencyType
 
 from RocketMaven.extensions import db
 
@@ -19,7 +19,7 @@ class Asset(db.Model):
     data_source = db.Column(db.String(1024), unique=False, nullable=False)
 
     country = db.Column(CountryType, unique=False, nullable=True)
-    currency = db.Column(db.String(80), unique=False, nullable=True)
+    currency = db.Column(CurrencyType, unique=False, nullable=True)
 
     asset_additional = db.Column(db.Text, unique=False, nullable=True)
 
