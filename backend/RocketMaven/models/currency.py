@@ -17,7 +17,9 @@ class Currency(db.Model):
     date = db.Column(db.DateTime, primary_key=True)
     value = db.Column(db.Float(), unique=False, nullable=True)
 
-    def add_from_dict(m: dict, currency_from: str, currency_to: str):
+    def add_from_dict(
+        m: dict, currency_from: str, currency_to: str, merge_mode: bool = True
+    ):
         # Expected Date, Close items
         invert_close = None
         if m["Close"] == "null":
@@ -32,14 +34,20 @@ class Currency(db.Model):
             date=entry_date,
             value=m["Close"],
         )
-        db.session.merge(new_entry)
+        if merge_mode:
+            db.session.merge(new_entry)
+        else:
+            db.session.add(new_entry)
         new_entry = Currency(
             currency_from=currency_to,
             currency_to=currency_from,
             date=entry_date,
             value=invert_close,
         )
-        db.session.merge(new_entry)
+        if merge_mode:
+            db.session.merge(new_entry)
+        else:
+            db.session.add(new_entry)
 
 
 class CurrencyUpdate(db.Model):
