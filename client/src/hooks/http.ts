@@ -119,7 +119,7 @@ const useAbstractFetchOnSubmit = (url: string, method?: HttpMethod) => {
   const { accessToken, revalidateAccessToken, dispatch } = useAccessToken()
   const isLoggedIn = useIsLoggedIn()
   const routerObject = useHistory()
-  const myFetch = async (apiPath: string) => {
+  const myFetch = async (apiPath: string, values?: any, redirectPath?: string) => {
     try {
       const results = await abstractFetch({
         accessToken,
@@ -132,6 +132,8 @@ const useAbstractFetchOnSubmit = (url: string, method?: HttpMethod) => {
         dispatch,
         routerObject,
         method,
+        redirectPath,
+        values,
       })
       return results
     } catch (error) {
@@ -371,6 +373,12 @@ export const useDeleteWatchListItem = () => {
   return myFetch
 }
 
+export const useDeletePortfolio = () => {
+  const urlPrefix = '/api/v1/portfolios/'
+  const { myFetch } = useAbstractFetchOnSubmit(urlPrefix, 'DELETE')
+  return myFetch
+}
+
 export const useUpdateWatchListItem = () => {
   const [isLoading, setIsLoading] = useState(false)
   const { accessToken, revalidateAccessToken, dispatch } = useAccessToken()
@@ -399,5 +407,11 @@ export const useUpdateWatchListItem = () => {
 export const useAddWatchListItem = () => {
   const urlPrefix = '/api/v1/watchlist/'
   const { myFetch } = useAbstractFetchOnSubmit(urlPrefix, 'POST')
+  return myFetch
+}
+
+export const useDeleteAssetPortfolioHolding = () => {
+  const urlPrefix = '/api/v1/portfolios/'
+  const { myFetch } = useAbstractFetchOnSubmit(urlPrefix, 'DELETE')
   return myFetch
 }
