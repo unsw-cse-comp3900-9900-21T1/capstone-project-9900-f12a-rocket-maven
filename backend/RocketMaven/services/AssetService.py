@@ -30,6 +30,7 @@ yahoo_ticker_converters = {
     "CRYPTO": lambda stock: "-".join([stock, "USD"]),
     # For the ASX, the ticker is a combination of the asset code and ".AX"
     "ASX": lambda stock: ".".join([stock, "AX"]),
+    "CURRENCY": lambda stock: stock,
 }
 
 
@@ -167,6 +168,7 @@ def search_user_asset(portfolio_id):
             search = "%{}%".format(q)
             asset_schema = AssetSchema()
 
+            # Get all portfolio holdings of target user
             port_query = aliased(
                 PortfolioAssetHolding,
                 db.session.query(PortfolioAssetHolding)
@@ -177,6 +179,7 @@ def search_user_asset(portfolio_id):
                 .subquery(),
             )
 
+            # Get all assets by search
             asset_query = aliased(
                 Asset,
                 db.session.query(Asset)
@@ -185,15 +188,25 @@ def search_user_asset(portfolio_id):
                 .subquery(),
             )
 
+            # Perform a left join between Asset and Portfolio Holding
+            # Essentially, if the investor has the stock, include the available information
+            # Otherwise, keep that field as null
             query = db.session.query(asset_query, port_query).outerjoin(
                 port_query, asset_query.ticker_symbol == port_query.asset_id
             )
 
+            # Marshmallow doesn't support left joins, multitable schemas,
+            # so a workaround is to use pure Python.
             return {
                 "results": [
                     {
                         **asset_schema.dump(x[0]),
-                        **{"available_units": x[1].available_units if x[1] else 0},
+                        **{
+                            "available_units": x[1].available_units if x[1] else 0,
+                            "exchange": get_current_exchange(
+                                x[0].orig_currency, x[0].new_currency
+                            ),
+                        },
                     }
                     for x in (query.limit(request.args.get("per_page", 10)).all())
                 ]
@@ -278,10 +291,44 @@ def get_current_exchange(currency_from: str, currency_to: str) -> float:
             currency_to=currency_to, currency_from=currency_from
         ).first()
     if currency_track:
-        #     if not currency_track.last_updated or (datetime.datetime.now() - currency_track.last_updated < datetime.timedelta(
-        #     minutes=120
-        # )):
-        #         TimeSeriesService.get_timeseries_data_advanced(f"{currency_from}{currency_to}=x", start_date, end_date, interval)
+        if not currency_track.last_updated or (
+            datetime.datetime.now() - currency_track.last_updated
+            > datetime.timedelta(minutes=120)
+        ):
+            try:
+                start_date = (
+                    Currency.query.filter_by(
+                        currency_from=currency_from, currency_to=currency_to
+                    )
+                    .order_by(Currency.date.desc())
+                    .first()
+                    .date
+                )
+                # start_date = datetime.datetime.strptime("2021-03-01", "%Y-%m-%d")
+                end_date = datetime.datetime.now()
+                data = TimeSeriesService.get_timeseries_data_advanced(
+                    f"CURRENCY:{currency_from}{currency_to}=x",
+                    start_date,
+                    end_date,
+                    TimeSeriesService.TimeSeriesInterval.OneDay,
+                )[0]
+
+                if "results" in data:
+                    for m in data["results"]:
+                        print("adding", m)
+                        Currency.add_from_dict(
+                            {
+                                "Close": m["close"],
+                                "Date": m["datetime"].split(" ", 1)[0],
+                            },
+                            currency_from,
+                            currency_to,
+                        )
+
+                currency_track.last_updated = datetime.datetime.now()
+                db.session.commit()
+            except Exception as e:
+                print(e)
 
         return (
             Currency.query.filter_by(
