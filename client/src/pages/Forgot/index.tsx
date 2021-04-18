@@ -2,10 +2,14 @@ import { UserOutlined } from '@ant-design/icons'
 import { Card } from '@rocketmaven/componentsStyled/Card'
 import { useIForgot } from '@rocketmaven/hooks/http'
 import Page from '@rocketmaven/pages/_Page'
-import { Button, Form, Input } from 'antd'
+import { Button, Form, Input, message } from 'antd'
 
 const Forgot = () => {
   const { isLoading, myFetch } = useIForgot()
+  const onFinish = async (values: any) => {
+    const data = await myFetch({ values })
+    data && message.info(data.msg)
+  }
   return (
     <Page>
       <Card>
@@ -15,7 +19,7 @@ const Forgot = () => {
           initialValues={{
             remember: true
           }}
-          onFinish={(values) => { myFetch({ values }) }}
+          onFinish={onFinish}
         >
           <Form.Item
             name="email"
