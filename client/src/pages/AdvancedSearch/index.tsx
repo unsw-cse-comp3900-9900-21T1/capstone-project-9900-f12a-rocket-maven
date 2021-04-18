@@ -88,8 +88,9 @@ const AdvancedSearch = () => {
   }
 
   const onChange = async (pagination: any) => {
+    console.log("query params are  ", queryParams)
     const queryPrefix = `?page=${pagination.current}&per_page=${PAGE_SIZE}&`
-    const results = await myFetch(queryPrefix + queryParams)
+    const results = await myFetch({ apiPath: queryPrefix + queryParams })
     dispatch({
       type: 'ADV_SEARCH/UPDATE',
       payload: {

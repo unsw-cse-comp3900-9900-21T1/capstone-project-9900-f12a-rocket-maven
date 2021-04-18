@@ -144,7 +144,7 @@ export const useAbstractFetchOnMount = (url: string, refreshFlag?: number) => {
 }
 
 type FetchInput = {
-  apiPath: string,
+  apiPath?: string,
   values?: any,
   redirectPath?: string
 }
@@ -177,32 +177,4 @@ export const useAbstractFetchOnSubmit = (url: string, method?: HttpMethod) => {
     }
   }
   return { data, isLoading, myFetch }
-}
-
-export const useAbstractFetchUpdate = (url: string, method: HttpMethod, redirectPath?: string) => {
-  const [isLoading, setIsLoading] = useState(false)
-  const { accessToken, revalidateAccessToken, dispatch } = useAccessToken()
-  const isLoggedIn = useIsLoggedIn()
-  const routerObject = useHistory()
-  const myFetch = async (values: JSON) => {
-    try {
-      const results = await abstractFetch({
-        accessToken,
-        revalidateAccessToken,
-        isLoading,
-        setIsLoading,
-        isLoggedIn,
-        url: url,
-        routerObject,
-        redirectPath,
-        method,
-        values,
-        dispatch
-      })
-      return results
-    } catch (error) {
-      message.error(error.message)
-    }
-  }
-  return { isLoading, myFetch }
 }

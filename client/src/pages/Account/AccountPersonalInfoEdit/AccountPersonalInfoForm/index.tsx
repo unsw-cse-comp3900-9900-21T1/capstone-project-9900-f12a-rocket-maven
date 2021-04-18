@@ -1,6 +1,7 @@
 import DateOfBirthInput from '@rocketmaven/components/DateOfBirthInput'
 import { Card } from '@rocketmaven/componentsStyled/Card'
 import { Subtitle } from '@rocketmaven/componentsStyled/Typography'
+import { urls } from '@rocketmaven/data/urls'
 import { useUpdateAccountInfo } from '@rocketmaven/hooks/http'
 import { useSortedCountryList } from '@rocketmaven/hooks/store'
 import { Investor } from '@rocketmaven/pages/Account/types'
@@ -16,7 +17,8 @@ const AccountPersonalInfoForm = ({ investorData }: Props) => {
   const myFetch: Function = useUpdateAccountInfo()
   const onFinish = (values: any) => {
     myFetch({
-      ...values
+      values,
+      redirectPath: urls.account
     })
   }
 

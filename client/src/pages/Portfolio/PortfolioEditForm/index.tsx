@@ -1,4 +1,5 @@
 import { Card } from '@rocketmaven/componentsStyled/Card'
+import { urls } from '@rocketmaven/data/urls'
 import { useUpdatePortfolioInfo } from '@rocketmaven/hooks/http'
 import { useSortedCountryList, useSortedCurrencyList } from '@rocketmaven/hooks/store'
 import { PortfolioInfoEdit } from '@rocketmaven/pages/Portfolio/types'
@@ -51,9 +52,12 @@ const PortfolioEditForm = ({ portfolioInfo, portfolioId, action }: Props) => {
   )
   const onFinish = (values: any) => {
     setValuesAndFetch({
-      ...values,
-      id: undefined,
-      creation_date: undefined
+      values: {
+        ...values,
+        id: undefined,
+        creation_date: undefined
+      },
+      redirectPath: urls.portfolio
     })
   }
 

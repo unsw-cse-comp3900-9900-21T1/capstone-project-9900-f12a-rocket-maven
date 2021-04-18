@@ -1,6 +1,7 @@
 import PasswordInput from '@rocketmaven/components/PasswordInput'
 import { Card } from '@rocketmaven/componentsStyled/Card'
 import { Subtitle } from '@rocketmaven/componentsStyled/Typography'
+import { urls } from '@rocketmaven/data/urls'
 import { useUpdateAccountInfo } from '@rocketmaven/hooks/http'
 import { Investor } from '@rocketmaven/pages/Account/types'
 import { Button, Form, Input } from 'antd'
@@ -14,8 +15,11 @@ const AccountSecurityInfoForm = ({ investorData }: Props) => {
   const myFetch: Function = useUpdateAccountInfo()
   const onFinish = (values: any) => {
     myFetch({
-      ...values,
-      confirm: undefined
+      values: {
+        ...values,
+        confirm: undefined
+      },
+      redirectPath: urls.account
     })
   }
 

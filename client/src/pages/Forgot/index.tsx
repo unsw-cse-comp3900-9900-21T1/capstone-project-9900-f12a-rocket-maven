@@ -15,7 +15,7 @@ const Forgot = () => {
           initialValues={{
             remember: true
           }}
-          onFinish={myFetch}
+          onFinish={(values) => { myFetch({ values }) }}
         >
           <Form.Item
             name="email"
