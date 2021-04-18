@@ -21,7 +21,7 @@ const AssetOptions = ({ tickerSymbol, currentPrice }: any) => {
   )
   const addAsset = useAddWatchListItem()
   const addToWatchlist = async () => {
-    const result = await addAsset(tickerSymbol)
+    const result = await addAsset({ apiPath: tickerSymbol })
     if (result) {
       routerObject.push(urls.watchlists)
     }

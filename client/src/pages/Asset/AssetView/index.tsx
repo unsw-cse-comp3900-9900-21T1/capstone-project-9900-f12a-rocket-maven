@@ -26,7 +26,7 @@ const AssetView = () => {
   useEffect(() => {
     const myFetch = async () => {
       const api_part = `/chart/${seriesContext}/${ticker_symbol}`
-      const data = await getChartData(api_part)
+      const data = await getChartData({ apiPath: api_part })
       if (data) {
         setGraphData(data)
         if (chartRef) {

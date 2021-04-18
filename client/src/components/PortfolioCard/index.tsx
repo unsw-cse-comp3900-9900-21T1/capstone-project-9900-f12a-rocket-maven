@@ -43,7 +43,11 @@ const PortfolioCard = ({ portfolio, refreshPortfolios, singleView = false }: Pro
     const portfolio_id = e.target.getAttribute('aria-valuenow')
     const path = `${portfolio_id}/holdings`
     const values = { asset_id: asset_id }
-    await deleteAssetPortfolioHoldingFetch(path, values, '/')
+    await deleteAssetPortfolioHoldingFetch({
+      apiPath: path,
+      values,
+      redirectPath: '/'
+    })
   }
 
   let currencyPrefix = ''

@@ -33,7 +33,7 @@ const Compare = () => {
     tickers.forEach(function (ticker_symbol: string) {
       const myFetch = async () => {
         const api_part = `/chart/${seriesContext}/${ticker_symbol}`
-        const data = await getChartData(api_part)
+        const data = await getChartData({ apiPath: api_part })
         if (data) {
           newGraphData = [...newGraphData, [ticker_symbol, data]]
 
