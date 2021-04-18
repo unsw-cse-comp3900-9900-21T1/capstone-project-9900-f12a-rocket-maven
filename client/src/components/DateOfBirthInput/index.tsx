@@ -15,12 +15,16 @@ const DateOfBirthInput = () => {
         },
         () => ({
           validator(_, value) {
-            if (!value || value.length == 0 || /^\d{4}-([0]\d|1[0-2])-([0-2]\d|3[01])$/.test(value)) {
+            if (
+              !value ||
+              value.length == 0 ||
+              /^\d{4}-([0]\d|1[0-2])-([0-2]\d|3[01])$/.test(value)
+            ) {
               return Promise.resolve()
             }
             // Maybe add better date processing?
             return Promise.reject(
-              new Error('Please make sure the date is of the format XXXX-XX-XX')
+              new Error('Please make sure the date is of the format YYYY-MM-DD')
             )
           }
         })
