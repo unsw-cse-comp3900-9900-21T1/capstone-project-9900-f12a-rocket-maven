@@ -1,10 +1,11 @@
 import MainChart from '@rocketmaven/components/MainChart'
 import { Button } from '@rocketmaven/componentsStyled/Button'
 import { Card } from '@rocketmaven/componentsStyled/Card'
+import { Subtitle } from '@rocketmaven/componentsStyled/Typography'
 import { useFetchGetWithUserId } from '@rocketmaven/hooks/http'
 import { useStore } from '@rocketmaven/hooks/store'
 import { PortfolioPagination } from '@rocketmaven/pages/Portfolio/types'
-import { DatePicker, Form, Radio, Select } from 'antd'
+import { DatePicker, Form, Radio, Select, Table } from 'antd'
 import moment from 'moment'
 import { isEmpty } from 'ramda'
 import React, { useEffect, useState } from 'react'
@@ -94,7 +95,7 @@ const ReportGenerate = () => {
       })
     }
 
-    if (values.report_type == 'Realised') {
+    if (values.report_type == 'Performance') {
       setChartOptions({
         chart: {
           type: 'line'
@@ -103,37 +104,23 @@ const ReportGenerate = () => {
           type: 'datetime'
         },
         title: {
-          text: 'Realised'
+          text: 'Performance'
         },
         subtitle: {
-          text: 'Realised Portfolio Values'
+          text: 'Portfolio return over time'
         },
         series: data['series']
       })
     }
 
     if (values.report_type == 'Tax') {
-      setChartOptions({
-        chart: {
-          type: 'line'
-        },
-        xAxis: {
-          type: 'datetime'
-        },
-        title: {
-          text: 'Tax'
-        },
-        subtitle: {
-          text: 'Tax Values'
-        },
-        series: data['series']
-      })
+      setChartOptions(data)
     }
   }
 
   let initDate: any = []
 
-  let optionsValue = 'Realised'
+  let optionsValue = 'Performance'
 
   if (query.get('prefab') == 'all-time') {
   }
@@ -158,8 +145,29 @@ const ReportGenerate = () => {
     optionsValue = 'Tax'
   }
 
+  const taxColumns = [
+    { title: 'Asset', dataIndex: 'ticker_symbol' },
+    {
+      title: 'Added',
+      dataIndex: 'add_date'
+    },
+    {
+      title: 'Removed',
+      dataIndex: 'remove_date'
+    },
+    {
+      title: 'Discountable?',
+      dataIndex: 'discount',
+      render: (value: boolean) => (value ? '✔️' : '❌')
+    },
+    {
+      title: 'Value',
+      dataIndex: 'value'
+    }
+  ]
+
   const options = [
-    { label: 'Realised', value: 'Realised' },
+    { label: 'Performance', value: 'Performance' },
     { label: 'Tax', value: 'Tax' },
     // { label: 'Trade', value: 'Trade' },
     { label: 'Diversification', value: 'Diversification' }
@@ -267,10 +275,25 @@ const ReportGenerate = () => {
           </div>
         </Card>
       ) : null}
-      {chartOptions && (reportMode == 'Realised' || reportMode == 'Tax') ? (
+      {chartOptions && reportMode == 'Performance' ? (
         <Card>
           <div style={{ height: '70vh', width: '100%' }}>
             <MainChart options={chartOptions} />
+          </div>
+        </Card>
+      ) : null}
+      {chartOptions && reportMode == 'Tax' ? (
+        <Card>
+          <div style={{ height: '70vh', width: '100%' }}>
+            {Object.entries(chartOptions).map(function (e: any, i: any) {
+              console.log(e, i)
+              return (
+                <>
+                  <Subtitle>{e[1][0]}</Subtitle>
+                  <Table columns={taxColumns} dataSource={e[1][1]} pagination={false} rowKey="id" />
+                </>
+              )
+            })}
           </div>
         </Card>
       ) : null}

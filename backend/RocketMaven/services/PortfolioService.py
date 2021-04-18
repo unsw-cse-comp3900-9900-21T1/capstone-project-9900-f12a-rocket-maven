@@ -241,7 +241,7 @@ def get_report():
             print(e)
             return {"msg": "error creating diversification report"}, 500
 
-    if request.json["report_type"] == "Realised":
+    if request.json["report_type"] == "Performance":
 
         portfolios = (
             db.session()
@@ -273,7 +273,7 @@ def get_report():
                 ]
             )
 
-        name = "Realised Gains/Losses for Portfolio "
+        name = "Performance of Portfolio "
         return {
             "series": [
                 {
@@ -293,6 +293,7 @@ def get_report():
             .filter_by(investor_id=get_jwt_identity())
             .filter(Portfolio.id.in_(request.json["portfolios"]))
             .order_by(PortfolioEvent.event_date.asc())
+            .filter(PortfolioEvent.tax_full_snapshot.isnot(None))
         )
 
         if "date_range" in request.json:
@@ -308,24 +309,11 @@ def get_report():
         series = collections.defaultdict(list)
 
         for portfolio_event in portfolios.all():
-            series[portfolio_event.portfolio_id].append(
-                [
-                    int(portfolio_event.event_date.timestamp()) * 1000,
-                    portfolio_event.tax_full_snapshot,
-                ]
+            series[portfolio_event.portfolio_name].extend(
+                json.loads(portfolio_event.tax_full_snapshot)
             )
 
-        name = "Taxes for Portfolio "
-        return {
-            "series": [
-                {
-                    "name": name + str(x[0]),
-                    "id": "realised-" + str(x[0]).replace(" ", "_"),
-                    "data": x[1],
-                }
-                for x in series.items()
-            ]
-        }
+        return list(series.items())
 
     return True
 
@@ -471,7 +459,9 @@ def recommend_portfolio(asset_holdings):
                         .industry
                     )
 
-                    for asset in Asset.query.filter_by(industry=portfolio_asset_industry):
+                    for asset in Asset.query.filter_by(
+                        industry=portfolio_asset_industry
+                    ):
                         # Assets in the same industry as the portfolio asset
                         if not asset.ticker_symbol in existing_assets:
                             # That has not already been added to the portfolio

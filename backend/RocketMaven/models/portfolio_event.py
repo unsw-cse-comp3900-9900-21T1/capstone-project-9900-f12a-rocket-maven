@@ -4,6 +4,9 @@ from RocketMaven.extensions import db
 from RocketMaven.models.portfolio import Portfolio
 from RocketMaven.models.portfolio_asset_holding import PortfolioAssetHolding
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.ext.associationproxy import association_proxy
+from sqlalchemy.orm import relationship
+import json
 
 
 def default_FIFO_units(context):
@@ -35,8 +38,7 @@ class PortfolioEvent(db.Model):
 
     note = db.Column(db.String(1024), unique=False, nullable=True)
 
-    tax_full_snapshot = db.Column(db.Float(), unique=False, nullable=True)
-    tax_discount_snapshot = db.Column(db.Boolean, unique=False, nullable=True)
+    tax_full_snapshot = db.Column(db.Text, unique=False, nullable=True)
     available_snapshot = db.Column(db.Float(), unique=False, nullable=True)
     realised_snapshot = db.Column(db.Float(), unique=False, nullable=True)
 
@@ -51,6 +53,8 @@ class PortfolioEvent(db.Model):
     portfolio_id = db.Column(
         db.Integer, db.ForeignKey("portfolio.id"), primary_key=False, nullable=False
     )
+    portfolio_for_event = relationship("Portfolio", backref="portfolio_for_event")
+    portfolio_name = association_proxy("portfolio_for_event", "name")
 
     def __repr__(self):
         return "<PortfolioEvent %s>" % self.id
@@ -121,8 +125,7 @@ class PortfolioEvent(db.Model):
 
         realised_running_local_sum = 0
         for event in asset_events.all():
-            event_taxes = 0
-            event_tax_discount = False
+            tax_full_snapshot = []
             # Loop through all asset events in order of creation (from earliest to latest)
 
             if event.add_action is False:
@@ -147,25 +150,35 @@ class PortfolioEvent(db.Model):
                         remove_event.price_per_share_in_portfolio_currency
                         - add_event.price_per_share_in_portfolio_currency
                     )
-                    if current_realised < 0:
-                        # A loss, so can be used for tax offsetting
-                        event_taxes -= event_taxes
-                    elif current_realised > 0:
-                        # A profit, so check if the FIFO add event was from a year before the remove event
-                        add_date = datetime.datetime.timestamp(
-                            datetime.datetime.fromordinal(
-                                add_event.event_date.toordinal()
+
+                    if not current_realised == 0:
+                        event_tax_discount = False
+                        if current_realised > 0:
+                            # A profit, so check if the FIFO add event was from a year before the remove event
+                            add_date = datetime.datetime.timestamp(
+                                datetime.datetime.fromordinal(
+                                    add_event.event_date.toordinal()
+                                )
                             )
-                        )
-                        remove_date = datetime.datetime.timestamp(
-                            datetime.datetime.fromordinal(
-                                remove_event.event_date.toordinal()
+                            remove_date = datetime.datetime.timestamp(
+                                datetime.datetime.fromordinal(
+                                    remove_event.event_date.toordinal()
+                                )
                             )
+                            if remove_date - add_date >= 365 * 24 * 60 * 60:
+                                # One year or more, pay half tax
+                                event_tax_discount = True
+                        tax_full_snapshot.append(
+                            {
+                                "ticker_symbol": add_event.asset_id,
+                                "add_date": add_event.event_date.strftime("%Y-%m-%d"),
+                                "remove_date": remove_event.event_date.strftime(
+                                    "%Y-%m-%d"
+                                ),
+                                "discount": event_tax_discount,
+                                "value": current_realised,
+                            }
                         )
-                        event_taxes += current_realised
-                        if remove_date - add_date >= 365 * 24 * 60 * 60:
-                            # One year or more, pay half tax
-                            event_tax_discount = True
 
                     realised_running_local_sum += current_realised
 
@@ -204,8 +217,7 @@ class PortfolioEvent(db.Model):
 
             # Save a copy of the event's data for the report
             event.available_snapshot = asset_holding.available_units
-            event.tax_full_snapshot = event_taxes
-            event.tax_discount_snapshot = event_tax_discount
+            event.tax_full_snapshot = json.dumps(tax_full_snapshot)
             event.realised_snapshot = realised_running_local_sum
 
         asset_holding.realised_total = realised_running_local_sum

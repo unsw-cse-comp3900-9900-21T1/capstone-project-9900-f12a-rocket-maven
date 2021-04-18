@@ -390,7 +390,7 @@ def load_asset_data(db):
 
     with open("./data/AUDUSD=x.csv") as fb:
         for m in DictReader(fb):
-            Currency.add_from_dict(m, "AUD", "USD")
+            Currency.add_from_dict(m, "AUD", "USD", merge_mode=False)
 
     # Perform an add operation instead of an expensive merge operation whenever possible
     # This is a pretty high speed-up
