@@ -13,7 +13,10 @@ type Props = {
 const CardTitle = ({ portfolio, singleView, refreshPortfolios }: Props) => {
   const deletePortfolio = useDeletePortfolio()
   const onDeletePortfolio = async () => {
-    await deletePortfolio(String(portfolio.id))
+    await deletePortfolio({
+      apiPath: String(portfolio.id),
+      redirectPath: '/'
+    })
     refreshPortfolios()
   }
 

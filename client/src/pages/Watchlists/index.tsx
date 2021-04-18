@@ -21,12 +21,12 @@ const Watchlists = () => {
   const addWatchListItem = useAddWatchListItem()
   const deleteWatchListItem = async (e: any) => {
     const asset_id = e.target.getAttribute('title')
-    await deleteAssetId(asset_id)
+    await deleteAssetId({ apiPath: asset_id })
     setRefreshAfterNotificationSet(refreshAfterNotificationSet + 1)
   }
 
   const onFinish = async (values: any) => {
-    await addWatchListItem(values.asset_id.value)
+    await addWatchListItem({ apiPath: values.asset_id.value })
     setRefreshAfterNotificationSet(refreshAfterNotificationSet + 1)
   }
 

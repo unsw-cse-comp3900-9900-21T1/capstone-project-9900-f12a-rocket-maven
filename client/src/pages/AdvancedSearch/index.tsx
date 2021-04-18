@@ -74,7 +74,9 @@ const AdvancedSearch = () => {
     if (values.order_direction) {
       queryParams += `&order_direction=${values.order_direction}`
     }
-    const results = await myFetch(queryPrefix + queryParams)
+    const results = await myFetch({
+      apiPath: queryPrefix + queryParams
+    })
     dispatch({
       type: 'ADV_SEARCH/UPDATE',
       payload: {

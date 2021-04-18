@@ -1,6 +1,5 @@
 import { useUpdateWatchListItem } from '@rocketmaven/hooks/http'
 import { Button, Form, Input, InputNumber } from 'antd'
-import { useHistory } from 'react-router-dom'
 import { validatePriceInput } from './helper'
 
 const NotifyContent = (
@@ -12,10 +11,12 @@ const NotifyContent = (
   setRefreshAfterNotificationSet: React.Dispatch<React.SetStateAction<number>>
 ) => {
   const updateWatchListItem = useUpdateWatchListItem()
-  const routerObject = useHistory()
   const updatePrice = async (e: any) => {
     if (validatePriceInput(e.context, e.price, e.current_price, e.asset_id)) {
-      updateWatchListItem(e.asset_id, e.context, e.price)
+      updateWatchListItem({
+        apiPath: `${e.asset_id}/${e.context}`,
+        values: { price: e.price }
+      })
       setRefreshAfterNotificationSet(refreshAfterNotificationSet + 1)
     }
   }
