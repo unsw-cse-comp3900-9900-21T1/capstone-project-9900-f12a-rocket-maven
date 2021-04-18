@@ -1,8 +1,5 @@
-import { CrownOutlined } from '@ant-design/icons'
-import { RealisedValue, UnrealisedValue } from '@rocketmaven/components/TableTooltips'
 import { Subtitle, Title } from '@rocketmaven/componentsStyled/Typography'
-import { urls } from '@rocketmaven/data/urls'
-import { useFetchAPIPublicOrLoggedInData } from '@rocketmaven/hooks/http'
+import { useFetchLeaderBoard } from '@rocketmaven/hooks/http'
 import { useUserId } from '@rocketmaven/hooks/store'
 import '@rocketmaven/pages/Leaderboard/style.less'
 import { PortfolioInfo } from '@rocketmaven/pages/Portfolio/types'
@@ -10,86 +7,14 @@ import Page from '@rocketmaven/pages/_Page'
 import { message, Table } from 'antd'
 import { isEmpty } from 'ramda'
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { createTableColumns } from './tableDefinitions'
 
 const Leaderboard = () => {
-  const [data, setData] = useState<null | [any, { results: any }]>(null)
   const [entries, setEntries] = useState<any>(null)
   const [userEntries, setUserEntries] = useState<any>(null)
-
-  useFetchAPIPublicOrLoggedInData('/leaderboard', setData)
-
-  const numberChangeRenderer = (testVal: string, record: any) => {
-    const text = parseFloat(testVal).toFixed(2)
-    return {
-      props: {
-        style: { color: parseFloat(testVal) < 0 ? 'red' : 'green' }
-      },
-      children: <span>{text}</span>
-    }
-  }
-  const investorRenderer = (testVal: any, record: any) => {
-    let username = testVal.username
-    if (testVal.first_name) {
-      username = testVal.first_name
-      if (testVal.last_name) {
-        username += ' ' + testVal.last_name
-      }
-    }
-
-    return {
-      children: <span>{username}</span>
-    }
-  }
-
   const userId = useUserId()
-
-  const portfolioLinkRenderer = (testVal: number, record: any) => {
-    if ((testVal || (record.Investor && record.Investor.id === userId)) && testVal != 0) {
-      return <Link to={urls.portfolio + '/' + testVal}>View Portfolio</Link>
-    }
-    return <>Private Portfolio</>
-  }
-
-  const valueColumns = [
-    {
-      title: 'Rank',
-      dataIndex: 'Rank',
-      render: (value: number) => {
-        let brag_icon = null
-        if (value === 1) {
-          brag_icon = <CrownOutlined />
-        }
-        return (
-          <span>
-            {brag_icon} {value}
-          </span>
-        )
-      }
-    },
-    {
-      title: 'Investor',
-      dataIndex: 'Investor',
-      render: investorRenderer
-    },
-    { title: 'Score', dataIndex: 'Score' },
-    { title: 'Purchase Cost', dataIndex: 'Purchase Cost' },
-    {
-      title: UnrealisedValue,
-      dataIndex: 'Unrealised',
-      render: numberChangeRenderer
-    },
-    {
-      title: RealisedValue,
-      dataIndex: 'Realised',
-      render: numberChangeRenderer
-    },
-    {
-      title: 'Explore',
-      dataIndex: 'View Portfolio',
-      render: portfolioLinkRenderer
-    }
-  ]
+  const { data } = useFetchLeaderBoard()
+  const columns = createTableColumns(userId)
 
   const tableData = (portfolio: PortfolioInfo) => {
     return {
@@ -145,7 +70,7 @@ const Leaderboard = () => {
           <Subtitle>Your Rankings</Subtitle>
           <Table
             pagination={false}
-            columns={valueColumns}
+            columns={columns}
             dataSource={userEntries}
             rowClassName={(record: any) => {
               switch (true) {
@@ -164,7 +89,7 @@ const Leaderboard = () => {
       <br />
       <Subtitle>Top Portfolios</Subtitle>
       <Table
-        columns={valueColumns}
+        columns={columns}
         dataSource={entries}
         rowClassName={(record: any) => {
           switch (true) {
