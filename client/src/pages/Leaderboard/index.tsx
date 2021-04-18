@@ -29,7 +29,6 @@ const Leaderboard = () => {
     }
   }
   const investorRenderer = (testVal: any, record: any) => {
-    console.log(testVal)
     let username = testVal.username
     if (testVal.first_name) {
       username = testVal.first_name

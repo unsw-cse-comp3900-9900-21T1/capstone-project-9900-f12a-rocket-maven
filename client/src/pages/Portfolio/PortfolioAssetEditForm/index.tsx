@@ -100,7 +100,7 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
         form.setFieldsValue({
           price_per_share: data.price
         })
-      } catch (error) {}
+      } catch (error) { }
     }
     myFetch()
   }
@@ -132,7 +132,6 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
             showSearch
             portfolioid={portfolioId}
             onChange={(newValue: any) => {
-              console.log(newValue)
               setHoldings(parseFloat(newValue.label.props['data-holdings']))
               setPricePerShare(newValue.label.props.title)
               setCurrentTicker(newValue.value)

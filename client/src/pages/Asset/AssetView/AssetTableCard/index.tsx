@@ -11,7 +11,6 @@ const AssetTableCard = ({ data }: any) => {
     return null
 
   const asset_additional = JSON.parse(data.asset.asset_additional)
-  console.log(asset_additional)
 
   let value = [['Current Market', false, data.asset.current_price]]
 
