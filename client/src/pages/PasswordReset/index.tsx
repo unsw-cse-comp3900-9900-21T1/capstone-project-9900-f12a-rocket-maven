@@ -4,7 +4,7 @@ import { Title } from '@rocketmaven/componentsStyled/Typography'
 import { urls } from '@rocketmaven/data/urls'
 import { usePasswordReset } from '@rocketmaven/hooks/http'
 import Page from '@rocketmaven/pages/_Page'
-import { Button, Form, Input } from 'antd'
+import { Button, Form, Input, message } from 'antd'
 
 const layout = {
   labelCol: {
@@ -27,7 +27,8 @@ const PasswordReset = () => {
   const onFinish = async (values: any) => {
     const urlParams = new URLSearchParams(window.location.search)
     values.evc = urlParams.get('key')
-    resetPassword({ values, redirectPath: urls.root })
+    const data = await resetPassword({ values, redirectPath: urls.login })
+    data && message.info(data.msg)
   }
 
   return (
