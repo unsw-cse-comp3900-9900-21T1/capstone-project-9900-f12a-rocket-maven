@@ -15,3 +15,12 @@ class Currency(db.Model):
 
     date = db.Column(db.DateTime, primary_key=True)
     value = db.Column(db.Float(), unique=False, nullable=True)
+
+
+class CurrencyUpdate(db.Model):
+    """Currency update tracker to determine next update time"""
+
+    currency_from = db.Column(db.Integer, primary_key=True)
+    currency_to = db.Column(db.Integer, primary_key=True)
+
+    last_updated = db.Column(db.DateTime, default=db.func.current_timestamp())
