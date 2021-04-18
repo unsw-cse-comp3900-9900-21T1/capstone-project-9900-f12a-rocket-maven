@@ -2,11 +2,9 @@ import { useStore, useUserId } from '@rocketmaven/hooks/store'
 import { message } from 'antd'
 import { decodeToken } from 'react-jwt'
 import { useHistory } from 'react-router'
-import { urls } from '../data/urls'
 import {
   useAbstractFetchOnMount,
-  useAbstractFetchOnSubmit,
-  useAbstractFetchUpdate
+  useAbstractFetchOnSubmit
 } from './_http'
 
 type SuccessfullLoginResponse = {
@@ -81,11 +79,11 @@ export const useAuth = (authType: AuthType): Function => {
     endPointUrl = '/api/v1/investors'
   }
   const { dispatch } = useStore()
-  const { myFetch } = useAbstractFetchUpdate(endPointUrl, 'POST')
+  const { myFetch } = useAbstractFetchOnSubmit(endPointUrl, 'POST')
   const routerObject = useHistory()
   const submit = async (values: JSON) => {
     try {
-      const data: SuccessfullLoginResponse = await myFetch(values)
+      const data: SuccessfullLoginResponse = await myFetch({ values })
       dispatch({
         type: 'LOGIN',
         payload: {
@@ -104,16 +102,14 @@ export const useAuth = (authType: AuthType): Function => {
 
 export const useUpdateAccountInfo = (): Function => {
   const userId = useUserId()
-  const { myFetch } = useAbstractFetchUpdate(`/api/v1/investors/${userId}`, 'PUT', urls.account)
+  const urlPrefix = `/api/v1/investors/${userId}`
+  const { myFetch } = useAbstractFetchOnSubmit(urlPrefix, 'PUT')
   return myFetch
 }
 
 export const useAddPortfolioEvent = (portfolioId: string): Function => {
-  const { myFetch } = useAbstractFetchUpdate(
-    `/api/v1/portfolios/${portfolioId}/history`,
-    'POST',
-    urls.portfolio
-  )
+  const urlPrefix = `/api/v1/portfolios/${portfolioId}/history`
+  const { myFetch } = useAbstractFetchOnSubmit(urlPrefix, 'POST')
   return myFetch
 }
 
@@ -126,17 +122,19 @@ export const useUpdatePortfolioInfo = (
   if (methodInput === 'PUT') {
     endPointUrl = `/api/v1/portfolios/${portfolioId}`
   }
-  const { myFetch } = useAbstractFetchUpdate(endPointUrl, methodInput, urls.portfolio)
+  const { myFetch } = useAbstractFetchOnSubmit(endPointUrl, methodInput)
   return myFetch
 }
 
 export const useIForgot = () => {
-  const { isLoading, myFetch } = useAbstractFetchUpdate('/api/v1/iforgot', 'POST')
+  const urlPrefix = '/api/v1/iforgot'
+  const { isLoading, myFetch } = useAbstractFetchOnSubmit(urlPrefix, 'POST')
   return { isLoading, myFetch }
 }
 
 export const usePasswordReset = () => {
-  const { myFetch } = useAbstractFetchUpdate('/api/v1/pw_reset', 'POST', '/')
+  const urlPrefix = '/api/v1/pw_reset'
+  const { myFetch } = useAbstractFetchOnSubmit(urlPrefix, 'POST')
   return myFetch
 }
 

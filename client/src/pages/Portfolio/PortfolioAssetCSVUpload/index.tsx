@@ -54,7 +54,7 @@ const PortfolioAssetEditForm = ({ portfolioId }: Props) => {
     routerObject.push('/')
 
     myFetch({
-      ...values
+      values,
     })
   }
 

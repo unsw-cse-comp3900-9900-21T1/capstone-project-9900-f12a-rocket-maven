@@ -1,5 +1,6 @@
 import UserAssetSearchBox from '@rocketmaven/components/UserAssetSearchBox'
 import { Card } from '@rocketmaven/componentsStyled/Card'
+import { urls } from '@rocketmaven/data/urls'
 import { useAddPortfolioEvent } from '@rocketmaven/hooks/http'
 import { PortfolioEventCreate, PortfolioInfo } from '@rocketmaven/pages/Portfolio/types'
 import { Button, Col, Form, Input, InputNumber, Row, Statistic } from 'antd'
@@ -75,7 +76,8 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
     values.asset_id = values.asset_id.value
     values.add_action = addActionValue
     myFetch({
-      ...values
+      values,
+      redirectPath: urls.portfolio
     })
   }
 

@@ -1,6 +1,7 @@
 import PasswordInput from '@rocketmaven/components/PasswordInput'
 import { Card } from '@rocketmaven/componentsStyled/Card'
 import { Title } from '@rocketmaven/componentsStyled/Typography'
+import { urls } from '@rocketmaven/data/urls'
 import { usePasswordReset } from '@rocketmaven/hooks/http'
 import Page from '@rocketmaven/pages/_Page'
 import { Button, Form, Input } from 'antd'
@@ -21,12 +22,12 @@ const tailLayout = {
 }
 
 const PasswordReset = () => {
-  const myFetch = usePasswordReset()
+  const resetPassword = usePasswordReset()
 
   const onFinish = async (values: any) => {
     const urlParams = new URLSearchParams(window.location.search)
     values.evc = urlParams.get('key')
-    myFetch(values)
+    resetPassword({ values, redirectPath: urls.root })
   }
 
   return (
