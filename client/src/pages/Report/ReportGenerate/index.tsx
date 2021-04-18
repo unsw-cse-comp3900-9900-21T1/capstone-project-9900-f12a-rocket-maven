@@ -95,7 +95,6 @@ const ReportGenerate = () => {
     }
 
     if (values.report_type == 'Realised') {
-      console.log(data['series'])
       setChartOptions({
         chart: {
           type: 'line'
@@ -114,7 +113,6 @@ const ReportGenerate = () => {
     }
 
     if (values.report_type == 'Tax') {
-      console.log(data['series'])
       setChartOptions({
         chart: {
           type: 'line'
@@ -168,7 +166,6 @@ const ReportGenerate = () => {
   ]
 
   function handleChange(value: any) {
-    console.log(`Selected: ${value}`)
     setDefaultChildren(value)
   }
 

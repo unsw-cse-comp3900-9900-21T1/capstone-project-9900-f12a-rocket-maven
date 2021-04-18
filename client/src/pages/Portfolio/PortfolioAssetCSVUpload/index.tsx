@@ -52,7 +52,6 @@ const PortfolioAssetEditForm = ({ portfolioId }: Props) => {
     }
     routerObject.push('/')
 
-    console.log('************** values are ', values)
     myFetch({
       ...values
     })

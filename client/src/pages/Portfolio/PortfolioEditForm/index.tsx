@@ -50,7 +50,6 @@ const PortfolioEditForm = ({ portfolioInfo, portfolioId, action }: Props) => {
     portfolioId
   )
   const onFinish = (values: any) => {
-    console.log(values)
     setValuesAndFetch({
       ...values,
       id: undefined,

@@ -27,7 +27,6 @@ export const createWatchListColumns = (
       title: 'Name',
       dataIndex: 'asset_additional',
       render: (value: string) => {
-        console.log(JSON.parse(value))
         const asset_additional = JSON.parse(value)
         const focus = asset_additional.longName
         if (focus) {

@@ -14,8 +14,6 @@ type Params = {
 const PortfolioHistory = () => {
   const { id, hid } = useParams<Params>()
 
-  console.log({ id, hid })
-
   const { isLoading, data } = useGetPortfolioHistory(id)
   let historyTable = null
   if (data && !isEmpty(data)) {

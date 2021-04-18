@@ -177,7 +177,6 @@ export const useAccessToken = () => {
 
   const revalidateAccessToken = async () => {
     try {
-      console.log('************************token refresh in progress')
       if (isExpired(refreshToken)) {
         throw Error('Refresh token expired')
       }
@@ -193,7 +192,6 @@ export const useAccessToken = () => {
         throw Error('Not logged in, now logging out!')
       }
       const data: { access_token: string } = await response.json()
-      console.log('************************token refresh successfull')
       dispatch({ type: 'REFRESH_TOKEN', payload: { accessToken: data.access_token } })
     } catch (error) {
       message.error(error.message)
@@ -225,7 +223,6 @@ export const useFetchAPIPublicOrLoggedInData = (api_part: string, setData: any):
             Authorization: `Bearer ${accessToken}`
           }
         })
-        console.log('*********************** status is', response.status)
         const data = await response.json()
         if (!response.ok) {
           if (data.msg) {

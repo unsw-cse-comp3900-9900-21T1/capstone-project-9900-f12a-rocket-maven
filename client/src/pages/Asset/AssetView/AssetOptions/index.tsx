@@ -27,7 +27,6 @@ const AssetOptions = ({ tickerSymbol, currentPrice }: any) => {
     }
   }
   const addToPortfolio = (e: any) => {
-    console.log(e, tickerSymbol, currentPrice)
 
     // https://stackoverflow.com/questions/59464337/how-to-send-params-in-usehistory-of-react-router-dom
     routerObject.push({

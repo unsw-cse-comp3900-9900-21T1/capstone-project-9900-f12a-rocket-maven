@@ -108,8 +108,6 @@ const UserAssetSearchBox = (props: any) => {
             }
           })
 
-          console.log(search_simple)
-
           return search_simple
         }
 
