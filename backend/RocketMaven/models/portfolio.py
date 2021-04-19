@@ -15,7 +15,9 @@ class Portfolio(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
     tax_residency = db.Column(CountryType, unique=False, nullable=False)
-    currency = db.Column(CurrencyType, unique=False, nullable=False)
+    currency = db.Column(
+        CurrencyType, db.ForeignKey("currency.code"), unique=False, nullable=False
+    )
 
     public_portfolio = db.Column(db.Boolean, default=False)
     deleted = db.Column(db.Boolean, default=False)

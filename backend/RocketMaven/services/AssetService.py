@@ -14,6 +14,7 @@ from RocketMaven.extensions import db
 from RocketMaven.models import (
     Asset,
     Currency,
+    CurrencyHistory,
     CurrencyUpdate,
     PortfolioAssetHolding,
     Portfolio,
@@ -316,10 +317,10 @@ def get_current_exchange(currency_from: str, currency_to: str) -> float:
             # Update currency data
             try:
                 start_date = (
-                    Currency.query.filter_by(
+                    CurrencyHistory.query.filter_by(
                         currency_from=currency_from, currency_to=currency_to
                     )
-                    .order_by(Currency.date.desc())
+                    .order_by(CurrencyHistory.date.desc())
                     .first()
                     .date
                 )
@@ -336,7 +337,7 @@ def get_current_exchange(currency_from: str, currency_to: str) -> float:
                 if "results" in data:
                     for m in data["results"]:
                         print("adding", m)
-                        Currency.add_from_dict(
+                        CurrencyHistory.add_from_dict(
                             {
                                 "Close": m["close"],
                                 "Date": m["datetime"].split(" ", 1)[0],
@@ -352,10 +353,10 @@ def get_current_exchange(currency_from: str, currency_to: str) -> float:
 
         # Return up-to-date currency data
         return (
-            Currency.query.filter_by(
+            CurrencyHistory.query.filter_by(
                 currency_from=currency_from, currency_to=currency_to
             )
-            .order_by(Currency.date.desc())
+            .order_by(CurrencyHistory.date.desc())
             .first()
             .value
         )
@@ -389,6 +390,11 @@ def load_asset_data(db):
     """
     print("Adding Exchange Rates")
 
+    new_entry = Currency(code="AUD", name="Australian dollars")
+    db.session.merge(new_entry)
+    new_entry = Currency(code="USD", name="US dollars")
+    db.session.merge(new_entry)
+
     new_entry = CurrencyUpdate(currency_from="AUD", currency_to="USD")
     db.session.add(new_entry)
 
@@ -397,7 +403,7 @@ def load_asset_data(db):
 
     with open("./data/AUDUSD=x.csv") as fb:
         for m in DictReader(fb):
-            Currency.add_from_dict(m, "AUD", "USD", merge_mode=False)
+            CurrencyHistory.add_from_dict(m, "AUD", "USD", merge_mode=False)
 
     # Perform an add operation instead of an expensive merge operation whenever possible
     # This is a pretty high speed-up

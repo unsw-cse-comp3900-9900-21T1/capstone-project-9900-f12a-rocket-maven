@@ -19,7 +19,9 @@ class Asset(db.Model):
     data_source = db.Column(db.String(1024), unique=False, nullable=False)
 
     country = db.Column(CountryType, unique=False, nullable=True)
-    currency = db.Column(CurrencyType, unique=False, nullable=True)
+    currency = db.Column(
+        CurrencyType, db.ForeignKey("currency.code"), unique=False, nullable=False
+    )
 
     asset_additional = db.Column(db.Text, unique=False, nullable=True)
 
