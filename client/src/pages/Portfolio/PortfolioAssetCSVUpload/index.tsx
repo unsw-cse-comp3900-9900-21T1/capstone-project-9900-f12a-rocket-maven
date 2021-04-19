@@ -1,6 +1,5 @@
 import { InboxOutlined, LoadingOutlined, PlusOutlined } from '@ant-design/icons'
 import { Card } from '@rocketmaven/componentsStyled/Card'
-import { useAddPortfolioEvent } from '@rocketmaven/hooks/http'
 import { useAccessToken } from '@rocketmaven/hooks/_http'
 import { Button, Form, message, Upload } from 'antd'
 import { useState } from 'react'
@@ -31,7 +30,7 @@ const PortfolioAssetEditForm = ({ portfolioId }: Props) => {
 
   const urlEnd = `/api/v1/portfolios/${portfolioId}/history`
 
-  const myFetch: Function = useAddPortfolioEvent(portfolioId)
+  // const myFetch: Function = useAddPortfolioEvent(portfolioId)
 
   const onFinish = async (values: any) => {
     const formData = new FormData()
@@ -51,11 +50,8 @@ const PortfolioAssetEditForm = ({ portfolioId }: Props) => {
       message.error(`${data.msg}`)
       return
     }
-    routerObject.push('/')
 
-    myFetch({
-      values,
-    })
+    routerObject.push('/')
   }
 
   const uploadButton = (
@@ -88,6 +84,9 @@ const PortfolioAssetEditForm = ({ portfolioId }: Props) => {
 
   return (
     <Card title="CSV Upload">
+      <a href="/bulk_trades.csv">
+        <Button type="primary">Download Sample</Button>
+      </a>
       <Form
         style={{ textAlign: 'center' }}
         name="csv_upload"
