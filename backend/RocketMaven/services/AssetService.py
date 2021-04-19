@@ -8,10 +8,10 @@ from csv import DictReader
 import requests
 from flask import request
 from flask_jwt_extended import get_jwt_identity
-from RocketMaven.api.schemas import AssetSchema
+from RocketMaven.api.schemas import AssetSchema, PortfolioSchema
 from RocketMaven.commons.pagination import paginate
 from RocketMaven.extensions import db
-from RocketMaven.models import (Asset, Currency, CurrencyUpdate,
+from RocketMaven.models import (Asset, Currency, CurrencyUpdate, Portfolio,
                                 PortfolioAssetHolding)
 from RocketMaven.services import TimeSeriesService
 from sqlalchemy import or_
@@ -170,6 +170,9 @@ def search_user_asset(portfolio_id):
             search = "%{}%".format(q)
             asset_schema = AssetSchema()
 
+            portfolio_schema = PortfolioSchema()
+            portfolio = Portfolio.query.get_or_404(portfolio_id)     
+
             # Get all portfolio holdings of target user
             port_query = aliased(
                 PortfolioAssetHolding,
@@ -206,8 +209,8 @@ def search_user_asset(portfolio_id):
                         **{
                             "available_units": x[1].available_units if x[1] else 0,
                             "exchange": get_current_exchange(
-                                x[1].orig_currency, x[1].new_currency
-                            ),
+                                x[0].currency, portfolio.currency
+                            ), 
                         },
                     }
                     for x in (query.limit(request.args.get("per_page", 10)).all())
