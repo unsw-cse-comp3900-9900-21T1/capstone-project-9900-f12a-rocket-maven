@@ -11,8 +11,13 @@ from flask_jwt_extended import get_jwt_identity
 from RocketMaven.api.schemas import AssetSchema
 from RocketMaven.commons.pagination import paginate
 from RocketMaven.extensions import db
-from RocketMaven.models import (Asset, Currency, CurrencyUpdate,
-                                PortfolioAssetHolding)
+from RocketMaven.models import (
+    Asset,
+    Currency,
+    CurrencyUpdate,
+    PortfolioAssetHolding,
+    Portfolio,
+)
 from RocketMaven.services import TimeSeriesService
 from sqlalchemy import or_
 from sqlalchemy.orm import aliased
@@ -164,58 +169,65 @@ def search_user_asset(portfolio_id):
     q = request.args.get("q", None)
     current_user = get_jwt_identity()
 
+    portfolio = Portfolio.query.filter_by(id=portfolio_id).first()
+
     if q:
-        try:
-            # https://stackoverflow.com/questions/3325467/sqlalchemy-equivalent-to-sql-like-statement
-            search = "%{}%".format(q)
-            asset_schema = AssetSchema()
+        if portfolio:
+            try:
+                # https://stackoverflow.com/questions/3325467/sqlalchemy-equivalent-to-sql-like-statement
+                search = "%{}%".format(q)
+                asset_schema = AssetSchema()
 
-            # Get all portfolio holdings of target user
-            port_query = aliased(
-                PortfolioAssetHolding,
-                db.session.query(PortfolioAssetHolding)
-                .filter(
-                    PortfolioAssetHolding.portfolio_id == portfolio_id,
-                    PortfolioAssetHolding.investor_id == current_user,
+                # Get all portfolio holdings of target user
+                port_query = aliased(
+                    PortfolioAssetHolding,
+                    db.session.query(PortfolioAssetHolding)
+                    .filter(
+                        PortfolioAssetHolding.portfolio_id == portfolio_id,
+                        PortfolioAssetHolding.investor_id == current_user,
+                    )
+                    .subquery(),
                 )
-                .subquery(),
-            )
 
-            # Get all assets by search
-            asset_query = aliased(
-                Asset,
-                db.session.query(Asset)
-                .filter(or_(Asset.ticker_symbol.like(search), Asset.name.like(search)))
-                .order_by(Asset.market_cap.desc())
-                .subquery(),
-            )
+                # Get all assets by search
+                asset_query = aliased(
+                    Asset,
+                    db.session.query(Asset)
+                    .filter(
+                        or_(Asset.ticker_symbol.like(search), Asset.name.like(search))
+                    )
+                    .order_by(Asset.market_cap.desc())
+                    .subquery(),
+                )
 
-            # Perform a left join between Asset and Portfolio Holding
-            # Essentially, if the investor has the stock, include the available information
-            # Otherwise, keep that field as null
-            query = db.session.query(asset_query, port_query).outerjoin(
-                port_query, asset_query.ticker_symbol == port_query.asset_id
-            )
+                # Perform a left join between Asset and Portfolio Holding
+                # Essentially, if the investor has the stock, include the available information
+                # Otherwise, keep that field as null
+                query = db.session.query(asset_query, port_query).outerjoin(
+                    port_query, asset_query.ticker_symbol == port_query.asset_id
+                )
 
-            # Marshmallow doesn't support left joins, multitable schemas,
-            # so a workaround is to use pure Python.
-            return {
-                "results": [
-                    {
-                        **asset_schema.dump(x[0]),
-                        **{
-                            "available_units": x[1].available_units if x[1] else 0,
-                            "exchange": get_current_exchange(
-                                x[1].orig_currency, x[1].new_currency
-                            ),
-                        },
-                    }
-                    for x in (query.limit(request.args.get("per_page", 10)).all())
-                ]
-            }
-        except Exception as e:
-            print(e)
-            return {"msg": "Asset search failed"}, 500
+                # Marshmallow doesn't support left joins, multitable schemas,
+                # so a workaround is to use pure Python.
+                return {
+                    "results": [
+                        {
+                            **asset_schema.dump(x[0]),
+                            **{
+                                "available_units": x[1].available_units if x[1] else 0,
+                                "exchange": get_current_exchange(
+                                    x[0].currency, portfolio.currency
+                                ),
+                            },
+                        }
+                        for x in (query.limit(request.args.get("per_page", 10)).all())
+                    ]
+                }
+            except Exception as e:
+                print(e)
+                return {"msg": "Asset search failed"}, 500
+        else:
+            return {"msg": "Missing portfolio"}, 400
     else:
         return {"msg": "Missing search query"}, 400
 
