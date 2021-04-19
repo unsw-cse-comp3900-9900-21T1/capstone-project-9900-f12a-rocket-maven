@@ -1,5 +1,6 @@
 from RocketMaven.models import (
     Asset,
+    Currency,
     Investor,
     Portfolio,
     PortfolioEvent,
@@ -33,6 +34,11 @@ def create_asset_event_with_current_price(
 
 # Example system that is to be demoed. Also serves as test data.
 def populate_full_system(db):
+
+    new_entry = Currency(code="AUD", name="Australian dollars")
+    db.session.merge(new_entry)
+    new_entry = Currency(code="USD", name="US dollars")
+    db.session.merge(new_entry)
 
     test_user = db.session.query(Investor).filter_by(username="temp_admin").first()
 

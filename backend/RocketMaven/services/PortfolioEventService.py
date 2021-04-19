@@ -123,7 +123,7 @@ def create_event(portfolio_id):
 
     file_mode = False
 
-    if "files[]" not in request.files and not "files" not in request.files:
+    if "files[]" not in request.files:
         # Handle direct form asset event input
         try:
             if query.competition_portfolio is True:

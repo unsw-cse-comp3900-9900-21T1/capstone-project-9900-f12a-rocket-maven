@@ -11,6 +11,8 @@ class AssetSchema(ma.SQLAlchemyAutoSchema):
     # The date/time the asset's price was last updated, implemented in business logic
     price_last_updated = ma.Date(dump_only=True)
 
+    currency = ma.String()
+
     class Meta:
         model = Asset
         sqla_session = db.session

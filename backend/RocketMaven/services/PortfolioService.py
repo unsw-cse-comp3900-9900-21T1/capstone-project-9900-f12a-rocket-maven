@@ -11,7 +11,7 @@ from RocketMaven.models import (
     Portfolio,
     PortfolioAssetHolding,
     PortfolioEvent,
-    Currency,
+    CurrencyHistory,
 )
 from RocketMaven.services.AssetService import update_assets_price
 from sqlalchemy import and_
@@ -262,7 +262,9 @@ def get_report():
             .filter_by(investor_id=get_jwt_identity())
             .filter(Portfolio.id.in_(request.json["portfolios"]))
         )
-        currency = db.session().query(Currency).order_by(Currency.date.asc())
+        currency = (
+            db.session().query(CurrencyHistory).order_by(CurrencyHistory.date.asc())
+        )
 
         first_date_bounds = portfolios.order_by(PortfolioEvent.event_date.asc()).first()
         last_date_bounds = portfolios.order_by(PortfolioEvent.event_date.desc()).first()
@@ -281,8 +283,8 @@ def get_report():
                 )
         currency = currency.filter(
             and_(
-                Currency.date >= first_date_bounds,
-                Currency.date <= get_last_date,
+                CurrencyHistory.date >= first_date_bounds,
+                CurrencyHistory.date <= get_last_date,
             )
         )
 

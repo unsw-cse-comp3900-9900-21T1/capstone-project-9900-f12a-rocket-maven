@@ -16,6 +16,8 @@ class PortfolioSchema(ma.SQLAlchemyAutoSchema):
     # True if this portfolio is a competition portfolio
     competition_portfolio = ma.Bool()
 
+    currency = ma.String()
+
     # Assets that are part of the portfolio
     portfolio_asset_holding = ma.Nested(PortfolioAssetHoldingSchema, many=True)
 

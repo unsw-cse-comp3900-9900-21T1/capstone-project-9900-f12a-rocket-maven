@@ -20,11 +20,11 @@ const ReportLanding = () => {
         </Button>
         <br />
         <Button type="primary">
-          <Link to="/report/builder?prefab=diversification">Diversification</Link>
+          <Link to="/report/builder?prefab=tax">Tax Report</Link>
         </Button>
         <br />
         <Button type="primary">
-          <Link to="/report/builder?prefab=tax">Tax Report</Link>
+          <Link to="/report/builder?prefab=diversification">Diversification</Link>
         </Button>
       </Card>
       <Card title="Custom Reports">
