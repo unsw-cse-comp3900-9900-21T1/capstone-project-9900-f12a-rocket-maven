@@ -67,7 +67,7 @@ def test_get_top_additions_empty(client):
     assert resp.status_code == 404
 
 
-def test_get_top_additions(client, portfolio_event):
+def test_get_top_additions(client, public_portfolio_event):
     url = url_for("api.top_additions")
 
     # test 200
