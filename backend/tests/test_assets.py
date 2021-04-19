@@ -31,9 +31,15 @@ def test_search_assets_portfolio(client, portfolio, asset, portfolio_event, norm
     resp = client.get(url, headers=normal_headers)
     assert resp.status_code == 400
 
-    # test 200
+    # test 200 - Asset holding available
     url = url_for("api.user_asset_search", portfolio_id=portfolio.id)
     resp = client.get(url, query_string={"q":"B"}, headers=normal_headers)
+    assert resp.status_code == 200
+
+
+    # test 200 - Asset holding not available
+    url = url_for("api.user_asset_search", portfolio_id=portfolio.id)
+    resp = client.get(url, query_string={"q":"A"}, headers=normal_headers)
     assert resp.status_code == 200
 
 
