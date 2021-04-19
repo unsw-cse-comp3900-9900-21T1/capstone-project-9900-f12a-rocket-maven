@@ -20,7 +20,7 @@ def test_search_assets(client, asset):
     assert any(res["ticker_symbol"] == asset.ticker_symbol for res in resp.get_json()["results"])
     
 
-def test_search_assets_portfolio(client, portfolio, asset, normal_headers):
+def test_search_assets_portfolio(client, portfolio, asset, portfolio_event, normal_headers):
     # test 401
     url = url_for("api.user_asset_search", portfolio_id=portfolio.id)
     resp = client.get(url)
@@ -34,7 +34,6 @@ def test_search_assets_portfolio(client, portfolio, asset, normal_headers):
     # test 200
     url = url_for("api.user_asset_search", portfolio_id=portfolio.id)
     resp = client.get(url, query_string={"q":"B"}, headers=normal_headers)
-    print(resp.get_json())
     assert resp.status_code == 200
 
 
