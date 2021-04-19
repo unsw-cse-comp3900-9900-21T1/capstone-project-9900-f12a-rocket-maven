@@ -1,8 +1,9 @@
+import datetime
 import io
 import json
 import re
+import zipfile
 from csv import DictReader
-import datetime
 
 import requests
 from flask import request
@@ -10,11 +11,12 @@ from flask_jwt_extended import get_jwt_identity
 from RocketMaven.api.schemas import AssetSchema
 from RocketMaven.commons.pagination import paginate
 from RocketMaven.extensions import db
-from RocketMaven.models import Asset, Currency, CurrencyUpdate, PortfolioAssetHolding
+from RocketMaven.models import (Asset, Currency, CurrencyUpdate,
+                                PortfolioAssetHolding)
 from RocketMaven.services import TimeSeriesService
 from sqlalchemy import or_
 from sqlalchemy.orm import aliased
-import zipfile
+
 
 # https://stackoverflow.com/questions/312443/how-do-you-split-a-list-into-evenly-sized-chunks/312464#312464
 def chunks(lst, n):
@@ -204,7 +206,7 @@ def search_user_asset(portfolio_id):
                         **{
                             "available_units": x[1].available_units if x[1] else 0,
                             "exchange": get_current_exchange(
-                                x[0].orig_currency, x[0].new_currency
+                                x[1].orig_currency, x[1].new_currency
                             ),
                         },
                     }
