@@ -1,4 +1,10 @@
-import { EyeOutlined, PlusOutlined, SettingOutlined, ShareAltOutlined } from '@ant-design/icons'
+import {
+  EyeOutlined,
+  MinusOutlined,
+  PlusOutlined,
+  SettingOutlined,
+  ShareAltOutlined
+} from '@ant-design/icons'
 import { urls } from '@rocketmaven/data/urls'
 import { PortfolioInfo } from '@rocketmaven/pages/Portfolio/types'
 import { Button, Tooltip } from 'antd'
@@ -10,7 +16,7 @@ type ColumnInput = {
   currencyPrefix: string
   isCompetitionPortfolio: boolean
   singleView?: boolean
-  deleteAssetPortfolioHolding: (e: any) => Promise<void>,
+  deleteAssetPortfolioHolding: (e: any) => Promise<void>
 }
 
 export const createColumns = ({
@@ -18,9 +24,8 @@ export const createColumns = ({
   currencyPrefix,
   singleView,
   isCompetitionPortfolio,
-  deleteAssetPortfolioHolding,
+  deleteAssetPortfolioHolding
 }: ColumnInput) => {
-
   const columns = [
     {
       title: 'Ticker Symbol',
@@ -81,12 +86,12 @@ export const createColumns = ({
 
     ...(singleView
       ? [
-        {
-          title: 'Purchase Value',
-          dataIndex: 'purchase_value',
-          render: (value: number) => currencyPrefix + '\u200b' + +value.toFixed(2)
-        }
-      ]
+          {
+            title: 'Purchase Value',
+            dataIndex: 'purchase_value',
+            render: (value: number) => currencyPrefix + '\u200b' + +value.toFixed(2)
+          }
+        ]
       : []),
 
     {
@@ -103,12 +108,12 @@ export const createColumns = ({
 
     ...(singleView
       ? [
-        {
-          title: 'Realised Total',
-          dataIndex: 'realised_total',
-          render: (value: number) => value.toFixed(2)
-        }
-      ]
+          {
+            title: 'Realised Total',
+            dataIndex: 'realised_total',
+            render: (value: number) => value.toFixed(2)
+          }
+        ]
       : []),
 
     {
@@ -133,10 +138,10 @@ export const createColumns = ({
 }
 
 type ActionListInput = {
-  singleView: boolean,
-  portfolio: PortfolioInfo,
-  setModalShareURL: (arg: any) => void,
-  showModalForShare: () => void,
+  singleView: boolean
+  portfolio: PortfolioInfo
+  setModalShareURL: (arg: any) => void
+  showModalForShare: () => void
 }
 
 export const createActionsList = ({
@@ -144,44 +149,42 @@ export const createActionsList = ({
   portfolio,
   setModalShareURL,
   showModalForShare
-}: ActionListInput) => (
+}: ActionListInput) =>
   !singleView
     ? [
-      <Tooltip placement="topLeft" title="Add New Event" arrowPointAtCenter>
-        <Link to={urls.portfolio + `/${portfolio.id}/addremove`}>
-          <PlusOutlined key="edit" />
-        </Link>
-      </Tooltip>,
+        <Tooltip placement="topLeft" title="Create New Holding Add/Remove Event" arrowPointAtCenter>
+          <Link to={urls.portfolio + `/${portfolio.id}/addremove`}>
+            <PlusOutlined key="edit" />
+            /
+            <MinusOutlined key="edit" />
+          </Link>
+        </Tooltip>,
 
-      <Tooltip placement="topLeft" title="Edit Portfolio Settings" arrowPointAtCenter>
-        <Link to={urls.portfolio + `/${portfolio.id}/edit`}>
-          <SettingOutlined key="setting" />
-        </Link>
-      </Tooltip>,
+        <Tooltip placement="topLeft" title="Edit Portfolio Settings" arrowPointAtCenter>
+          <Link to={urls.portfolio + `/${portfolio.id}/edit`}>
+            <SettingOutlined key="setting" />
+          </Link>
+        </Tooltip>,
 
-      <Tooltip placement="topLeft" title="Portfolio Event History" arrowPointAtCenter>
-        <Link to={urls.portfolio + `/${portfolio.id}/history`}>
-          <EyeOutlined key="ellipsis" />
-        </Link>
-      </Tooltip>,
-      ...(portfolio.public_portfolio
-        ? [
-          <Tooltip placement="topLeft" title="Share" arrowPointAtCenter>
-            <ShareAltOutlined
-              key="share"
-              onClick={() => {
-                setModalShareURL(
-                  new URL(window.location.href).origin +
-                  urls.portfolio +
-                  '/' +
-                  portfolio.id
-                )
-                showModalForShare()
-              }}
-            />
-          </Tooltip>
-        ]
-        : [])
-    ]
+        <Tooltip placement="topLeft" title="Portfolio Event History" arrowPointAtCenter>
+          <Link to={urls.portfolio + `/${portfolio.id}/history`}>
+            <EyeOutlined key="ellipsis" />
+          </Link>
+        </Tooltip>,
+        ...(portfolio.public_portfolio
+          ? [
+              <Tooltip placement="topLeft" title="Share" arrowPointAtCenter>
+                <ShareAltOutlined
+                  key="share"
+                  onClick={() => {
+                    setModalShareURL(
+                      new URL(window.location.href).origin + urls.portfolio + '/' + portfolio.id
+                    )
+                    showModalForShare()
+                  }}
+                />
+              </Tooltip>
+            ]
+          : [])
+      ]
     : []
-)

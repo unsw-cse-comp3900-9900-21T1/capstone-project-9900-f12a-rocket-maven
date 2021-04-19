@@ -219,7 +219,7 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
           </span>
         )}
 
-        {!portfolioInfo.competition_portfolio ? (
+        {!portfolioInfo.competition_portfolio && currentCurrency !== portfolioInfo.currency ? (
           <Form.Item
             name="exchange_rate"
             label={`Exchange Rate (${currentCurrency} 🡢 ${portfolioInfo.currency})`}
@@ -229,7 +229,7 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
               }
             ]}
           >
-            <InputNumber />
+            <InputNumber onChange={(e: any) => setExchangeRate(e)} />
           </Form.Item>
         ) : (
           <span>

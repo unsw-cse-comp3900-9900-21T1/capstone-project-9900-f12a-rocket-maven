@@ -510,7 +510,7 @@ def recommend_portfolio(asset_holdings):
         return recommended
 
     if True:
-        assets_to_display = 10
+        assets_to_display = 7
 
         # Maintain a maxheap
         recommended = []
