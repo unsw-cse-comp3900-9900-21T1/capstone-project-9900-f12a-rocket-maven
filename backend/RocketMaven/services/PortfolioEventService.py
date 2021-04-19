@@ -78,10 +78,9 @@ def handle_broker_csv_row(csv_input_row: dict) -> dict:
         output_map["event_date"] = str(
             datetime.datetime.strptime(csv_input_row["Trade Date"], "%d-%m-%y")
         )
-        print(output_map["event_date"])
 
     if "Exchange Rate" in csv_input_row:
-        output_map["exchange"] = csv_input_row["Exchange Rate"]
+        output_map["exchange_rate"] = csv_input_row["Exchange Rate"]
 
     if "Exchange" in csv_input_row and "Symbol" in csv_input_row:
         output_map["asset_id"] = (
@@ -124,7 +123,7 @@ def create_event(portfolio_id):
 
     file_mode = False
 
-    if "files[]" not in request.files:
+    if "files[]" not in request.files and not "files" not in request.files:
         # Handle direct form asset event input
         try:
             if query.competition_portfolio is True:
@@ -147,7 +146,9 @@ def create_event(portfolio_id):
         # Handle CSV events import
         portfolio_events = []
         try:
-            for form_file in request.files.getlist("files[]"):
+            for form_file in request.files.getlist("files[]") + request.files.getlist(
+                "files"
+            ):
                 tmp_file = io.StringIO(form_file.stream.read().decode("utf-8"))
                 csv_file = csv.DictReader(tmp_file)
                 for m in csv_file:
@@ -160,6 +161,7 @@ def create_event(portfolio_id):
 
         except Exception as e:
             file_mode = False
+            print(e)
             return (
                 {
                     "msg": f"Issue processing csv file! {e}",
