@@ -82,12 +82,16 @@ class PortfolioEvent(db.Model):
             if portfolio_event.add_action is True:
                 # Buy
                 buying_power_diff = -(
-                    portfolio_event.price_per_share * portfolio_event.units
+                    portfolio_event.price_per_share
+                    * portfolio_event.exchange_rate
+                    * portfolio_event.units
                 )
             else:
                 # Sell
                 buying_power_diff = (
-                    portfolio_event.price_per_share * portfolio_event.units
+                    portfolio_event.price_per_share
+                    * portfolio_event.exchange_rate
+                    * portfolio_event.units
                 )
 
             # Affect buying power

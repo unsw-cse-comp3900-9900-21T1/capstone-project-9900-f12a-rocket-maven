@@ -61,11 +61,11 @@ def test_get_asset_price(client, asset):
     # test 400 - cannot test due to endpoint routing requiring this value
 
     # test 404
-    url = url_for("api.asset_price_by_ticker", ticker_symbol="unknown")
+    url = url_for("api.asset_price_by_ticker", ticker_symbol="unknown", portfolio_currency="unknown")
     resp = client.get(url)
     assert resp.status_code == 404
     
     # test 200
-    url = url_for("api.asset_price_by_ticker", ticker_symbol=asset.ticker_symbol)
+    url = url_for("api.asset_price_by_ticker", ticker_symbol=asset.ticker_symbol, portfolio_currency=asset.currency)
     resp = client.get(url)
     assert resp.status_code == 200
