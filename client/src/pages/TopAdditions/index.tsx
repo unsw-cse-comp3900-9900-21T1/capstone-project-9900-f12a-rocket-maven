@@ -46,10 +46,8 @@ const TopAdditions = () => {
           'Buying Power': currencyPrefix + portfolio.buying_power.toFixed(2),
           'Current Market': currencyPrefix + portfolio.current_value_sum.toFixed(2),
           'Purchase Cost': currencyPrefix + portfolio.purchase_value_sum.toFixed(2),
-          Unrealised:
-            currencyPrefix +
-            (portfolio.current_value_sum - portfolio.purchase_value_sum).toString(),
-          Realised: (currencyPrefix + portfolio.realised_sum).toString(),
+          Unrealised: (portfolio.current_value_sum - portfolio.purchase_value_sum).toString(),
+          Realised: portfolio.realised_sum.toString(),
           'View Portfolio': portfolio.public_portfolio ? portfolio.id : 0
         })
       }

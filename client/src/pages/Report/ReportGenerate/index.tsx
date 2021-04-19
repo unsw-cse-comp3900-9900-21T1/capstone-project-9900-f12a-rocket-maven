@@ -34,12 +34,12 @@ const ReportGenerate = () => {
 
   const [reportMode, setReportMode] = React.useState('')
 
-  const [chartOptions, setChartOptions] = React.useState({})
+  const [chartOptions, setChartOptions] = React.useState(['', {}])
 
   const onFinish = async (values: any) => {
+    console.log(values)
     setReportMode(values.report_type)
     values.portfolios = defaultChildren
-    // values.portfolios =
     const response = await fetch(`/api/v1/report`, {
       method: 'POST',
       headers: {
@@ -53,68 +53,74 @@ const ReportGenerate = () => {
 
     if (values.report_type == 'Diversification') {
       // https://www.highcharts.com/demo/pie-drilldown
-      setChartOptions({
-        chart: {
-          type: 'pie'
-        },
-        title: {
-          text: 'Diversification'
-        },
-        subtitle: {
-          text: 'Portfolios by Industry Diversity'
-        },
-
-        accessibility: {
-          announceNewData: {
-            enabled: true
+      setChartOptions([
+        'Diversification',
+        {
+          chart: {
+            type: 'pie'
           },
-          point: {
-            valueSuffix: '%'
-          }
-        },
+          title: {
+            text: 'Diversification'
+          },
+          subtitle: {
+            text: 'Portfolios by Industry Diversity'
+          },
 
-        plotOptions: {
-          series: {
-            dataLabels: {
-              enabled: true,
-              format: '{point.name}: {point.y:.1f}%',
-              distance: -30
+          accessibility: {
+            announceNewData: {
+              enabled: true
             },
-            showInLegend: true
-          }
-        },
+            point: {
+              valueSuffix: '%'
+            }
+          },
 
-        tooltip: {
-          headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-          pointFormat:
-            '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
-        },
+          plotOptions: {
+            series: {
+              dataLabels: {
+                enabled: true,
+                format: '{point.name}: {point.y:.1f}%',
+                distance: -30
+              },
+              showInLegend: true
+            }
+          },
 
-        series: data['series'],
-        drilldown: data['drilldown']
-      })
+          tooltip: {
+            headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+            pointFormat:
+              '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
+          },
+
+          series: data['series'],
+          drilldown: data['drilldown']
+        }
+      ])
     }
 
     if (values.report_type == 'Performance') {
-      setChartOptions({
-        chart: {
-          type: 'line'
-        },
-        xAxis: {
-          type: 'datetime'
-        },
-        title: {
-          text: 'Performance'
-        },
-        subtitle: {
-          text: 'Portfolio return over time'
-        },
-        series: data['series']
-      })
+      setChartOptions([
+        'Performance',
+        {
+          chart: {
+            type: 'line'
+          },
+          xAxis: {
+            type: 'datetime'
+          },
+          title: {
+            text: 'Performance'
+          },
+          subtitle: {
+            text: 'Portfolio return over time'
+          },
+          series: data['series']
+        }
+      ])
     }
 
     if (values.report_type == 'Tax') {
-      setChartOptions(data)
+      setChartOptions(['Tax', data])
     }
   }
 
@@ -268,24 +274,24 @@ const ReportGenerate = () => {
         </Form>
       </Card>
 
-      {chartOptions && reportMode == 'Diversification' ? (
+      {chartOptions && chartOptions[0] == 'Diversification' && reportMode == 'Diversification' ? (
         <Card>
           <div style={{ height: '70vh', width: '100%', overflowY: 'auto' }}>
-            <MainChart customType="pie" options={chartOptions} />
+            <MainChart customType="pie" options={chartOptions[1]} />
           </div>
         </Card>
       ) : null}
-      {chartOptions && reportMode == 'Performance' ? (
+      {chartOptions && chartOptions[0] == 'Performance' && reportMode == 'Performance' ? (
         <Card>
           <div style={{ height: '70vh', width: '100%', overflowY: 'auto' }}>
-            <MainChart options={chartOptions} />
+            <MainChart options={chartOptions[1]} />
           </div>
         </Card>
       ) : null}
-      {chartOptions && reportMode == 'Tax' ? (
+      {chartOptions && chartOptions[0] == 'Tax' && reportMode == 'Tax' ? (
         <Card>
           <div style={{ height: '70vh', width: '100%', overflowY: 'auto' }}>
-            {Object.entries(chartOptions).map(function (e: any, i: any) {
+            {Object.entries(chartOptions[1]).map(function (e: any, i: any) {
               console.log(e, i)
               return (
                 <>

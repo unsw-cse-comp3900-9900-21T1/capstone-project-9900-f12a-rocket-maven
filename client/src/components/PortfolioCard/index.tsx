@@ -2,13 +2,7 @@ import { Card } from '@rocketmaven/componentsStyled/Card'
 import { currencyCodeToName } from '@rocketmaven/data/currency-code-to-name'
 import { useDeleteAssetPortfolioHolding } from '@rocketmaven/hooks/http'
 import { PortfolioInfo } from '@rocketmaven/pages/Portfolio/types'
-import {
-  Descriptions,
-  Divider,
-  Input,
-  Modal,
-  Table
-} from 'antd'
+import { Descriptions, Divider, Input, Modal, Table } from 'antd'
 import { useState } from 'react'
 import PortfolioCardTitle from './PortfolioCardTitle'
 import PortfolioStatistics from './PortfolioStatistics'
@@ -71,7 +65,7 @@ const PortfolioCard = ({ portfolio, refreshPortfolios, singleView = false }: Pro
     singleView,
     portfolio,
     setModalShareURL,
-    showModalForShare,
+    showModalForShare
   })
 
   return (
@@ -83,7 +77,8 @@ const PortfolioCard = ({ portfolio, refreshPortfolios, singleView = false }: Pro
           portfolio={portfolio}
           refreshPortfolios={refreshPortfolios}
           singleView={singleView}
-        />}
+        />
+      }
       actions={actionsList}
     >
       <Modal
@@ -105,10 +100,7 @@ const PortfolioCard = ({ portfolio, refreshPortfolios, singleView = false }: Pro
         ) : null}
         <Descriptions.Item label="Tax Residency">{portfolio.tax_residency}</Descriptions.Item>
       </Descriptions>
-      <PortfolioStatistics
-        portfolio={portfolio}
-        currencyPrefix={currencyPrefix}
-      />
+      <PortfolioStatistics portfolio={portfolio} currencyPrefix={currencyPrefix} />
       <RecommendedAssets portfolio={portfolio} />
       <Divider>Holdings</Divider>
       <Table
@@ -117,6 +109,7 @@ const PortfolioCard = ({ portfolio, refreshPortfolios, singleView = false }: Pro
           (portfolio_asset_holding) => portfolio_asset_holding.available_units > 0
         )}
         rowKey="id"
+        pagination={false}
       />
     </Card>
   )

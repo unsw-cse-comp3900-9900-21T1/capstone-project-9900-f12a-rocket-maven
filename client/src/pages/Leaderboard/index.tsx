@@ -60,8 +60,10 @@ const Leaderboard = () => {
   return (
     <Page>
       <Title>Competition Leaderboard</Title>
-      Compete with other Rocket Maven users to get to the top of the leaderboard! Only 2 competition
-      portfolios allowed per account.
+      Compete with other Rocket Maven users to get to the top of the leaderboard! Start out with
+      10,000 virtual buying power!
+      <br />
+      Currencies in USD. Only 2 competition portfolios allowed per account.
       <br />
       Score is determined by the buying power + unrealised profit + realised profits.
       <br />
