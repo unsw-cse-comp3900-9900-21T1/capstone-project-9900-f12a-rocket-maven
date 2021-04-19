@@ -3,7 +3,7 @@ import datetime
 import io
 
 from flask import request
-from RocketMaven.services.AssetService import update_asset
+from RocketMaven.services.AssetService import update_asset, get_current_exchange
 from RocketMaven.api.schemas import PortfolioAssetHoldingSchema, PortfolioEventSchema
 from RocketMaven.commons.pagination import paginate
 from RocketMaven.extensions import db
@@ -81,9 +81,7 @@ def handle_broker_csv_row(csv_input_row: dict) -> dict:
         print(output_map["event_date"])
 
     if "Exchange Rate" in csv_input_row:
-        output_map["exchange"] = (
-            csv_input_row["Exchange Rate"]
-        )
+        output_map["exchange"] = csv_input_row["Exchange Rate"]
 
     if "Exchange" in csv_input_row and "Symbol" in csv_input_row:
         output_map["asset_id"] = (
@@ -132,6 +130,7 @@ def create_event(portfolio_id):
             if query.competition_portfolio is True:
                 request.json["price_per_share"] = 0
                 request.json["fees"] = 0
+                request.json["exchange_rate"] = 1
 
             portfolio_event = schema.load(request.json)
             portfolio_event.portfolio_id = portfolio_id
@@ -140,7 +139,7 @@ def create_event(portfolio_id):
             print(e)
             return (
                 {
-                    "msg": "Error encountered in processing the CSV file!",
+                    "msg": "Error encountered in processing the form!",
                 },
                 500,
             )
@@ -206,10 +205,14 @@ def create_event(portfolio_id):
                 ).first()
                 update_asset(asset)
                 portfolio_event.price_per_share = asset.current_price
+                portfolio_event.exchange_rate = get_current_exchange(
+                    asset.currency, query.currency
+                )
 
                 if (
                     portfolio_event.add_action is True
-                    and portfolio_event.price_per_share * portfolio_event.units
+                    and portfolio_event.price_per_share_in_portfolio_currency
+                    * portfolio_event.units
                     > query.buying_power
                 ):
                     db.session.rollback()
@@ -220,7 +223,7 @@ def create_event(portfolio_id):
                         400,
                     )
 
-            if portfolio_event.price_per_share <= 0:
+            if portfolio_event.price_per_share_in_portfolio_currency <= 0:
                 db.session.rollback()
                 return (
                     {

@@ -270,21 +270,21 @@ const ReportGenerate = () => {
 
       {chartOptions && reportMode == 'Diversification' ? (
         <Card>
-          <div style={{ height: '70vh', width: '100%' }}>
+          <div style={{ height: '70vh', width: '100%', overflowY: 'auto' }}>
             <MainChart customType="pie" options={chartOptions} />
           </div>
         </Card>
       ) : null}
       {chartOptions && reportMode == 'Performance' ? (
         <Card>
-          <div style={{ height: '70vh', width: '100%' }}>
+          <div style={{ height: '70vh', width: '100%', overflowY: 'auto' }}>
             <MainChart options={chartOptions} />
           </div>
         </Card>
       ) : null}
       {chartOptions && reportMode == 'Tax' ? (
         <Card>
-          <div style={{ height: '70vh', width: '100%' }}>
+          <div style={{ height: '70vh', width: '100%', overflowY: 'auto' }}>
             {Object.entries(chartOptions).map(function (e: any, i: any) {
               console.log(e, i)
               return (

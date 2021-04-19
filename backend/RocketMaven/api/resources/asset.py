@@ -34,7 +34,7 @@ class AssetResource(Resource):
 
 
 class AssetPriceResource(Resource):
-    def get(self, ticker_symbol):
+    def get(self, ticker_symbol, target_currency):
         """
         ---
         summary: Get asset price
@@ -44,6 +44,10 @@ class AssetPriceResource(Resource):
         parameters:
           - in: path
             name: ticker_symbol
+            schema:
+              type: string
+          - in: path
+            name: target_currency
             schema:
               type: string
         responses:
@@ -59,7 +63,7 @@ class AssetPriceResource(Resource):
             description: Asset does not exist
         security: []
         """
-        return AssetService.get_asset_price(ticker_symbol)
+        return AssetService.get_asset_price(ticker_symbol, target_currency)
 
 
 class AssetSearchResource(Resource):

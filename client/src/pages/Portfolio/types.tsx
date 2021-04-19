@@ -17,6 +17,7 @@ export type PortfolioEvent = {
   note?: string
   portfolio_id?: string
   price_per_share: number
+  price_per_share_in_portfolio_currency: number
   units: number
 }
 

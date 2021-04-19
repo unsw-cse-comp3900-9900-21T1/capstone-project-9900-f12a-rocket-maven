@@ -17,6 +17,7 @@ type AssetSearch = {
   currency: string
   data_source: string
   available_units: number
+  exchange: number
 }
 
 type AssetSearchPagination = {
@@ -101,6 +102,8 @@ const UserAssetSearchBox = (props: any) => {
                 <span
                   title={item.current_price.toString()}
                   data-holdings={item.available_units.toString()}
+                  data-exchange={item.exchange.toString()}
+                  data-currency={item.currency.toString()}
                 >
                   {item.ticker_symbol + ' | ' + item.name}
                 </span>

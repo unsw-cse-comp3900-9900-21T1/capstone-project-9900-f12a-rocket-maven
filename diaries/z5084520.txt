@@ -72,3 +72,17 @@ The meeting was also to reaffirm that all group members know their role in draft
 - Completed the competition portfolio feature on both the front-end and back-end
 - Performed Progressive Demo B and wrote Retrospective B with help from the team
 
+# Week 9
+
+- Started and completed the Watchlist Notification front-end
+- Started and completed the Recommendations front-end and rewrote the algorithm used for the back-end
+- Provided functionality to the navbar searchbox
+- Completed the Advanced Searching back-end (Asset Ordering)
+- Optimised the back-end to make the runtime quicker
+- Started on the final report with Syd, Jude, and Tyson
+
+# Week 10
+
+- Added currency support
+- Added React build support for Flask
+

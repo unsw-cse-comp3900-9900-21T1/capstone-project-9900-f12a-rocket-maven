@@ -111,7 +111,7 @@ def get_asset(ticker_symbol: str):
         return {"msg": "Operation failed!"}, 500
 
 
-def get_asset_price(ticker_symbol: str):
+def get_asset_price(ticker_symbol: str, target_currency: str):
     """Returns
     200 - the associated price for the given ticker symbol
     400 - ticker symbol is None
@@ -129,7 +129,11 @@ def get_asset_price(ticker_symbol: str):
             data = (
                 db.session.query(Asset).filter_by(ticker_symbol=ticker_symbol).first()
             )
-            return {"price": data.current_price}, 200
+            return {
+                "price": data.current_price,
+                "exchange": get_current_exchange(data.currency, target_currency),
+                "currency": str(data.currency),
+            }, 200
         return {"msg": "Ticker does not exist"}, 404
     except Exception as e:
         print(e)
@@ -309,6 +313,7 @@ def get_current_exchange(currency_from: str, currency_to: str) -> float:
             datetime.datetime.now() - currency_track.last_updated
             > datetime.timedelta(minutes=120)
         ):
+            # Update currency data
             try:
                 start_date = (
                     Currency.query.filter_by(
@@ -319,6 +324,7 @@ def get_current_exchange(currency_from: str, currency_to: str) -> float:
                     .date
                 )
                 # start_date = datetime.datetime.strptime("2021-03-01", "%Y-%m-%d")
+
                 end_date = datetime.datetime.now()
                 data = TimeSeriesService.get_timeseries_data_advanced(
                     f"CURRENCY:{currency_from}{currency_to}=x",
@@ -344,6 +350,7 @@ def get_current_exchange(currency_from: str, currency_to: str) -> float:
             except Exception as e:
                 print(e)
 
+        # Return up-to-date currency data
         return (
             Currency.query.filter_by(
                 currency_from=currency_from, currency_to=currency_to

@@ -34,7 +34,9 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
   const [addActionValue, setAddActionValue] = useState(true)
   const [holdings, setHoldings] = useState(0)
   const [pricePerShare, setPricePerShare] = useState(0)
+  const [exchangeRate, setExchangeRate] = useState(1)
   const [currentTicker, setCurrentTicker] = useState('')
+  const [currentCurrency, setCurrentCurrency] = useState('AUD')
   const [units, setUnits] = useState(1)
   const [form] = Form.useForm()
   const query = useQuery()
@@ -88,12 +90,15 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
   const getLivePrice = () => {
     const myFetch = async () => {
       try {
-        const response = await fetch(`/api/v1/assets/${currentTicker}/price`, {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json'
+        const response = await fetch(
+          `/api/v1/assets/${currentTicker}/${portfolioInfo.currency}/price`,
+          {
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json'
+            }
           }
-        })
+        )
         if (!response.ok) {
           throw Error(`${response.status}`)
         }
@@ -101,6 +106,11 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
         setPricePerShare(data.price)
         form.setFieldsValue({
           price_per_share: data.price
+        })
+        setCurrentCurrency(data.currency)
+        setExchangeRate(data.exchange)
+        form.setFieldsValue({
+          exchange_rate: data.exchange
         })
       } catch (error) {}
     }
@@ -134,11 +144,15 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
             showSearch
             portfolioid={portfolioId}
             onChange={(newValue: any) => {
+              console.log(newValue.label.props)
               setHoldings(parseFloat(newValue.label.props['data-holdings']))
               setPricePerShare(newValue.label.props.title)
+              setExchangeRate(parseFloat(newValue.label.props['data-exchange']))
               setCurrentTicker(newValue.value)
+              setCurrentCurrency(newValue.label.props['data-currency'])
               form.setFieldsValue({
-                price_per_share: newValue.label.props.title
+                price_per_share: parseFloat(newValue.label.props.title),
+                exchange_rate: parseFloat(newValue.label.props['data-exchange'])
               })
             }}
             style={{ width: '100%' }}
@@ -171,7 +185,7 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
         {!portfolioInfo.competition_portfolio ? (
           <Form.Item
             name="price_per_share"
-            label="Price Per Unit"
+            label={`Price Per Unit (${currentCurrency})`}
             rules={[
               {
                 required: true
@@ -199,7 +213,7 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
           </Form.Item>
         ) : (
           <span>
-            <Form.Item name="price_per_share" label="Current Value">
+            <Form.Item name="price_per_share" label={`Price Per Unit (${currentCurrency})`}>
               <Input disabled />
             </Form.Item>
           </span>
@@ -208,7 +222,7 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
         {!portfolioInfo.competition_portfolio ? (
           <Form.Item
             name="exchange_rate"
-            label="Exchange Rate"
+            label={`Exchange Rate (${currentCurrency} 🡢 ${portfolioInfo.currency})`}
             rules={[
               {
                 required: true
@@ -219,11 +233,18 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
           </Form.Item>
         ) : (
           <span>
-            <Form.Item name="exchange_rate" label="Exchange Rate">
+            <Form.Item
+              name="exchange_rate"
+              label={`Exchange Rate (${currentCurrency} 🡢 ${portfolioInfo.currency})`}
+            >
               <Input disabled />
             </Form.Item>
           </span>
         )}
+
+        <Form.Item label={`Price Per Unit (${portfolioInfo.currency})`}>
+          <Input disabled value={(pricePerShare * exchangeRate).toFixed(2)} />
+        </Form.Item>
 
         <Form.Item label="Update Price Per Share">
           <Button
@@ -255,22 +276,28 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
               <Statistic title="Buying Power" value={portfolioInfo.buying_power} precision={2} />
             </Col>
             <Col span={6}>
-              <Statistic title="Event Value" value={pricePerShare * units} precision={2} />
+              <Statistic
+                title="Event Value"
+                value={pricePerShare * exchangeRate * units}
+                precision={2}
+              />
             </Col>
             <Col span={6}>
               <Statistic
                 title="New Add Buying Power"
-                value={portfolioInfo.buying_power - pricePerShare * units}
+                value={portfolioInfo.buying_power - pricePerShare * exchangeRate * units}
                 precision={2}
                 valueStyle={{
-                  color: getColorOfValue(portfolioInfo.buying_power - pricePerShare * units)
+                  color: getColorOfValue(
+                    portfolioInfo.buying_power - pricePerShare * exchangeRate * units
+                  )
                 }}
               />
             </Col>
             <Col span={6}>
               <Statistic
                 title="New Remove Buying Power"
-                value={portfolioInfo.buying_power + pricePerShare * units}
+                value={portfolioInfo.buying_power + pricePerShare * exchangeRate * units}
                 precision={2}
               />
             </Col>
@@ -306,7 +333,7 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
             }}
             disabled={
               (portfolioInfo.competition_portfolio &&
-                portfolioInfo.buying_power - pricePerShare * units < 0) ||
+                portfolioInfo.buying_power - pricePerShare * exchangeRate * units < 0) ||
               units <= 0
             }
           >

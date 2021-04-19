@@ -5,7 +5,14 @@ from flask_jwt_extended import get_jwt_identity
 from RocketMaven.api.schemas import AssetSchema, PortfolioSchema, PublicPortfolioSchema
 from RocketMaven.commons.pagination import paginate
 from RocketMaven.extensions import db
-from RocketMaven.models import Asset, Portfolio, PortfolioAssetHolding, PortfolioEvent
+from RocketMaven.services import TimeSeriesService
+from RocketMaven.models import (
+    Asset,
+    Portfolio,
+    PortfolioAssetHolding,
+    PortfolioEvent,
+    Currency,
+)
 from RocketMaven.services.AssetService import update_assets_price
 from sqlalchemy import and_
 import json
@@ -150,6 +157,8 @@ def get_report():
             drilldown_raw = collections.defaultdict(
                 lambda: collections.defaultdict(lambda: collections.defaultdict(int))
             )
+
+            # Get a summary of the total assets hold by each portfolio (by industry)
             total_normalise = collections.defaultdict(int)
             for m in portfolios.all():
                 series_raw[m.portfolio_id][m.asset.industry] += (
@@ -175,6 +184,7 @@ def get_report():
             spacing = 50
             width = 200
 
+            # Map each industry to the total held
             for portfolio_id in series_raw:
                 port_data = []
                 if total_normalise[portfolio_id] == 0:
@@ -211,6 +221,7 @@ def get_report():
                     col = 0.85
                     row += 1
 
+            # Map each industry and asset to the total held
             for portfolio_id in drilldown_raw:
                 if total_normalise[portfolio_id] == 0:
                     continue
@@ -236,6 +247,7 @@ def get_report():
                             "data": port_data,
                         }
                     )
+            # Return the highcharts-compatible graph
             return {"series": series, "drilldown": drilldown}, 200
         except Exception as e:
             print(e)
@@ -249,29 +261,90 @@ def get_report():
             .join(Portfolio)
             .filter_by(investor_id=get_jwt_identity())
             .filter(Portfolio.id.in_(request.json["portfolios"]))
-            .order_by(PortfolioEvent.event_date.asc())
         )
+        currency = db.session().query(Currency).order_by(Currency.date.asc())
+
+        first_date_bounds = portfolios.order_by(PortfolioEvent.event_date.asc()).first()
+        last_date_bounds = portfolios.order_by(PortfolioEvent.event_date.desc()).first()
 
         if "date_range" in request.json:
             date_range = request.json["date_range"]
+            # Ant design doesn't allow for filling only one side of the date range
             if len(date_range) == 2:
+                first_date_bounds = max(date_range[0], first_date_bounds)
+                last_date_bounds = min(date_range[1], last_date_bounds)
                 portfolios = portfolios.filter(
                     and_(
                         PortfolioEvent.event_date >= date_range[0],
                         PortfolioEvent.event_date <= date_range[1],
                     )
                 )
+        currency = currency.filter(
+            and_(
+                Currency.date >= first_date_bounds,
+                Currency.date <= get_last_date,
+            )
+        )
 
+        # At this point, currency and portfolio event data should be cropped to the input date range
+
+        # currency_reverse_map = {"CURRENCY1/CURRENCY2": {"YYYY-MM-DD": "value"}}
+        currency_reverse_map = collections.defaultdict(
+            lambda: collections.defaultdict(str)
+        )
+
+        # Simplifying assumption, if the exchange data is not available, it is not "NULL-filled", instead it is not graphed.
+        for m in currency.all():
+            if m.value:
+                currency_reverse_map[m.currency_from + "/" + m.currency_to][
+                    datetime.datetime.strptime(m.date, "%Y-%m-%d")
+                ] = m.value
+
+        # Cache the min/max of the assets on aggregate so that the graph data is called once
+        # e.g. AAPL in Portfolios 1, 2, 3 would only grab the time series data once
+        ticker_date_min_max = {}
+
+        # Here, portfolios is a list of all events within the date range.
         series = collections.defaultdict(list)
 
         for portfolio_event in portfolios.all():
-            print(portfolio_event.event_date.timestamp())
-            series[portfolio_event.portfolio_id].append(
-                [
-                    int(portfolio_event.event_date.timestamp()) * 1000,
-                    portfolio_event.realised_snapshot,
+
+            if not portfolio_event.asset_id in series:
+                series[portfolio_event.asset_id] = [
+                    portfolio_event.event_date,
+                    portfolio_event.event_date,
                 ]
-            )
+
+            else:
+                series[portfolio_event.asset_id][0] = min(
+                    series[portfolio_event.asset_id][0], portfolio_event.event_date
+                )
+                series[portfolio_event.asset_id][1] = max(
+                    series[portfolio_event.asset_id][1], portfolio_event.event_date
+                )
+
+        # Download the timeseries data that will be shared across all portfolios for the same assets
+        asset_series_data = {}
+        for asset_id, earliest_latest in series.items():
+            asset_series_data[
+                asset_id
+            ] = TimeSeriesService.get_timeseries_data_advanced(
+                asset_id,
+                earliest_latest[0],
+                earliest_latest[1],
+                TimeSeriesService.TimeSeriesInterval.OneDay,
+            )[
+                0
+            ]
+
+        tmp_current_date = first_date_bounds.date
+        days = 0
+        final_date = last_date_bounds.date
+        while tmp_current_date < final_date:
+            days += 1
+            tmp_current_date = first_date_bounds + datetime.timedelta(days=days)
+
+        portfolio_event.realised_snapshot
 
         name = "Performance of Portfolio "
         return {
@@ -285,6 +358,7 @@ def get_report():
             ]
         }
     if request.json["report_type"] == "Tax":
+        # Tax information is already cached / stored as part of the FIFO calculations
 
         portfolios = (
             db.session()
@@ -313,6 +387,7 @@ def get_report():
                 json.loads(portfolio_event.tax_full_snapshot)
             )
 
+        # Return the dictionary data to be mapped into a regular table
         return list(series.items())
 
     return True

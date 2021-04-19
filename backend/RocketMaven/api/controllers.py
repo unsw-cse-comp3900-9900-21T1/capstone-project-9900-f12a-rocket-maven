@@ -64,7 +64,7 @@ api.add_resource(
 
 api.add_resource(
     AssetPriceResource,
-    "/assets/<string:ticker_symbol>/price",
+    "/assets/<string:ticker_symbol>/<string:target_currency>/price",
     endpoint="asset_price_by_ticker",
 )
 
