@@ -197,6 +197,7 @@ def search_user_asset(portfolio_id):
                 port_query, asset_query.ticker_symbol == port_query.asset_id
             )
 
+            print(query.all())
             # Marshmallow doesn't support left joins, multitable schemas,
             # so a workaround is to use pure Python.
             return {
