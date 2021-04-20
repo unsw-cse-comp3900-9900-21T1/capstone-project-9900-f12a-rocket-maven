@@ -9,6 +9,7 @@ import { Layout } from 'antd'
 import 'antd/dist/antd.less'
 import React, { useState } from 'react'
 import { BrowserRouter } from 'react-router-dom'
+import ScrollToTop from './ScrollToTop'
 const { Header, Content, Sider } = Layout
 
 const App = () => {
@@ -16,6 +17,7 @@ const App = () => {
 
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Store>
         <AppWrap>
           <SiderWrap trigger={null} collapsible collapsed={collapsed} theme="light">

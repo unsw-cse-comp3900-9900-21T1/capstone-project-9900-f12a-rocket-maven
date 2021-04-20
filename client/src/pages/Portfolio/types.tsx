@@ -6,6 +6,7 @@ export type PortfolioEventCreate = {
   price_per_share: number
   exchange_rate: number
   units: number
+  event_date: any
 }
 
 export type PortfolioEvent = {

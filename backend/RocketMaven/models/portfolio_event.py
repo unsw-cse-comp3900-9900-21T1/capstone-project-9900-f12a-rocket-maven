@@ -63,7 +63,7 @@ class PortfolioEvent(db.Model):
     def dynamic_after_FIFO_value(self):
         return self.dynamic_after_FIFO_units * self.price_per_share
 
-    def update_portfolio_asset_holding(self) -> float:
+    def update_portfolio_asset_holding(self) -> bool:
         """Calculates the FIFO portfolio holding properties when an event occurs"""
 
         # Add the event to the database (neat helper feature)
@@ -189,6 +189,11 @@ class PortfolioEvent(db.Model):
                     if remove_total <= 0:
                         break
 
+                # All units from remove event should be subtracted from the add events at this point
+                # Any remainder results in an error (removing more than is held)
+                if remove_total > 0:
+                    return False
+
                 asset_holding.available_units = sum(
                     [x.dynamic_after_FIFO_units for x in past_add_events]
                 )
@@ -216,8 +221,10 @@ class PortfolioEvent(db.Model):
                 asset_holding.average_price = new_average_price
 
                 asset_holding.available_units = available_units
-                if add_event.note and len(add_event.note.strip()) > 0:
-                    asset_holding.latest_note = add_event.note
+
+            # Push the last event's note to the asset holding information
+            if event.note and len(event.note.strip()) > 0:
+                asset_holding.latest_note = event.note
 
             # Save a copy of the event's data for the report
             event.available_snapshot = asset_holding.available_units
@@ -227,3 +234,4 @@ class PortfolioEvent(db.Model):
         asset_holding.realised_total = realised_running_local_sum
 
         db.session.merge(asset_holding)
+        return True

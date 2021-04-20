@@ -4,14 +4,11 @@ import io
 
 from flask import request
 from flask_jwt_extended import get_jwt_identity
-from RocketMaven.api.schemas import (PortfolioAssetHoldingSchema,
-                                     PortfolioEventSchema)
+from RocketMaven.api.schemas import PortfolioAssetHoldingSchema, PortfolioEventSchema
 from RocketMaven.commons.pagination import paginate
 from RocketMaven.extensions import db
-from RocketMaven.models import (Asset, Portfolio, PortfolioAssetHolding,
-                                PortfolioEvent)
-from RocketMaven.services.AssetService import (get_current_exchange,
-                                               update_asset)
+from RocketMaven.models import Asset, Portfolio, PortfolioAssetHolding, PortfolioEvent
+from RocketMaven.services.AssetService import get_current_exchange, update_asset
 
 
 def protect_unauthorised_secure(func):
@@ -77,25 +74,54 @@ def delete_holding(portfolio_id):
         500 - if an unexpected exception occurs
     """
 
-    asset_id = request.json.get("asset_id")
+    if True:
+        # Real delete
 
-    query = PortfolioEvent.query.filter_by(
-        portfolio_id=portfolio_id, asset_id=asset_id
-    ).all()
-    if query is None or len(query) == 0:
-        return {"msg": "Asset not found"}, 404
-    for m in query:
-        m.dynamic_after_FIFO_units = 0
+        asset_id = request.json.get("asset_id")
 
-    query = PortfolioAssetHolding.query.filter_by(
-        portfolio_id=portfolio_id, asset_id=asset_id
-    ).first()
-    if query is None:
-        return {"msg": "Asset Holding not found"}, 404
+        query = PortfolioAssetHolding.query.filter_by(
+            portfolio_id=portfolio_id, asset_id=asset_id
+        ).first()
 
-    query.available_units = 0
+        if query is None:
+            return {"msg": "Asset not found"}, 404
 
-    db.session.commit()
+        if query.portfolio.competition_portfolio:
+            return {"msg": "Cannot delete from a competition portfolio!"}, 500
+
+        query = PortfolioEvent.query.filter_by(
+            portfolio_id=portfolio_id, asset_id=asset_id
+        ).delete()
+
+        query = PortfolioAssetHolding.query.filter_by(
+            portfolio_id=portfolio_id, asset_id=asset_id
+        ).delete()
+
+        db.session.commit()
+    else:
+        # Fake "delete" asset from holding
+
+        asset_id = request.json.get("asset_id")
+
+        query = PortfolioEvent.query.filter_by(
+            portfolio_id=portfolio_id, asset_id=asset_id
+        ).all()
+
+        if query is None or len(query) == 0:
+            return {"msg": "Asset not found"}, 404
+
+        for m in query:
+            m.dynamic_after_FIFO_units = 0
+
+        query = PortfolioAssetHolding.query.filter_by(
+            portfolio_id=portfolio_id, asset_id=asset_id
+        ).first()
+        if query is None:
+            return {"msg": "Asset Holding not found"}, 404
+
+        query.available_units = 0
+
+        db.session.commit()
 
     return {"msg": "success"}, 200
 
@@ -317,7 +343,14 @@ def create_event(portfolio_id):
                     400,
                 )
 
-            portfolio_event.update_portfolio_asset_holding()
+            if not portfolio_event.update_portfolio_asset_holding():
+                db.session.rollback()
+                return (
+                    {
+                        "msg": "Error adding event, check to see if more units are removed then available",
+                    },
+                    400,
+                )
             output_events.append(portfolio_event)
 
         db.session.commit()
