@@ -32,10 +32,10 @@ ChartSettings = {
     "max": "1m"
 }
 
-# Cache for 1 minute
+# Cache for 15 minutes
 
 
-@cached(cache=TTLCache(maxsize=1024, ttl=60))
+@cached(cache=TTLCache(maxsize=1024, ttl=60 * 15))
 def get_timeseries_data(ticker_symbol, data_range):
     """ Query the Yahoo Finance API for timeseries data using a preset range
         and interval (see ChartSettings for valid combinations where data_range
@@ -108,8 +108,8 @@ def get_timeseries_data(ticker_symbol, data_range):
             return {"msg": "Error obtaining stock time series data - {}".format(err)}, 400
 
 
-# Cache for 1 minute
-@cached(cache=TTLCache(maxsize=1024, ttl=60))
+# Cache for 15 minute
+@cached(cache=TTLCache(maxsize=1024, ttl=60 * 15))
 def get_timeseries_data_advanced(ticker_symbol: str, start: datetime.datetime,
                                  end: datetime.datetime, interval: TimeSeriesInterval):
     """ Query the Yahoo Finance API for timeseries data using an alternate endpoint that allows
