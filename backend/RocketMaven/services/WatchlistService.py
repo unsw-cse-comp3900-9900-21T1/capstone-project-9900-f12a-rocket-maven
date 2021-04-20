@@ -3,7 +3,11 @@ from RocketMaven.commons.pagination import paginate
 from RocketMaven.extensions import db
 from RocketMaven.models import Asset, Investor, Watchlist
 from RocketMaven.services.AssetService import update_assets_price
+from RocketMaven.services.EmailService import compose_and_send_email
 from flask import request
+import datetime
+import collections
+import os
 
 
 def add_watchlist(investor_id: int, ticker_symbol: str):
@@ -124,5 +128,51 @@ def send_watchlist_email():
         400 - email failed
     """
 
-    pass
-    print("Running!")
+    print("Watchlist notification started")
+    assets = Asset.query.join(Watchlist).all()
+    update_assets_price(assets)
+
+    collapse_price = {}
+    assets = Asset.query.join(Watchlist).all()
+    for m in assets:
+        collapse_price[m.ticker_symbol] = m.current_price
+
+    watchlist = Watchlist.query.all()
+
+    emails_to_send = collections.defaultdict(str)
+
+    for watch in watchlist:
+
+        if not watch.last_notified or (
+            datetime.datetime.now() - watch.last_notified < datetime.timedelta(hours=12)
+        ):
+            if watch.price_high and watch.price_high < collapse_price[m.ticker_symbol]:
+                emails_to_send[watch.investor.email] += (
+                    f"<br><br>\n\nPrice high of {m.ticker_symbol} reached! "
+                    + f"Set notification: {watch.price_high}, "
+                    + f"Reached price: {collapse_price[m.ticker_symbol]}!"
+                )
+
+            if watch.price_low and watch.price_low > collapse_price[m.ticker_symbol]:
+                emails_to_send[watch.investor.email] += (
+                    f"<br><br>\n\nPrice low of {m.ticker_symbol} reached! "
+                    + f"Set notification: {watch.price_low}, "
+                    + f"Reached price: {collapse_price[m.ticker_symbol]}!"
+                )
+            watch.last_notified = datetime.datetime.now()
+            db.session.commit()
+        else:
+            print(f"Ignored sending email for {watch.investor.username}")
+
+    for m in emails_to_send.items():
+        if not "example.com" in m[0] and not "example.org" in m[0]:
+            compose_and_send_email(
+                "Rocket Maven Watchlist Notification",
+                m[0],
+                "Here are your notifications: <br>" + m[1],
+            )
+
+            print(f"Sent email to {m[0]}")
+    print("Watchlist notification ended")
+
+    return {"msg", "Success!"}, 200

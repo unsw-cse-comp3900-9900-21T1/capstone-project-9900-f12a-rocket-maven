@@ -64,5 +64,6 @@ class Watchlist(db.Model):
     price_high = db.Column(db.Float())
     price_low = db.Column(db.Float())
     investor_id = db.Column(db.Integer, db.ForeignKey("investor.id"), primary_key=True)
+    investor = relationship("Investor", backref="investor_watchlist")
 
     last_notified = db.Column(db.DateTime, nullable=True, default=None)
