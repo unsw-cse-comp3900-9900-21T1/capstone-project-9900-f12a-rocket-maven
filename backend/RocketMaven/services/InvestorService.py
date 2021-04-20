@@ -10,13 +10,13 @@ from RocketMaven.models import Investor
 
 def protect_unauthorised_secure(func):
     def wrapper(investor_id):
-
+        print(get_jwt_identity(), investor_id)
         if investor_id is not get_jwt_identity():
             return (
                 {
                     "msg": "Access forbidden!",
                 },
-                400,
+                401,
             )
 
         return func(investor_id)

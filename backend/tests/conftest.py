@@ -5,7 +5,8 @@ import pytest
 from pytest_factoryboy import register
 from RocketMaven.app import create_app
 from RocketMaven.extensions import db as _db
-from RocketMaven.models import Asset, Investor, Portfolio, PortfolioEvent
+from RocketMaven.models import (Asset, Currency, Investor, Portfolio,
+                                PortfolioEvent)
 from RocketMaven.services import ExampleFullSystemService
 
 from .factories import InvestorFactory
@@ -23,7 +24,7 @@ def app():
     return app
 
 
-@pytest.fixture()
+@pytest.fixture
 def db(app):
     _db.drop_all()
     _db.app = app
@@ -31,7 +32,7 @@ def db(app):
     with app.app_context():
         _db.create_all()
         # ExampleFullSystemService.populate_full_system(_db)
-
+        
     yield _db
 
     _db.session.close()
@@ -129,9 +130,15 @@ def normal_refresh_headers(normal_user, client):
         "authorization": "Bearer %s" % tokens["refresh_token"],
     }
 
+@pytest.fixture
+def currency(db):
+    currency = Currency(code="AUD", name="Australian dollars")
+    db.session.merge(currency)
+    db.session.commit()
+    return currency
 
 @pytest.fixture
-def portfolio(db, normal_user):
+def portfolio(db, normal_user, currency):
     portfolio = Portfolio(
         currency="AUD",
         tax_residency="AU",
@@ -147,7 +154,7 @@ def portfolio(db, normal_user):
     return portfolio
 
 @pytest.fixture
-def public_portfolio(db, normal_user):
+def public_portfolio(db, normal_user, currency):
     pub_portfolio = Portfolio(
         currency="AUD",
         tax_residency="AU",
@@ -163,7 +170,8 @@ def public_portfolio(db, normal_user):
     return pub_portfolio
 
 @pytest.fixture
-def asset(db):
+def asset(db, currency):
+    
     asset = Asset(
         ticker_symbol="VIRT:B",
         name="Virtual Holding B",

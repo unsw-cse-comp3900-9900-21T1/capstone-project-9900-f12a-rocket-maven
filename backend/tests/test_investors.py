@@ -22,10 +22,10 @@ def test_get_investor(client, normal_user, normal_headers):
     resp = client.get(url)
     assert resp.status_code == 401
 
-    # test 404
+    # test 401 (changed from 404)
     url = url_for("api.investor_by_id", investor_id=2000)
     resp = client.get(url, headers=normal_headers)
-    assert resp.status_code == 404
+    assert resp.status_code == 401
     
     # test 200
     url = url_for("api.investor_by_id", investor_id=normal_user.id)
@@ -39,10 +39,10 @@ def test_put_investor(client, normal_user, normal_headers):
     resp = client.put(url)
     assert resp.status_code == 401
 
-    # test 404
+    # test 401 (changed from 404)
     url = url_for("api.investor_by_id", investor_id=2000)
     resp = client.put(url, headers=normal_headers)
-    assert resp.status_code == 404
+    assert resp.status_code == 401
     
     # test 400
     url = url_for("api.investor_by_id", investor_id=normal_user.id)

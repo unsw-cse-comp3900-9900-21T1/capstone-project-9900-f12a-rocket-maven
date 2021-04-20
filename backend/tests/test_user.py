@@ -1,10 +1,9 @@
 from flask import url_for
-
 from RocketMaven.extensions import pwd_context
 from RocketMaven.models import Investor
 
 
-def test_get_investor(client, db, investor, admin_headers):
+def test_get_investor(client, db, admin_user, admin_headers):
     # test 404
     investor_url = url_for("api.investor_by_id", investor_id="100000")
     rep = client.get(investor_url, headers=admin_headers)
@@ -24,34 +23,28 @@ def test_get_investor(client, db, investor, admin_headers):
     assert data["email_verified"] == investor.email_verified
 
 
-def test_put_investor(client, db, investor, admin_headers):
-    # test 404
+def test_put_investor(client, db, normal_user, normal_headers):
+    # test 401 (changed from 404)
     investor_url = url_for("api.investor_by_id", investor_id="100000")
-    rep = client.put(investor_url, headers=admin_headers)
-    assert rep.status_code == 404
-
-    db.session.add(investor)
-    db.session.commit()
+    rep = client.put(investor_url, headers=normal_headers)
+    assert rep.status_code == 401
 
     data = {
-        "username": "updated",
         "password": "updated_P4$$w0rd!",
         "country_of_residency": "AU",
     }
 
-    investor_url = url_for("api.investor_by_id", investor_id=investor.id)
+    investor_url = url_for("api.investor_by_id", investor_id=normal_user.id)
     # test update investor
-    rep = client.put(investor_url, json=data, headers=admin_headers)
-    print(rep.get_json())
+    rep = client.put(investor_url, json=data, headers=normal_headers)
     assert rep.status_code == 200
 
     data = rep.get_json()["investor"]
-    assert data["username"] == "updated"
-    assert data["email"] == investor.email
-    assert data["email_verified"] == investor.email_verified
+    assert data["email"] == normal_user.email
+    assert data["email_verified"] == normal_user.email_verified
 
-    db.session.refresh(investor)
-    assert pwd_context.verify("updated_P4$$w0rd!", investor.password)
+    db.session.refresh(normal_user)
+    assert pwd_context.verify("updated_P4$$w0rd!", normal_user.password)
 
 
 # def test_delete_investor(client, db, investor, admin_headers):

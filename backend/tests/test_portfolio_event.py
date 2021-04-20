@@ -26,8 +26,8 @@ def test_post_portfolio_event(client, portfolio, asset, normal_headers):
         "note": "string",
         "price_per_share": 1,
         "realised_snapshot": 1,
-        "tax_discount_snapshot": True,
-        "tax_full_snapshot": 1,
+        #"tax_discount_snapshot": True,
+        "tax_full_snapshot": "1",
         "units": 1
     }
 

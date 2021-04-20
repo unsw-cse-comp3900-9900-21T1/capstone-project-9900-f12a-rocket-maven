@@ -3,12 +3,15 @@ import datetime
 import io
 
 from flask import request
-from RocketMaven.services.AssetService import update_asset, get_current_exchange
-from RocketMaven.api.schemas import PortfolioAssetHoldingSchema, PortfolioEventSchema
+from flask_jwt_extended import get_jwt_identity
+from RocketMaven.api.schemas import (PortfolioAssetHoldingSchema,
+                                     PortfolioEventSchema)
 from RocketMaven.commons.pagination import paginate
 from RocketMaven.extensions import db
-from RocketMaven.models import Asset, Portfolio, PortfolioAssetHolding, PortfolioEvent
-from flask_jwt_extended import get_jwt_identity
+from RocketMaven.models import (Asset, Portfolio, PortfolioAssetHolding,
+                                PortfolioEvent)
+from RocketMaven.services.AssetService import (get_current_exchange,
+                                               update_asset)
 
 
 def protect_unauthorised_secure(func):
@@ -21,7 +24,7 @@ def protect_unauthorised_secure(func):
                 {
                     "msg": "Portfolio does not exist!",
                 },
-                400,
+                404,
             )
 
         if portfolio.investor_id is not get_jwt_identity():
@@ -29,7 +32,7 @@ def protect_unauthorised_secure(func):
                 {
                     "msg": "Access forbidden!",
                 },
-                400,
+                401,
             )
 
         return func(portfolio_id)
@@ -47,7 +50,7 @@ def protect_unauthorised_public(func):
                 {
                     "msg": "Portfolio does not exist!",
                 },
-                400,
+                404,
             )
 
         if (
@@ -58,7 +61,7 @@ def protect_unauthorised_public(func):
                 {
                     "msg": "Access forbidden!",
                 },
-                400,
+                401,
             )
 
         return func(portfolio_id)
