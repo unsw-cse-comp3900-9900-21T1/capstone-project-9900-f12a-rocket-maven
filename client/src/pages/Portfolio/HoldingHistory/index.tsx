@@ -36,7 +36,8 @@ const PortfolioHistory = () => {
       },
       {
         title: 'Date',
-        dataIndex: 'event_date'
+        dataIndex: 'event_date',
+        render: (value: string) => <>{value} UTC</>
       },
       {
         title: 'Fees',
@@ -59,16 +60,13 @@ const PortfolioHistory = () => {
     historyTable = <Table columns={columns} dataSource={assetHistories} rowKey="id" />
   }
 
-  return (
-    isLoading
-      ? null
-      :
-      <Fragment>
-        <Subtitle>
-          Holding History for <Link to={`/asset/${hid}`}>{hid}</Link>
-        </Subtitle>
-        {historyTable}
-      </Fragment>
+  return isLoading ? null : (
+    <Fragment>
+      <Subtitle>
+        Holding History for <Link to={`/asset/${hid}`}>{hid}</Link>
+      </Subtitle>
+      {historyTable}
+    </Fragment>
   )
 }
 

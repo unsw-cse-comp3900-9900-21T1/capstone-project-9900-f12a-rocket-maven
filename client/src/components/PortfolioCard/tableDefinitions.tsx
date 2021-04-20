@@ -2,12 +2,13 @@ import {
   EyeOutlined,
   MinusOutlined,
   PlusOutlined,
+  QuestionCircleOutlined,
   SettingOutlined,
   ShareAltOutlined
 } from '@ant-design/icons'
 import { urls } from '@rocketmaven/data/urls'
 import { PortfolioInfo } from '@rocketmaven/pages/Portfolio/types'
-import { Button, Tooltip } from 'antd'
+import { Button, Popconfirm, Tooltip } from 'antd'
 import { Link } from 'react-router-dom'
 import { numberChangeRenderer } from './helper'
 
@@ -16,7 +17,7 @@ type ColumnInput = {
   currencyPrefix: string
   isCompetitionPortfolio: boolean
   singleView?: boolean
-  deleteAssetPortfolioHolding: (e: any) => Promise<void>
+  deleteAssetPortfolioHolding: (asset_id: string, portfolio_id: number) => Promise<void>
 }
 
 export const createColumns = ({
@@ -128,9 +129,15 @@ export const createColumns = ({
       dataIndex: 'asset_id',
       key: 'x',
       render: (value: string) => (
-        <a title={value} aria-valuenow={portfolioId} onClick={deleteAssetPortfolioHolding}>
-          Delete
-        </a>
+        <Popconfirm
+          title={`Are you sure you want to delete ${value}?`}
+          onConfirm={() => {
+            deleteAssetPortfolioHolding(value, portfolioId)
+          }}
+          icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+        >
+          <a rel="nofollow">Delete</a>
+        </Popconfirm>
       )
     })
   }

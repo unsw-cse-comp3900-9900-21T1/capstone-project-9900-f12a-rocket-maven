@@ -32,9 +32,7 @@ const PortfolioCard = ({ portfolio, refreshPortfolios, singleView = false }: Pro
 
   const deleteAssetPortfolioHoldingFetch = useDeleteAssetPortfolioHolding()
 
-  const deleteAssetPortfolioHolding = async (e: any) => {
-    const asset_id = e.target.getAttribute('title')
-    const portfolio_id = e.target.getAttribute('aria-valuenow')
+  const deleteAssetPortfolioHolding = async (asset_id: string, portfolio_id: number) => {
     const path = `${portfolio_id}/holdings`
     const values = { asset_id: asset_id }
     await deleteAssetPortfolioHoldingFetch({

@@ -3,7 +3,8 @@ import { Card } from '@rocketmaven/componentsStyled/Card'
 import { urls } from '@rocketmaven/data/urls'
 import { useAddPortfolioEvent } from '@rocketmaven/hooks/http'
 import { PortfolioEventCreate, PortfolioInfo } from '@rocketmaven/pages/Portfolio/types'
-import { Button, Col, Form, Input, InputNumber, Row, Statistic } from 'antd'
+import { Button, Col, DatePicker, Form, Input, InputNumber, Row, Statistic, TimePicker } from 'antd'
+import moment, { Moment } from 'moment'
 import { useEffect, useState } from 'react'
 import { RouteComponentProps, useHistory, useLocation, withRouter } from 'react-router-dom'
 
@@ -37,6 +38,7 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
   const [exchangeRate, setExchangeRate] = useState(1)
   const [currentTicker, setCurrentTicker] = useState('')
   const [currentCurrency, setCurrentCurrency] = useState('AUD')
+  const [eventDate, setEventDate] = useState<Moment>(moment().seconds(0).milliseconds(0))
   const [units, setUnits] = useState(1)
   const [form] = Form.useForm()
   const query = useQuery()
@@ -49,7 +51,8 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
     note: '',
     price_per_share: 0,
     units: 1,
-    exchange_rate: 1
+    exchange_rate: 1,
+    event_date: eventDate
   }
 
   const myFetch: Function = useAddPortfolioEvent(portfolioId)
@@ -77,6 +80,7 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
   const onFinish = (values: any) => {
     values.asset_id = values.asset_id.value
     values.add_action = addActionValue
+    values.event_date = eventDate
     myFetch({
       values,
       redirectPath: urls.portfolio
@@ -193,6 +197,7 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
             ]}
           >
             <InputNumber
+              min={0}
               onChange={(price: number) => {
                 if (query.has('current_price')) {
                   query.delete('current_price')
@@ -222,25 +227,68 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
         {!portfolioInfo.competition_portfolio && currentCurrency !== portfolioInfo.currency ? (
           <Form.Item
             name="exchange_rate"
-            label={`Exchange Rate (${currentCurrency} 🡢 ${portfolioInfo.currency})`}
+            label={`Exchange Rate (${currentCurrency} ➔ ${portfolioInfo.currency})`}
             rules={[
               {
                 required: true
               }
             ]}
           >
-            <InputNumber onChange={(e: any) => setExchangeRate(e)} />
+            <InputNumber min={0.000000001} step={0.01} onChange={(e: any) => setExchangeRate(e)} />
           </Form.Item>
         ) : (
           <span>
             <Form.Item
               name="exchange_rate"
-              label={`Exchange Rate (${currentCurrency} 🡢 ${portfolioInfo.currency})`}
+              label={`Exchange Rate (${currentCurrency} ➔ ${portfolioInfo.currency})`}
             >
               <Input disabled />
             </Form.Item>
           </span>
         )}
+
+        {!portfolioInfo.competition_portfolio ? (
+          <>
+            <Form.Item
+              label={`Event Date`}
+              rules={[
+                {
+                  required: true
+                }
+              ]}
+            >
+              <DatePicker
+                format="YYYY-MM-DD"
+                defaultValue={eventDate}
+                onChange={(e: any) => {
+                  if (e) {
+                    setEventDate(eventDate.year(e.year()).month(e.month()).date(e.date()))
+                  }
+                }}
+              />
+            </Form.Item>
+            <Form.Item
+              label={`Event Time`}
+              rules={[
+                {
+                  required: true
+                }
+              ]}
+            >
+              <TimePicker
+                format="HH:mm:ss"
+                defaultValue={eventDate}
+                onChange={(e: any) => {
+                  if (e) {
+                    setEventDate(
+                      eventDate.hours(e.hours()).minutes(e.minutes()).seconds(e.seconds())
+                    )
+                  }
+                }}
+              />
+            </Form.Item>
+          </>
+        ) : null}
 
         <Form.Item label={`Price Per Unit (${portfolioInfo.currency})`}>
           <Input disabled value={(pricePerShare * exchangeRate).toFixed(2)} />

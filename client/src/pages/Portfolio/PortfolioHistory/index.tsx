@@ -70,7 +70,8 @@ const PortfolioHistory = () => {
       },
       {
         title: 'Date',
-        dataIndex: 'event_date'
+        dataIndex: 'event_date',
+        render: (value: string) => <>{value} UTC</>
       },
       {
         title: 'Fees',
@@ -93,14 +94,11 @@ const PortfolioHistory = () => {
     historyTable = <Table columns={columns} dataSource={histories} rowKey="id" />
   }
 
-  return (
-    isLoading
-      ? null
-      :
-      <Fragment>
-        <Subtitle>Portfolio History</Subtitle>
-        {historyTable}
-      </Fragment>
+  return isLoading ? null : (
+    <Fragment>
+      <Subtitle>Portfolio History</Subtitle>
+      {historyTable}
+    </Fragment>
   )
 }
 
