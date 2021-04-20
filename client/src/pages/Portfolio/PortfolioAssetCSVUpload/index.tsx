@@ -83,7 +83,7 @@ const PortfolioAssetEditForm = ({ portfolioId }: Props) => {
   }
 
   return (
-    <Card title="CSV Upload">
+    <Card title="CSV Upload" className="asset-event-add-card">
       <a href="/bulk_trades.csv">
         <Button type="primary">Download Sample</Button>
       </a>

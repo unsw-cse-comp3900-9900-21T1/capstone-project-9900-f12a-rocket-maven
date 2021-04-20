@@ -7,7 +7,7 @@ class PortfolioAssetHoldingList(Resource):
 
     # method_decorators = [jwt_required()]
 
-    @jwt_required()
+    @jwt_required(optional=True)
     def get(self, portfolio_id):
         """
         ---
@@ -77,7 +77,7 @@ class PortfolioEventList(Resource):
 
     # method_decorators = [jwt_required()]
 
-    @jwt_required()
+    @jwt_required(optional=True)
     def get(self, portfolio_id):
         """
         ---

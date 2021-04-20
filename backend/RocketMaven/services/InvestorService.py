@@ -8,11 +8,28 @@ from RocketMaven.extensions import db
 from RocketMaven.models import Investor
 
 
+def protect_unauthorised_secure(func):
+    def wrapper(investor_id):
+
+        if investor_id is not get_jwt_identity():
+            return (
+                {
+                    "msg": "Access forbidden!",
+                },
+                400,
+            )
+
+        return func(investor_id)
+
+    return wrapper
+
+
+@protect_unauthorised_secure
 def get_investor(investor_id):
-    """ Get the given investor.
-        Returns:
-            200 - investor returned
-            404 - investor not found
+    """Get the given investor.
+    Returns:
+        200 - investor returned
+        404 - investor not found
     """
     schema = InvestorSchema()
     data = Investor.query.get_or_404(investor_id)
@@ -30,13 +47,14 @@ def handle_empty_date_of_birth():
         request.json["date_of_birth"] = None
 
 
+@protect_unauthorised_secure
 def update_investor(investor_id):
-    """ Updates investor details
-        Returns:
-            200 - investor updated
-            400 - error updating database
-            404 - investor not found
-            422 - error with new investor details
+    """Updates investor details
+    Returns:
+        200 - investor updated
+        400 - error updating database
+        404 - investor not found
+        422 - error with new investor details
     """
     investor = Investor.query.get_or_404(investor_id)
     try:
@@ -58,13 +76,12 @@ def update_investor(investor_id):
 
 
 def get_investors():
-    """ Get a list of investors
-        Returns:
-            200 - paginated list of investors
-            400 - error getting list
+    """Get a list of investors
+    Returns:
+        200 - paginated list of investors
+        400 - error getting list
     """
     current_investor = Investor.query.filter_by(id=get_jwt_identity()).first()
-    print(current_investor.admin_account)
     try:
         schema = InvestorSchema(many=True)
         if current_investor.admin_account:
@@ -78,11 +95,11 @@ def get_investors():
 
 
 def create_investor():
-    """ Create a new investor in Rocket Maven
-        Returns:
-            201 - investor account created
-            400 - other error
-            422 - investor still logged in, error with input data, error adding to database
+    """Create a new investor in Rocket Maven
+    Returns:
+        201 - investor account created
+        400 - other error
+        422 - investor still logged in, error with input data, error adding to database
     """
     if get_jwt_identity():
         return {"msg": "investor not created, please log out first"}, 422
@@ -103,12 +120,13 @@ def create_investor():
 
         return {"msg": "investor created", "investor": schema.dump(investor)}, 201
     except Exception:
-        return {"msg": "Operation failed", }, 422
+        return {
+            "msg": "Operation failed",
+        }, 422
 
 
 def automatically_login_user_after_creation(response_data):
-    """ Helper function to login user once their account has been created
-    """
+    """Helper function to login user once their account has been created"""
     try:
         if response_data[1] == 201:
             add_to_response_data = auth_controllers.login()

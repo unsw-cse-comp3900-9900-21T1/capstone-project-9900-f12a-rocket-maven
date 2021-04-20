@@ -8,16 +8,74 @@ from RocketMaven.api.schemas import PortfolioAssetHoldingSchema, PortfolioEventS
 from RocketMaven.commons.pagination import paginate
 from RocketMaven.extensions import db
 from RocketMaven.models import Asset, Portfolio, PortfolioAssetHolding, PortfolioEvent
+from flask_jwt_extended import get_jwt_identity
 
 
+def protect_unauthorised_secure(func):
+    def wrapper(portfolio_id):
+
+        portfolio = Portfolio.query.filter_by(id=portfolio_id).first()
+
+        if not portfolio:
+            return (
+                {
+                    "msg": "Portfolio does not exist!",
+                },
+                400,
+            )
+
+        if portfolio.investor_id is not get_jwt_identity():
+            return (
+                {
+                    "msg": "Access forbidden!",
+                },
+                400,
+            )
+
+        return func(portfolio_id)
+
+    return wrapper
+
+
+def protect_unauthorised_public(func):
+    def wrapper(portfolio_id):
+
+        portfolio = Portfolio.query.filter_by(id=portfolio_id).first()
+
+        if not portfolio:
+            return (
+                {
+                    "msg": "Portfolio does not exist!",
+                },
+                400,
+            )
+
+        if (
+            portfolio.public_portfolio is not True
+            and portfolio.investor_id is not get_jwt_identity()
+        ):
+            return (
+                {
+                    "msg": "Access forbidden!",
+                },
+                400,
+            )
+
+        return func(portfolio_id)
+
+    return wrapper
+
+
+@protect_unauthorised_secure
 def delete_holding(portfolio_id):
     """Deletes an asset from a portfolio
     Returns
         200 - a asset is deleted successfully
         500 - if an unexpected exception occurs
     """
+
     asset_id = request.json.get("asset_id")
-    print(asset_id)
+
     query = PortfolioEvent.query.filter_by(
         portfolio_id=portfolio_id, asset_id=asset_id
     ).all()
@@ -39,12 +97,14 @@ def delete_holding(portfolio_id):
     return {"msg": "success"}, 200
 
 
+@protect_unauthorised_public
 def get_events(portfolio_id):
     """Get the list of (asset) events in a portfolio
     Returns:
         200 - a paginated list of Portfolio events
         500 - if an unexpected exception occurs
     """
+
     schema = PortfolioEventSchema(many=True)
     query = PortfolioEvent.query.filter_by(portfolio_id=portfolio_id).order_by(
         PortfolioEvent.event_date.asc()
@@ -52,12 +112,14 @@ def get_events(portfolio_id):
     return paginate(query, schema)
 
 
+@protect_unauthorised_public
 def get_holdings(portfolio_id):
     """Get the list of asset holdings in a portfolio
     Returns
         200 - a paginated list of asset holdings
         500 - if an unexpected exception occurs
     """
+
     schema = PortfolioAssetHoldingSchema(many=True)
     query = PortfolioAssetHolding.query.filter_by(portfolio_id=portfolio_id)
     return paginate(query, schema)
@@ -101,6 +163,7 @@ def handle_broker_csv_row(csv_input_row: dict) -> dict:
     return output_map
 
 
+@protect_unauthorised_secure
 def create_event(portfolio_id):
     """Create a new asset for the given portfolio in the database
     Returns

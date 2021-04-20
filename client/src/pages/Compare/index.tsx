@@ -52,7 +52,7 @@ const Compare = () => {
   return (
     <Page>
       <Title>Compare Assets</Title>
-      <Card title="Asset Selection">
+      <Card title="Asset Selection" className="asset-compare-selector">
         <Form name="normal_asset" className="report-form" onFinish={onFinish}>
           <Form.Item
             name="asset_id"
@@ -62,10 +62,6 @@ const Compare = () => {
               { key: 'NASDAQ:MSFT', value: 'NASDAQ:MSFT' }
             ]}
             rules={[
-              {
-                required: true,
-                message: 'Please input two tickers!'
-              },
               ({ getFieldValue }) => ({
                 validator(_, value) {
                   if (value.length > 1) {
