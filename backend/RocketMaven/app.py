@@ -5,6 +5,8 @@ from RocketMaven.extensions import apispec
 from RocketMaven.extensions import db
 from RocketMaven.extensions import jwt
 from RocketMaven.extensions import migrate
+import atexit
+from apscheduler.schedulers.background import BackgroundScheduler as BackgroundScheduler
 from flask import request
 import datetime
 import os
@@ -30,6 +32,18 @@ def create_app(testing=False):
     configure_extensions(app)
     configure_apispec(app)
     register_blueprints(app)
+
+    # https://stackoverflow.com/questions/14874782/apscheduler-in-flask-executes-twice/25519547#25519547
+    if not app.debug or os.environ.get("WERKZEUG_RUN_MAIN") == "true":
+        app.sched = BackgroundScheduler(daemon=True)
+        app.sched.add_job(
+            lambda: app.test_client().get("watchlist_notify"),
+            "interval",
+            # seconds=3,
+            hours=2,
+        )
+        app.sched.start()
+        atexit.register(lambda: app.sched.shutdown())
 
     # http://stackoverflow.com/questions/30620276/flask-and-react-routing/50660437#50660437
     @app.route("/", defaults={"path": ""})

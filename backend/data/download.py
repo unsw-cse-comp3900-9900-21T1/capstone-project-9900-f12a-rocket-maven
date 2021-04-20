@@ -13,7 +13,7 @@ import requests
 
 # https://query1.finance.yahoo.com/v8/finance/chart/{ticker}?region=US&lang=en-US&includePrePost=false&interval=1d&useYfid=true&range=6mo&corsDomain=finance.yahoo.com&.tsrc=finance
 
-YAHOO_FINANCE_ENDPOINT = "https://query2.finance.yahoo.com/v7/finance/quote?formatted=true&lang=en-AU&region=AU&symbols={ticker}&fields=lastSplitDate,gmtOffSetMilliseconds,annualHoldingsTurnover,shortName,legalType,morningStarOverallRating,shortPercentOfFloat,averageVolume,headSymbolAsString,averageDailyVolume10Day,maxSupply,volumeAllCurrencies,quoteType,strikePrice,52WeekChange,priceToBook,underlyingSymbol,beta,exchange,lastSplitFactor,threeYearAverageReturn,fundFamily,longBusinessSummary,heldPercentInstitutions,sharesOutstanding,fiftyTwoWeekHigh,exchangeTimezoneName,volume24Hr,city,revenueQuarterlyGrowth,regularMarketDayHigh,heldPercentInsiders,regularMarketPreviousClose,country,address1,trailingAnnualDividendRate,fiveYearAvgDividendYield,regularMarketChange,mostRecentQuarter,maxAge,algorithm,uuid,dividendRate,ask,fromCurrency,sharesShortPreviousMonthDate,state,profitMargins,beta3Year,totalAssets,exchangeTimezoneShortName,sharesShortPriorMonth,regularMarketDayLow,expireDate,fundInceptionDate,openInterest,forwardEps,annualReportExpenseRatio,lastMarket,regularMarketPrice,underlyingExchangeSymbol,payoutRatio,sharesPercentSharesOut,bidSize,pegRatio,circulatingSupply,market,lastFiscalYearEnd,netIncomeToCommon,priceToSalesTrailing12Months,zip,dividendYield,tradeable,averageVolume10days,symbol,trailingAnnualDividendYield,regularMarketChangePercent,isEsgPopulated,forwardPE,logo_url,fiftyTwoWeekLow,floatShares,trailingPE,startDate,industry,dateShortInterest,fiftyDayAverage,currency,messageBoardId,regularMarketOpen,bid,fax,sharesShort,toCurrency,sector,phone,bookValue,nextFiscalYearEnd,enterpriseToEbitda,category,fromExchange,regularMarketVolume,longName,dayLow,trailingEps,morningStarRiskRating,exDividendDate,website,navPrice,toExchange,previousClose,open,companyOfficers,fiveYearAverageReturn,priceHint,lastDividendValue,askSize,marketCap,lastCapGain,twoHundredDayAverage,yield,SandP52WeekChange,earningsQuarterlyGrowth,fullTimeEmployees,enterpriseValue,volume,dayHigh,shortRatio,ytdReturn,enterpriseToRevenue"
+YAHOO_FINANCE_ENDPOINT = "https://query2.finance.yahoo.com/v7/finance/quote?formatted=true&lang=en-AU&region=AU&symbols={ticker}&fields=lastSplitDate,gmtOffSetMilliseconds,annualHoldingsTurnover,shortName,legalType,morningStarOverallRating,shortPercentOfFloat,averageVolume,headSymbolAsString,averageDailyVolume10Day,maxSupply,volumeAllCurrencies,quoteType,strikePrice,52WeekChange,underlyingSymbol,beta,exchange,lastSplitFactor,threeYearAverageReturn,fundFamily,longBusinessSummary,heldPercentInstitutions,sharesOutstanding,fiftyTwoWeekHigh,exchangeTimezoneName,volume24Hr,city,revenueQuarterlyGrowth,regularMarketDayHigh,heldPercentInsiders,regularMarketPreviousClose,country,address1,trailingAnnualDividendRate,fiveYearAvgDividendYield,regularMarketChange,mostRecentQuarter,maxAge,uuid,dividendRate,ask,fromCurrency,sharesShortPreviousMonthDate,state,profitMargins,totalAssets,sharesShortPriorMonth,regularMarketDayLow,expireDate,fundInceptionDate,openInterest,forwardEps,lastMarket,regularMarketPrice,circulatingSupply,market,zip,dividendYield,tradeable,averageVolume10days,symbol,trailingAnnualDividendYield,regularMarketChangePercent,isEsgPopulated,forwardPE,logo_url,fiftyTwoWeekLow,floatShares,trailingPE,startDate,industry,dateShortInterest,fiftyDayAverage,currency,regularMarketOpen,sharesShort,toCurrency,sector,phone,bookValue,nextFiscalYearEnd,enterpriseToEbitda,category,fromExchange,regularMarketVolume,longName,dayLow,trailingEps,morningStarRiskRating,exDividendDate,website,previousClose,open,fiveYearAverageReturn,priceHint,lastDividendValue,askSize,marketCap,lastCapGain,twoHundredDayAverage,yield,SandP52WeekChange,earningsQuarterlyGrowth,fullTimeEmployees,enterpriseValue,volume,dayHigh,shortRatio,ytdReturn,enterpriseToRevenue"
 
 
 def zip_row_reader(filename: str) -> dict:
@@ -78,14 +78,14 @@ def load_data(
 
 load_data(
     "./ASX.csv",
-    "./ASX_Listed_Companies_13-03-2021_07-59-39_AEDT.zip",
+    "./ASX-listing.csv",
     ["ASX code", "Company name", "Listing date", "GICs industry group", "Yahoo"],
     lambda stock: ".".join([stock, "AX"]),
 )
 
 load_data(
     "./NASDAQ.csv",
-    "./nasdaq_screener_1615582712192-NASDAQ.zip",
+    "./NASDAQ-listing.csv",
     [
         "Symbol",
         "Name",
@@ -105,7 +105,7 @@ load_data(
 
 load_data(
     "./NYSE.csv",
-    "./nasdaq_screener_1615582729240-NYSE.zip",
+    "./NYSE-listing.csv",
     [
         "Symbol",
         "Name",
