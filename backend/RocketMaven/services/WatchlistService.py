@@ -144,7 +144,7 @@ def send_watchlist_email():
     for watch in watchlist:
 
         if not watch.last_notified or (
-            datetime.datetime.now() - watch.last_notified < datetime.timedelta(hours=12)
+            datetime.datetime.now() - watch.last_notified > datetime.timedelta(hours=12)
         ):
             if watch.price_high and watch.price_high < collapse_price[m.ticker_symbol]:
                 emails_to_send[watch.investor.email] += (
