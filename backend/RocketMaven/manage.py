@@ -1,6 +1,9 @@
 import click
 from flask.cli import with_appcontext
+import os
+from dotenv import load_dotenv
 
+load_dotenv(os.path.join(os.path.dirname(__file__), "settings.env"))
 
 @click.group()
 def cli():
@@ -10,16 +13,19 @@ def cli():
 @cli.command("init")
 @with_appcontext
 def init():
-    """Create a new admin user"""
+    """Populate system with example data"""
     from RocketMaven.extensions import db
     from RocketMaven.services import ExampleFullSystemService
 
-    db.drop_all()
-    db.create_all()
+    if os.environ.get("RECREATE_DB_ON_START", "true") == "true":
+        print("recreating database")
+        db.drop_all()
+        db.create_all()
+        print("recreated database")
 
-    click.echo("create user")
+    click.echo("populate system")
     ExampleFullSystemService.populate_full_system(db)
-    click.echo("created user admin")
+    click.echo("populated system")
 
 
 if __name__ == "__main__":

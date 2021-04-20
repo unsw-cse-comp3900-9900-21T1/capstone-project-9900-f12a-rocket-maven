@@ -40,33 +40,30 @@ def populate_full_system(db):
     new_entry = Currency(code="USD", name="US dollars")
     db.session.merge(new_entry)
 
-    test_user = db.session.query(Investor).filter_by(username="temp_admin").first()
+    if db.session.query(Currency).filter_by(code="ZZ").first():
+        return
 
-    if not test_user:
-        user = Investor(
-            username="temp_admin",
-            email="admin@mail.com",
-            admin_account=True,
-            password="WjjTeWGdylJkH2Pq",
-            email_verified=True,
-            country_of_residency="AU",
-        )
-        db.session.add(user)
-        db.session.commit()
+    user = Investor(
+        username="temp_admin",
+        email="admin@mail.com",
+        admin_account=True,
+        password="WjjTeWGdylJkH2Pq",
+        email_verified=True,
+        country_of_residency="AU",
+    )
+    db.session.add(user)
+    db.session.commit()
 
-    test_user = db.session.query(Investor).filter_by(username="rocket_maven").first()
+    user = Investor(
+        username="rocket_maven",
+        email="rocket_maven@example.com",
+        admin_account=True,
+        password="rocket_maven_P4$$w0rd!",
+        country_of_residency="AU",
+    )
 
-    if not test_user:
-        user = Investor(
-            username="rocket_maven",
-            email="rocket_maven@example.com",
-            admin_account=True,
-            password="rocket_maven_P4$$w0rd!",
-            country_of_residency="AU",
-        )
-
-        db.session.add(user)
-        db.session.commit()
+    db.session.add(user)
+    db.session.commit()
 
     portfolio = Portfolio(
         currency="AUD",
@@ -575,4 +572,8 @@ def populate_full_system(db):
         event_date=datetime.date(2021, 2, 8),
     )
     portfolio_event.update_portfolio_asset_holding()
+    db.session.commit()
+
+    new_entry = Currency(code="ZZ", name="Test recreate database")
+    db.session.merge(new_entry)
     db.session.commit()
