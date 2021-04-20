@@ -12,6 +12,7 @@ import datetime
 import os
 import sys
 from dotenv import load_dotenv
+from RocketMaven.services.WatchlistService import send_watchlist_email
 
 load_dotenv(os.path.join(os.path.dirname(__file__), "settings.env"))
 
@@ -20,6 +21,15 @@ if sys.platform.lower() == "win32":
     import os
 
     os.system("color")
+
+
+class WatchlistBackgroundNotify:
+    def run_notify(self):
+        with self.app.app_context():
+            send_watchlist_email()
+
+    def __init__(self, app):
+        self.app = app
 
 
 def create_app(testing=False):
@@ -37,16 +47,21 @@ def create_app(testing=False):
     register_blueprints(app)
 
     # https://stackoverflow.com/questions/14874782/apscheduler-in-flask-executes-twice/25519547#25519547
-    if not app.debug or os.environ.get("WERKZEUG_RUN_MAIN") == "true":
-        app.sched = BackgroundScheduler(daemon=True)
-        app.sched.add_job(
-            lambda: app.test_client().get("watchlist_notify"),
-            "interval",
-            # seconds=3,
-            hours=2,
-        )
-        app.sched.start()
-        atexit.register(lambda: app.sched.shutdown())
+    if (
+        not app.debug or os.environ.get("WERKZEUG_RUN_MAIN") == "true"
+    ) and os.environ.get("WATCHLIST_NOTIFICATIONS_ALLOWED") == "true":
+        try:
+            app.sched = BackgroundScheduler(daemon=True)
+            new_notify = WatchlistBackgroundNotify(app)
+            app.sched.add_job(
+                lambda: new_notify.run_notify(),
+                "interval",
+                seconds=int(os.environ.get("WATCHLIST_NOTIFICATIONS_CHECK", 10)),
+            )
+            app.sched.start()
+            atexit.register(lambda: app.sched.shutdown())
+        except Exception as e:
+            print(f"Error encountered running watchlist notification server: {str(e)}")
 
     # http://stackoverflow.com/questions/30620276/flask-and-react-routing/50660437#50660437
     @app.route("/", defaults={"path": ""})

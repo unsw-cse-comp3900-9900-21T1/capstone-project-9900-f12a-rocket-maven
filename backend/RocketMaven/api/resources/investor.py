@@ -232,7 +232,6 @@ class WatchlistNotify(Resource):
           400:
             description: Email failed
         """
-        print("test")
         return WatchlistService.send_watchlist_email()
 
 
