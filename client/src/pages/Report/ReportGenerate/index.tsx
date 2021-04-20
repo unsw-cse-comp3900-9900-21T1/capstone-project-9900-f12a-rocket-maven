@@ -223,7 +223,7 @@ const ReportGenerate = () => {
 
   return (
     <div>
-      <Card title="Generate Report">
+      <Card title="Generate Report" className="generate-report-card-form">
         <Form name="normal_report" className="report-form" onFinish={onFinish}>
           <Form.Item label="Report Type" name="report_type" initialValue={optionsValue}>
             <Radio.Group
@@ -275,21 +275,21 @@ const ReportGenerate = () => {
       </Card>
 
       {chartOptions && chartOptions[0] == 'Diversification' && reportMode == 'Diversification' ? (
-        <Card>
+        <Card className="generate-report-card">
           <div style={{ height: '70vh', width: '100%', overflowY: 'auto' }}>
             <MainChart customType="pie" options={chartOptions[1]} />
           </div>
         </Card>
       ) : null}
       {chartOptions && chartOptions[0] == 'Performance' && reportMode == 'Performance' ? (
-        <Card>
+        <Card className="generate-report-card">
           <div style={{ height: '70vh', width: '100%', overflowY: 'auto' }}>
             <MainChart options={chartOptions[1]} />
           </div>
         </Card>
       ) : null}
       {chartOptions && chartOptions[0] == 'Tax' && reportMode == 'Tax' ? (
-        <Card>
+        <Card className="generate-report-tax">
           <div style={{ height: '70vh', width: '100%', overflowY: 'auto' }}>
             {Object.entries(chartOptions[1]).map(function (e: any, i: any) {
               console.log(e, i)

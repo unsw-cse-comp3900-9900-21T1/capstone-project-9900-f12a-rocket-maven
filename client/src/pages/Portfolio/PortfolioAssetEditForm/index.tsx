@@ -118,7 +118,7 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
   }
 
   return (
-    <Card>
+    <Card className="asset-event-add-card">
       <Form
         name="normal_assetadd"
         className="assetadd-form"

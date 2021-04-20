@@ -4,12 +4,7 @@ import { isEmpty } from 'ramda'
 import { createGraphOptions } from './graphDefinitions'
 import { convertGraphDataToSeries } from './helper'
 
-const MultiAssetGraphCard = ({
-  graphData,
-  tickers,
-  afterSetExtremes,
-  seriesContext,
-}: any) => {
+const MultiAssetGraphCard = ({ graphData, tickers, afterSetExtremes, seriesContext }: any) => {
   if (!graphData || isEmpty(graphData) || graphData.length !== tickers.length) {
     return null
   }
@@ -17,12 +12,12 @@ const MultiAssetGraphCard = ({
   const options = createGraphOptions({
     seriesContext,
     tmpSeriesData,
-    afterSetExtremes,
+    afterSetExtremes
   })
 
   return (
     <Card>
-      <div style={{ height: '70vh', width: '100%' }}>
+      <div style={{ height: '70vh', width: '100%' }} className="asset-compare-chart">
         <MainChart customType="stock" constructorType={'stockChart'} options={options} />
       </div>
     </Card>
