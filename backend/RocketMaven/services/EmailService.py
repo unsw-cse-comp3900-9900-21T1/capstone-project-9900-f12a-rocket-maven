@@ -11,6 +11,8 @@ from RocketMaven.models import Investor
 import string
 import random
 import datetime
+import os
+import urllib
 
 
 def try_reset():
@@ -38,8 +40,12 @@ def try_reset():
                 user.email_last_reset_attempt = datetime.datetime.now()
                 user.email_verified_code = email_verified_code
                 db.session.commit()
-                send(email, email_verified_code)
-                return {"msg": "Password reset email has been sent"}, 200
+                if send_reset(email, email_verified_code):
+                    return {"msg": "Password reset email has been sent"}, 200
+                else:
+                    return {
+                        "msg": "Password reset email was not sent (mailing issue)"
+                    }, 400
             except Exception as err:
                 print(err)
                 return {"msg": "Error with password reset"}, 500
@@ -52,22 +58,35 @@ def try_reset():
         return {"msg": "No such email in records"}, 404
 
 
-def send(email_to: str, email_verified_code: str):
-    """ Composes an email to user containing verification code """
-    sender_login = "rocket_maven@yahoo.com"
+def send(email_to: str, message: str):
+    """ Composes an email to use """
+    sender_login = os.environ.get("MAIL_ADDRESS", "false")
     sender_email = sender_login
 
-    sender_password = "hnbcwpaijwpxhgct"
+    sender_password = os.environ.get("MAIL_PSWD", "false")
 
-    receiver_email = email_to
+    if sender_password == "false" or sender_login == "false":
+        return False
 
+    context = ssl.create_default_context()
+    with smtplib.SMTP_SSL("smtp.mail.yahoo.com", 465, context=context) as server:
+        server.login(sender_login, sender_password)
+        server.sendmail(sender_email, email_to, message)
+    return True
+
+
+def send_reset(email_to: str, email_verified_code: str):
+    sender_login = os.environ.get("MAIL_ADDRESS", "false")
+    sender_email = sender_login
     message = MIMEMultipart("alternative")
     message["Subject"] = "Rocket Maven Password Reset"
     message["From"] = sender_email
-    message["To"] = receiver_email
+    message["To"] = email_to
 
     text = (
-        '<a href="http://127.0.0.1:3000/reset?key='
+        '<a href="'
+        + request.url_root
+        + "reset?key="
         + email_verified_code
         + '">Click here to reset your password</a>'
     )
@@ -75,10 +94,7 @@ def send(email_to: str, email_verified_code: str):
     part1 = MIMEText(text, "html")
     message.attach(part1)
 
-    context = ssl.create_default_context()
-    with smtplib.SMTP_SSL("smtp.mail.yahoo.com", 465, context=context) as server:
-        server.login(sender_login, sender_password)
-        server.sendmail(sender_email, receiver_email, message.as_string())
+    return send(email_to, message.as_string())
 
 
 def change_password():

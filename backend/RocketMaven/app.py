@@ -11,6 +11,9 @@ from flask import request
 import datetime
 import os
 import sys
+from dotenv import load_dotenv
+
+load_dotenv(os.path.join(os.path.dirname(__file__), "settings.env"))
 
 # https://github.com/pallets/werkzeug/issues/1832
 if sys.platform.lower() == "win32":
