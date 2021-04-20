@@ -75,14 +75,21 @@ def send(email_to: str, message: str):
     return True
 
 
-def send_reset(email_to: str, email_verified_code: str):
+def compose_and_send_email(subject: str, email_to: str, text_body: str):
     sender_login = os.environ.get("MAIL_ADDRESS", "false")
     sender_email = sender_login
     message = MIMEMultipart("alternative")
-    message["Subject"] = "Rocket Maven Password Reset"
+    message["Subject"] = subject
     message["From"] = sender_email
     message["To"] = email_to
 
+    part1 = MIMEText(text_body, "html")
+    message.attach(part1)
+
+    return send(email_to, message.as_string())
+
+
+def send_reset(email_to: str, email_verified_code: str):
     text = (
         '<a href="'
         + request.url_root
@@ -91,10 +98,7 @@ def send_reset(email_to: str, email_verified_code: str):
         + '">Click here to reset your password</a>'
     )
 
-    part1 = MIMEText(text, "html")
-    message.attach(part1)
-
-    return send(email_to, message.as_string())
+    return compose_and_send_email("Rocket Maven Password Reset", email_to, text)
 
 
 def change_password():
