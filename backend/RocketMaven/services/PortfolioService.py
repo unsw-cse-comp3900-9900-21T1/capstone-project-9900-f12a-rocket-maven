@@ -268,9 +268,12 @@ def get_report():
             db.session().query(CurrencyHistory).order_by(CurrencyHistory.date.asc())
         )
 
-        first_date_bounds = (
-            portfolios.order_by(PortfolioEvent.event_date.asc()).first().event_date
-        )
+        any_event = portfolios.order_by(PortfolioEvent.event_date.asc()).first()
+
+        if not any_event:
+            return {"series": []}
+
+        first_date_bounds = any_event.event_date
         last_date_bounds = datetime.datetime.now()
         last_date_bounds = datetime.datetime(
             last_date_bounds.year,
