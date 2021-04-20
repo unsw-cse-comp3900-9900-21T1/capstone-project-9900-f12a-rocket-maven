@@ -17,6 +17,8 @@ from RocketMaven.services.AssetService import update_assets_price
 from sqlalchemy import and_
 import json
 import heapq
+import datetime
+import dateutil
 
 
 def get_portfolio(portfolio_id):
@@ -266,11 +268,24 @@ def get_report():
             db.session().query(CurrencyHistory).order_by(CurrencyHistory.date.asc())
         )
 
-        first_date_bounds = portfolios.order_by(PortfolioEvent.event_date.asc()).first()
-        last_date_bounds = portfolios.order_by(PortfolioEvent.event_date.desc()).first()
+        first_date_bounds = (
+            portfolios.order_by(PortfolioEvent.event_date.asc()).first().event_date
+        )
+        last_date_bounds = datetime.datetime.now()
 
-        if "date_range" in request.json:
+        portfolio_assets = set([])
+
+        if (
+            "date_range" in request.json
+            and request.json["date_range"]
+            and len(request.json["date_range"]) > 0
+        ):
             date_range = request.json["date_range"]
+            date_range = [
+                dateutil.parser.parse(x).replace(tzinfo=None)
+                + datetime.timedelta(days=1)
+                for x in date_range
+            ]
             # Ant design doesn't allow for filling only one side of the date range
             if len(date_range) == 2:
                 first_date_bounds = max(date_range[0], first_date_bounds)
@@ -284,7 +299,7 @@ def get_report():
         currency = currency.filter(
             and_(
                 CurrencyHistory.date >= first_date_bounds,
-                CurrencyHistory.date <= get_last_date,
+                CurrencyHistory.date <= last_date_bounds,
             )
         )
 
@@ -295,39 +310,106 @@ def get_report():
             lambda: collections.defaultdict(str)
         )
 
-        # Simplifying assumption, if the exchange data is not available, it is not "NULL-filled", instead it is not graphed.
-        for m in currency.all():
-            if m.value:
-                currency_reverse_map[m.currency_from + "/" + m.currency_to][
-                    datetime.datetime.strptime(m.date, "%Y-%m-%d")
-                ] = m.value
-
         # Cache the min/max of the assets on aggregate so that the graph data is called once
         # e.g. AAPL in Portfolios 1, 2, 3 would only grab the time series data once
         ticker_date_min_max = {}
 
+        # Challenge is normalising the data to match the user's events, the asset's price and the exchange rate.
         # Here, portfolios is a list of all events within the date range.
         series = collections.defaultdict(list)
 
-        for portfolio_event in portfolios.all():
+        all_portfolio_events = portfolios.all()
 
-            if not portfolio_event.asset_id in series:
-                series[portfolio_event.asset_id] = [
+        # Performance is at the level of a portfolio, so need to aggregate all assets
+        asset_realised_last = collections.defaultdict(
+            lambda: collections.defaultdict(float)
+        )
+        asset_unrealised_last = collections.defaultdict(
+            lambda: collections.defaultdict(float)
+        )
+
+        days = 0
+        final_date = last_date_bounds
+
+        currency_pairs = set()
+
+        def normalise_date(datetime_in):
+            return (
+                datetime.datetime(
+                    datetime_in.year,
+                    datetime_in.month,
+                    datetime_in.day,
+                ).timestamp()
+                * 1000
+            )
+
+        # Reverse map currency data
+        for m in currency.all():
+            if m.value:
+                currency_reverse_map[
+                    str(m.currency_from.code) + "/" + str(m.currency_to.code)
+                ][normalise_date(m.date)] = m.value
+
+                currency_pairs.add(
+                    str(m.currency_from.code) + "/" + str(m.currency_to.code)
+                )
+
+        last_currency = collections.defaultdict(float)
+
+        # Prefill the full date range of the chosen graphed data
+        while (first_date_bounds + datetime.timedelta(days=days)) < final_date:
+            tmp_current_date = first_date_bounds + datetime.timedelta(days=days)
+
+            # Normalise to start of the day to make correlation much easier
+            current_timestamp = normalise_date(tmp_current_date)
+
+            # Fill final time series
+            for m in request.json["portfolios"]:
+                series[m].append([current_timestamp, 0])
+
+            # Fill exchange rate
+            for n in currency_pairs:
+                if current_timestamp in currency_reverse_map[n]:
+                    last_currency[n] = currency_reverse_map[n][current_timestamp]
+                else:
+                    currency_reverse_map[n][current_timestamp] = last_currency[n]
+
+            days += 1
+
+        last_realised = collections.defaultdict(float)
+        last_unrealised = collections.defaultdict(float)
+
+        earliest_latest_for_asset = collections.defaultdict(list)
+
+        for portfolio_event in all_portfolio_events:
+            port_asset = portfolio_event.asset_id
+            if not port_asset in earliest_latest_for_asset:
+                earliest_latest_for_asset[port_asset] = [
                     portfolio_event.event_date,
                     portfolio_event.event_date,
                 ]
-
             else:
-                series[portfolio_event.asset_id][0] = min(
-                    series[portfolio_event.asset_id][0], portfolio_event.event_date
+                earliest_latest_for_asset[port_asset][0] = min(
+                    earliest_latest_for_asset[port_asset][0],
+                    portfolio_event.event_date,
                 )
-                series[portfolio_event.asset_id][1] = max(
-                    series[portfolio_event.asset_id][1], portfolio_event.event_date
+                earliest_latest_for_asset[port_asset][1] = max(
+                    earliest_latest_for_asset[port_asset][1],
+                    portfolio_event.event_date,
                 )
+
+        # for portfolio_event in all_portfolio_events:
+
+        # for portfolio_event in all_portfolio_events:
+        #     map_stats = portfolio_event.event_date + datetime.timedelta(days=1)
+
+        # asset_realised_reverse[
+        #     str(portfolio_event.portfolio_id) + " - " + portfolio_event.asset_id
+        # ][portfoiio] = portfolio_event.available_snapshot
 
         # Download the timeseries data that will be shared across all portfolios for the same assets
         asset_series_data = {}
-        for asset_id, earliest_latest in series.items():
+        for asset_id, earliest_latest in earliest_latest_for_asset.items():
             asset_series_data[
                 asset_id
             ] = TimeSeriesService.get_timeseries_data_advanced(
@@ -339,14 +421,9 @@ def get_report():
                 0
             ]
 
-        tmp_current_date = first_date_bounds.date
-        days = 0
-        final_date = last_date_bounds.date
-        while tmp_current_date < final_date:
-            days += 1
-            tmp_current_date = first_date_bounds + datetime.timedelta(days=days)
+        # portfolio_event.realised_snapshot
 
-        portfolio_event.realised_snapshot
+        print(asset_series_data)
 
         name = "Performance of Portfolio "
         return {

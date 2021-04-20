@@ -115,3 +115,14 @@ def set_nofication(flag: str, investor_id: int, ticker_symbol: str):
     except Exception as err:
         print(err)
         return {"msg": "error adding price notification"}, 400
+
+
+def send_watchlist_email():
+    """Set the price notification values for the given asset in the user's watchlist
+    Returns:
+        200 - email success
+        400 - email failed
+    """
+
+    pass
+    print("Running!")

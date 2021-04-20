@@ -219,6 +219,23 @@ class WatchList(Resource):
         return WatchlistService.get_watchlist(current_user)
 
 
+class WatchlistNotify(Resource):
+    def get(self):
+        """
+        ---
+        summary: Sends an email to all users based on their watchlist preference
+        tags:
+          - WatchList
+        responses:
+          200:
+            description: Email success
+          400:
+            description: Email failed
+        """
+        print("test")
+        return WatchlistService.send_watchlist_email()
+
+
 class NotificationLow(Resource):
     @jwt_required()
     def put(self, ticker_symbol):

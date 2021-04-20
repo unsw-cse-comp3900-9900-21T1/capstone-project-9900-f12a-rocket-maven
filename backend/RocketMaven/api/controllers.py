@@ -26,6 +26,7 @@ from RocketMaven.api.resources import (
     TopAdditions,
     WatchAsset,
     WatchList,
+    WatchlistNotify,
     WeeklyTimeSeriesResource,
     YearlyTimeSeriesResource,
     NotificationLow,
@@ -115,6 +116,9 @@ api.add_resource(
 )
 
 api.add_resource(WatchList, "/watchlist", endpoint="watchlist")
+
+api.add_resource(WatchlistNotify, "/watchlist_notify", endpoint="watchlist_notify")
+
 
 api.add_resource(
     WatchAsset, "/watchlist/<string:ticker_symbol>", endpoint="watchlist_update"
@@ -211,6 +215,8 @@ def register_controllers():
     apispec.spec.path(view=YearlyTimeSeriesResource, app=current_app, api=api)
 
     apispec.spec.path(view=WatchList, app=current_app, api=api)
+    apispec.spec.path(view=WatchlistNotify, app=current_app, api=api)
+
     apispec.spec.path(view=WatchAsset, app=current_app, api=api)
     apispec.spec.path(view=PasswordForgot, app=current_app, api=api)
 
