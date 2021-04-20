@@ -272,6 +272,11 @@ def get_report():
             portfolios.order_by(PortfolioEvent.event_date.asc()).first().event_date
         )
         last_date_bounds = datetime.datetime.now()
+        last_date_bounds = datetime.datetime(
+            last_date_bounds.year,
+            last_date_bounds.month,
+            last_date_bounds.day,
+        )
 
         portfolio_assets = set([])
 
@@ -315,21 +320,8 @@ def get_report():
         ticker_date_min_max = {}
 
         # Challenge is normalising the data to match the user's events, the asset's price and the exchange rate.
-        # Here, portfolios is a list of all events within the date range.
-        series = collections.defaultdict(list)
 
         all_portfolio_events = portfolios.all()
-
-        # Performance is at the level of a portfolio, so need to aggregate all assets
-        asset_realised_last = collections.defaultdict(
-            lambda: collections.defaultdict(float)
-        )
-        asset_unrealised_last = collections.defaultdict(
-            lambda: collections.defaultdict(float)
-        )
-
-        days = 0
-        final_date = last_date_bounds
 
         currency_pairs = set()
 
@@ -356,16 +348,16 @@ def get_report():
 
         last_currency = collections.defaultdict(float)
 
+        timestamps = []
+        days = 0
+        final_date = last_date_bounds
+
         # Prefill the full date range of the chosen graphed data
         while (first_date_bounds + datetime.timedelta(days=days)) < final_date:
             tmp_current_date = first_date_bounds + datetime.timedelta(days=days)
 
             # Normalise to start of the day to make correlation much easier
             current_timestamp = normalise_date(tmp_current_date)
-
-            # Fill final time series
-            for m in request.json["portfolios"]:
-                series[m].append([current_timestamp, 0])
 
             # Fill exchange rate
             for n in currency_pairs:
@@ -374,56 +366,141 @@ def get_report():
                 else:
                     currency_reverse_map[n][current_timestamp] = last_currency[n]
 
+            timestamps.append(current_timestamp)
             days += 1
 
         last_realised = collections.defaultdict(float)
         last_unrealised = collections.defaultdict(float)
 
+        # Get time ranges for asset timeseries batch loading
         earliest_latest_for_asset = collections.defaultdict(list)
-
         for portfolio_event in all_portfolio_events:
             port_asset = portfolio_event.asset_id
             if not port_asset in earliest_latest_for_asset:
                 earliest_latest_for_asset[port_asset] = [
-                    portfolio_event.event_date,
-                    portfolio_event.event_date,
+                    portfolio_event.event_date - datetime.timedelta(days=1),
+                    # portfolio_event.event_date + datetime.timedelta(days=1),
+                    last_date_bounds,
                 ]
             else:
                 earliest_latest_for_asset[port_asset][0] = min(
                     earliest_latest_for_asset[port_asset][0],
                     portfolio_event.event_date,
                 )
-                earliest_latest_for_asset[port_asset][1] = max(
-                    earliest_latest_for_asset[port_asset][1],
-                    portfolio_event.event_date,
-                )
-
-        # for portfolio_event in all_portfolio_events:
-
-        # for portfolio_event in all_portfolio_events:
-        #     map_stats = portfolio_event.event_date + datetime.timedelta(days=1)
-
-        # asset_realised_reverse[
-        #     str(portfolio_event.portfolio_id) + " - " + portfolio_event.asset_id
-        # ][portfoiio] = portfolio_event.available_snapshot
+                # earliest_latest_for_asset[port_asset][1] = max(
+                #     earliest_latest_for_asset[port_asset][1],
+                #     portfolio_event.event_date,
+                # )
 
         # Download the timeseries data that will be shared across all portfolios for the same assets
         asset_series_data = {}
         for asset_id, earliest_latest in earliest_latest_for_asset.items():
-            asset_series_data[
-                asset_id
-            ] = TimeSeriesService.get_timeseries_data_advanced(
+            time_data = TimeSeriesService.get_timeseries_data_advanced(
                 asset_id,
                 earliest_latest[0],
                 earliest_latest[1],
                 TimeSeriesService.TimeSeriesInterval.OneDay,
-            )[
-                0
-            ]
+            )[0]
 
-        # portfolio_event.realised_snapshot
+            # Could use the error code directly...
+            if "msg" in time_data:
+                time_data["results"] = []
 
-        print(asset_series_data)
+            asset_series_data[asset_id] = {
+                normalise_date(dateutil.parser.parse(x["datetime"])): x["close"]
+                for x in time_data["results"]
+            }
+
+        asset_series_fill_last = collections.defaultdict(float)
+        for timestamp in timestamps:
+            for series_asset in asset_series_data:
+                if timestamp in asset_series_data[series_asset]:
+                    asset_series_fill_last[series_asset] = asset_series_data[
+                        series_asset
+                    ][timestamp]
+                else:
+                    asset_series_data[series_asset][timestamp] = asset_series_fill_last[
+                        series_asset
+                    ]
+
+        # Performance is at the level of a portfolio, so need to aggregate all assets
+        asset_realised_last = collections.defaultdict(
+            lambda: collections.defaultdict(float)
+        )
+        asset_unrealised_last = collections.defaultdict(
+            lambda: collections.defaultdict(float)
+        )
+
+        asset_realised_last_loose_map = collections.defaultdict(
+            lambda: collections.defaultdict(dict)
+        )
+        asset_unrealised_last_loose_map = collections.defaultdict(
+            lambda: collections.defaultdict(dict)
+        )
+
+        # Map asset to time data
+        for portfolio_event in all_portfolio_events:
+
+            # These values were all cached from the FIFO calculations
+            portfolio_event_date = normalise_date(portfolio_event.event_date)
+
+            if portfolio_event_date in timestamps:
+                asset_unrealised_last_loose_map[portfolio_event.portfolio_id][
+                    portfolio_event.asset_id
+                ][portfolio_event_date] = portfolio_event.available_snapshot
+
+                asset_realised_last_loose_map[portfolio_event.portfolio_id][
+                    portfolio_event.asset_id
+                ][portfolio_event_date] = portfolio_event.realised_snapshot
+
+        # Fill in asset-level gaps, timestamps is in ascending order
+        for timestamp in timestamps:
+            for portfolios in asset_unrealised_last_loose_map:
+                for asset in asset_unrealised_last_loose_map[portfolios]:
+                    if (
+                        not timestamp
+                        in asset_unrealised_last_loose_map[portfolios][asset]
+                    ):
+                        # Fill if doesn't exist
+                        asset_unrealised_last_loose_map[portfolios][asset][
+                            timestamp
+                        ] = asset_unrealised_last[portfolios][asset]
+                        asset_realised_last_loose_map[portfolios][asset][
+                            timestamp
+                        ] = asset_realised_last[portfolios][asset]
+                    else:
+                        # Reverse fill if exists (for next fills)
+                        asset_unrealised_last[portfolios][
+                            asset
+                        ] = asset_unrealised_last_loose_map[portfolios][asset][
+                            timestamp
+                        ]
+                        asset_realised_last[portfolios][
+                            asset
+                        ] = asset_realised_last_loose_map[portfolios][asset][timestamp]
+
+        # Here, portfolios is a list of all events within the date range.
+        series_unmapped = collections.defaultdict(
+            lambda: collections.defaultdict(float)
+        )
+
+        # Fill final time series
+        for current_timestamp in timestamps:
+            for m in request.json["portfolios"]:
+                series_unmapped[m][current_timestamp] = 0
+
+        for timestamp in timestamps:
+            for portfolios in asset_unrealised_last_loose_map:
+                for asset in asset_unrealised_last_loose_map[portfolios]:
+                    series_unmapped[portfolios][timestamp] += (
+                        asset_unrealised_last_loose_map[portfolios][asset][timestamp]
+                        * asset_series_data[asset][timestamp]
+                    )
+                    series_unmapped[portfolios][
+                        timestamp
+                    ] += asset_realised_last_loose_map[portfolios][asset][timestamp]
+
+        series = {x: list(y.items()) for x, y in series_unmapped.items()}
 
         name = "Performance of Portfolio "
         return {
