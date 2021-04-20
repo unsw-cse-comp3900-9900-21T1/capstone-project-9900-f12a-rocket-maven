@@ -298,6 +298,23 @@ def populate_full_system(db):
                 [-2800.0, -4714.285714285716, 8400.0, 109.28571428571429],
             )
 
+            # Additional for report
+            create_asset_event_with_current_price(
+                dict(
+                    units=600,
+                    add_action=True,
+                    fees=15,
+                    price_per_share=20,
+                    exchange_rate=1.0,
+                    note="Experimental add",
+                    asset_id="ASX:CBA",
+                    portfolio_id=portfolio.id,
+                    event_date=datetime.date(2021, 1, 15),
+                ),
+                asset_cba,
+                db,
+            )
+
             asset_cba = False
 
     AssetService.load_asset_data(db)

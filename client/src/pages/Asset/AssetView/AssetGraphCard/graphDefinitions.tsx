@@ -1,4 +1,3 @@
-
 type ChartTooltip = {
   chart: any
 }
@@ -52,19 +51,19 @@ export const afterSetExtremesPrototype = (
   if (typeof e.rangeSelectorButton !== 'undefined' && e.rangeSelectorButton.type_full) {
     if (seriesContext !== e.rangeSelectorButton.type_full) {
       setSeriesContext(e.rangeSelectorButton.type_full)
-      return
+      return true
     }
   }
   chart.hideLoading()
 }
 
 export const createGraphOptions = ({
+  seriesContext,
   seriesData,
   afterSetExtremes,
-  tickerSymbol,
+  tickerSymbol
 }: any) => {
   return {
-    // https://www.highcharts.com/docs/advanced-chart-features/boost-module
     title: {
       text: `${tickerSymbol} Tracker`
     },
@@ -89,11 +88,12 @@ export const createGraphOptions = ({
     ],
     // https://www.highcharts.com/demo/stock/lazy-loading
     rangeSelector: {
+      allButtonsEnabled: true,
       buttons: seriesIndex,
-      inputEnabled: false, // it supports only days
-      selected: -1 /* seriesIndex.findIndex(function (seriesSelected: any) {
-          return seriesSelected.type_full == seriesContext
-        }) */ // all
+      inputEnabled: false,
+      selected: seriesIndex.findIndex(function (seriesSelected: any) {
+        return seriesSelected.type_full == seriesContext
+      })
     },
     xAxis: {
       events: {

@@ -1,6 +1,6 @@
-
 export const convertGraphDataToSeries = (graphData: any, ticker_symbol: string) => {
   const ohlc: any = []
+  ohlc.push([Date.UTC(new Date().getFullYear() - 2, 1, 1, 1, 1), null, null, null, null])
   const volume: any = []
 
   graphData.results.forEach(function (e: any) {
@@ -35,7 +35,8 @@ export const convertGraphDataToSeries = (graphData: any, ticker_symbol: string) 
       dataGrouping: {
         enabled: false
       }
-    }]
+    }
+  ]
 
   return seriesData
 }
