@@ -113,14 +113,12 @@ class AdvancedTimeSeriesResource(Resource):
         start_date = request.args.get("start", None)
         try:
             start_date = datetime.datetime(int(start_date[0:4]), int(start_date[4:6]), int(start_date[6:8]))
-            print(start_date)
         except ValueError:
             return {"msg": "Invalid start date"}, 400
 
         end_date = request.args.get("end", None)
         try:
             end_date = datetime.datetime(int(end_date[0:4]), int(end_date[4:6]), int(end_date[6:8]))
-            print(end_date)
         except ValueError:
             return {"msg": "Invalid end date"}, 400
 
@@ -132,8 +130,6 @@ class AdvancedTimeSeriesResource(Resource):
             interval = TimeSeriesService.TimeSeriesInterval(interval)
         except Exception:
             return {"msg": "Invalid interval"}, 400
-
-        print(start_date, end_date, interval)
 
         return TimeSeriesService.get_timeseries_data_advanced(ticker_symbol, start_date, end_date, interval)
 
