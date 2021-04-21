@@ -2,6 +2,7 @@ import { Subtitle } from '@rocketmaven/componentsStyled/Typography'
 import { useGetPortfolioHistory } from '@rocketmaven/hooks/http'
 import { PortfolioEvent } from '@rocketmaven/pages/Portfolio/types'
 import { Table } from 'antd'
+import moment from 'moment'
 import { isEmpty } from 'ramda'
 import { Fragment } from 'react'
 import { Link, useParams } from 'react-router-dom'
@@ -37,7 +38,14 @@ const PortfolioHistory = () => {
       {
         title: 'Date',
         dataIndex: 'event_date',
-        render: (value: string) => <>{value} UTC</>
+        render: (value: string) => {
+          const newMoment = moment.utc(value)
+          if (newMoment) {
+            return newMoment.local().format('YYYY-MM-DD')
+          } else {
+            return value
+          }
+        }
       },
       {
         title: 'Fees',

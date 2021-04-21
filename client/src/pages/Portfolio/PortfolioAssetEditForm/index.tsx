@@ -3,7 +3,7 @@ import { Card } from '@rocketmaven/componentsStyled/Card'
 import { urls } from '@rocketmaven/data/urls'
 import { useAddPortfolioEvent } from '@rocketmaven/hooks/http'
 import { PortfolioEventCreate, PortfolioInfo } from '@rocketmaven/pages/Portfolio/types'
-import { Button, Col, DatePicker, Form, Input, InputNumber, Row, Statistic, TimePicker } from 'antd'
+import { Button, Col, DatePicker, Form, Input, InputNumber, Row, Statistic } from 'antd'
 import moment, { Moment } from 'moment'
 import { useEffect, useState } from 'react'
 import { RouteComponentProps, useHistory, useLocation, withRouter } from 'react-router-dom'
@@ -80,7 +80,10 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
   const onFinish = (values: any) => {
     values.asset_id = values.asset_id.value
     values.add_action = addActionValue
-    values.event_date = eventDate
+    values.event_date = moment(
+      `${eventDate.year()}/${eventDate.month()}/${eventDate.date()}`,
+      'YYYY/MM/DD'
+    )
     myFetch({
       values,
       redirectPath: urls.portfolio
@@ -277,30 +280,11 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
             >
               <DatePicker
                 format="YYYY-MM-DD"
+                disabledDate={(d) => !d || d.isAfter(moment()) || d.isSameOrBefore('2007-01-01')}
                 defaultValue={eventDate}
                 onChange={(e: any) => {
                   if (e) {
                     setEventDate(eventDate.year(e.year()).month(e.month()).date(e.date()))
-                  }
-                }}
-              />
-            </Form.Item>
-            <Form.Item
-              label={`Event Time`}
-              rules={[
-                {
-                  required: true
-                }
-              ]}
-            >
-              <TimePicker
-                format="HH:mm:ss"
-                defaultValue={eventDate}
-                onChange={(e: any) => {
-                  if (e) {
-                    setEventDate(
-                      eventDate.hours(e.hours()).minutes(e.minutes()).seconds(e.seconds())
-                    )
                   }
                 }}
               />
