@@ -18,6 +18,7 @@ from RocketMaven.api.resources import (
     PortfolioEventList,
     PortfolioList,
     PortfolioListAll,
+    PortfolioListAllWithHoldingInfo,
     PortfolioResource,
     PublicPortfolioResource,
     PasswordReset,
@@ -115,6 +116,12 @@ api.add_resource(
     endpoint="all_portfolios",
 )
 
+api.add_resource(
+    PortfolioListAllWithHoldingInfo,
+    "/investors/<int:investor_id>/all_portfolios/<string:ticker_symbol>",
+    endpoint="all_portfolios_with_holding_info",
+)
+
 api.add_resource(WatchList, "/watchlist", endpoint="watchlist")
 
 api.add_resource(WatchlistNotify, "/watchlist_notify", endpoint="watchlist_notify")
@@ -190,6 +197,7 @@ def register_controllers():
     apispec.spec.path(view=PortfolioResource, app=current_app, api=api)
     apispec.spec.path(view=PortfolioList, app=current_app, api=api)
     apispec.spec.path(view=PortfolioListAll, app=current_app, api=api)
+    apispec.spec.path(view=PortfolioListAllWithHoldingInfo, app=current_app, api=api)
 
     apispec.spec.path(view=Report, app=current_app, api=api)
 

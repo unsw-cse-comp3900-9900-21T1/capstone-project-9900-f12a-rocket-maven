@@ -146,7 +146,7 @@ class WatchAsset(Resource):
         summary: Add an asset to watchlist
         description: Add an asset to watchlist
         tags:
-          - WatchList
+          - Watchlist
         parameters:
           - in: path
             name: ticker_symbol
@@ -170,7 +170,7 @@ class WatchAsset(Resource):
         summary: Remove an asset from the investor's watchlist
         description: Remove an asset from the investor's watchlist
         tags:
-          - WatchList
+          - Watchlist
         parameters:
           - in: path
             name: ticker_symbol
@@ -195,7 +195,7 @@ class WatchList(Resource):
         ---
         summary: Get the user's watchlist
         tags:
-          - WatchList
+          - Watchlist
         responses:
           200:
             description: Get the assets in user's watchlist
@@ -225,7 +225,7 @@ class WatchlistNotify(Resource):
         ---
         summary: Sends an email to all users based on their watchlist preference
         tags:
-          - WatchList
+          - Watchlist
         responses:
           200:
             description: Email success
@@ -242,7 +242,7 @@ class NotificationLow(Resource):
         ---
         summary: put notification
         tags:
-          - WatchList
+          - Watchlist
         requestBody:
               content:
                 application/json:
@@ -276,7 +276,7 @@ class NotificationHigh(Resource):
         ---
         summary: put notification
         tags:
-          - WatchList
+          - Watchlist
         requestBody:
               content:
                 application/json:

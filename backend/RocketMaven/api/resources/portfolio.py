@@ -156,7 +156,6 @@ class PortfolioResource(Resource):
 
 
 class PortfolioList(Resource):
-
     @jwt_required()
     def get(self, investor_id):
         """List portfolios
@@ -256,6 +255,52 @@ class PortfolioListAll(Resource):
         return PortfolioService.get_all_portfolios(investor_id)
 
 
+class PortfolioListAllWithHoldingInfo(Resource):
+
+    # method_decorators = [jwt_required()]
+
+    @jwt_required(optional=True)
+    def get(self, investor_id, ticker_symbol):
+        """List all portfolios with holding info
+        ---
+        summary: Portfolios List All With Holding Info
+        description: List all portfolios belonging to the specified investor
+          with the current holdings of a target asset
+        tags:
+          - Portfolios
+        parameters:
+          - in: path
+            name: investor_id
+            schema:
+              type: integer
+          - in: path
+            name: ticker_symbol
+            schema:
+              type: string
+        responses:
+          200:
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    results:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                          name:
+                            type: string
+                          holding:
+                            type: number
+        """
+        return PortfolioService.get_all_portfolios_with_holding_info(
+            investor_id, ticker_symbol
+        )
+
+
 class Report(Resource):
     @jwt_required()
     def post(self):
@@ -317,7 +362,6 @@ class TopAdditions(Resource):
 
 
 class Recommend(Resource):
-
     @jwt_required()
     def post(self):
         PortfolioService.recommend_portfolio()
