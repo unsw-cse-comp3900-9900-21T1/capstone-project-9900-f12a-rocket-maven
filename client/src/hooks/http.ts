@@ -79,8 +79,8 @@ export const useAuth = (authType: AuthType): Function => {
   const { myFetch } = useAbstractFetchOnSubmit(endPointUrl, 'POST')
   const routerObject = useHistory()
   const submit = async (values: JSON) => {
-    try {
-      const data: SuccessfullLoginResponse = await myFetch({ values })
+    const data: SuccessfullLoginResponse = await myFetch({ values })
+    if (data) {
       dispatch({
         type: 'LOGIN',
         payload: {
@@ -89,9 +89,8 @@ export const useAuth = (authType: AuthType): Function => {
           userId: decodeToken(data.access_token).sub
         }
       })
+      message.info(authType === 'REGISTER' ? 'Sign Up Successful' : 'Login Successful')
       routerObject.push('/')
-    } catch (error) {
-      message.error(error.message)
     }
   }
   return submit
