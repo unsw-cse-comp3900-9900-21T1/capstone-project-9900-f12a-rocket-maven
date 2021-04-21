@@ -48,3 +48,8 @@ Week 9
 - Refactored front end API calls
 - Refactored pages
 - Started on report sections: User manual and implementation challenges 
+
+Week 10
+- User documentation section of report
+- Additional Refactoring
+- Presentation prep
