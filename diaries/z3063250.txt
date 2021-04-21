@@ -23,13 +23,26 @@ General backend enhancements, formatting, documentation, tidying up.
 
 Wk 6 (Flexibility week)
 
-Start backend watchlist implementation
+Complete initial backend watchlist implementation (resource definition, service implementation and swagger testing)
 
 Wk 7
 
-Backend stock charts (timeseries) implementation with memoization (caching) of results
+Start on backend stock charts (timeseries) with memoization (caching) of results (resource definition, service implementation and swagger testing)
 
 Wk 8
 
-Continue backend stock charts implementation and general code tidy up (flake8/linting)
+Complete backend stock charts implementation and general code tidy up (flake8/linting)
 
+Wk 9
+
+Backend testing/fixes/unit tests
+Backend code quality review
+Start on final report - contribute to backend third party dependencies, detailing implementation challenges of external APIs and user manual
+
+Wk 10
+
+Backend testing/fixes/unit tests, 
+Backend code quality reviews
+Continue development of final report - contriute to porting and reviewing various sections to Overleaf.
+Deploy backup production instance on Heroku
+Attend team meeting to practice on final demo
