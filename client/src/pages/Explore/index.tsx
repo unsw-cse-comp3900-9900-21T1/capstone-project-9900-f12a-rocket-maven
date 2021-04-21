@@ -27,8 +27,8 @@ export type AssetSearchPagination = {
 
 const Explore = () => (
   <Page>
-    <Row justify="center" style={{ minHeight: '100vh' }}>
-      <Col style={{ height: '100vh' }}>
+    <Row justify="center">
+      <Col>
         <h1>Explore Rocket Maven</h1>
         <Row style={{ marginBottom: '0.5rem' }}>
           <Button type="primary">

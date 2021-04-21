@@ -10,7 +10,10 @@ import json
 
 
 def default_FIFO_units(context):
-    return context.get_current_parameters()["units"]
+    if context.get_current_parameters()["add_action"]:
+        return context.get_current_parameters()["units"]
+    else:
+        return 0
 
 
 class PortfolioEvent(db.Model):
@@ -36,6 +39,8 @@ class PortfolioEvent(db.Model):
     def price_per_share_in_portfolio_currency(self):
         return self.price_per_share * self.exchange_rate
 
+    pre_deleted = db.Column(db.Boolean, default=False)
+
     note = db.Column(db.String(1024), unique=False, nullable=True)
 
     tax_full_snapshot = db.Column(db.Text, unique=False, nullable=True)
@@ -55,6 +60,9 @@ class PortfolioEvent(db.Model):
     )
     portfolio_for_event = relationship("Portfolio", backref="portfolio_for_event")
     portfolio_name = association_proxy("portfolio_for_event", "name")
+    competition_portfolio = association_proxy(
+        "portfolio_for_event", "competition_portfolio"
+    )
 
     def __repr__(self):
         return "<PortfolioEvent %s>" % self.id
@@ -63,43 +71,11 @@ class PortfolioEvent(db.Model):
     def dynamic_after_FIFO_value(self):
         return self.dynamic_after_FIFO_units * self.price_per_share
 
-    def update_portfolio_asset_holding(self) -> bool:
-        """Calculates the FIFO portfolio holding properties when an event occurs"""
-
-        # Add the event to the database (neat helper feature)
-        db.session.add(self)
-        db.session.flush()
-        portfolio_event = self
-
-        # Affect the competition portfolio buying power more globally
-        # Competition portfolios do not allow out-of-sequence (by date) events, so this is safe
-        portfolio_query = Portfolio.query.filter_by(
-            id=portfolio_event.portfolio_id
-        ).first()
-
-        if portfolio_query and portfolio_query.competition_portfolio is True:
-            buying_power_diff = 0
-            if portfolio_event.add_action is True:
-                # Buy
-                buying_power_diff = -(
-                    portfolio_event.price_per_share
-                    * portfolio_event.exchange_rate
-                    * portfolio_event.units
-                )
-            else:
-                # Sell
-                buying_power_diff = (
-                    portfolio_event.price_per_share
-                    * portfolio_event.exchange_rate
-                    * portfolio_event.units
-                )
-
-            # Affect buying power
-            portfolio_query.buying_power += buying_power_diff
+    def update_portfolio_asset_FIFO(asset_id, portfolio_id):
 
         asset_holding = PortfolioAssetHolding(
-            asset_id=portfolio_event.asset_id,
-            portfolio_id=portfolio_event.portfolio_id,
+            asset_id=asset_id,
+            portfolio_id=portfolio_id,
             last_updated=db.func.current_timestamp(),
             available_units=0,
             average_price=0,
@@ -114,8 +90,8 @@ class PortfolioEvent(db.Model):
 
         asset_events = (
             PortfolioEvent.query.filter_by(
-                portfolio_id=portfolio_event.portfolio_id
-            ).filter_by(asset_id=portfolio_event.asset_id)
+                portfolio_id=portfolio_id, pre_deleted=False
+            ).filter_by(asset_id=asset_id)
             # Consider adds before removes
             .order_by(PortfolioEvent.event_date.asc(), PortfolioEvent.add_action.desc())
         )
@@ -235,3 +211,42 @@ class PortfolioEvent(db.Model):
 
         db.session.merge(asset_holding)
         return True
+
+    def update_portfolio_asset_holding(self) -> bool:
+        """Calculates the FIFO portfolio holding properties when an event occurs"""
+
+        # Add the event to the database (neat helper feature)
+        db.session.add(self)
+        db.session.flush()
+        portfolio_event = self
+
+        # Affect the competition portfolio buying power more globally
+        # Competition portfolios do not allow out-of-sequence (by date) events, so this is safe
+        portfolio_query = Portfolio.query.filter_by(
+            id=portfolio_event.portfolio_id
+        ).first()
+
+        if portfolio_query and portfolio_query.competition_portfolio is True:
+            buying_power_diff = 0
+            if portfolio_event.add_action is True:
+                # Buy
+                buying_power_diff = -(
+                    portfolio_event.price_per_share
+                    * portfolio_event.exchange_rate
+                    * portfolio_event.units
+                )
+            else:
+                # Sell
+                buying_power_diff = (
+                    portfolio_event.price_per_share
+                    * portfolio_event.exchange_rate
+                    * portfolio_event.units
+                )
+
+            # Affect buying power
+            portfolio_query.buying_power += buying_power_diff
+
+        # Run the FIFO refresh algorithm.
+        return PortfolioEvent.update_portfolio_asset_FIFO(
+            portfolio_event.asset_id, portfolio_event.portfolio_id
+        )

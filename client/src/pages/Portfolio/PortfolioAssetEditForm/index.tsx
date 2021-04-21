@@ -247,6 +247,24 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
           </span>
         )}
 
+        <Form.Item label={`Price Per Unit (${portfolioInfo.currency})`}>
+          <Input disabled value={(pricePerShare * exchangeRate).toFixed(2)} />
+        </Form.Item>
+
+        <Form.Item label="Update Price Per Share">
+          <Button
+            type="primary"
+            onClick={getLivePrice}
+            danger
+            style={{
+              marginRight: '8px',
+              marginBottom: '12px'
+            }}
+          >
+            Get Live Price
+          </Button>
+        </Form.Item>
+
         {!portfolioInfo.competition_portfolio ? (
           <>
             <Form.Item
@@ -290,23 +308,6 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
           </>
         ) : null}
 
-        <Form.Item label={`Price Per Unit (${portfolioInfo.currency})`}>
-          <Input disabled value={(pricePerShare * exchangeRate).toFixed(2)} />
-        </Form.Item>
-
-        <Form.Item label="Update Price Per Share">
-          <Button
-            type="primary"
-            onClick={getLivePrice}
-            danger
-            style={{
-              marginRight: '8px',
-              marginBottom: '12px'
-            }}
-          >
-            Get Live Price
-          </Button>
-        </Form.Item>
         <Form.Item
           name="note"
           label="Note"
@@ -318,6 +319,7 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
         >
           <Input />
         </Form.Item>
+
         {portfolioInfo.competition_portfolio ? (
           <Row gutter={16}>
             <Col span={6}>

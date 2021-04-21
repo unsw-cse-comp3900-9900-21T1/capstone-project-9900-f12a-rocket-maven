@@ -20,6 +20,7 @@ export type PortfolioEvent = {
   price_per_share: number
   price_per_share_in_portfolio_currency: number
   units: number
+  competition_portfolio: boolean
 }
 
 export type PortfolioEventPagination = {

@@ -62,7 +62,7 @@ export const HeaderWrap = styled(Header)`
 
 export const BodyWrap = styled(Content)`
   margin-top: ${headerHeight}px;
-  min-height: 80vh;
+  min-height: 70vh;
   @media print {
     min-height: 50vh;
   }
