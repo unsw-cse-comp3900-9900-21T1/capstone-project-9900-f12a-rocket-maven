@@ -1,6 +1,6 @@
-from RocketMaven.models import PortfolioAssetHolding
 from RocketMaven.api.schemas import AssetSchema
-from RocketMaven.extensions import ma, db
+from RocketMaven.extensions import db, ma
+from RocketMaven.models import PortfolioAssetHolding
 
 
 class PortfolioAssetHoldingSchema(ma.SQLAlchemyAutoSchema):

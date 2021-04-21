@@ -19,15 +19,15 @@ def test_post_portfolio_event(client, portfolio, asset, normal_headers):
     event = {
         "add_action": True,
         "asset_id": "VIRT:B",
-        "available_snapshot": 1,
+        #"available_snapshot": 1,
         "event_date": "2021-04-14T02:09:17.449Z",
         "exchange_rate": 1,
         "fees": 0,
         "note": "string",
         "price_per_share": 1,
-        "realised_snapshot": 1,
+        #"realised_snapshot": 1,
         #"tax_discount_snapshot": True,
-        "tax_full_snapshot": "1",
+        #"tax_full_snapshot": "1",
         "units": 1
     }
 

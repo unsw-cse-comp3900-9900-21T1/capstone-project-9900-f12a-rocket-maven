@@ -1,13 +1,13 @@
+import collections
+import datetime
+
+from flask import request
 from RocketMaven.api.schemas import WatchlistSchema
 from RocketMaven.commons.pagination import paginate
 from RocketMaven.extensions import db
 from RocketMaven.models import Asset, Investor, Watchlist
 from RocketMaven.services.AssetService import update_assets_price
 from RocketMaven.services.EmailService import compose_and_send_email
-from flask import request
-import datetime
-import collections
-import os
 
 
 def add_watchlist(investor_id: int, ticker_symbol: str):
@@ -165,7 +165,7 @@ def send_watchlist_email():
             print(f"Ignored sending email for {watch.investor.username}")
 
     for m in emails_to_send.items():
-        if not "example.com" in m[0] and not "example.org" in m[0]:
+        if not "example.com" in m[0] and not "example.org" in m[0]:  # noqa: E713
             compose_and_send_email(
                 "Rocket Maven Watchlist Notification",
                 m[0],

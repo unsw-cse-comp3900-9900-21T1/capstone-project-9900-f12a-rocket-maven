@@ -92,7 +92,10 @@ class APISpecExt:
             version=app.config["APISPEC_VERSION"],
             openapi_version=app.config["OPENAPI_VERSION"],
             # Order is important, as MarshmallowPlugin converts the schema to a json object
-            plugins=[FlaskRestfulPlugin(), MarshmallowPlugin(), ],
+            plugins=[
+                FlaskRestfulPlugin(),
+                MarshmallowPlugin(),
+            ],
             # RestfulPlugin()
             **kwargs
         )

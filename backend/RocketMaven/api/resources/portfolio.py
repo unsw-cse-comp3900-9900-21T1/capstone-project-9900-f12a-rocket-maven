@@ -238,6 +238,10 @@ class PortfolioListAll(Resource):
             name: investor_id
             schema:
               type: integer
+          - in: query
+            name: deleted
+            schema:
+              type: boolean
         responses:
           200:
             content:

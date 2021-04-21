@@ -4,6 +4,7 @@ import io
 
 from flask import request
 from flask_jwt_extended import get_jwt_identity
+from marshmallow import ValidationError
 from RocketMaven.api.schemas import (
     PortfolioAssetHoldingSchema,
     PortfolioEventSchema,

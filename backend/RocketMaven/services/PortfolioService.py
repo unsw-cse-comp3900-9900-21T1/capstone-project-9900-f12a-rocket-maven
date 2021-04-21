@@ -1,25 +1,24 @@
 import collections
+import datetime
+import heapq
+import json
 
+import dateutil
 from flask import request
 from flask_jwt_extended import get_jwt_identity
 from RocketMaven.api.schemas import AssetSchema, PortfolioSchema, PublicPortfolioSchema
 from RocketMaven.commons.pagination import paginate
 from RocketMaven.extensions import db
-from RocketMaven.services import TimeSeriesService
 from RocketMaven.models import (
     Asset,
+    CurrencyHistory,
     Portfolio,
     PortfolioAssetHolding,
     PortfolioEvent,
-    CurrencyHistory,
-    Investor,
 )
+from RocketMaven.services import TimeSeriesService
 from RocketMaven.services.AssetService import update_assets_price
 from sqlalchemy import and_
-import json
-import heapq
-import datetime
-import dateutil
 from sqlalchemy.orm import aliased
 
 
@@ -90,14 +89,10 @@ def get_all_portfolios(investor_id):
         return {"results": []}
 
     schema = PortfolioSchema(many=True)
-
     if request.args.get("deleted", "true") == "false":
         query = Portfolio.query.filter_by(investor_id=investor_id, deleted=False)
     else:
         query = Portfolio.query.filter_by(investor_id=investor_id)
-
-    if "asset" in requet.json:
-        request.json["asset"]
 
     return paginate(query, schema)
 
@@ -335,7 +330,7 @@ def get_report():
             last_date_bounds.day,
         )
 
-        portfolio_assets = set([])
+        # portfolio_assets = set([])
 
         if (
             "date_range" in request.json
@@ -374,7 +369,7 @@ def get_report():
 
         # Cache the min/max of the assets on aggregate so that the graph data is called once
         # e.g. AAPL in Portfolios 1, 2, 3 would only grab the time series data once
-        ticker_date_min_max = {}
+        # ticker_date_min_max = {}
 
         # Challenge is normalising the data to match the user's events, the asset's price and the exchange rate.
 
@@ -426,14 +421,14 @@ def get_report():
             timestamps.append(current_timestamp)
             days += 1
 
-        last_realised = collections.defaultdict(float)
-        last_unrealised = collections.defaultdict(float)
+        # last_realised = collections.defaultdict(float)
+        # last_unrealised = collections.defaultdict(float)
 
         # Get time ranges for asset timeseries batch loading
         earliest_latest_for_asset = collections.defaultdict(list)
         for portfolio_event in all_portfolio_events:
             port_asset = portfolio_event.asset_id
-            if not port_asset in earliest_latest_for_asset:
+            if not port_asset in earliest_latest_for_asset:  # noqa: E713
                 earliest_latest_for_asset[port_asset] = [
                     portfolio_event.event_date - datetime.timedelta(days=1),
                     # portfolio_event.event_date + datetime.timedelta(days=1),
@@ -515,8 +510,8 @@ def get_report():
             for portfolios in asset_unrealised_last_loose_map:
                 for asset in asset_unrealised_last_loose_map[portfolios]:
                     if (
-                        not timestamp
-                        in asset_unrealised_last_loose_map[portfolios][asset]
+                        timestamp
+                        not in asset_unrealised_last_loose_map[portfolios][asset]
                     ):
                         # Fill if doesn't exist
                         asset_unrealised_last_loose_map[portfolios][asset][
@@ -751,7 +746,7 @@ def recommend_portfolio(asset_holdings):
                         industry=portfolio_asset_industry
                     ):
                         # Assets in the same industry as the portfolio asset
-                        if not asset.ticker_symbol in existing_assets:
+                        if asset.ticker_symbol not in existing_assets:
                             # That has not already been added to the portfolio
                             # e.g. don't recommend ASX:CBA from ASX:NAB when ASX:CBA has already been added
 
