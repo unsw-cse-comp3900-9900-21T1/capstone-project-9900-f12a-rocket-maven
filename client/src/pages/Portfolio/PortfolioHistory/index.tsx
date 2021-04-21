@@ -1,3 +1,4 @@
+import { QuestionCircleOutlined } from '@ant-design/icons'
 import { Subtitle } from '@rocketmaven/componentsStyled/Typography'
 import {
   useDeleteAssetPortfolioHistory,
@@ -6,6 +7,7 @@ import {
 } from '@rocketmaven/hooks/http'
 import { PortfolioEvent } from '@rocketmaven/pages/Portfolio/types'
 import { Button, DatePicker, Form, Input, InputNumber, Popconfirm, Table, Tooltip } from 'antd'
+import moment from 'moment'
 import { isEmpty } from 'ramda'
 import { Fragment, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
@@ -201,7 +203,14 @@ const PortfolioHistory = () => {
       {
         title: 'Date',
         dataIndex: 'event_date',
-        /* render: (value: string) => <>{value} UTC</>, */
+        render: (value: string) => {
+          const newMoment = moment.utc(value)
+          if (newMoment) {
+            return newMoment.local().format('YYYY-MM-DD')
+          } else {
+            return value
+          }
+        },
         editable: false
       },
       {
@@ -262,9 +271,9 @@ const PortfolioHistory = () => {
                         >
                           Save
                         </Button>
-                        <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
-                          <Button type="primary">Cancel</Button>
-                        </Popconfirm>
+                        <Button type="primary" onClick={cancel}>
+                          Cancel
+                        </Button>
                       </>
                     ) : (
                       <>
@@ -277,10 +286,11 @@ const PortfolioHistory = () => {
                         </Button>
                         {'    '}
                         <Popconfirm
-                          title="Sure to delete?"
+                          title="Sure to delete this event?"
                           onConfirm={() => {
                             deleteHistory(record.portfolio_id, record.id)
                           }}
+                          icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
                         >
                           <Button type="primary" danger disabled={editingKey !== -1}>
                             Delete

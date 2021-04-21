@@ -1,5 +1,6 @@
 from RocketMaven.models import PortfolioEvent
 from RocketMaven.extensions import ma, db
+from marshmallow import validate
 
 
 class PortfolioEventSchema(ma.SQLAlchemyAutoSchema):
@@ -17,6 +18,10 @@ class PortfolioEventSchema(ma.SQLAlchemyAutoSchema):
     available_snapshot = ma.Float(dump_only=True)
     tax_full_snapshot = ma.String(dump_only=True)
 
+    exchange_rate = ma.Float(validate=validate.Range(min=0, min_inclusive=False))
+    units = ma.Float(validate=validate.Range(min=0, min_inclusive=False))
+    price_per_share = ma.Float(validate=validate.Range(min=0, min_inclusive=False))
+
     # The asset id links the asset the event belongs to
     asset_id = ma.String(required=True)
 
@@ -30,6 +35,12 @@ class PortfolioEventSchema(ma.SQLAlchemyAutoSchema):
 
 
 class PortfolioEventUpdateSchema(ma.SQLAlchemyAutoSchema):
+
+    id = ma.Int()
+    exchange_rate = ma.Float(validate=validate.Range(min=0, min_inclusive=False))
+    units = ma.Float(validate=validate.Range(min=0, min_inclusive=False))
+    price_per_share = ma.Float(validate=validate.Range(min=0, min_inclusive=False))
+
     class Meta:
         model = PortfolioEvent
         sqla_session = db.session

@@ -140,7 +140,7 @@ def get_events(portfolio_id):
 
     schema = PortfolioEventSchema(many=True)
     query = PortfolioEvent.query.filter_by(portfolio_id=portfolio_id).order_by(
-        PortfolioEvent.event_date.asc()
+        PortfolioEvent.event_date.asc(), PortfolioEvent.add_action.desc()
     )
     return paginate(query, schema)
 
