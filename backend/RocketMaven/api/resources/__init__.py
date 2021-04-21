@@ -28,6 +28,7 @@ from RocketMaven.api.resources.portfolio import (
     PublicPortfolioResource,
     PortfolioList,
     PortfolioListAll,
+    PortfolioListAllWithHoldingInfo,
     TopAdditions,
     Report,
 )
@@ -56,6 +57,7 @@ __all__ = [
     "PublicPortfolioResource",
     "PortfolioList",
     "PortfolioListAll",
+    "PortfolioListAllWithHoldingInfo",
     "PortfolioEventList",
     "PortfolioAssetHoldingList",
     "Report",

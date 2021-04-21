@@ -44,8 +44,6 @@ Install [Miniconda](https://conda.io/en/master/index.html): https://conda.io/en/
 
 ### Setup
 
-`rm -r ../.tox` - clean up: removes tox from the backend folder if present
-
 `cd backend`
 
 `tox -e dev -r` - sets up a Tox python development environment at ../.tox/ (an out-of-tree .tox folder at the same level of this repo's folder, isolated from your main Python installation). Note! This is important when the requirements.txt file is changed.

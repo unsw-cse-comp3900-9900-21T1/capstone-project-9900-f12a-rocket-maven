@@ -12,6 +12,7 @@ from RocketMaven.models import (
     PortfolioAssetHolding,
     PortfolioEvent,
     CurrencyHistory,
+    Investor,
 )
 from RocketMaven.services.AssetService import update_assets_price
 from sqlalchemy import and_
@@ -19,6 +20,7 @@ import json
 import heapq
 import datetime
 import dateutil
+from sqlalchemy.orm import aliased
 
 
 def get_portfolio(portfolio_id):
@@ -94,7 +96,59 @@ def get_all_portfolios(investor_id):
     else:
         query = Portfolio.query.filter_by(investor_id=investor_id)
 
+    if "asset" in requet.json:
+        request.json["asset"]
+
     return paginate(query, schema)
+
+
+def get_all_portfolios_with_holding_info(investor_id, ticker_symbol):
+    """Get all investor's portfolios (including deleted)
+    Returns:
+        200 - paginated list of portfolios
+    """
+    if not get_jwt_identity() or investor_id == 0:
+        return {"results": []}
+
+    results = []
+
+    try:
+        holding_query = aliased(
+            PortfolioAssetHolding,
+            db.session.query(PortfolioAssetHolding)
+            .filter(
+                PortfolioAssetHolding.investor_id == get_jwt_identity(),
+                PortfolioAssetHolding.asset_id == ticker_symbol,
+            )
+            .subquery(),
+        )
+
+        port_query = aliased(
+            Portfolio,
+            db.session.query(Portfolio)
+            .filter(
+                Portfolio.investor_id == get_jwt_identity(),
+                Portfolio.deleted.is_(False),
+            )
+            .subquery(),
+        )
+
+        query = db.session.query(port_query, holding_query).outerjoin(
+            holding_query, holding_query.portfolio_id == port_query.id
+        )
+
+        for m in query.all():
+            current_result = {"id": m[0].id, "name": m[0].name, "holding": 0}
+
+            if m[1]:
+                current_result["holding"] = m[1].available_units
+
+            results.append(current_result)
+
+    except Exception as e:
+        print(e)
+
+    return {"results": results}
 
 
 def get_portfolios(investor_id):
