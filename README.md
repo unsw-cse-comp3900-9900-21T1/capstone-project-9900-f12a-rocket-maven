@@ -11,7 +11,7 @@ Read [ARCHITECTURE.md](ARCHITECTURE.md) and [CONTRIBUTING.md](CONTRIBUTING.md)
 
 `Node.js`  v14.16.0 (lts)
 
-`npm` v6.14.11 - I think this is the default version on ubuntu. I don't think versioning of this makes too much of a difference since it is just a package manager
+`npm` v6.14.11
 
 ### Development Tools
 
@@ -30,7 +30,7 @@ npm run start
 
 ### Global Environment
 
-`Python 3.7`
+`Python 3.7` https://www.python.org/downloads/release/python-373/
 
 Global [tox](https://tox.readthedocs.io/en/latest/index.html) install: `pip3 install tox`
 
@@ -44,9 +44,9 @@ Install [Miniconda](https://conda.io/en/master/index.html): https://conda.io/en/
 
 ### Setup
 
-`cd backend`
+`rm -r ../.tox` - clean up: removes tox from the backend folder if present
 
-`rm -r .tox` - clean up: removes tox from the backend folder if present
+`cd backend`
 
 `tox -e dev -r` - sets up a Tox python development environment at ../.tox/ (an out-of-tree .tox folder at the same level of this repo's folder, isolated from your main Python installation). Note! This is important when the requirements.txt file is changed.
 
@@ -54,11 +54,11 @@ Install [Miniconda](https://conda.io/en/master/index.html): https://conda.io/en/
 
 `tox -e dev` - uses the Tox python development environment to launch the server
 
+`tox -e dev-noconda` - uses the Tox python development environment (without conda as a requirement) to launch the server
+
 Alternative commands:
 
 - `python -m tox -e dev`
-
-- `start cmd /k tox -e dev` (get around control+c not working on Windows)
 
 Visit: [http://127.0.0.1:5100/swagger-ui](http://127.0.0.1:5100/swagger-ui)
 
