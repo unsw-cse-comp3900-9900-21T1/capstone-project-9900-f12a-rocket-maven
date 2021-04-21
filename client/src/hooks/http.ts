@@ -2,10 +2,7 @@ import { useStore, useUserId } from '@rocketmaven/hooks/store'
 import { message } from 'antd'
 import { decodeToken } from 'react-jwt'
 import { useHistory } from 'react-router'
-import {
-  useAbstractFetchOnMount,
-  useAbstractFetchOnSubmit
-} from './_http'
+import { useAbstractFetchOnMount, useAbstractFetchOnSubmit } from './_http'
 
 type SuccessfullLoginResponse = {
   access_token: string
@@ -49,9 +46,9 @@ export const useGetPortfolioInfo = (portfolioId: string): any => {
   return useAbstractFetchOnMount(endPointUrl)
 }
 
-export const useGetPortfolioHistory = (portfolioId: string): any => {
+export const useGetPortfolioHistory = (portfolioId: string, refreshFlag?: number): any => {
   const endPointUrl = `/api/v1/portfolios/${portfolioId}/history`
-  const { data, isLoading } = useAbstractFetchOnMount(endPointUrl)
+  const { data, isLoading } = useAbstractFetchOnMount(endPointUrl, refreshFlag)
   return { data, isLoading }
 }
 
@@ -165,5 +162,17 @@ export const useAddWatchListItem = () => {
 export const useDeleteAssetPortfolioHolding = () => {
   const urlPrefix = '/api/v1/portfolios/'
   const { myFetch } = useAbstractFetchOnSubmit(urlPrefix, 'DELETE')
+  return myFetch
+}
+
+export const useUpdateAssetPortfolioHistory = (): any => {
+  const endPointUrl = `/api/v1/portfolios/`
+  const { myFetch } = useAbstractFetchOnSubmit(endPointUrl, 'PUT')
+  return myFetch
+}
+
+export const useDeleteAssetPortfolioHistory = (): any => {
+  const endPointUrl = `/api/v1/portfolios/`
+  const { myFetch } = useAbstractFetchOnSubmit(endPointUrl, 'DELETE')
   return myFetch
 }

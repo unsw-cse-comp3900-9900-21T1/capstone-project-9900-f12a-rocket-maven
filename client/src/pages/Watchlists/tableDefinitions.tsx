@@ -88,12 +88,12 @@ export const createWatchListColumns = (
       }
     },
     {
-      title: 'Notify Low / High',
+      title: 'Notify Above High / Below Low',
       dataIndex: 'price_high_low',
       render: (value: [number, number], record: any) => {
         return (
           <>
-            Above High:{' '}
+            Above:{' '}
             <Popover
               content={NotifyContent(
                 record.ticker_symbol,
@@ -103,28 +103,14 @@ export const createWatchListColumns = (
                 refreshAfterNotificationSet,
                 setRefreshAfterNotificationSet
               )}
-              title="Set High"
+              title="Notify Above"
               placement="bottom"
-              trigger="hover"
+              trigger="click"
             >
-              <Popover
-                content={NotifyContent(
-                  record.ticker_symbol,
-                  'high',
-                  value[0],
-                  record.current_price,
-                  refreshAfterNotificationSet,
-                  setRefreshAfterNotificationSet
-                )}
-                title="Set High"
-                placement="bottom"
-                trigger="click"
-              >
-                <Button type="link">{value[0] ? value[0] : 'Change me!'}</Button>
-              </Popover>
+              <Button type="link">{value[0] ? value[0] : 'Click to set'}</Button>
             </Popover>
             <br />
-            Below Low:{' '}
+            Below:{' '}
             <Popover
               content={NotifyContent(
                 record.ticker_symbol,
@@ -134,25 +120,11 @@ export const createWatchListColumns = (
                 refreshAfterNotificationSet,
                 setRefreshAfterNotificationSet
               )}
-              title="Set Low"
+              title="Notify Below"
               placement="bottom"
-              trigger="hover"
+              trigger="click"
             >
-              <Popover
-                content={NotifyContent(
-                  record.ticker_symbol,
-                  'low',
-                  value[1],
-                  record.current_price,
-                  refreshAfterNotificationSet,
-                  setRefreshAfterNotificationSet
-                )}
-                title="Set Low"
-                placement="bottom"
-                trigger="click"
-              >
-                <Button type="link">{value[1] ? value[1] : 'Change me!'}</Button>
-              </Popover>
+              <Button type="link">{value[1] ? value[1] : 'Click to set'}</Button>
             </Popover>
           </>
         )

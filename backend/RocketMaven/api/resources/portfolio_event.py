@@ -14,7 +14,7 @@ class PortfolioAssetHoldingList(Resource):
         summary: Holdings in a Portfolio
         description: List the current holdings in a portfolio
         tags:
-          - Assets
+          - Portfolio Asset Holding
         parameters:
           - in: path
             name: portfolio_id
@@ -43,7 +43,7 @@ class PortfolioAssetHoldingList(Resource):
         summary: Delete Portfolio Asset
         description: Removes an asset from a portfolio's current holdings
         tags:
-          - Assets
+          - Portfolio Asset Holding
         parameters:
           - in: path
             name: portfolio_id
@@ -84,7 +84,7 @@ class PortfolioEventList(Resource):
         summary: Asset Events in a Portfolio
         description: List the asset event history in a portfolio
         tags:
-          - Assets
+          - Portfolio Asset Event
         parameters:
           - in: path
             name: portfolio_id
@@ -113,7 +113,7 @@ class PortfolioEventList(Resource):
         summary: Asset Event Create
         description: Creates a new asset event for a portfolio
         tags:
-          - Assets
+          - Portfolio Asset Event
         requestBody:
           content:
             application/json:
@@ -139,3 +139,60 @@ class PortfolioEventList(Resource):
             description: Unknown values in request
         """
         return PortfolioEventService.create_event(portfolio_id)
+
+    @jwt_required(optional=False)
+    def delete(self, portfolio_id):
+        """
+        ---
+        summary: Asset Event Delete
+        description: Deletes an asset event from a portfolio
+        tags:
+          - Portfolio Asset Event
+        requestBody:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  event_id:
+                    type: number
+                    example: 1
+                    required: true
+        parameters:
+          - in: path
+            name: portfolio_id
+            schema:
+              type: integer
+        responses:
+          200:
+            description: Event deleted
+          400:
+            description: Unknown values in request
+        """
+        return PortfolioEventService.delete_event(portfolio_id)
+
+    @jwt_required(optional=False)
+    def put(self, portfolio_id):
+        """
+        ---
+        summary: Asset Event Update
+        description: Updates an asset event from a portfolio
+        tags:
+          - Portfolio Asset Event
+        requestBody:
+          content:
+            application/json:
+              schema:
+                PortfolioEventUpdateSchema
+        parameters:
+          - in: path
+            name: portfolio_id
+            schema:
+              type: integer
+        responses:
+          200:
+            description: Event updated
+          400:
+            description: Unknown values in request
+        """
+        return PortfolioEventService.update_event(portfolio_id)

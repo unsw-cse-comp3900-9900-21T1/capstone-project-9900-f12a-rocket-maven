@@ -4,7 +4,11 @@ import io
 
 from flask import request
 from flask_jwt_extended import get_jwt_identity
-from RocketMaven.api.schemas import PortfolioAssetHoldingSchema, PortfolioEventSchema
+from RocketMaven.api.schemas import (
+    PortfolioAssetHoldingSchema,
+    PortfolioEventSchema,
+    PortfolioEventUpdateSchema,
+)
 from RocketMaven.commons.pagination import paginate
 from RocketMaven.extensions import db
 from RocketMaven.models import Asset, Portfolio, PortfolioAssetHolding, PortfolioEvent
@@ -193,6 +197,97 @@ def handle_broker_csv_row(csv_input_row: dict) -> dict:
 
 
 @protect_unauthorised_secure
+def update_event(portfolio_id):
+    """Updates an existing portfolio event
+    Returns
+        201 - on successful history update
+        400 - Foreign key error (unknown portfolio or asset id)
+        500 - unexpected error
+    """
+    if "id" in request.json:
+        try:
+            event = PortfolioEvent.query.filter_by(
+                portfolio_id=portfolio_id, id=request.json["id"]
+            ).first()
+            if event.competition_portfolio:
+                return {"msg": "Cannot update portfolio competition entries!"}, 400
+
+            try:
+                schema = PortfolioEventUpdateSchema(partial=True)
+                data = schema.load(request.json, instance=event)
+                if not event.update_portfolio_asset_holding():
+                    db.session.rollback()
+
+                    return (
+                        {
+                            "msg": "Error updating event, check to see if more units are removed than available",
+                        },
+                        400,
+                    )
+
+            except ValidationError as err:
+                print(err)
+                return {"msg": "Operation failed!", "errors": err.messages}, 422
+
+            db.session.commit()
+
+            return {"msg": "Portfolio event updated", "event": schema.dump(data)}
+        except Exception as err:
+            print(err)
+            return {"msg": "Operation failed!"}, 400
+    else:
+        return {"msg": "Event not found!"}, 400
+
+
+@protect_unauthorised_secure
+def delete_event(portfolio_id):
+    """Deletes an existing portfolio event
+    Returns
+        200 - on successful history deletion
+        400 - Foreign key error (unknown portfolio or asset id)
+        500 - unexpected error
+    """
+    if "id" in request.json:
+        try:
+            event = PortfolioEvent.query.filter_by(
+                portfolio_id=portfolio_id, id=request.json["id"]
+            ).first()
+            try:
+                # Due to db.session.delete not actually deleting the entry
+                #     need to mark this as pre-deleted for the FIFO algorithm
+                #     to check whether to allow the deletion for real!
+                event.pre_deleted = True
+                if not event.update_portfolio_asset_holding():
+                    db.session.rollback()
+
+                    return (
+                        {
+                            "msg": "Error deleting event, check to see if more units are removed than available",
+                        },
+                        400,
+                    )
+
+            except Exception as err:
+                print(err)
+                return {"msg": "Operation failed!", "errors": err.messages}, 422
+
+            db.session.delete(event)
+            db.session.commit()
+            PortfolioEvent.update_portfolio_asset_FIFO(
+                event.asset_id, event.portfolio_id
+            )
+            db.session.commit()
+
+            return {"msg": "Portfolio event deleted", "event_id": request.json["id"]}
+        except Exception as err:
+            print(err)
+            return {"msg": "Operation failed!"}, 400
+
+    else:
+        return {"msg": "Event not found!"}, 400
+
+
+@protect_unauthorised_secure
 def create_event(portfolio_id):
     """Create a new asset for the given portfolio in the database
     Returns
@@ -338,7 +433,7 @@ def create_event(portfolio_id):
                 db.session.rollback()
                 return (
                     {
-                        "msg": "Cannot remove more units then available",
+                        "msg": "Cannot remove more units than available",
                     },
                     400,
                 )
@@ -347,7 +442,7 @@ def create_event(portfolio_id):
                 db.session.rollback()
                 return (
                     {
-                        "msg": "Error adding event, check to see if more units are removed then available",
+                        "msg": "Error adding event, check to see if more units are removed than available",
                     },
                     400,
                 )

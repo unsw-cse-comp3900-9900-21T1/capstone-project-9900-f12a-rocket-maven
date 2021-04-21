@@ -1,28 +1,160 @@
 import { Subtitle } from '@rocketmaven/componentsStyled/Typography'
-import { useGetPortfolioHistory } from '@rocketmaven/hooks/http'
+import {
+  useDeleteAssetPortfolioHistory,
+  useGetPortfolioHistory,
+  useUpdateAssetPortfolioHistory
+} from '@rocketmaven/hooks/http'
 import { PortfolioEvent } from '@rocketmaven/pages/Portfolio/types'
-import { Button, Table, Tooltip } from 'antd'
+import { Button, DatePicker, Form, Input, InputNumber, Popconfirm, Table, Tooltip } from 'antd'
 import { isEmpty } from 'ramda'
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 
 type Params = {
   id: string
 }
 
+// https://ant.design/components/table/#components-table-demo-edit-cell
+interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
+  editing: boolean
+  dataIndex: string
+  title: any
+  inputType: 'number' | 'text' | 'date'
+  record: PortfolioEvent
+  index: number
+  children: React.ReactNode
+}
+
+const EditableCell: React.FC<EditableCellProps> = ({
+  editing,
+  dataIndex,
+  title,
+  inputType,
+  record,
+  index,
+  children,
+  ...restProps
+}) => {
+  const inputNode =
+    inputType === 'number' ? (
+      <InputNumber min="0.0001" />
+    ) : inputType === 'date' ? (
+      <DatePicker />
+    ) : (
+      <Input />
+    )
+
+  return (
+    <td {...restProps}>
+      {editing ? (
+        <Form.Item
+          name={dataIndex}
+          className="editable-no-margin"
+          rules={[
+            {
+              required: true,
+              message: `Please Input ${title}!`
+            }
+          ]}
+        >
+          {inputNode}
+        </Form.Item>
+      ) : (
+        children
+      )}
+    </td>
+  )
+}
+
 const PortfolioHistory = () => {
   const { id } = useParams<Params>()
 
-  const { isLoading, data } = useGetPortfolioHistory(id)
+  const [form] = Form.useForm()
+  const [editData, setEditData] = useState<[PortfolioEvent]>()
+  const [editingKey, setEditingKey] = useState(-1)
+  const [refreshFlag, setRefreshFlag] = useState(0)
+  const refreshPortfolios = () => setRefreshFlag(refreshFlag + 1)
+
+  const isEditing = (record: PortfolioEvent) => record.id === editingKey
+
+  const edit = (record: Partial<PortfolioEvent> & { id: number }) => {
+    form.setFieldsValue({
+      ...record
+    })
+    setEditingKey(record.id)
+  }
+
+  const cancel = () => {
+    setEditingKey(-1)
+  }
+
+  const updateAssetPortfolioHistoryFetch = useUpdateAssetPortfolioHistory()
+  const deleteAssetPortfolioHistoryFetch = useDeleteAssetPortfolioHistory()
+
+  const save = async (portfolioID: string | undefined, id: number) => {
+    try {
+      const row = (await form.validateFields()) as PortfolioEvent
+
+      const path = `${portfolioID}/history`
+
+      const values = { id: id, ...form.getFieldsValue() }
+      await updateAssetPortfolioHistoryFetch({
+        apiPath: path,
+        values: values
+      })
+
+      setEditingKey(-1)
+      refreshPortfolios()
+    } catch (errInfo) {
+      console.log('Validate Failed:', errInfo)
+    }
+  }
+
+  const deleteHistory = async (portfolioID: string | undefined, id: number) => {
+    try {
+      const row = (await form.validateFields()) as PortfolioEvent
+
+      const path = `${portfolioID}/history`
+      const values = { id: id }
+      await deleteAssetPortfolioHistoryFetch({
+        apiPath: path,
+        values: values
+      })
+
+      setEditingKey(-1)
+      refreshPortfolios()
+    } catch (errInfo) {
+      console.log('Validate Failed:', errInfo)
+    }
+  }
+
+  const { isLoading, data } = useGetPortfolioHistory(id, refreshFlag)
+
   let historyTable = null
   if (data && !isEmpty(data)) {
     const histories: [PortfolioEvent] = data.results
+
+    let editable = false
+    if (data.results.length > 0) {
+      if (!data.results[0].competition_portfolio) {
+        editable = true
+      }
+    }
 
     const columns = [
       {
         title: 'Type',
         dataIndex: 'add_action',
-        render: (value: string) => (value ? 'Add' : 'Remove')
+        render: (value: string) =>
+          value ? (
+            <Tooltip title="Added">
+              <span style={{ fontSize: '1.5rem', color: 'green' }}>+</span>
+            </Tooltip>
+          ) : (
+            <Tooltip title="Removed">
+              <span style={{ fontSize: '2rem', color: 'red' }}>-</span>
+            </Tooltip>
+          )
       },
       {
         title: 'Event ID',
@@ -57,8 +189,6 @@ const PortfolioHistory = () => {
               <Button
                 type="primary"
                 style={{
-                  marginRight: '8px',
-                  marginBottom: '12px',
                   float: 'right'
                 }}
               >
@@ -71,27 +201,154 @@ const PortfolioHistory = () => {
       {
         title: 'Date',
         dataIndex: 'event_date',
-        render: (value: string) => <>{value} UTC</>
+        /* render: (value: string) => <>{value} UTC</>, */
+        editable: false
+      },
+      {
+        title: 'Available',
+        dataIndex: 'dynamic_after_FIFO_units',
+        render: (value: number, record: any) => {
+          if (record.add_action) {
+            return value.toFixed(2)
+          } else {
+            return null
+          }
+        }
       },
       {
         title: 'Fees',
-        dataIndex: 'fees'
+        dataIndex: 'fees',
+        editable: true
       },
       {
         title: 'Units',
-        dataIndex: 'units'
+        dataIndex: 'units',
+        editable: true
       },
       {
         title: 'Price Per Unit',
         dataIndex: 'price_per_share',
-        render: (value: number) => value.toFixed(2)
+        render: (value: number) => value.toFixed(2),
+        editable: true
+      },
+      {
+        title: 'Exchange Rate',
+        dataIndex: 'exchange_rate',
+        render: (value: number) => value.toFixed(2),
+        editable: true
       },
       {
         title: 'Note',
-        dataIndex: 'note'
-      }
+        dataIndex: 'note',
+        editable: true
+      },
+      ...(editable
+        ? [
+            {
+              title: 'Action',
+              dataIndex: 'id',
+              render: (_: any, record: PortfolioEvent) => {
+                const editing = isEditing(record)
+                return (
+                  <>
+                    {editing ? (
+                      <>
+                        <Button
+                          onClick={async () => {
+                            save(record.portfolio_id, record.id)
+                          }}
+                          style={{ marginRight: 8 }}
+                          type="primary"
+                        >
+                          Save
+                        </Button>
+                        <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
+                          <Button type="primary">Cancel</Button>
+                        </Popconfirm>
+                      </>
+                    ) : (
+                      <>
+                        <Button
+                          type="primary"
+                          disabled={editingKey !== -1}
+                          onClick={() => edit(record)}
+                        >
+                          Edit
+                        </Button>
+                        {'    '}
+                        <Popconfirm
+                          title="Sure to delete?"
+                          onConfirm={() => {
+                            deleteHistory(record.portfolio_id, record.id)
+                          }}
+                        >
+                          <Button type="primary" danger disabled={editingKey !== -1}>
+                            Delete
+                          </Button>
+                        </Popconfirm>
+                      </>
+                    )}
+                  </>
+                )
+              }
+            }
+          ]
+        : [])
     ]
-    historyTable = <Table columns={columns} dataSource={histories} rowKey="id" />
+
+    const mergedColumns = columns.map((col) => {
+      if (!col.editable) {
+        return col
+      }
+
+      let inputType = 'text'
+      switch (col.dataIndex) {
+        case 'event_date': {
+          inputType = 'date'
+          break
+        }
+        case 'units':
+        case 'exchange_rate':
+        case 'price_per_share':
+        case 'fees': {
+          inputType = 'number'
+          break
+        }
+        case 'note':
+        default: {
+          inputType = 'text'
+        }
+      }
+
+      return {
+        ...col,
+        onCell: (record: PortfolioEvent) => ({
+          record,
+          inputType: inputType,
+          dataIndex: col.dataIndex,
+          title: col.title,
+          editing: isEditing(record)
+        })
+      }
+    })
+
+    historyTable = (
+      <Form form={form} component={false}>
+        <Table
+          key={`historyTableNo${refreshFlag}`}
+          components={{
+            body: {
+              cell: EditableCell
+            }
+          }}
+          columns={mergedColumns}
+          dataSource={histories}
+          rowKey="id"
+          pagination={false}
+          rowClassName="editable-row"
+        />
+      </Form>
+    )
   }
 
   return isLoading ? null : (

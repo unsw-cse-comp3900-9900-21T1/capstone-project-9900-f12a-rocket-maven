@@ -109,6 +109,7 @@ const Leaderboard = () => {
           }
         }}
         rowKey="id"
+        pagination={false}
       />
     </Page>
   )

@@ -11,6 +11,12 @@ class PortfolioEventSchema(ma.SQLAlchemyAutoSchema):
     # The portfolio_id links the portfolio the event belongs to
     portfolio_id = ma.Int(dump_only=True)
 
+    competition_portfolio = ma.Boolean(dump_only=True)
+
+    realised_snapshot = ma.Float(dump_only=True)
+    available_snapshot = ma.Float(dump_only=True)
+    tax_full_snapshot = ma.String(dump_only=True)
+
     # The asset id links the asset the event belongs to
     asset_id = ma.String(required=True)
 
@@ -18,6 +24,21 @@ class PortfolioEventSchema(ma.SQLAlchemyAutoSchema):
         model = PortfolioEvent
         sqla_session = db.session
         load_instance = True
-        exclude = ("dynamic_after_FIFO_units",)
+        # exclude = ("dynamic_after_FIFO_units",)
 
     asset_id = ma.auto_field()
+
+
+class PortfolioEventUpdateSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = PortfolioEvent
+        sqla_session = db.session
+        load_instance = True
+        fields = (
+            "id",
+            "note",
+            "exchange_rate",
+            "fees",
+            "price_per_share",
+            "units",
+        )
