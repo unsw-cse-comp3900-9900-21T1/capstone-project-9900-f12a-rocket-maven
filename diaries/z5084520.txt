@@ -85,4 +85,7 @@ The meeting was also to reaffirm that all group members know their role in draft
 
 - Added currency support
 - Added React build support for Flask
+- Added support for setting the asset-portfolio event date
+- Added support for modifying/deleting existing asset-portfolio events
+- Added scheduling / email support for the watchlist notification
 
