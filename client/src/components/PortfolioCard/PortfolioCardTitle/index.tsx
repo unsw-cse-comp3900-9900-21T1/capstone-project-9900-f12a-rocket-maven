@@ -60,7 +60,9 @@ const CardTitle = ({ portfolio, singleView, refreshPortfolios }: Props) => {
           <Tag color="blue">{portfolio.currency}</Tag>
         ]}
         extra={[
-          isPortfolioEmpty ? (
+          // If investor property is returned then it is implicit that we're looking at a
+          // portfolio through a public api and should not be able to delete
+          isPortfolioEmpty && !portfolio.investor ? (
             <Button onClick={onDeletePortfolio} style={{ float: 'right' }}>
               Delete
             </Button>
