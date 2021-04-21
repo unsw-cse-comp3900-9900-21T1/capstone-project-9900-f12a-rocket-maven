@@ -1,17 +1,14 @@
-from flask import Flask, send_from_directory
-from RocketMaven import api
-from RocketMaven import auth
-from RocketMaven.extensions import apispec
-from RocketMaven.extensions import db
-from RocketMaven.extensions import jwt
-from RocketMaven.extensions import migrate
 import atexit
-from apscheduler.schedulers.background import BackgroundScheduler as BackgroundScheduler
-from flask import request
 import datetime
 import os
 import sys
+
+from apscheduler.schedulers.background import BackgroundScheduler as BackgroundScheduler
 from dotenv import load_dotenv
+from flask import Flask, send_from_directory
+
+from RocketMaven import api, auth
+from RocketMaven.extensions import apispec, db, jwt, migrate
 from RocketMaven.services.WatchlistService import send_watchlist_email
 
 load_dotenv(os.path.join(os.path.dirname(__file__), "settings.env"))

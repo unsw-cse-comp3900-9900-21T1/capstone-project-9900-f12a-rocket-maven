@@ -1,13 +1,14 @@
 import re
-from RocketMaven.api.schemas import AssetSchema
+
 from marshmallow import ValidationError
+from RocketMaven.api.schemas import AssetSchema
 from RocketMaven.extensions import db, ma
 from RocketMaven.models import Investor, Watchlist
 
 
 def validate_password(password: str):
-    """ Checks password meets requirements as per system design.
-        Raises a ValidationError if it fails
+    """Checks password meets requirements as per system design.
+    Raises a ValidationError if it fails
     """
     # special_chars = "~`!@#$%^&*()_+-=[]\\{}|:\";\'<>?,./"
     if not password:

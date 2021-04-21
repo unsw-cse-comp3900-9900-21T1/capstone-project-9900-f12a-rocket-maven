@@ -16,8 +16,8 @@ from RocketMaven.models import (
     Currency,
     CurrencyHistory,
     CurrencyUpdate,
-    PortfolioAssetHolding,
     Portfolio,
+    PortfolioAssetHolding,
 )
 from RocketMaven.services import TimeSeriesService
 from sqlalchemy import or_
@@ -28,7 +28,7 @@ from sqlalchemy.orm import aliased
 def chunks(lst, n):
     """Yield successive n-sized chunks from lst."""
     for i in range(0, len(lst), n):
-        yield lst[i : i + n]
+        yield lst[i : i + n]  # noqa: E203
 
 
 YAHOO_FINANCE_ENDPOINT = "https://query2.finance.yahoo.com/v7/finance/quote?formatted=true&lang=en-AU&region=AU&symbols={ticker}&fields=longName,shortName,regularMarketPrice"  # noqa: E501
@@ -160,6 +160,7 @@ def search_asset():
             ).order_by(Asset.market_cap.desc())
             return paginate(query, schema)
         except Exception as e:
+            print(e)
             return {"msg": "Asset search failed"}, 500
     else:
         return {"msg": "Missing search query"}, 400

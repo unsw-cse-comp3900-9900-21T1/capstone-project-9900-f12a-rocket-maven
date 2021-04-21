@@ -1,8 +1,8 @@
+from flask_jwt_extended import get_jwt_identity
 from RocketMaven.api.schemas import LeaderboardSchema
-from RocketMaven.models import Portfolio, PortfolioAssetHolding, Asset
 from RocketMaven.commons.pagination import paginate
 from RocketMaven.extensions import db
-from flask_jwt_extended import get_jwt_identity
+from RocketMaven.models import Asset, Portfolio, PortfolioAssetHolding
 from RocketMaven.services.AssetService import update_assets_price
 from sqlalchemy import and_
 
@@ -27,7 +27,8 @@ def get_leaderboard():
             .join(Asset, isouter=True)
             .filter(
                 and_(
-                    Portfolio.competition_portfolio == True, Portfolio.deleted == False
+                    Portfolio.competition_portfolio == True,  # noqa: E712
+                    Portfolio.deleted == False,  # noqa: E712
                 )
             )
             .group_by(PortfolioAssetHolding.portfolio_id)

@@ -1,9 +1,11 @@
-import click
-from flask.cli import with_appcontext
 import os
+
+import click
 from dotenv import load_dotenv
+from flask.cli import with_appcontext
 
 load_dotenv(os.path.join(os.path.dirname(__file__), "settings.env"))
+
 
 @click.group()
 def cli():

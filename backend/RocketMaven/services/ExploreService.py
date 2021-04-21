@@ -6,14 +6,14 @@ from sqlalchemy import or_
 
 
 def advanced_search():
-    """ Perform an advanced search of assets in Rocket Maven.
-        Search parameters should exist in the request query arguments string:
-        * country
-        * currency
-        * industry
-        * exchange
-        * order
-        * order_direction
+    """Perform an advanced search of assets in Rocket Maven.
+    Search parameters should exist in the request query arguments string:
+    * country
+    * currency
+    * industry
+    * exchange
+    * order
+    * order_direction
     """
     print("advanced_search**&****")
 
@@ -24,7 +24,13 @@ def advanced_search():
     q = request.args.get("q")
     print("q:", q)
 
-    if country is None and currency is None and industry is None and exchange is None and q is None:
+    if (
+        country is None
+        and currency is None
+        and industry is None
+        and exchange is None
+        and q is None
+    ):
         return {"msg": "Missing search query"}, 400
 
     order_object = Asset.market_cap.desc()

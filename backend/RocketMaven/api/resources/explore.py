@@ -3,7 +3,6 @@ from RocketMaven.services import ExploreService
 
 
 class Explore(Resource):
-
     def get(self):
         """
         ---

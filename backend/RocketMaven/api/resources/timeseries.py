@@ -6,7 +6,6 @@ from RocketMaven.services import TimeSeriesService
 
 
 class TimeSeriesResource(Resource):
-
     def get(self, ticker_symbol, range):
         """
         ---
@@ -56,7 +55,6 @@ class TimeSeriesResource(Resource):
 
 
 class AdvancedTimeSeriesResource(Resource):
-
     def get(self, ticker_symbol):
         """
         ---
@@ -112,13 +110,17 @@ class AdvancedTimeSeriesResource(Resource):
         """
         start_date = request.args.get("start", None)
         try:
-            start_date = datetime.datetime(int(start_date[0:4]), int(start_date[4:6]), int(start_date[6:8]))
+            start_date = datetime.datetime(
+                int(start_date[0:4]), int(start_date[4:6]), int(start_date[6:8])
+            )
         except ValueError:
             return {"msg": "Invalid start date"}, 400
 
         end_date = request.args.get("end", None)
         try:
-            end_date = datetime.datetime(int(end_date[0:4]), int(end_date[4:6]), int(end_date[6:8]))
+            end_date = datetime.datetime(
+                int(end_date[0:4]), int(end_date[4:6]), int(end_date[6:8])
+            )
         except ValueError:
             return {"msg": "Invalid end date"}, 400
 
@@ -131,7 +133,9 @@ class AdvancedTimeSeriesResource(Resource):
         except Exception:
             return {"msg": "Invalid interval"}, 400
 
-        return TimeSeriesService.get_timeseries_data_advanced(ticker_symbol, start_date, end_date, interval)
+        return TimeSeriesService.get_timeseries_data_advanced(
+            ticker_symbol, start_date, end_date, interval
+        )
 
 
 class DailyTimeSeriesResource(Resource):

@@ -1,18 +1,15 @@
-import hashlib
+import datetime
+import os
+import random
 import smtplib
 import ssl
-import time
+import string
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 from flask import request
 from RocketMaven.extensions import db
 from RocketMaven.models import Investor
-import string
-import random
-import datetime
-import os
-import urllib
 
 
 def try_reset():

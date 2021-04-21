@@ -1,6 +1,6 @@
-from RocketMaven.models import PortfolioEvent
-from RocketMaven.extensions import ma, db
 from marshmallow import validate
+from RocketMaven.extensions import db, ma
+from RocketMaven.models import PortfolioEvent
 
 
 class PortfolioEventSchema(ma.SQLAlchemyAutoSchema):
