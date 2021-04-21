@@ -17,6 +17,7 @@ const AccountSecurityInfoForm = ({ investorData }: Props) => {
     myFetch({
       values: {
         ...values,
+        date_of_birth: investorData.investor.date_of_birth,
         confirm: undefined
       },
       redirectPath: urls.account
