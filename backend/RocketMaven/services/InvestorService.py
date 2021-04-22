@@ -108,19 +108,25 @@ def create_investor():
         investor = schema.load(request.json)
     except ValidationError as e:
         print(e)
-        return {"msg": "Operation failed!", "errors": e.messages}, 422
+        return {
+            "msg": "Account creation failed! Validation errors!",
+            "errors": e.messages,
+        }, 422
     except Exception as e:
         print(e)
-        return {"msg": "Operation failed!"}, 400
+        return {
+            "msg": "Account creation failed! Try a different username or email!"
+        }, 400
 
     try:
         db.session.add(investor)
         db.session.commit()
 
         return {"msg": "investor created", "investor": schema.dump(investor)}, 201
-    except Exception:
+    except Exception as e:
+        print(e)
         return {
-            "msg": "Operation failed",
+            "msg": "Account creation failed! Try a different username or email!",
         }, 422
 
 
