@@ -21,7 +21,7 @@ interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
   editing: boolean
   dataIndex: string
   title: any
-  inputType: 'number' | 'text' | 'date'
+  inputType: 'number' | 'text' | 'date' | 'fees'
   record: PortfolioEvent
   index: number
   children: React.ReactNode
@@ -42,6 +42,8 @@ const EditableCell: React.FC<EditableCellProps> = ({
       <InputNumber min="0.0001" />
     ) : inputType === 'date' ? (
       <DatePicker />
+    ) : inputType === 'fees' ? (
+      <InputNumber min="0" />
     ) : (
       <Input />
     )
@@ -321,7 +323,7 @@ const PortfolioHistory = () => {
         case 'exchange_rate':
         case 'price_per_share':
         case 'fees': {
-          inputType = 'number'
+          inputType = 'fees'
           break
         }
         case 'note':

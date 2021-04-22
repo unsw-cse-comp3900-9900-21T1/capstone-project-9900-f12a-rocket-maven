@@ -81,7 +81,7 @@ const PortfolioAssetEditForm = ({ portfolioId, portfolioInfo }: Props) => {
     values.asset_id = values.asset_id.value
     values.add_action = addActionValue
     values.event_date = moment(
-      `${eventDate.year()}/${eventDate.month()}/${eventDate.date()}`,
+      `${eventDate.year()}/${eventDate.month() + 1}/${eventDate.date()}`,
       'YYYY/MM/DD'
     )
     myFetch({
