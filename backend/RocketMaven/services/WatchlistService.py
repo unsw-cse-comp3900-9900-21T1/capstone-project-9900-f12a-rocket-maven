@@ -146,18 +146,18 @@ def send_watchlist_email():
         if not watch.last_notified or (
             datetime.datetime.now() - watch.last_notified > datetime.timedelta(hours=12)
         ):
-            if watch.price_high and watch.price_high < collapse_price[m.ticker_symbol]:
+            if watch.price_high and watch.price_high < collapse_price[watch.asset_id]:
                 emails_to_send[watch.investor.email] += (
-                    f"<br><br>\n\nPrice high of {m.ticker_symbol} reached! "
+                    f"<br><br>\n\nPrice high of {watch.asset_id} reached! "
                     + f"Set notification: {watch.price_high}, "
-                    + f"Reached price: {collapse_price[m.ticker_symbol]}!"
+                    + f"Reached price: {collapse_price[watch.asset_id]}!"
                 )
 
-            if watch.price_low and watch.price_low > collapse_price[m.ticker_symbol]:
+            if watch.price_low and watch.price_low > collapse_price[watch.asset_id]:
                 emails_to_send[watch.investor.email] += (
-                    f"<br><br>\n\nPrice low of {m.ticker_symbol} reached! "
+                    f"<br><br>\n\nPrice low of {watch.ticker_symbol} reached! "
                     + f"Set notification: {watch.price_low}, "
-                    + f"Reached price: {collapse_price[m.ticker_symbol]}!"
+                    + f"Reached price: {collapse_price[watch.ticker_symbol]}!"
                 )
             watch.last_notified = datetime.datetime.now()
             db.session.commit()
@@ -175,4 +175,4 @@ def send_watchlist_email():
             print(f"Sent email to {m[0]}")
     print("Watchlist notification ended")
 
-    return {"msg", "Success!"}, 200
+    return {"msg": "Success!"}
