@@ -48,6 +48,8 @@ const EditableCell: React.FC<EditableCellProps> = ({
       <Input />
     )
 
+  const requiredField = inputType === 'text' ? false : true
+
   return (
     <td {...restProps}>
       {editing ? (
@@ -56,7 +58,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
           className="editable-no-margin"
           rules={[
             {
-              required: true,
+              required: requiredField,
               message: `Please Input ${title}!`
             }
           ]}
@@ -321,7 +323,10 @@ const PortfolioHistory = () => {
         }
         case 'units':
         case 'exchange_rate':
-        case 'price_per_share':
+        case 'price_per_share': {
+          inputType = 'number'
+          break
+        }
         case 'fees': {
           inputType = 'fees'
           break
