@@ -13,6 +13,7 @@ export type PortfolioEvent = {
   add_action?: boolean
   asset_id: string
   event_date?: string
+  asset_currency?: string
   fees: number
   id: number
   note?: string

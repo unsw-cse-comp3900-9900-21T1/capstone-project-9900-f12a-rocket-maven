@@ -239,6 +239,11 @@ const PortfolioHistory = () => {
         editable: true
       },
       {
+        title: 'Currency',
+        dataIndex: 'asset_currency',
+        editable: false
+      },
+      {
         title: 'Price Per Unit',
         dataIndex: 'price_per_share',
         render: (value: number) => value.toFixed(2),
