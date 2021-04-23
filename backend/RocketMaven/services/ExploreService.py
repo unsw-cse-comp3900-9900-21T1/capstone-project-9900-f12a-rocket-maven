@@ -15,14 +15,14 @@ def advanced_search():
     * order
     * order_direction
     """
-    print("advanced_search**&****")
+    # print("advanced_search**&****")
 
     country = request.args.get("country")
     currency = request.args.get("currency")
     industry = request.args.get("industry")
     exchange = request.args.get("exchange")
     q = request.args.get("q")
-    print("q:", q)
+    # print("q:", q)
 
     if (
         country is None
@@ -64,10 +64,10 @@ def advanced_search():
         currency = ["%" + i.lstrip().rstrip() + "%" for i in currency if i != "%"]
         industry = ["%" + i.lstrip().rstrip() + "%" for i in industry if i != "%"]
 
-        print("exchange", exchange)
-        print("country:", country)
-        print("currency", currency)
-        print("industry", industry)
+        # print("exchange", exchange)
+        # print("country:", country)
+        # print("currency", currency)
+        # print("industry", industry)
 
         schema = AssetSchema(many=True)
         # query = Asset.query.filter((Asset.country.in_(country)) & (Asset.currency.in_(currency)) & (Asset.industry.in_(industry)))\  # noqa: E501
@@ -84,7 +84,7 @@ def advanced_search():
         )
 
         # query = Asset.query.filter(Asset.currency.like('%aud%'))
-        print("query: ", query)
+        # print("query: ", query)
         return paginate(query, schema)
     except Exception as e:
         print(e)
