@@ -42,12 +42,12 @@ export const assetColumns = [
       }
       return null
     },
-    width: '20%'
+    width: '16%'
   },
   {
     title: 'Price',
     dataIndex: 'current_price',
-    width: '5%',
+    width: '7%',
     render: (value: string, record: any) => {
       return (
         <div>
@@ -72,7 +72,7 @@ export const assetColumns = [
       }
       return null
     },
-    width: '5%'
+    width: '7%'
   },
   {
     title: 'Market Cap',
