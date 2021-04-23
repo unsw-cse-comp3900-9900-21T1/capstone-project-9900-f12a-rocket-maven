@@ -22,6 +22,7 @@ class PortfolioEventSchema(ma.SQLAlchemyAutoSchema):
 
     # The asset id links the asset the event belongs to
     asset_id = ma.String(required=True)
+    asset_currency = ma.String(dump_only=True)
 
     class Meta:
         model = PortfolioEvent

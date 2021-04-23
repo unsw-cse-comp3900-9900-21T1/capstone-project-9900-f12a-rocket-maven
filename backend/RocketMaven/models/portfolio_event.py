@@ -55,6 +55,9 @@ class PortfolioEvent(db.Model):
         primary_key=False,
         nullable=False,
     )
+    asset_for_event = relationship("Asset", backref="asset_for_event")
+    asset_currency = association_proxy("asset_for_event", "currency")
+
     portfolio_id = db.Column(
         db.Integer, db.ForeignKey("portfolio.id"), primary_key=False, nullable=False
     )

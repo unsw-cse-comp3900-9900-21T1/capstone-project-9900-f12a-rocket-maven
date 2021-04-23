@@ -1,6 +1,19 @@
+import { currencyCodeToName } from '@rocketmaven/data/currency-code-to-name'
 import { Button, Popover } from 'antd'
 import { Link } from 'react-router-dom'
 import NotifyContent from './NotifyContent'
+
+function getCurrency(record: any) {
+  let currencyPrefix = ''
+  if (record.currency && record.currency in currencyCodeToName) {
+    Object.entries(currencyCodeToName).forEach((keyVal) => {
+      if (keyVal[0] == record.currency) {
+        currencyPrefix = keyVal[1]['symbol']
+      }
+    })
+  }
+  return currencyPrefix
+}
 
 export const createWatchListColumns = (
   deleteWatchListItem: any,
@@ -37,16 +50,27 @@ export const createWatchListColumns = (
     },
     {
       title: 'Price',
-      dataIndex: 'current_price'
+      dataIndex: 'current_price',
+      render: (value: string, record: any) => {
+        return (
+          <div>
+            {getCurrency(record)} {value}
+          </div>
+        )
+      }
     },
     {
       title: 'Change',
       dataIndex: 'asset_additional',
-      render: (value: string) => {
+      render: (value: string, record: any) => {
         const asset_additional = JSON.parse(value)
         const focus = asset_additional.regularMarketChange
         if (focus) {
-          return <div>{focus.fmt}</div>
+          return (
+            <div>
+              {getCurrency(record)} {focus.fmt}
+            </div>
+          )
         }
         return null
       }
@@ -54,11 +78,15 @@ export const createWatchListColumns = (
     {
       title: 'Market Cap',
       dataIndex: 'asset_additional',
-      render: (value: string) => {
+      render: (value: string, record: any) => {
         const asset_additional = JSON.parse(value)
         const focus = asset_additional.marketCap
         if (focus) {
-          return <div>{focus.fmt}</div>
+          return (
+            <div>
+              {getCurrency(record)} {focus.fmt}
+            </div>
+          )
         }
         return null
       }
@@ -66,11 +94,15 @@ export const createWatchListColumns = (
     {
       title: '52-Week High',
       dataIndex: 'asset_additional',
-      render: (value: string) => {
+      render: (value: string, record: any) => {
         const asset_additional = JSON.parse(value)
         const focus = asset_additional.fiftyTwoWeekHigh
         if (focus) {
-          return <div>{focus.fmt}</div>
+          return (
+            <div>
+              {getCurrency(record)} {focus.fmt}
+            </div>
+          )
         }
         return null
       }
@@ -78,11 +110,15 @@ export const createWatchListColumns = (
     {
       title: '52-Week Low',
       dataIndex: 'asset_additional',
-      render: (value: string) => {
+      render: (value: string, record: any) => {
         const asset_additional = JSON.parse(value)
         const focus = asset_additional.fiftyTwoWeekLow
         if (focus) {
-          return <div>{focus.fmt}</div>
+          return (
+            <div>
+              {getCurrency(record)} {focus.fmt}
+            </div>
+          )
         }
         return null
       }
@@ -103,7 +139,7 @@ export const createWatchListColumns = (
                 refreshAfterNotificationSet,
                 setRefreshAfterNotificationSet
               )}
-              title="Notify Above"
+              title={`Notify Above (in ${record.currency})`}
               placement="bottom"
               trigger="click"
             >
@@ -120,7 +156,7 @@ export const createWatchListColumns = (
                 refreshAfterNotificationSet,
                 setRefreshAfterNotificationSet
               )}
-              title="Notify Below"
+              title={`Notify Below (in ${record.currency})`}
               placement="bottom"
               trigger="click"
             >
